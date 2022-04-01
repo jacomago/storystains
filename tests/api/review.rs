@@ -7,7 +7,7 @@ async fn review_returns_a_200_for_valid_form_data() {
     let client = reqwest::Client::new();
 
     // Act
-    let body = "name=Dune&review=5stars";
+    let body = "title=Dune&review=5stars";
     let response = client
         .post(&format!("{}/reviews", &app_address))
         .header("Content-Type", "application/x-www-form-urlencoded")
