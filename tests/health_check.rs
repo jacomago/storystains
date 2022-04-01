@@ -1,14 +1,15 @@
+use std::net::TcpListener;
+
 #[tokio::test]
 async fn health_check_works() {
     // Arrange
-    spawn_app();
-    // We need to bring in `reqwest`
-    // to perform HTTP requests against our application.
+    let address = spawn_app();
     let client = reqwest::Client::new();
 
     // Act
     let response = client
-        .get("http://127.0.0.1:8080/health_check")
+        // Use the returned application address
+        .get(&format!("{}/health_check", &address))
         .send()
         .await
         .expect("Failed to execute request.");
@@ -18,7 +19,12 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
-fn spawn_app() {
-    let server = storystains::run().expect("Failed to bind address");
+fn spawn_app() -> String {
+    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
+    // We retrieve the port assigned to us by the OS
+    let port = listener.local_addr().unwrap().port();
+    let server = storystains::run(listener).expect("Failed to bind address");
     let _ = tokio::spawn(server);
+    // We return the application address to the caller!
+    format!("http://127.0.0.1:{}", port)
 }
