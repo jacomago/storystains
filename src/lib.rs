@@ -6,7 +6,13 @@ async fn health_check() -> impl Responder {
     HttpResponse::Ok()
 }
 
-async fn review() -> HttpResponse {
+#[derive(serde::Deserialize)]
+struct FormData {
+    _title: String,
+    _review: String
+}
+
+async fn review(_form: web::Form<FormData>) -> HttpResponse {
     HttpResponse::Ok().finish()
 }
 
