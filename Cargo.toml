@@ -9,7 +9,7 @@ path = "src/lib.rs"
 
 [[bin]]
 path = "src/main.rs"
-name = "stroystains"
+name = "storystains"
 
 [dependencies]
 actix-web = "4.0"
