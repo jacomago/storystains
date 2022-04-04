@@ -14,7 +14,7 @@ pub async fn review(_form: web::Form<FormData>) -> HttpResponse {
 }
 
 pub async fn create_review(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
-    sqlx::query!(
+    match sqlx::query!(
         r#"
     INSERT INTO reviews (id, title, review, created_at)
     VALUES ($1, $2, $3, $4)
@@ -27,6 +27,12 @@ pub async fn create_review(form: web::Form<FormData>, pool: web::Data<PgPool>) -
     // We use `get_ref` to get an immutable reference to the `PgConnection`
     // wrapped by `web::Data`.
     .execute(pool.get_ref())
-    .await;
-    HttpResponse::Ok().finish()
+    .await
+    {
+        Ok(_) => HttpResponse::Ok().finish(),
+        Err(e) => {
+            println!("Failed to execute query: {}", e);
+            HttpResponse::InternalServerError().finish()
+        }
+    }
 }
