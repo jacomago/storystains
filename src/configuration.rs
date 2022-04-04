@@ -56,9 +56,6 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");
     let configuration_directory = base_path.join("configuration");
 
-    let mut builder = Config::builder()
-        .add_source(config::File::from(configuration_directory.join("base")).required(true));
-
     // Detect the running environment.
     // Default to `local` if unspecified.
     let environment: Environment = std::env::var("APP_ENVIRONMENT")
@@ -66,11 +63,13 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT.");
 
-    builder.add_source(
-        config::File::from(configuration_directory.join(environment.as_str())).required(true),
-    );
+    let builder = Config::builder()
+        .add_source(config::File::from(configuration_directory.join("base")).required(true))
+        .add_source(
+            config::File::from(configuration_directory.join(environment.as_str())).required(true),
+        )
+        .add_source(config::Environment::with_prefix("app").separator("__"));
 
-    builder.add_source(config::Environment::with_prefix("app").separator("__"));
     match builder.build() {
         Ok(config) => Ok(config.try_deserialize().unwrap()),
         Err(e) => Err(e),
