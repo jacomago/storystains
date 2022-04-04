@@ -11,6 +11,14 @@ async fn review_returns_a_200_for_valid_form_data() {
 
     // Assert
     assert_eq!(200, response.status().as_u16());
+
+    let saved = sqlx::query!("SELECT title, review FROM reviews",)
+        .fetch_one(&app.db_pool)
+        .await
+        .expect("Failed to fetch saved subscription.");
+
+    assert_eq!(saved.review, "5stars");
+    assert_eq!(saved.title, "Dune");
 }
 
 #[tokio::test]
