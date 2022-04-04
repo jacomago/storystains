@@ -3,13 +3,13 @@ use crate::helpers::spawn_app;
 #[tokio::test]
 async fn review_returns_a_200_for_valid_form_data() {
     // Arrange
-    let app_address = spawn_app();
+    let app = spawn_app().await;
     let client = reqwest::Client::new();
 
     // Act
     let body = "title=Dune&review=5stars";
     let response = client
-        .post(&format!("{}/reviews", &app_address))
+        .post(&format!("{}/reviews", &app.address))
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .send()
@@ -23,7 +23,7 @@ async fn review_returns_a_200_for_valid_form_data() {
 #[tokio::test]
 async fn review_returns_a_400_when_data_is_missing() {
     // Arrange
-    let app_address = spawn_app();
+    let app = spawn_app().await;
     let client = reqwest::Client::new();
     let test_cases = vec![
         ("title=Dune", "missing the review"),
@@ -34,7 +34,7 @@ async fn review_returns_a_400_when_data_is_missing() {
     for (invalid_body, error_message) in test_cases {
         // Act
         let response = client
-            .post(&format!("{}/reviews", &app_address))
+            .post(&format!("{}/reviews", &app.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .body(invalid_body)
             .send()
