@@ -1,4 +1,4 @@
-CREATE TABLE subscriptions(
+CREATE TABLE reviews(
     id uuid NOT NULL,
     PRIMARY KEY (id),
     title TEXT NOT NULL UNIQUE,
