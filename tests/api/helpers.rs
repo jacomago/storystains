@@ -1,12 +1,12 @@
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
-use uuid::Uuid;
 use storystains::startup::get_connection_pool;
 use storystains::telemetry::{get_subscriber, init_subscriber};
 use storystains::{
     configuration::{get_configuration, DatabaseSettings},
     startup::Application,
 };
+use uuid::Uuid;
 
 // Ensure that the `tracing` stack is only initialised once using `once_cell`
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -31,7 +31,7 @@ pub struct TestApp {
 }
 
 impl TestApp {
-    pub async fn post_subscriptions(&self, body: String) -> reqwest::Response {
+    pub async fn post_review(&self, body: String) -> reqwest::Response {
         reqwest::Client::new()
             .post(&format!("{}/reviews", &self.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
