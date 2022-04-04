@@ -1,12 +1,12 @@
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
-use std::net::TcpListener;
+use uuid::Uuid;
+use storystains::startup::get_connection_pool;
+use storystains::telemetry::{get_subscriber, init_subscriber};
 use storystains::{
     configuration::{get_configuration, DatabaseSettings},
-    startup::run,
-    telemetry::{get_subscriber, init_subscriber},
+    startup::Application,
 };
-use uuid::Uuid;
 
 // Ensure that the `tracing` stack is only initialised once using `once_cell`
 static TRACING: Lazy<()> = Lazy::new(|| {
@@ -24,43 +24,35 @@ static TRACING: Lazy<()> = Lazy::new(|| {
         init_subscriber(subscriber);
     };
 });
+
 pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
 }
 
-pub async fn spawn_app() -> TestApp {
-    Lazy::force(&TRACING);
-
-    let listener = TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
-    let port = listener.local_addr().unwrap().port();
-    let address = format!("http://127.0.0.1:{}", port);
-
-    let mut configuration = get_configuration().expect("Failed to read configuration.");
-    configuration.database.database_name = Uuid::new_v4().to_string();
-    let connection_pool = configure_database(&configuration.database).await;
-
-    let server = run(listener, connection_pool.clone()).expect("Failed to bind address");
-    let _ = tokio::spawn(server);
-    // We return the application address to the caller!
-    TestApp {
-        address,
-        db_pool: connection_pool,
+impl TestApp {
+    pub async fn post_subscriptions(&self, body: String) -> reqwest::Response {
+        reqwest::Client::new()
+            .post(&format!("{}/reviews", &self.address))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to execute request.")
     }
 }
 
-pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
+async fn configure_database(config: &DatabaseSettings) -> PgPool {
     // Create database
-    let mut connection = PgConnection::connect(&config.connection_string_without_db())
+    let mut connection = PgConnection::connect_with(&config.without_db())
         .await
         .expect("Failed to connect to Postgres");
     connection
         .execute(format!(r#"CREATE DATABASE "{}";"#, config.database_name).as_str())
         .await
         .expect("Failed to create database.");
-
     // Migrate database
-    let connection_pool = PgPool::connect(&config.connection_string())
+    let connection_pool = PgPool::connect_with(config.with_db())
         .await
         .expect("Failed to connect to Postgres.");
     sqlx::migrate!("./migrations")
@@ -68,4 +60,33 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .await
         .expect("Failed to migrate the database");
     connection_pool
+}
+
+pub async fn spawn_app() -> TestApp {
+    Lazy::force(&TRACING);
+
+    // Randomise configuration to ensure test isolation
+    let configuration = {
+        let mut c = get_configuration().expect("Failed to read configuration.");
+        // Use a different database for each test case
+        c.database.database_name = Uuid::new_v4().to_string();
+        // Use a random OS port
+        c.application.port = 0;
+        c
+    };
+
+    // Create and migrate the database
+    configure_database(&configuration.database).await;
+
+    let application = Application::build(configuration.clone())
+        .await
+        .expect("Failed to build application.");
+    // Get the port before spawning the application
+    let address = format!("http://127.0.0.1:{}", application.port());
+    let _ = tokio::spawn(application.run_until_stopped());
+
+    TestApp {
+        address,
+        db_pool: get_connection_pool(&configuration.database),
+    }
 }
