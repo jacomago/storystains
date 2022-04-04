@@ -45,3 +45,25 @@ async fn review_returns_a_400_when_data_is_missing() {
         );
     }
 }
+
+#[tokio::test]
+async fn review_returns_a_400_when_fields_are_present_but_invalid() {
+    // Arrange
+    let app = spawn_app().await;
+    let test_cases = vec![
+        ("title=&review=5stars", "empty title"),
+        ("title=Dune&review=", "empty review"),
+    ];
+    for (body, description) in test_cases {
+        // Act
+        let response = app.post_review(body.into()).await;
+
+        // Assert
+        assert_eq!(
+            400,
+            response.status().as_u16(),
+            "The API did not return a 400 Bad Request when the payload was {}.",
+            description
+        );
+    }
+}
