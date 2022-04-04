@@ -1,6 +1,6 @@
 application_port: 8080
 database:
-  host: "localhost"
+  host: "hc2vault"
   port: 5432
   username: "postgres"
   password: "password"
