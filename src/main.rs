@@ -1,10 +1,6 @@
-use sqlx::PgPool;
-use std::net::TcpListener;
-use storystains::{
-    configuration::get_configuration,
-    startup::run,
-    telemetry::{get_subscriber, init_subscriber},
-};
+use storystains::configuration::get_configuration;
+use storystains::startup::Application;
+use storystains::telemetry::{get_subscriber, init_subscriber};
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -12,11 +8,7 @@ async fn main() -> std::io::Result<()> {
     init_subscriber(subscriber);
 
     let configuration = get_configuration().expect("Failed to read configuration.");
-    // Renamed!
-    let connection_pool = PgPool::connect(&configuration.database.connection_string())
-        .await
-        .expect("Failed to connect to Postgres.");
-    let address = format!("127.0.0.1:{}", configuration.application_port);
-    let listener = TcpListener::bind(address)?;
-    run(listener, connection_pool)?.await
+    let application = Application::build(configuration).await?;
+    application.run_until_stopped().await?;
+    Ok(())
 }
