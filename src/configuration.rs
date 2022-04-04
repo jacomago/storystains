@@ -6,7 +6,7 @@ pub struct Settings {
     pub application_port: u16,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 pub struct DatabaseSettings {
     pub username: String,
     pub password: String,
@@ -18,7 +18,9 @@ pub struct DatabaseSettings {
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     // Initialise our configuration reader
 
-    let builder = Config::builder().add_source(config::File::with_name("configuration"));
+    let builder = Config::builder()
+        .add_source(config::File::with_name("configuration"))
+        .add_source(config::Environment::with_prefix("app").separator("__"));
     match builder.build() {
         Ok(config) => Ok(config.try_deserialize().unwrap()),
         Err(e) => Err(e),
@@ -34,6 +36,7 @@ impl DatabaseSettings {
     }
 
     pub fn connection_string_without_db(&self) -> String {
+        dbg!(self);
         format!(
             "postgres://{}:{}@{}:{}",
             self.username, self.password, self.host, self.port
