@@ -4,17 +4,10 @@ use crate::helpers::spawn_app;
 async fn review_returns_a_200_for_valid_form_data() {
     // Arrange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
 
     // Act
     let body = "title=Dune&review=5stars";
-    let response = client
-        .post(&format!("{}/reviews", &app.address))
-        .header("Content-Type", "application/x-www-form-urlencoded")
-        .body(body)
-        .send()
-        .await
-        .expect("Failed to execute request.");
+    let response = app.post_review(body.into()).await;
 
     // Assert
     assert_eq!(200, response.status().as_u16());
@@ -24,7 +17,6 @@ async fn review_returns_a_200_for_valid_form_data() {
 async fn review_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
-    let client = reqwest::Client::new();
     let test_cases = vec![
         ("title=Dune", "missing the review"),
         ("review=5stars", "missing the title"),
@@ -33,13 +25,7 @@ async fn review_returns_a_400_when_data_is_missing() {
 
     for (invalid_body, error_message) in test_cases {
         // Act
-        let response = client
-            .post(&format!("{}/reviews", &app.address))
-            .header("Content-Type", "application/x-www-form-urlencoded")
-            .body(invalid_body)
-            .send()
-            .await
-            .expect("Failed to execute request.");
+        let response = app.post_review(invalid_body.into()).await;
 
         // Assert
         assert_eq!(
