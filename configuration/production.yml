@@ -2,5 +2,5 @@ application:
   host: 0.0.0.0
 database:
   require_ssl: true
-catalog:
+catalog_client:
   base_url: "http://openlibrary.org"
