@@ -9,6 +9,7 @@ use sqlx::ConnectOptions;
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
+    pub catalog: CatalogSettings,
 }
 
 #[derive(serde::Deserialize, Clone)]
@@ -103,4 +104,9 @@ impl TryFrom<String> for Environment {
             )),
         }
     }
+}
+
+#[derive(serde::Deserialize, Clone)]
+pub struct CatalogSettings {
+    pub base_url:String
 }

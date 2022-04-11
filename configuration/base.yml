@@ -6,3 +6,5 @@ database:
   username: "postgres"
   password: "password"
   database_name: "storystains"
+catalog:
+  base_url: "localhost"
