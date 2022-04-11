@@ -18,7 +18,7 @@ impl CatalogClient {
     }
 
     pub async fn get_book_url(&self, title: ReviewTitle) -> Result<(), reqwest::Error> {
-        let url = format!("{}/search", self.base_url);
+        let url = format!("{}/search.json", self.base_url);
         let query = BookQueryRequest {
             title: title.as_ref().to_owned(),
         };
@@ -34,7 +34,7 @@ struct BookQueryRequest {
 
 #[cfg(test)]
 mod tests {
-    use wiremock::matchers::any;
+    use wiremock::matchers::{path, method};
     use wiremock::{Mock, MockServer, ResponseTemplate};
 
     use crate::domain::ReviewTitle;
@@ -47,7 +47,8 @@ mod tests {
         let mock_server = MockServer::start().await;
         let catalog_client = CatalogClient::new(mock_server.uri());
 
-        Mock::given(any())
+        Mock::given(path("/search.json"))
+            .and(method("GET"))
             .respond_with(ResponseTemplate::new(200))
             .expect(1)
             .mount(&mock_server)
