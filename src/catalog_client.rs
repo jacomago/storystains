@@ -1,4 +1,5 @@
 use reqwest::Client;
+use serde::Serialize;
 
 use crate::domain::ReviewTitle;
 
@@ -16,9 +17,19 @@ impl CatalogClient {
         }
     }
 
-    pub async fn get_book_url(&self, title: ReviewTitle) -> Result<(), String> {
+    pub async fn get_book_url(&self, title: ReviewTitle) -> Result<(), reqwest::Error> {
+        let url = format!("{}/search", self.base_url);
+        let query = BookQueryRequest {
+            title: title.as_ref().to_owned(),
+        };
+        self.http_client.get(&url).query(&query).send().await?;
         Ok(())
     }
+}
+
+#[derive(Serialize)]
+struct BookQueryRequest {
+    title: String,
 }
 
 #[cfg(test)]
