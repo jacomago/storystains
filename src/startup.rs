@@ -1,5 +1,5 @@
 use crate::catalog::Catalog;
-use crate::configuration::{Settings, CatalogSettings};
+use crate::configuration::Settings;
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
@@ -15,10 +15,6 @@ pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
         .connect_timeout(std::time::Duration::from_secs(2))
         .connect_lazy_with(configuration.with_db())
-}
-
-fn get_catalog(configuration: &CatalogSettings) -> Catalog {
-    Catalog::new(configuration.base_url)
 }
 
 // A new type to hold the newly built server and its port
@@ -40,8 +36,8 @@ impl Application {
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
 
-        let catalog = get_catalog(&configuration.catalog);
-        
+        let catalog = Catalog::new(configuration.catalog.base_url);
+
         let server = run(listener, connection_pool, catalog)?;
         // We "save" the bound port in one of `Application`'s fields
         Ok(Self { port, server })
@@ -58,7 +54,11 @@ impl Application {
     }
 }
 
-pub fn run(listener: TcpListener, db_pool: PgPool, catalog: Catalog) -> Result<Server, std::io::Error> {
+pub fn run(
+    listener: TcpListener,
+    db_pool: PgPool,
+    catalog: Catalog,
+) -> Result<Server, std::io::Error> {
     let db_pool = Data::new(db_pool);
     let catalog = Data::new(catalog);
     let server = HttpServer::new(move || {

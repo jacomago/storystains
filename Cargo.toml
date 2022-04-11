@@ -47,3 +47,5 @@ fake = "2.4"
 quickcheck = "1.0"
 quickcheck_macros = "1.0"
 claim = "0.5"
+tokio = { version = "1", features = ["rt", "macros"] }
+wiremock = "0.5"

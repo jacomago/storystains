@@ -108,5 +108,5 @@ impl TryFrom<String> for Environment {
 
 #[derive(serde::Deserialize, Clone)]
 pub struct CatalogSettings {
-    pub base_url:String
+    pub base_url: String,
 }
