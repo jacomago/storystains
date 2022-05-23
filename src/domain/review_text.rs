@@ -61,7 +61,6 @@ mod tests {
         assert_err!(ReviewText::parse(review));
     }
 
-
     #[test]
     fn a_review_longer_than_256000_graphemes_is_rejected() {
         let review = "a".repeat(256001);

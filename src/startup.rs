@@ -8,7 +8,7 @@ use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
 use crate::configuration::DatabaseSettings;
-use crate::routes::{health_check, post_review, get_review};
+use crate::routes::{get_review, health_check, post_review};
 
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
