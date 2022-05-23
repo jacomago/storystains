@@ -1,5 +1,6 @@
 use actix_web::{web, HttpResponse};
-use chrono::Utc;
+use chrono::{DateTime, Utc};
+use serde::Serialize;
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -45,11 +46,12 @@ pub async fn post_review(form: web::Form<FormData>, pool: web::Data<PgPool>) -> 
 pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-            INSERT INTO reviews (id, title, review, created_at)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO reviews (id, title, slug, review, created_at)
+            VALUES ($1, $2, $3, $4, $5)
         "#,
         Uuid::new_v4(),
         review.title.as_ref(),
+        review.title.slug(),
         review.text.as_ref(),
         Utc::now()
     )
@@ -64,11 +66,56 @@ pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Resul
 
 #[tracing::instrument(
     name = "Getting a review",
-    skip(_pool),
+    skip(pool),
     fields(
-        title = %_title,
+        title = %title,
     )
 )]
-pub async fn get_review(_title: web::Path<(String)>, _pool: web::Data<PgPool>) -> HttpResponse {
-    HttpResponse::Ok().finish()
+pub async fn get_review(title: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
+    let review_title = match ReviewTitle::parse(title.to_string()) {
+        Ok(t) => t,
+        Err(_) => return HttpResponse::BadRequest().finish(),
+    };
+    let stored_review = match read_review(&review_title.slug(), pool).await {
+        Ok(s) => s,
+        Err(_) => return HttpResponse::InternalServerError().finish(),
+    };
+
+    HttpResponse::Ok().json(stored_review)
+}
+
+#[derive(Debug, Serialize)]
+pub struct StoredReview {
+    title: String,
+    review: String,
+    created_at: DateTime<Utc>,
+}
+
+#[tracing::instrument(
+    name = "Retreive review details from the database", 
+    skip( pool),
+    fields(
+        slug = %slug
+    )
+)]
+pub async fn read_review(
+    slug: &str,
+    pool: web::Data<PgPool>,
+) -> Result<StoredReview, sqlx::Error> {
+    let review = sqlx::query_as!(
+        StoredReview,
+        r#"
+            SELECT title, review, created_at
+            FROM reviews 
+            WHERE slug = $1
+        "#,
+        slug
+    )
+    .fetch_one(pool.get_ref())
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(review)
 }

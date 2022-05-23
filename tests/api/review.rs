@@ -1,3 +1,5 @@
+use serde_json::Value;
+
 use crate::helpers::{assert_is_redirect_to, spawn_app};
 
 #[tokio::test]
@@ -10,7 +12,7 @@ async fn post_review_returns_a_200_for_valid_form_data() {
     let response = app.post_review(body.into()).await;
 
     // Assert
-    assert_eq!(200, response.status().as_u16());
+    assert_is_redirect_to(&response, "/reviews/dune");
 
     let saved = sqlx::query!("SELECT title, review FROM reviews",)
         .fetch_one(&app.db_pool)
@@ -88,7 +90,7 @@ async fn post_review_persists_the_new_review() {
 }
 
 #[tokio::test]
-async fn post_review_redirects_to_review_page() {
+async fn post_review_returns_review_page() {
     // Arrange
     let app = spawn_app().await;
 
@@ -97,5 +99,10 @@ async fn post_review_redirects_to_review_page() {
     // Act
     let response = app.post_review(body.into()).await;
 
+    // Assert
     assert_is_redirect_to(&response, "/reviews/dune");
+    let json_page = app.get_review_json(format!("dune")).await;
+    let json: Value = serde_json::from_str(&json_page).unwrap();
+    assert_eq!(json["review"], "5stars");
+    assert_eq!(json["title"], "Dune");
 }

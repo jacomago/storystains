@@ -29,20 +29,30 @@ static TRACING: Lazy<()> = Lazy::new(|| {
 pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
+    pub api_client: reqwest::Client,
 }
 
 impl TestApp {
     pub async fn post_review(&self, body: String) -> reqwest::Response {
-        reqwest::Client::builder()
-            .redirect(reqwest::redirect::Policy::none())
-            .build()
-            .unwrap()
+        self.api_client
             .post(&format!("{}/reviews", &self.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .body(body)
             .send()
             .await
             .expect("Failed to execute request.")
+    }
+
+    pub async fn get_review(&self, title: String) -> reqwest::Response {
+        self.api_client
+            .get(&format!("{}/reviews/{}", &self.address, &title))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_review_json(&self, title: String) -> String {
+        self.get_review(title).await.text().await.unwrap()
     }
 }
 
@@ -89,9 +99,15 @@ pub async fn spawn_app() -> TestApp {
     let address = format!("http://127.0.0.1:{}", application.port());
     let _ = tokio::spawn(application.run_until_stopped());
 
+    let api_client = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
+        .build()
+        .unwrap();
+
     TestApp {
         address,
         db_pool: get_connection_pool(&configuration.database),
+        api_client,
     }
 }
 
