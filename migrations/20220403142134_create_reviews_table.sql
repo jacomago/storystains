@@ -1,7 +1,8 @@
 CREATE TABLE reviews(
     id uuid NOT NULL,
     PRIMARY KEY (id),
-    title TEXT NOT NULL UNIQUE,
+    slug TEXT NOT NULL UNIQUE,
+    title TEXT NOT NULL,
     review TEXT NOT NULL,
     created_at timestamptz NOT NULL
 );

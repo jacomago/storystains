@@ -90,7 +90,7 @@ async fn post_review_persists_the_new_review() {
 }
 
 #[tokio::test]
-async fn post_review_returns_review_page() {
+async fn post_review_returns_redirected_json() {
     // Arrange
     let app = spawn_app().await;
 
