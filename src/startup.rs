@@ -16,15 +16,12 @@ pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
         .connect_lazy_with(configuration.with_db())
 }
 
-// A new type to hold the newly built server and its port
 pub struct Application {
     port: u16,
     server: Server,
 }
 
 impl Application {
-    // We have converted the `build` function into a constructor for
-    // `Application`.
     pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
 
@@ -36,7 +33,6 @@ impl Application {
         let port = listener.local_addr().unwrap().port();
 
         let server = run(listener, connection_pool)?;
-        // We "save" the bound port in one of `Application`'s fields
         Ok(Self { port, server })
     }
 
@@ -44,8 +40,6 @@ impl Application {
         self.port
     }
 
-    // A more expressive name that makes it clear that
-    // this function only returns when the application is stopped.
     pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
         self.server.await
     }
@@ -57,7 +51,6 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
         App::new()
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
-            // A new entry in our routing table for POST /reviews requests
             .route("/reviews", web::post().to(review))
             .app_data(db_pool.clone())
     })
