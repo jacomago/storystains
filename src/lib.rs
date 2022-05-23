@@ -1,4 +1,4 @@
-pub mod catalog_client;
+
 pub mod configuration;
 pub mod domain;
 pub mod routes;

@@ -43,16 +43,14 @@ pub async fn review(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpR
 pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-    INSERT INTO reviews (id, title, review, created_at)
-    VALUES ($1, $2, $3, $4)
-    "#,
+            INSERT INTO reviews (id, title, review, created_at)
+            VALUES ($1, $2, $3, $4)
+        "#,
         Uuid::new_v4(),
         review.title.as_ref(),
         review.review.as_ref(),
         Utc::now()
     )
-    // We use `get_ref` to get an immutable reference to the `PgConnection`
-    // wrapped by `web::Data`.
     .execute(pool.get_ref())
     .await
     .map_err(|e| {

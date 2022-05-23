@@ -9,7 +9,6 @@ use sqlx::ConnectOptions;
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
-    pub catalog_client: CatalogClientSettings,
 }
 
 #[derive(serde::Deserialize, Clone)]

@@ -1,4 +1,3 @@
-use crate::catalog_client::CatalogClient;
 use crate::configuration::Settings;
 use actix_web::dev::Server;
 use actix_web::web::Data;
@@ -36,9 +35,7 @@ impl Application {
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
 
-        let catalog_client = CatalogClient::new(configuration.catalog_client.base_url);
-
-        let server = run(listener, connection_pool, catalog_client)?;
+        let server = run(listener, connection_pool)?;
         // We "save" the bound port in one of `Application`'s fields
         Ok(Self { port, server })
     }
@@ -54,13 +51,8 @@ impl Application {
     }
 }
 
-pub fn run(
-    listener: TcpListener,
-    db_pool: PgPool,
-    catalog_client: CatalogClient,
-) -> Result<Server, std::io::Error> {
+pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
     let db_pool = Data::new(db_pool);
-    let catalog_client = Data::new(catalog_client);
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
@@ -68,7 +60,6 @@ pub fn run(
             // A new entry in our routing table for POST /reviews requests
             .route("/reviews", web::post().to(review))
             .app_data(db_pool.clone())
-            .app_data(catalog_client.clone())
     })
     .listen(listener)?
     .run();
