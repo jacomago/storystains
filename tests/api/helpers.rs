@@ -1,4 +1,5 @@
 use once_cell::sync::Lazy;
+use reqwest::StatusCode;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use storystains::startup::get_connection_pool;
 use storystains::telemetry::{get_subscriber, init_subscriber};
@@ -32,7 +33,10 @@ pub struct TestApp {
 
 impl TestApp {
     pub async fn post_review(&self, body: String) -> reqwest::Response {
-        reqwest::Client::new()
+        reqwest::Client::builder()
+            .redirect(reqwest::redirect::Policy::none())
+            .build()
+            .unwrap()
             .post(&format!("{}/reviews", &self.address))
             .header("Content-Type", "application/x-www-form-urlencoded")
             .body(body)
@@ -89,4 +93,9 @@ pub async fn spawn_app() -> TestApp {
         address,
         db_pool: get_connection_pool(&configuration.database),
     }
+}
+
+pub fn assert_is_redirect_to(response: &reqwest::Response, location: &str) {
+    assert_eq!(response.status(), StatusCode::SEE_OTHER);
+    assert_eq!(response.headers().get("Location").unwrap(), location);
 }

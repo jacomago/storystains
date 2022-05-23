@@ -28,6 +28,7 @@ tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
 tracing-bunyan-formatter = "0.3"
 unicode-segmentation = "1"
 validator = "0.14"
+slug = "0.1.4"
 
 [dependencies.sqlx]
 version = "0.5.7"

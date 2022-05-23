@@ -1,7 +1,7 @@
-use crate::helpers::spawn_app;
+use crate::helpers::{assert_is_redirect_to, spawn_app};
 
 #[tokio::test]
-async fn review_returns_a_200_for_valid_form_data() {
+async fn post_review_returns_a_200_for_valid_form_data() {
     // Arrange
     let app = spawn_app().await;
 
@@ -22,7 +22,7 @@ async fn review_returns_a_200_for_valid_form_data() {
 }
 
 #[tokio::test]
-async fn review_returns_a_400_when_data_is_missing() {
+async fn post_review_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
     let test_cases = vec![
@@ -47,7 +47,7 @@ async fn review_returns_a_400_when_data_is_missing() {
 }
 
 #[tokio::test]
-async fn review_returns_a_400_when_fields_are_present_but_invalid() {
+async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
     let test_cases = vec![
@@ -68,9 +68,8 @@ async fn review_returns_a_400_when_fields_are_present_but_invalid() {
     }
 }
 
-
 #[tokio::test]
-async fn review_persists_the_new_review() {
+async fn post_review_persists_the_new_review() {
     // Arrange
     let app = spawn_app().await;
 
@@ -86,4 +85,17 @@ async fn review_persists_the_new_review() {
 
     assert_eq!(saved.title, "Dune");
     assert_eq!(saved.review, "5stars");
+}
+
+#[tokio::test]
+async fn post_review_redirects_to_review_page() {
+    // Arrange
+    let app = spawn_app().await;
+
+    let body = "title=Dune&review=5stars";
+
+    // Act
+    let response = app.post_review(body.into()).await;
+
+    assert_is_redirect_to(&response, "/reviews/dune");
 }

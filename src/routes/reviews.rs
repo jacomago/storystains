@@ -5,6 +5,8 @@ use uuid::Uuid;
 
 use crate::domain::{NewReview, ReviewText, ReviewTitle};
 
+use super::see_other;
+
 #[derive(serde::Deserialize)]
 pub struct FormData {
     title: String,
@@ -28,13 +30,13 @@ impl TryFrom<FormData> for NewReview {
         reviews_review = %form.review
     )
 )]
-pub async fn review(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
+pub async fn post_review(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
     let new_review = match form.0.try_into() {
         Ok(form) => form,
         Err(_) => return HttpResponse::BadRequest().finish(),
     };
     match create_review(&new_review, pool).await {
-        Ok(_) => HttpResponse::Ok().finish(),
+        Ok(_) => see_other(format!("/reviews/{}", new_review.title.slug()).as_str()),
         Err(_) => HttpResponse::InternalServerError().finish(),
     }
 }
@@ -58,4 +60,15 @@ pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Resul
         e
     })?;
     Ok(())
+}
+
+#[tracing::instrument(
+    name = "Getting a review",
+    skip(_pool),
+    fields(
+        title = %_title,
+    )
+)]
+pub async fn get_review(_title: web::Path<(String)>, _pool: web::Data<PgPool>) -> HttpResponse {
+    HttpResponse::Ok().finish()
 }

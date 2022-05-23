@@ -1,3 +1,6 @@
+use std::fmt::Display;
+
+use slug::slugify;
 use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Debug)]
@@ -6,6 +9,12 @@ pub struct ReviewTitle(String);
 impl AsRef<str> for ReviewTitle {
     fn as_ref(&self) -> &str {
         &self.0
+    }
+}
+
+impl Display for ReviewTitle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 
@@ -36,6 +45,10 @@ impl ReviewTitle {
         } else {
             Ok(Self(s))
         }
+    }
+
+    pub fn slug(&self) -> String {
+        slugify(self.as_ref())
     }
 }
 #[cfg(test)]
