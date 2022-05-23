@@ -56,8 +56,15 @@ mod tests {
     }
 
     #[test]
-    fn whitespace_only_titles_are_rejected() {
+    fn whitespace_only_reviews_are_rejected() {
         let review = " ".to_string();
+        assert_err!(ReviewText::parse(review));
+    }
+
+
+    #[test]
+    fn a_review_longer_than_256000_graphemes_is_rejected() {
+        let review = "a".repeat(256001);
         assert_err!(ReviewText::parse(review));
     }
 
