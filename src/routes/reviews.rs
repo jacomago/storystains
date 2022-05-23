@@ -98,10 +98,7 @@ pub struct StoredReview {
         slug = %slug
     )
 )]
-pub async fn read_review(
-    slug: &str,
-    pool: web::Data<PgPool>,
-) -> Result<StoredReview, sqlx::Error> {
+pub async fn read_review(slug: &str, pool: web::Data<PgPool>) -> Result<StoredReview, sqlx::Error> {
     let review = sqlx::query_as!(
         StoredReview,
         r#"
