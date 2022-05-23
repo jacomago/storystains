@@ -1,4 +1,5 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
+use anyhow::Context;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::PgPool;
@@ -6,7 +7,30 @@ use uuid::Uuid;
 
 use crate::domain::{NewReview, ReviewText, ReviewTitle};
 
-use super::see_other;
+use super::{error_chain_fmt, see_other};
+
+#[derive(thiserror::Error)]
+pub enum ReviewError {
+    #[error("{0}")]
+    ValidationError(String),
+    #[error(transparent)]
+    UnexpectedError(#[from] anyhow::Error),
+}
+
+impl std::fmt::Debug for ReviewError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        error_chain_fmt(self, f)
+    }
+}
+
+impl ResponseError for ReviewError {
+    fn status_code(&self) -> StatusCode {
+        match self {
+            ReviewError::ValidationError(_) => StatusCode::BAD_REQUEST,
+            ReviewError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
@@ -31,15 +55,17 @@ impl TryFrom<FormData> for NewReview {
         reviews_review = %form.review
     )
 )]
-pub async fn post_review(form: web::Form<FormData>, pool: web::Data<PgPool>) -> HttpResponse {
-    let new_review = match form.0.try_into() {
-        Ok(form) => form,
-        Err(_) => return HttpResponse::BadRequest().finish(),
-    };
-    match create_review(&new_review, pool).await {
-        Ok(_) => see_other(format!("/reviews/{}", new_review.title.slug()).as_str()),
-        Err(_) => HttpResponse::InternalServerError().finish(),
-    }
+pub async fn post_review(
+    form: web::Form<FormData>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ReviewError> {
+    let new_review = form.0.try_into().map_err(ReviewError::ValidationError)?;
+    create_review(&new_review, pool)
+        .await
+        .context("Failed to store new review.")?;
+    Ok(see_other(
+        format!("/reviews/{}", new_review.title.slug()).as_str(),
+    ))
 }
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
@@ -71,13 +97,15 @@ pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Resul
         slug = %slug,
     )
 )]
-pub async fn get_review(slug: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
-    let stored_review = match read_review(&slug, pool).await {
-        Ok(s) => s,
-        Err(_) => return HttpResponse::InternalServerError().finish(),
-    };
+pub async fn get_review(
+    slug: web::Path<String>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ReviewError> {
+    let stored_review = read_review(&slug, pool)
+        .await
+        .context("Failed to find review.")?;
 
-    HttpResponse::Ok().json(stored_review)
+    Ok(HttpResponse::Ok().json(stored_review))
 }
 
 #[derive(Debug, Serialize)]
