@@ -52,7 +52,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
             .route("/reviews", web::post().to(post_review))
-            .route("/reviews/{title}", web::get().to(get_review))
+            .route("/reviews/{slug}", web::get().to(get_review))
             .app_data(db_pool.clone())
     })
     .listen(listener)?

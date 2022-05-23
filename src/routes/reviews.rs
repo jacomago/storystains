@@ -68,15 +68,11 @@ pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Resul
     name = "Getting a review",
     skip(pool),
     fields(
-        title = %title,
+        slug = %slug,
     )
 )]
-pub async fn get_review(title: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
-    let review_title = match ReviewTitle::parse(title.to_string()) {
-        Ok(t) => t,
-        Err(_) => return HttpResponse::BadRequest().finish(),
-    };
-    let stored_review = match read_review(&review_title.slug(), pool).await {
+pub async fn get_review(slug: web::Path<String>, pool: web::Data<PgPool>) -> HttpResponse {
+    let stored_review = match read_review(&slug, pool).await {
         Ok(s) => s,
         Err(_) => return HttpResponse::InternalServerError().finish(),
     };
