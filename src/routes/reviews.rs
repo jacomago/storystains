@@ -14,6 +14,8 @@ pub enum ReviewError {
     #[error("{0}")]
     ValidationError(String),
     #[error(transparent)]
+    NoDataError(#[from] sqlx::Error),
+    #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
 
@@ -27,6 +29,7 @@ impl ResponseError for ReviewError {
     fn status_code(&self) -> StatusCode {
         match self {
             ReviewError::ValidationError(_) => StatusCode::BAD_REQUEST,
+            ReviewError::NoDataError(_) => StatusCode::NOT_FOUND,
             ReviewError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
@@ -103,7 +106,7 @@ pub async fn get_review(
 ) -> Result<HttpResponse, ReviewError> {
     let stored_review = read_review(&slug, pool)
         .await
-        .context("Failed to find review.")?;
+        .map_err(ReviewError::NoDataError)?;
 
     Ok(HttpResponse::Ok().json(stored_review))
 }

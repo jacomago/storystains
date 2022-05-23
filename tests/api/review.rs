@@ -1,3 +1,4 @@
+use reqwest::StatusCode;
 use serde_json::Value;
 
 use crate::helpers::{assert_is_redirect_to, spawn_app};
@@ -105,4 +106,16 @@ async fn post_review_returns_redirected_json() {
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert_eq!(json["review"], "5stars");
     assert_eq!(json["title"], "Dune");
+}
+
+#[tokio::test]
+async fn get_review_returns_not_found_for_non_existant_review() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.get_review("Dune".to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
 }
