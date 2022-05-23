@@ -1,10 +1,10 @@
 use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Debug)]
-pub struct ReviewReview(String);
+pub struct ReviewText(String);
 
-impl ReviewReview {
-    pub fn parse(s: String) -> Result<ReviewReview, String> {
+impl ReviewText {
+    pub fn parse(s: String) -> Result<ReviewText, String> {
         // `.trim()` returns a view over the input `s` without trailing
         // whitespace-like characters.
         // `.is_empty` checks if the view contains any character.
@@ -30,7 +30,7 @@ impl ReviewReview {
     }
 }
 
-impl AsRef<str> for ReviewReview {
+impl AsRef<str> for ReviewText {
     fn as_ref(&self) -> &str {
         &self.0
     }
@@ -38,7 +38,7 @@ impl AsRef<str> for ReviewReview {
 
 #[cfg(test)]
 mod tests {
-    use super::ReviewReview;
+    use super::ReviewText;
     use claim::{assert_err, assert_ok};
     use fake::faker::lorem::en::Paragraphs;
     use fake::Fake;
@@ -46,19 +46,19 @@ mod tests {
     #[test]
     fn empty_string_is_rejected() {
         let review = "".to_string();
-        assert_err!(ReviewReview::parse(review));
+        assert_err!(ReviewText::parse(review));
     }
 
     #[test]
     fn basic_string_is_accepted() {
         let review = "It was rubbish!".to_string();
-        assert_ok!(ReviewReview::parse(review));
+        assert_ok!(ReviewText::parse(review));
     }
 
     #[test]
     fn whitespace_only_titles_are_rejected() {
         let review = " ".to_string();
-        assert_err!(ReviewReview::parse(review));
+        assert_err!(ReviewText::parse(review));
     }
 
     #[derive(Debug, Clone)]
@@ -78,6 +78,6 @@ mod tests {
 
     #[quickcheck_macros::quickcheck]
     fn valid_reviews_are_parsed_successfully(valid_review: ValidReviewFixture) -> bool {
-        ReviewReview::parse(valid_review.0).is_ok()
+        ReviewText::parse(valid_review.0).is_ok()
     }
 }

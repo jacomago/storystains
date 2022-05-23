@@ -1,6 +1,6 @@
-use super::{ReviewReview, ReviewTitle};
+use super::{ReviewText, ReviewTitle};
 
 pub struct NewReview {
-    pub review: ReviewReview,
+    pub text: ReviewText,
     pub title: ReviewTitle,
 }

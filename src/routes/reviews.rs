@@ -3,7 +3,7 @@ use chrono::Utc;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::domain::{NewReview, ReviewReview, ReviewTitle};
+use crate::domain::{NewReview, ReviewText, ReviewTitle};
 
 #[derive(serde::Deserialize)]
 pub struct FormData {
@@ -15,8 +15,8 @@ impl TryFrom<FormData> for NewReview {
     type Error = String;
     fn try_from(value: FormData) -> Result<Self, Self::Error> {
         let title = ReviewTitle::parse(value.title)?;
-        let review = ReviewReview::parse(value.review)?;
-        Ok(Self { title, review })
+        let text = ReviewText::parse(value.review)?;
+        Ok(Self { title, text })
     }
 }
 
@@ -48,7 +48,7 @@ pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Resul
         "#,
         Uuid::new_v4(),
         review.title.as_ref(),
-        review.review.as_ref(),
+        review.text.as_ref(),
         Utc::now()
     )
     .execute(pool.get_ref())
