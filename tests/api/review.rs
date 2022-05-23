@@ -67,3 +67,23 @@ async fn review_returns_a_400_when_fields_are_present_but_invalid() {
         );
     }
 }
+
+
+#[tokio::test]
+async fn review_persists_the_new_review() {
+    // Arrange
+    let app = spawn_app().await;
+
+    let body = "title=Dune&review=5stars";
+
+    // Act
+    app.post_review(body.into()).await;
+
+    let saved = sqlx::query!("SELECT title, review FROM reviews",)
+        .fetch_one(&app.db_pool)
+        .await
+        .expect("Failed to fetch saved subscription.");
+
+    assert_eq!(saved.title, "Dune");
+    assert_eq!(saved.review, "5stars");
+}
