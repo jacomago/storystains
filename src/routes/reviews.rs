@@ -5,7 +5,7 @@ use serde::Serialize;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::domain::{NewReview, ReviewText, ReviewTitle};
+use crate::domain::{NewReview, ReviewSlug, ReviewText, ReviewTitle};
 
 use super::{error_chain_fmt, see_other};
 
@@ -46,7 +46,8 @@ impl TryFrom<FormData> for NewReview {
     fn try_from(value: FormData) -> Result<Self, Self::Error> {
         let title = ReviewTitle::parse(value.title)?;
         let text = ReviewText::parse(value.review)?;
-        Ok(Self { title, text })
+        let slug = ReviewSlug::parse(title.slugify())?;
+        Ok(Self { title, text, slug })
     }
 }
 
@@ -66,9 +67,7 @@ pub async fn post_review(
     create_review(&new_review, pool)
         .await
         .context("Failed to store new review.")?;
-    Ok(see_other(
-        format!("/reviews/{}", new_review.title.slug()).as_str(),
-    ))
+    Ok(see_other(format!("/reviews/{}", new_review.slug).as_str()))
 }
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
@@ -80,7 +79,7 @@ pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Resul
         "#,
         Uuid::new_v4(),
         review.title.as_ref(),
-        review.title.slug(),
+        review.slug.as_ref(),
         review.text.as_ref(),
         Utc::now()
     )
@@ -104,6 +103,7 @@ pub async fn get_review(
     slug: web::Path<String>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
+    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
     let stored_review = read_review(&slug, pool)
         .await
         .map_err(ReviewError::NoDataError)?;
@@ -125,7 +125,10 @@ pub struct StoredReview {
         slug = %slug
     )
 )]
-pub async fn read_review(slug: &str, pool: web::Data<PgPool>) -> Result<StoredReview, sqlx::Error> {
+pub async fn read_review(
+    slug: &ReviewSlug,
+    pool: web::Data<PgPool>,
+) -> Result<StoredReview, sqlx::Error> {
     let review = sqlx::query_as!(
         StoredReview,
         r#"
@@ -133,7 +136,7 @@ pub async fn read_review(slug: &str, pool: web::Data<PgPool>) -> Result<StoredRe
             FROM reviews 
             WHERE slug = $1
         "#,
-        slug
+        slug.as_ref()
     )
     .fetch_one(pool.get_ref())
     .await

@@ -47,7 +47,7 @@ impl ReviewTitle {
         }
     }
 
-    pub fn slug(&self) -> String {
+    pub fn slugify(&self) -> String {
         slugify(self.as_ref())
     }
 }

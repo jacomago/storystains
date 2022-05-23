@@ -114,8 +114,20 @@ async fn get_review_returns_not_found_for_non_existant_review() {
     let app = spawn_app().await;
 
     // Act
-    let response = app.get_review("Dune".to_string()).await;
+    let response = app.get_review("dune".to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn get_review_returns_bad_request_for_invalid_title() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.get_review("a".repeat(257).to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 }
