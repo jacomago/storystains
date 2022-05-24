@@ -1,3 +1,112 @@
 {
-  "db": "PostgreSQL"
+  "db": "PostgreSQL",
+  "0e2ed086a515a16b39e5215eb0406cd61f40f9ef74368e137f9e2ba00e247ab1": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO reviews (id, title, slug, review, created_at, updated_at)\n            VALUES ($1, $2, $3, $4, $5, $6)\n        "
+  },
+  "54e58c33af5df32b616b6cbedffc739e5de31af7a634e9775b4d0c397e3e599a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "title",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "review",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 2,
+          "type_info": "Timestamptz"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            SELECT title, review, created_at\n            FROM reviews \n            WHERE slug = $1\n        "
+  },
+  "93f5c539d6cbae65038e5dd0425c72b437810360d59bb5990c440e8bb0f6dc0a": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            DELETE FROM reviews\n            WHERE     slug = $1\n        "
+  },
+  "e9cd5f744de8d52ff5e3f31dea00ac6b91013ad9ac6601aaed9a996d296cfef4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "title",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "review",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT title, review FROM reviews"
+  },
+  "f891bbfbb3a8bda65b1e31049a68a7c81e9fba95960991358180a26dba70d6cc": {
+    "describe": {
+      "columns": [
+        {
+          "name": "slug",
+          "ordinal": 0,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            UPDATE reviews\n            SET title      = COALESCE($1, title),\n                slug       = COALESCE($2, slug),\n                review     = COALESCE($3, review),\n                updated_at = $4\n            WHERE     slug = $5\n            RETURNING slug\n        "
+  }
 }
