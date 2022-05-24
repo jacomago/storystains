@@ -1,8 +1,9 @@
-use crate::domain::{NewReview, ReviewSlug, UpdateReview};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::PgPool;
 use uuid::Uuid;
+
+use super::model::{NewReview, ReviewSlug, UpdateReview};
 
 #[derive(Debug, Serialize)]
 pub struct StoredReview {

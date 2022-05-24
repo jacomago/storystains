@@ -1,11 +1,7 @@
-mod health_check;
 mod reviews;
+pub use reviews::routes::*;
 
-use actix_web::HttpResponse;
-pub use health_check::*;
-
-use actix_web::http::header::LOCATION;
-pub use reviews::*;
+use actix_web::{http::header::LOCATION, HttpResponse};
 
 pub fn see_other(location: &str) -> HttpResponse {
     HttpResponse::SeeOther()

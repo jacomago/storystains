@@ -3,12 +3,12 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::{
-    db::{create_review, delete_review, read_review, update_review},
-    domain::{NewReview, ReviewSlug, ReviewText, ReviewTitle, UpdateReview},
-};
+use crate::api::{error_chain_fmt, see_other};
 
-use super::{error_chain_fmt, see_other};
+use super::{
+    db::{create_review, delete_review, read_review, update_review},
+    model::{NewReview, ReviewSlug, ReviewText, ReviewTitle, UpdateReview},
+};
 
 #[derive(thiserror::Error)]
 pub enum ReviewError {

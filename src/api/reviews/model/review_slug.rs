@@ -42,8 +42,9 @@ impl ReviewSlug {
 }
 #[cfg(test)]
 mod tests {
-    use crate::domain::ReviewSlug;
     use claim::{assert_err, assert_ok};
+
+    use crate::api::reviews::model::ReviewSlug;
     #[test]
     fn a_256_grapheme_long_slug_is_invalid() {
         let slug = "�".repeat(256);

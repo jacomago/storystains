@@ -1,4 +1,6 @@
+use crate::api::{delete_review_by_slug, get_review, post_review, put_review};
 use crate::configuration::Settings;
+use crate::health_check::health_check;
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
@@ -8,7 +10,6 @@ use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
 use crate::configuration::DatabaseSettings;
-use crate::routes::{delete_review_by_slug, get_review, health_check, post_review, put_review};
 
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()

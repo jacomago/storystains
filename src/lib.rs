@@ -1,6 +1,5 @@
+pub mod api;
 pub mod configuration;
-pub mod db;
-pub mod domain;
-pub mod routes;
+pub mod health_check;
 pub mod startup;
 pub mod telemetry;

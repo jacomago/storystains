@@ -53,8 +53,9 @@ impl ReviewTitle {
 }
 #[cfg(test)]
 mod tests {
-    use crate::domain::ReviewTitle;
     use claim::{assert_err, assert_ok};
+
+    use crate::api::reviews::model::review_title::ReviewTitle;
     #[test]
     fn a_256_grapheme_long_title_is_valid() {
         let title = "�".repeat(256);
