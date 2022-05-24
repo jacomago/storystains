@@ -1,5 +1,5 @@
 {
-  "rust-analyzer.checkOnSave.command": "check",
+  "rust-analyzer.checkOnSave.command": "clippy",
   "rust-analyzer.checkOnSave.allTargets": true,
   "sqltools.connections": [
     {

@@ -83,7 +83,7 @@ async fn post_review_returns_redirected_json() {
 
     // Assert
     assert_is_redirect_to(&response, "/reviews/dune");
-    let json_page = app.get_review_json(format!("dune")).await;
+    let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert_eq!(json["review"], "5stars");
     assert_eq!(json["title"], "Dune");
@@ -203,7 +203,7 @@ async fn put_review_returns_redirected_json() {
 
     // Assert
     assert_is_redirect_to(&response, "/reviews/dune2");
-    let json_page = app.get_review_json(format!("dune2")).await;
+    let json_page = app.get_review_json("dune2".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert_eq!(json["review"], "3stars");
     assert_eq!(json["title"], "Dune2");

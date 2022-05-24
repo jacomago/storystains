@@ -72,18 +72,9 @@ pub async fn update_review(
     review: &UpdateReview,
     pool: &PgPool,
 ) -> Result<String, sqlx::Error> {
-    let title = match &review.title {
-        Some(t) => Some(t.as_ref()),
-        None => None,
-    };
-    let update_slug = match &review.slug {
-        Some(t) => Some(t.as_ref()),
-        None => None,
-    };
-    let text = match &review.text {
-        Some(t) => Some(t.as_ref()),
-        None => None,
-    };
+    let title = review.title.as_ref().map(|t| t.as_ref());
+    let update_slug = review.slug.as_ref().map(|t| t.as_ref());
+    let text = review.text.as_ref().map(|t| t.as_ref());
     let new_slug = sqlx::query!(
         r#"
             UPDATE reviews
