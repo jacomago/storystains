@@ -43,9 +43,19 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_review(&self, title: String) -> reqwest::Response {
+    pub async fn put_review(&self, slug: String, body: String) -> reqwest::Response {
         self.api_client
-            .get(&format!("{}/reviews/{}", &self.address, &title))
+            .put(&format!("{}/reviews{}", &self.address, &slug))
+            .header("Content-Type", "application/x-www-form-urlencoded")
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_review(&self, slug: String) -> reqwest::Response {
+        self.api_client
+            .get(&format!("{}/reviews/{}", &self.address, &slug))
             .send()
             .await
             .expect("Failed to execute request.")
