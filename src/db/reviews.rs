@@ -1,5 +1,4 @@
-use crate::domain::{NewReview, ReviewSlug};
-use actix_web::web;
+use crate::domain::{NewReview, ReviewSlug, UpdateReview};
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::PgPool;
@@ -7,8 +6,8 @@ use uuid::Uuid;
 
 #[derive(Debug, Serialize)]
 pub struct StoredReview {
-    title: String,
-    review: String,
+    pub title: String,
+    pub review: String,
     created_at: DateTime<Utc>,
 }
 
@@ -19,10 +18,7 @@ pub struct StoredReview {
         slug = %slug
     )
 )]
-pub async fn read_review(
-    slug: &ReviewSlug,
-    pool: web::Data<PgPool>,
-) -> Result<StoredReview, sqlx::Error> {
+pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
     let review = sqlx::query_as!(
         StoredReview,
         r#"
@@ -32,7 +28,7 @@ pub async fn read_review(
         "#,
         slug.as_ref()
     )
-    .fetch_one(pool.get_ref())
+    .fetch_one(pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
@@ -42,23 +38,74 @@ pub async fn read_review(
 }
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
-pub async fn create_review(review: &NewReview, pool: web::Data<PgPool>) -> Result<(), sqlx::Error> {
+pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<(), sqlx::Error> {
     sqlx::query!(
         r#"
-            INSERT INTO reviews (id, title, slug, review, created_at)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO reviews (id, title, slug, review, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6)
         "#,
         Uuid::new_v4(),
         review.title.as_ref(),
         review.slug.as_ref(),
         review.text.as_ref(),
+        Utc::now(),
         Utc::now()
     )
-    .execute(pool.get_ref())
+    .execute(pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
     Ok(())
+}
+
+#[tracing::instrument(
+    name = "Saving updated review details in the database",
+    skip(review, pool),
+    fields(
+        slug = %slug
+    )
+)]
+pub async fn update_review(
+    slug: &ReviewSlug,
+    review: &UpdateReview,
+    pool: &PgPool,
+) -> Result<String, sqlx::Error> {
+    let title = match &review.title {
+        Some(t) => Some(t.as_ref()),
+        None => None,
+    };
+    let update_slug = match &review.slug {
+        Some(t) => Some(t.as_ref()),
+        None => None,
+    };
+    let text = match &review.text {
+        Some(t) => Some(t.as_ref()),
+        None => None,
+    };
+    let new_slug = sqlx::query!(
+        r#"
+            UPDATE reviews
+            SET title      = COALESCE($1, title),
+                slug       = COALESCE($2, slug),
+                review     = COALESCE($3, review),
+                updated_at = $4
+            WHERE     slug = $5
+            RETURNING slug
+        "#,
+        title,
+        update_slug,
+        text,
+        Utc::now(),
+        slug.as_ref()
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?
+    .slug;
+    Ok(new_slug)
 }
