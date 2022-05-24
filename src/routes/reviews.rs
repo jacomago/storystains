@@ -131,7 +131,6 @@ pub async fn put_review(
     let updated_review = form.0.try_into().map_err(ReviewError::ValidationError)?;
     let slug = update_review(&slug, &updated_review, &pool)
         .await
-        .context("Failed to store updated review.")?;
-        dbg!(&slug);
+        .map_err(ReviewError::NoDataError)?;
     Ok(see_other(format!("/reviews/{}", slug).as_str()))
 }
