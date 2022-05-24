@@ -208,3 +208,48 @@ async fn put_review_returns_redirected_json() {
     assert_eq!(json["review"], "3stars");
     assert_eq!(json["title"], "Dune2");
 }
+
+#[tokio::test]
+async fn delete_review_returns_not_found_for_no_slug() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.delete_review("dune".to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+}
+
+#[tokio::test]
+async fn delete_review_returns_bad_request_for_invalid_title() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.delete_review("a".repeat(257).to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn delete_review_returns_a_200_for_valid_slug() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let body = "title=Dune&review=5stars";
+    app.post_review(body.into()).await;
+    let response = app.delete_review("dune".to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!("SELECT title, review FROM reviews",)
+        .fetch_optional(&app.db_pool)
+        .await
+        .expect("Query failed to execute.");
+
+    assert!(saved.is_none());
+}

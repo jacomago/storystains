@@ -64,6 +64,14 @@ impl TestApp {
     pub async fn get_review_json(&self, title: String) -> String {
         self.get_review(title).await.text().await.unwrap()
     }
+
+    pub async fn delete_review(&self, slug: String) -> reqwest::Response {
+        self.api_client
+            .delete(&format!("{}/reviews/{}", &self.address, &slug))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
 }
 
 async fn configure_database(config: &DatabaseSettings) -> PgPool {
