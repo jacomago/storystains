@@ -109,3 +109,27 @@ pub async fn update_review(
     .slug;
     Ok(new_slug)
 }
+
+#[tracing::instrument(
+    name = "Deleting review details from the database",
+    skip(pool),
+    fields(
+        slug = %slug
+    )
+)]
+pub async fn delete_review(slug: &ReviewSlug, pool: &PgPool) -> Result<(), sqlx::Error> {
+    sqlx::query!(
+        r#"
+            DELETE FROM reviews
+            WHERE     slug = $1
+        "#,
+        slug.as_ref()
+    )
+    .execute(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(())
+}

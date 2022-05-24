@@ -4,7 +4,7 @@ use anyhow::Context;
 use sqlx::PgPool;
 
 use crate::{
-    db::{create_review, read_review, update_review},
+    db::{create_review, delete_review, read_review, update_review},
     domain::{NewReview, ReviewSlug, ReviewText, ReviewTitle, UpdateReview},
 };
 
@@ -133,4 +133,22 @@ pub async fn put_review(
         .await
         .map_err(ReviewError::NoDataError)?;
     Ok(see_other(format!("/reviews/{}", slug).as_str()))
+}
+
+#[tracing::instrument(
+    name = "Deleting a review",
+    skip(pool),
+    fields(
+        slug = %slug,
+    )
+)]
+pub async fn delete_review_by_slug(
+    slug: web::Path<String>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ReviewError> {
+    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
+    delete_review(&slug, &pool)
+        .await
+        .context("delete query failed")?;
+    Ok(HttpResponse::Ok().finish())
 }

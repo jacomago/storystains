@@ -210,18 +210,6 @@ async fn put_review_returns_redirected_json() {
 }
 
 #[tokio::test]
-async fn delete_review_returns_not_found_for_no_slug() {
-    // Arrange
-    let app = spawn_app().await;
-
-    // Act
-    let response = app.delete_review("dune".to_string()).await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::NOT_FOUND);
-}
-
-#[tokio::test]
 async fn delete_review_returns_bad_request_for_invalid_title() {
     // Arrange
     let app = spawn_app().await;

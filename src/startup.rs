@@ -8,7 +8,7 @@ use std::net::TcpListener;
 use tracing_actix_web::TracingLogger;
 
 use crate::configuration::DatabaseSettings;
-use crate::routes::{get_review, health_check, post_review, put_review};
+use crate::routes::{delete_review_by_slug, get_review, health_check, post_review, put_review};
 
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
@@ -54,6 +54,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
             .route("/reviews", web::post().to(post_review))
             .route("/reviews/{slug}", web::get().to(get_review))
             .route("/reviews/{slug}", web::put().to(put_review))
+            .route("/reviews/{slug}", web::delete().to(delete_review_by_slug))
             .app_data(db_pool.clone())
     })
     .listen(listener)?
