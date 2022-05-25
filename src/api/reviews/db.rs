@@ -40,12 +40,13 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
 pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<(), sqlx::Error> {
+    let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
     sqlx::query!(
         r#"
             INSERT INTO reviews (id, title, slug, review, created_at, updated_at)
             VALUES ($1, $2, $3, $4, $5, $6)
         "#,
-        Uuid::new_v4(),
+        id,
         review.title.as_ref(),
         review.slug.as_ref(),
         review.text.as_ref(),
