@@ -78,7 +78,7 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
 }
 
 #[tokio::test]
-async fn post_review_returns_redirected_json() {
+async fn post_review_returns_json() {
     // Arrange
     let app = spawn_app().await;
 
@@ -89,10 +89,29 @@ async fn post_review_returns_redirected_json() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
+
+    let json: Value = response.json().await.expect("expected json response");
+    assert_eq!(json["review"]["review"], "5stars");
+    assert_eq!(json["review"]["title"], "Dune");
+}
+
+#[tokio::test]
+async fn get_review_returns_json() {
+    // Arrange
+    let app = spawn_app().await;
+
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+
+    // Act
+    let response = app.post_review(body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
     let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(json["review"], "5stars");
-    assert_eq!(json["title"], "Dune");
+    assert_eq!(json["review"]["review"], "5stars");
+    assert_eq!(json["review"]["title"], "Dune");
 }
 
 #[tokio::test]
@@ -206,7 +225,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
 }
 
 #[tokio::test]
-async fn put_review_returns_redirected_json() {
+async fn put_review_returns_json() {
     // Arrange
     let app = spawn_app().await;
 
@@ -220,10 +239,9 @@ async fn put_review_returns_redirected_json() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
-    let json_page = app.get_review_json("dune2".to_string()).await;
-    let json: Value = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(json["review"], "3stars");
-    assert_eq!(json["title"], "Dune2");
+    let json: Value = response.json().await.expect("expected json response");
+    assert_eq!(json["review"]["review"], "3stars");
+    assert_eq!(json["review"]["title"], "Dune2");
 }
 
 #[tokio::test]

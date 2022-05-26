@@ -1,16 +1,11 @@
-use chrono::{DateTime, Utc};
-use serde::Serialize;
+use chrono::Utc;
+
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use super::model::{NewReview, ReviewSlug, UpdateReview};
+use crate::api::reviews::model::StoredReview;
 
-#[derive(Debug, Serialize)]
-pub struct StoredReview {
-    pub title: String,
-    pub review: String,
-    created_at: DateTime<Utc>,
-}
+use super::model::{NewReview, ReviewSlug, UpdateReview};
 
 #[tracing::instrument(
     name = "Retreive review details from the database", 
@@ -23,7 +18,7 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
     let review = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title, review, created_at
+            SELECT title, slug, review, created_at, updated_at
             FROM reviews 
             WHERE slug = $1
         "#,
@@ -39,27 +34,30 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
 }
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
-pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<(), sqlx::Error> {
+pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
     let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
-    sqlx::query!(
+    let time = Utc::now();
+    let stored_review = sqlx::query_as!(
+        StoredReview,
         r#"
             INSERT INTO reviews (id, title, slug, review, created_at, updated_at)
             VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING title, slug, review, created_at, updated_at
         "#,
         id,
         review.title.as_ref(),
         review.slug.as_ref(),
         review.text.as_ref(),
-        Utc::now(),
-        Utc::now()
+        time,
+        time
     )
-    .execute(pool)
+    .fetch_one(pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
-    Ok(())
+    Ok(stored_review)
 }
 
 #[tracing::instrument(
@@ -73,11 +71,12 @@ pub async fn update_review(
     slug: &ReviewSlug,
     review: &UpdateReview,
     pool: &PgPool,
-) -> Result<String, sqlx::Error> {
+) -> Result<StoredReview, sqlx::Error> {
     let title = review.title.as_ref().map(|t| t.as_ref());
     let update_slug = review.slug.as_ref().map(|t| t.as_ref());
     let text = review.text.as_ref().map(|t| t.as_ref());
-    let new_slug = sqlx::query!(
+    let stored_review = sqlx::query_as!(
+        StoredReview,
         r#"
             UPDATE reviews
             SET title      = COALESCE($1, title),
@@ -85,7 +84,7 @@ pub async fn update_review(
                 review     = COALESCE($3, review),
                 updated_at = $4
             WHERE     slug = $5
-            RETURNING slug
+            RETURNING title, slug, review, created_at, updated_at
         "#,
         title,
         update_slug,
@@ -98,9 +97,8 @@ pub async fn update_review(
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
-    })?
-    .slug;
-    Ok(new_slug)
+    })?;
+    Ok(stored_review)
 }
 
 #[tracing::instrument(

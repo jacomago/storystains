@@ -7,7 +7,7 @@ use crate::api::error_chain_fmt;
 
 use super::{
     db::{create_review, delete_review, read_review, update_review},
-    model::{NewReview, ReviewSlug, ReviewText, ReviewTitle, UpdateReview},
+    model::{NewReview, ReviewResponse, ReviewSlug, ReviewText, ReviewTitle, UpdateReview},
 };
 
 #[derive(thiserror::Error)]
@@ -74,10 +74,10 @@ pub async fn post_review(
         .review
         .try_into()
         .map_err(ReviewError::ValidationError)?;
-    create_review(&new_review, pool.get_ref())
+    let stored = create_review(&new_review, pool.get_ref())
         .await
         .context("Failed to store new review.")?;
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().json(ReviewResponse::from(stored)))
 }
 
 #[tracing::instrument(
@@ -92,11 +92,11 @@ pub async fn get_review(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
-    let stored_review = read_review(&slug, pool.get_ref())
+    let stored = read_review(&slug, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
 
-    Ok(HttpResponse::Ok().json(stored_review))
+    Ok(HttpResponse::Ok().json(ReviewResponse::from(stored)))
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -147,10 +147,10 @@ pub async fn put_review(
         .review
         .try_into()
         .map_err(ReviewError::ValidationError)?;
-    update_review(&slug, &updated_review, &pool)
+    let stored = update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
-    Ok(HttpResponse::Ok().finish())
+    Ok(HttpResponse::Ok().json(ReviewResponse::from(stored)))
 }
 
 #[tracing::instrument(
