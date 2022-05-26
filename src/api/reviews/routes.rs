@@ -147,7 +147,7 @@ pub async fn put_review(
         .review
         .try_into()
         .map_err(ReviewError::ValidationError)?;
-    let slug = update_review(&slug, &updated_review, &pool)
+    update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
     Ok(HttpResponse::Ok().finish())
