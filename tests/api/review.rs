@@ -1,5 +1,5 @@
 use reqwest::StatusCode;
-use serde_json::Value;
+use serde_json::{json, Value};
 
 use crate::helpers::{assert_is_redirect_to, spawn_app};
 
@@ -9,8 +9,8 @@ async fn post_review_persists_the_new_review() {
     let app = spawn_app().await;
 
     // Act
-    let body = "title=Dune&review=5stars";
-    let response = app.post_review(body.into()).await;
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let response = app.post_review(body.to_string()).await;
 
     // Assert
     assert_is_redirect_to(&response, "/reviews/dune");
@@ -29,14 +29,14 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
     let test_cases = vec![
-        ("title=Dune", "missing the review"),
-        ("review=5stars", "missing the title"),
-        ("", "missing both title and review"),
+        (json!({"review": {"title": "Dune"} }), "missing the review"),
+        (json!({ "review":{"review":"5stars"} }), "missing the title"),
+        (json!({"review":{}}), "missing both title and review"),
     ];
 
     for (invalid_body, error_message) in test_cases {
         // Act
-        let response = app.post_review(invalid_body.into()).await;
+        let response = app.post_review(invalid_body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -54,12 +54,18 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
     let test_cases = vec![
-        ("title=&review=5stars", "empty title"),
-        ("title=Dune&review=", "empty review"),
+        (
+            json!({"review": {"title": "", "review":"5stars" }}),
+            "empty title",
+        ),
+        (
+            json!({"review": {"title": "Dune", "review":"" }}),
+            "empty review",
+        ),
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.post_review(body.into()).await;
+        let response = app.post_review(body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -76,10 +82,10 @@ async fn post_review_returns_redirected_json() {
     // Arrange
     let app = spawn_app().await;
 
-    let body = "title=Dune&review=5stars";
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
 
     // Act
-    let response = app.post_review(body.into()).await;
+    let response = app.post_review(body.to_string()).await;
 
     // Assert
     assert_is_redirect_to(&response, "/reviews/dune");
@@ -114,15 +120,15 @@ async fn get_review_returns_bad_request_for_invalid_title() {
 }
 
 #[tokio::test]
-async fn put_review_returns_a_200_for_valid_form_data() {
+async fn put_review_returns_a_200_for_valid_json_data() {
     // Arrange
     let app = spawn_app().await;
 
     // Act
-    let body = "title=Dune&review=5stars";
-    app.post_review(body.into()).await;
-    let body = "review=3stars";
-    let response = app.put_review("dune".to_string(), body.into()).await;
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    app.post_review(body.to_string()).await;
+    let body = json!({"review": {"review":"3stars" }});
+    let response = app.put_review("dune".to_string(), body.to_string()).await;
 
     // Assert
     assert_is_redirect_to(&response, "/reviews/dune");
@@ -142,7 +148,12 @@ async fn put_review_returns_not_found_for_non_existant_review() {
     let app = spawn_app().await;
 
     // Act
-    let response = app.put_review("dune".to_string(), "".to_string()).await;
+    let response = app
+        .put_review(
+            "dune".to_string(),
+            json!({"review": {"title": "Dune", "review":"5stars" }}).to_string(),
+        )
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
@@ -167,16 +178,22 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
 
-    let body = "title=Dune&review=5stars";
-    app.post_review(body.into()).await;
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    app.post_review(body.to_string()).await;
 
     let test_cases = vec![
-        ("title=&review=3stars", "empty title"),
-        ("title=Dune2&review=", "empty review"),
+        (
+            json!({"review": {"title": "", "review":"5stars" }}),
+            "empty title",
+        ),
+        (
+            json!({"review": {"title": "Dune", "review":"" }}),
+            "empty review",
+        ),
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.put_review("dune".to_string(), body.into()).await;
+        let response = app.put_review("dune".to_string(), body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -193,13 +210,13 @@ async fn put_review_returns_redirected_json() {
     // Arrange
     let app = spawn_app().await;
 
-    let body = "title=Dune&review=5stars";
-    app.post_review(body.into()).await;
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    app.post_review(body.to_string()).await;
 
-    let body = "title=Dune2&review=3stars";
+    let body = json!({"review": {"title": "Dune2", "review":"3stars" }});
 
     // Act
-    let response = app.put_review("dune".to_string(), body.into()).await;
+    let response = app.put_review("dune".to_string(), body.to_string()).await;
 
     // Assert
     assert_is_redirect_to(&response, "/reviews/dune2");
@@ -227,8 +244,8 @@ async fn delete_review_returns_a_200_for_valid_slug() {
     let app = spawn_app().await;
 
     // Act
-    let body = "title=Dune&review=5stars";
-    app.post_review(body.into()).await;
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    app.post_review(body.to_string()).await;
     let response = app.delete_review("dune".to_string()).await;
 
     // Assert

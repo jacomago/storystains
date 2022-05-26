@@ -36,7 +36,7 @@ impl TestApp {
     pub async fn post_review(&self, body: String) -> reqwest::Response {
         self.api_client
             .post(&format!("{}/reviews", &self.address))
-            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Content-Type", "application/json")
             .body(body)
             .send()
             .await
@@ -46,7 +46,7 @@ impl TestApp {
     pub async fn put_review(&self, slug: String, body: String) -> reqwest::Response {
         self.api_client
             .put(&format!("{}/reviews/{}", &self.address, &slug))
-            .header("Content-Type", "application/x-www-form-urlencoded")
+            .header("Content-Type", "application/json")
             .body(body)
             .send()
             .await

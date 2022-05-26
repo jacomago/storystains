@@ -37,14 +37,19 @@ impl ResponseError for ReviewError {
 }
 
 #[derive(serde::Deserialize)]
-pub struct FormData {
+pub struct PostReview {
+    review: PostReviewData,
+}
+
+#[derive(serde::Deserialize)]
+pub struct PostReviewData {
     title: String,
     review: String,
 }
 
-impl TryFrom<FormData> for NewReview {
+impl TryFrom<PostReviewData> for NewReview {
     type Error = String;
-    fn try_from(value: FormData) -> Result<Self, Self::Error> {
+    fn try_from(value: PostReviewData) -> Result<Self, Self::Error> {
         let title = ReviewTitle::parse(value.title)?;
         let text = ReviewText::parse(value.review)?;
         let slug = ReviewSlug::parse(title.slugify())?;
@@ -54,17 +59,21 @@ impl TryFrom<FormData> for NewReview {
 
 #[tracing::instrument(
     name = "Adding a new review",
-    skip(form, pool),
+    skip(json, pool),
     fields(
-        reviews_title = %form.title,
-        reviews_review = %form.review
+        reviews_title = %json.review.title,
+        reviews_review = %json.review.review
     )
 )]
 pub async fn post_review(
-    form: web::Form<FormData>,
+    json: web::Json<PostReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
-    let new_review = form.0.try_into().map_err(ReviewError::ValidationError)?;
+    let new_review = json
+        .0
+        .review
+        .try_into()
+        .map_err(ReviewError::ValidationError)?;
     create_review(&new_review, pool.get_ref())
         .await
         .context("Failed to store new review.")?;
@@ -91,14 +100,19 @@ pub async fn get_review(
 }
 
 #[derive(serde::Deserialize, Debug)]
-pub struct UpdateFormData {
+pub struct PutReview {
+    review: PutReviewData,
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct PutReviewData {
     title: Option<String>,
     review: Option<String>,
 }
 
-impl TryFrom<UpdateFormData> for UpdateReview {
+impl TryFrom<PutReviewData> for UpdateReview {
     type Error = String;
-    fn try_from(value: UpdateFormData) -> Result<Self, Self::Error> {
+    fn try_from(value: PutReviewData) -> Result<Self, Self::Error> {
         let title = match &value.title {
             Some(t) => Some(ReviewTitle::parse(t.to_string())?),
             None => None,
@@ -117,18 +131,22 @@ impl TryFrom<UpdateFormData> for UpdateReview {
 
 #[tracing::instrument(
     name = "Putting a review",
-    skip(pool, form),
+    skip(pool, json),
     fields(
         slug = %slug,
     )
 )]
 pub async fn put_review(
     slug: web::Path<String>,
-    form: web::Form<UpdateFormData>,
+    json: web::Json<PutReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
-    let updated_review = form.0.try_into().map_err(ReviewError::ValidationError)?;
+    let updated_review = json
+        .0
+        .review
+        .try_into()
+        .map_err(ReviewError::ValidationError)?;
     let slug = update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
