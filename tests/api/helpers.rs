@@ -1,5 +1,4 @@
 use once_cell::sync::Lazy;
-use reqwest::StatusCode;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use storystains::startup::get_connection_pool;
 use storystains::telemetry::{get_subscriber, init_subscriber};
@@ -127,9 +126,4 @@ pub async fn spawn_app() -> TestApp {
         db_pool: get_connection_pool(&configuration.database),
         api_client,
     }
-}
-
-pub fn assert_is_redirect_to(response: &reqwest::Response, location: &str) {
-    assert_eq!(response.status(), StatusCode::SEE_OTHER);
-    assert_eq!(response.headers().get("Location").unwrap(), location);
 }

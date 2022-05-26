@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{assert_is_redirect_to, spawn_app};
+use crate::helpers::spawn_app;
 
 #[tokio::test]
 async fn post_review_persists_the_new_review() {
@@ -13,7 +13,7 @@ async fn post_review_persists_the_new_review() {
     let response = app.post_review(body.to_string()).await;
 
     // Assert
-    assert_is_redirect_to(&response, "/reviews/dune");
+    assert_eq!(response.status(), StatusCode::OK);
 
     let saved = sqlx::query!("SELECT title, review FROM reviews",)
         .fetch_one(&app.db_pool)
@@ -88,7 +88,7 @@ async fn post_review_returns_redirected_json() {
     let response = app.post_review(body.to_string()).await;
 
     // Assert
-    assert_is_redirect_to(&response, "/reviews/dune");
+    assert_eq!(response.status(), StatusCode::OK);
     let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert_eq!(json["review"], "5stars");
@@ -131,7 +131,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     let response = app.put_review("dune".to_string(), body.to_string()).await;
 
     // Assert
-    assert_is_redirect_to(&response, "/reviews/dune");
+    assert_eq!(response.status(), StatusCode::OK);
 
     let saved = sqlx::query!("SELECT title, review FROM reviews",)
         .fetch_one(&app.db_pool)
@@ -219,7 +219,7 @@ async fn put_review_returns_redirected_json() {
     let response = app.put_review("dune".to_string(), body.to_string()).await;
 
     // Assert
-    assert_is_redirect_to(&response, "/reviews/dune2");
+    assert_eq!(response.status(), StatusCode::OK);
     let json_page = app.get_review_json("dune2".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert_eq!(json["review"], "3stars");

@@ -3,7 +3,7 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, see_other};
+use crate::api::error_chain_fmt;
 
 use super::{
     db::{create_review, delete_review, read_review, update_review},
@@ -77,7 +77,7 @@ pub async fn post_review(
     create_review(&new_review, pool.get_ref())
         .await
         .context("Failed to store new review.")?;
-    Ok(see_other(format!("/reviews/{}", new_review.slug).as_str()))
+    Ok(HttpResponse::Ok().finish())
 }
 
 #[tracing::instrument(
@@ -150,7 +150,7 @@ pub async fn put_review(
     let slug = update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
-    Ok(see_other(format!("/reviews/{}", slug).as_str()))
+    Ok(HttpResponse::Ok().finish())
 }
 
 #[tracing::instrument(
