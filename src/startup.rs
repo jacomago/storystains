@@ -1,4 +1,6 @@
-use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review, signup, log_out};
+use crate::api::{
+    delete_review_by_slug, get_review, log_out, login, post_review, put_review, signup,
+};
 use crate::auth::reject_anonymous_users;
 use crate::configuration::Settings;
 use crate::health_check::health_check;
