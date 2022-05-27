@@ -62,6 +62,7 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 async fn post_review_persists_the_new_review() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
