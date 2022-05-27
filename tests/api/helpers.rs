@@ -1,5 +1,4 @@
-use argon2::password_hash::SaltString;
-use argon2::{Algorithm, Argon2, Params, PasswordHasher, Version};
+
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use storystains::startup::get_connection_pool;
@@ -89,7 +88,7 @@ pub async fn spawn_app() -> TestApp {
         api_client,
         test_user: user,
     };
-    app.test_user.store(&app.db_pool).await;
+    app.test_user.store(&app).await;
     app
 }
 
@@ -119,26 +118,13 @@ impl TestUser {
         .await;
     }
 
-    async fn store(&self, pool: &PgPool) {
-        let salt = SaltString::generate(&mut rand::thread_rng()); // We don't care about the exact Argon2 parameters here // given that it's for testing purposes!
-        let password_hash = Argon2::new(
-            Algorithm::Argon2id,
-            Version::V0x13,
-            Params::new(15000, 2, 1, None).unwrap(),
-        )
-        .hash_password(self.password.as_bytes(), &salt)
-        .unwrap()
-        .to_string();
-
-        let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
-        sqlx::query!(
-            "INSERT INTO users (user_id, username, password_hash) VALUES ($1, $2, $3)",
-            id,
-            self.username,
-            password_hash,
-        )
-        .execute(pool)
-        .await
-        .expect("Failed to store test user.");
+    async fn store(&self, app: &TestApp) {
+        let signup_body = serde_json::json!({
+            "user": {
+                "username": &self.username,
+                "password": &self.password
+            }
+        });
+        app.post_signup(signup_body.to_string()).await;
     }
 }

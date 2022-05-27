@@ -3,7 +3,7 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::error_chain_fmt;
+use crate::{api::error_chain_fmt, auth::UserId};
 
 use super::{
     db::{create_review, delete_review, read_review, update_review},
@@ -66,9 +66,11 @@ impl TryFrom<PostReviewData> for NewReview {
     )
 )]
 pub async fn post_review(
+    user_id: web::ReqData<UserId>,
     json: web::Json<PostReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
+    let user_id = user_id.into_inner();
     let new_review = json
         .0
         .review

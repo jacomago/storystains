@@ -1,9 +1,15 @@
 use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review, signup};
+use crate::auth::reject_anonymous_users;
 use crate::configuration::Settings;
 use crate::health_check::health_check;
+use actix_session::storage::RedisSessionStore;
+use actix_session::SessionMiddleware;
+use actix_web::cookie::Key;
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
+use actix_web_lab::middleware::from_fn;
+use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -23,7 +29,7 @@ pub struct Application {
 }
 
 impl Application {
-    pub async fn build(configuration: Settings) -> Result<Self, std::io::Error> {
+    pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
 
         let address = format!(
@@ -33,7 +39,14 @@ impl Application {
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
 
-        let server = run(listener, connection_pool)?;
+        let server = run(
+            listener,
+            connection_pool,
+            configuration.application.base_url,
+            HmacSecret(configuration.application.hmac_secret),
+            configuration.redis_uri,
+        )
+        .await?;
         Ok(Self { port, server })
     }
 
@@ -46,19 +59,41 @@ impl Application {
     }
 }
 
-pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Error> {
+pub struct ApplicationBaseUrl(pub String);
+
+#[derive(Clone)]
+pub struct HmacSecret(pub Secret<String>);
+
+async fn run(
+    listener: TcpListener,
+    db_pool: PgPool,
+    base_url: String,
+    hmac_secret: HmacSecret,
+    redis_uri: Secret<String>,
+) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
+
+    let base_url = Data::new(ApplicationBaseUrl(base_url));
+    let secret_key = Key::from(hmac_secret.0.expose_secret().as_bytes());
+    let redis_store = RedisSessionStore::new(redis_uri.expose_secret()).await?;
+
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
+            .wrap(SessionMiddleware::new(
+                redis_store.clone(),
+                secret_key.clone(),
+            ))
             .route("/health_check", web::get().to(health_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
-            .route("/reviews", web::post().to(post_review))
             .route("/reviews/{slug}", web::get().to(get_review))
+            .wrap(from_fn(reject_anonymous_users))
+            .route("/reviews", web::post().to(post_review))
             .route("/reviews/{slug}", web::put().to(put_review))
             .route("/reviews/{slug}", web::delete().to(delete_review_by_slug))
             .app_data(db_pool.clone())
+            .app_data(base_url.clone())
     })
     .listen(listener)?
     .run();
