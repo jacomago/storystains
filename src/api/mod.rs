@@ -1,6 +1,10 @@
 mod reviews;
 pub use reviews::routes::*;
 
+mod users;
+pub use users::routes::*;
+pub use users::db::*;
+
 pub fn error_chain_fmt(
     e: &impl std::error::Error,
     f: &mut std::fmt::Formatter<'_>,

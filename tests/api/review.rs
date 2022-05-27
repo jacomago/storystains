@@ -1,7 +1,62 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::spawn_app;
+use crate::helpers::{spawn_app, TestApp};
+
+impl TestApp {
+    pub async fn post_review(&self, body: String) -> reqwest::Response {
+        self.api_client
+            .post(&format!("{}/reviews", &self.address))
+            .header("Content-Type", "application/json")
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn put_review(&self, slug: String, body: String) -> reqwest::Response {
+        self.api_client
+            .put(&format!("{}/reviews/{}", &self.address, &slug))
+            .header("Content-Type", "application/json")
+            .body(body)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_review(&self, slug: String) -> reqwest::Response {
+        self.api_client
+            .get(&format!("{}/reviews/{}", &self.address, &slug))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_review_json(&self, title: String) -> String {
+        self.get_review(title).await.text().await.unwrap()
+    }
+
+    pub async fn delete_review(&self, slug: String) -> reqwest::Response {
+        self.api_client
+            .delete(&format!("{}/reviews/{}", &self.address, &slug))
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+}
+
+#[tokio::test]
+async fn post_review_returns_unauth_when_not_logged_in() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let response = app.post_review(body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
 
 #[tokio::test]
 async fn post_review_persists_the_new_review() {
