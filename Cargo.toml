@@ -20,10 +20,6 @@ serde_json = "1"
 config = "0.13.0"
 uuid = { version = "1.1.0", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
-reqwest = { version = "0.11", default-features = false, features = [
-    "json",
-    "rustls-tls"
-] }
 secrecy = { version = "0.8", features = ["serde"] }
 tracing = { version = "0.1", features = ["log"] }
 tracing-log = "0.1"
@@ -42,6 +38,12 @@ argon2 = { version = "0.4.0", features = ["std"] }
 actix-session = { version = "0.6", features = ["redis-rs-tls-session"] }
 rand = { version = "0.8", features = ["std_rng"] }
 actix-web-lab = "0.16"
+
+
+[dependencies.reqwest]
+version = "0.11"
+default-features = false
+features = ["json", "rustls-tls", "cookies"]
 
 [dependencies.sqlx]
 version = "0.5.7"

@@ -84,6 +84,8 @@ async fn post_review_persists_the_new_review() {
 async fn post_review_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
+
+    app.test_user.login(&app).await;
     let test_cases = vec![
         (json!({"review": {"title": "Dune"} }), "missing the review"),
         (json!({ "review":{"review":"5stars"} }), "missing the title"),
@@ -109,6 +111,8 @@ async fn post_review_returns_a_400_when_data_is_missing() {
 async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
+
     let test_cases = vec![
         (
             json!({"review": {"title": "", "review":"5stars" }}),
@@ -137,6 +141,7 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
 async fn post_review_returns_json() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
 
@@ -195,9 +200,23 @@ async fn get_review_returns_bad_request_for_invalid_title() {
 }
 
 #[tokio::test]
+async fn put_review_returns_unauth_when_not_logged_in() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let response = app.put_review("dune".to_string(), body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
 async fn put_review_returns_a_200_for_valid_json_data() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
@@ -221,6 +240,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
 async fn put_review_returns_not_found_for_non_existant_review() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     // Act
     let response = app
@@ -238,6 +258,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
 async fn put_review_returns_bad_request_for_invalid_slug() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     // Act
     let response = app
@@ -252,6 +273,7 @@ async fn put_review_returns_bad_request_for_invalid_slug() {
 async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
     app.post_review(body.to_string()).await;
@@ -284,6 +306,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
 async fn put_review_returns_json() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
     app.post_review(body.to_string()).await;
@@ -301,9 +324,22 @@ async fn put_review_returns_json() {
 }
 
 #[tokio::test]
+async fn delete_review_returns_unauth_when_not_logged_in() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.delete_review("dune".to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
 async fn delete_review_returns_bad_request_for_invalid_title() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     // Act
     let response = app.delete_review("a".repeat(257).to_string()).await;
@@ -316,6 +352,7 @@ async fn delete_review_returns_bad_request_for_invalid_title() {
 async fn delete_review_returns_a_200_for_valid_slug() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});

@@ -77,6 +77,7 @@ pub async fn spawn_app() -> TestApp {
 
     let api_client = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
+        .cookie_store(true)
         .build()
         .unwrap();
 
@@ -109,8 +110,10 @@ impl TestUser {
     pub async fn login(&self, app: &TestApp) {
         app.post_login(
             serde_json::json!({
-                "username": &self.username,
-                "password": &self.password
+                "user": {
+                    "username": &self.username,
+                    "password": &self.password
+                }
             })
             .to_string(),
         )
