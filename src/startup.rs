@@ -1,4 +1,4 @@
-use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review, signup};
+use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review, signup, log_out};
 use crate::auth::reject_anonymous_users;
 use crate::configuration::Settings;
 use crate::health_check::health_check;
@@ -99,6 +99,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/health_check", web::get().to(health_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
+            .route("/logout", web::post().to(log_out))
             .route("/reviews/{slug}", web::get().to(get_review))
             .service(
                 web::scope("/reviews")
