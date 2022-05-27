@@ -79,19 +79,22 @@ async fn run(
 
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(TracingLogger::default())
             .wrap(SessionMiddleware::new(
                 redis_store.clone(),
                 secret_key.clone(),
             ))
+            .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
             .route("/reviews/{slug}", web::get().to(get_review))
-            .wrap(from_fn(reject_anonymous_users))
-            .route("/reviews", web::post().to(post_review))
-            .route("/reviews/{slug}", web::put().to(put_review))
-            .route("/reviews/{slug}", web::delete().to(delete_review_by_slug))
+            .service(
+                web::scope("/reviews")
+                    .wrap(from_fn(reject_anonymous_users))
+                    .route("", web::post().to(post_review))
+                    .route("/{slug}", web::put().to(put_review))
+                    .route("/{slug}", web::delete().to(delete_review_by_slug)),
+            )
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
     })
