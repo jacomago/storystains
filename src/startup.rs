@@ -84,6 +84,18 @@ async fn run(
                 secret_key.clone(),
             ))
             .wrap(TracingLogger::default())
+            .configure(routes)
+            .app_data(db_pool.clone())
+            .app_data(base_url.clone())
+    })
+    .listen(listener)?
+    .run();
+    Ok(server)
+}
+
+fn routes(cfg: &mut web::ServiceConfig) {
+    cfg.service(
+        web::scope("")
             .route("/health_check", web::get().to(health_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
@@ -94,11 +106,6 @@ async fn run(
                     .route("", web::post().to(post_review))
                     .route("/{slug}", web::put().to(put_review))
                     .route("/{slug}", web::delete().to(delete_review_by_slug)),
-            )
-            .app_data(db_pool.clone())
-            .app_data(base_url.clone())
-    })
-    .listen(listener)?
-    .run();
-    Ok(server)
+            ),
+    );
 }
