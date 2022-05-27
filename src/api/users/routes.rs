@@ -11,7 +11,11 @@ use crate::{
     session_state::TypedSession,
 };
 
-use super::{model::{UserResponse, NewPassword, NewUsername, NewUser}, read_user_from_id, create_user};
+use super::{
+    create_user,
+    model::{NewPassword, NewUser, NewUsername, UserResponse},
+    read_user_from_id,
+};
 
 #[derive(thiserror::Error)]
 pub enum LoginError {
@@ -81,7 +85,6 @@ fn login_error(e: LoginError) -> InternalError<LoginError> {
     InternalError::from_response(e, response)
 }
 
-
 #[derive(thiserror::Error)]
 pub enum SignupError {
     #[error("{0}")]
@@ -124,10 +127,7 @@ impl TryFrom<SignupUserData> for NewUser {
     }
 }
 
-#[tracing::instrument(
-    name = "Signup a user",
-    skip(pool, json),
-)]
+#[tracing::instrument(name = "Signup a user", skip(pool, json))]
 pub async fn signup(
     json: web::Json<SignupUser>,
     pool: web::Data<PgPool>,

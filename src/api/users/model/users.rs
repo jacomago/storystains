@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use uuid::Uuid;
 
-use super::{NewUsername, NewPassword};
+use super::{NewPassword, NewUsername};
 
 #[derive(Copy, Clone, Debug, serde::Serialize)]
 pub struct UserId(Uuid);
@@ -59,8 +59,7 @@ pub struct UserResponseData {
     username: String,
 }
 
-
 pub struct NewUser {
     pub username: NewUsername,
-    pub password: NewPassword
+    pub password: NewPassword,
 }

@@ -1,4 +1,4 @@
-use crate::{telemetry::spawn_blocking_with_tracing, api::get_stored_credentials};
+use crate::{api::get_stored_credentials, telemetry::spawn_blocking_with_tracing};
 use anyhow::Context;
 use argon2::{
     password_hash::SaltString, Algorithm, Argon2, Params, PasswordHash, PasswordHasher,

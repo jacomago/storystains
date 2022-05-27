@@ -1,4 +1,3 @@
-
 use once_cell::sync::Lazy;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use storystains::startup::get_connection_pool;

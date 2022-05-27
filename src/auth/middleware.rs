@@ -6,9 +6,7 @@ use actix_web::{
 };
 use actix_web_lab::middleware::Next;
 
-use crate::{
-    session_state::TypedSession, api::UserId,
-};
+use crate::{api::UserId, session_state::TypedSession};
 
 // Return an opaque 500 while preserving the error root's cause for logging.
 pub fn e500<T>(e: T) -> actix_web::Error
