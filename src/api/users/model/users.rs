@@ -1,4 +1,4 @@
-
+use super::{NewUsername, NewPassword};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct StoredUser {
@@ -23,4 +23,10 @@ impl From<StoredUser> for UserResponse {
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct UserResponseData {
     username: String,
+}
+
+
+pub struct NewUser {
+    pub username: NewUsername,
+    pub password: NewPassword
 }
