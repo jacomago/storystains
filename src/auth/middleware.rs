@@ -5,27 +5,10 @@ use actix_web::{
     FromRequest, HttpMessage, HttpResponse,
 };
 use actix_web_lab::middleware::Next;
-use std::ops::Deref;
-use uuid::Uuid;
 
 use crate::{
-    session_state::TypedSession,
+    session_state::TypedSession, api::UserId,
 };
-
-#[derive(Copy, Clone, Debug)]
-pub struct UserId(Uuid);
-impl std::fmt::Display for UserId {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        self.0.fmt(f)
-    }
-}
-
-impl Deref for UserId {
-    type Target = Uuid;
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
 
 // Return an opaque 500 while preserving the error root's cause for logging.
 pub fn e500<T>(e: T) -> actix_web::Error
@@ -45,7 +28,7 @@ pub async fn reject_anonymous_users(
     }?;
     match session.get_user_id().map_err(e500)? {
         Some(user_id) => {
-            req.extensions_mut().insert(UserId(user_id));
+            req.extensions_mut().insert(UserId::new(user_id));
             next.call(req).await
         }
         None => {

@@ -3,7 +3,7 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::{api::error_chain_fmt, auth::UserId};
+use crate::api::{error_chain_fmt, UserId};
 
 use super::{
     db::{create_review, delete_review, read_review, update_review},
@@ -47,13 +47,19 @@ pub struct PostReviewData {
     review: String,
 }
 
-impl TryFrom<PostReviewData> for NewReview {
+impl TryFrom<(PostReviewData, UserId)> for NewReview {
     type Error = String;
-    fn try_from(value: PostReviewData) -> Result<Self, Self::Error> {
+    fn try_from(pair: (PostReviewData, UserId)) -> Result<Self, Self::Error> {
+        let (value, user_id) = pair;
         let title = ReviewTitle::parse(value.title)?;
         let text = ReviewText::parse(value.review)?;
         let slug = ReviewSlug::parse(title.slugify())?;
-        Ok(Self { title, text, slug })
+        Ok(Self {
+            title,
+            text,
+            slug,
+            user_id,
+        })
     }
 }
 
@@ -71,9 +77,7 @@ pub async fn post_review(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
     let user_id = user_id.into_inner();
-    let new_review = json
-        .0
-        .review
+    let new_review = (json.0.review, user_id)
         .try_into()
         .map_err(ReviewError::ValidationError)?;
     let stored = create_review(&new_review, pool.get_ref())

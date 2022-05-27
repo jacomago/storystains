@@ -1,12 +1,15 @@
 use chrono::{DateTime, Utc};
 use serde::{Serialize, Serializer};
 
+use crate::api::UserId;
+
 use super::{ReviewSlug, ReviewText, ReviewTitle};
 
 pub struct NewReview {
     pub text: ReviewText,
     pub title: ReviewTitle,
     pub slug: ReviewSlug,
+    pub user_id: UserId,
 }
 
 pub struct UpdateReview {
@@ -15,13 +18,14 @@ pub struct UpdateReview {
     pub slug: Option<ReviewSlug>,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug)]
 pub struct StoredReview {
     pub title: String,
     pub slug: String,
     pub review: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    pub user_id: sqlx::types::Uuid,
 }
 
 #[derive(Debug, PartialEq, serde::Deserialize)]

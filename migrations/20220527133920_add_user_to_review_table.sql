@@ -1,0 +1,1 @@
+ALTER TABLE reviews ADD COLUMN user_id uuid NOT NULL REFERENCES users (user_id)

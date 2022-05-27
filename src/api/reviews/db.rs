@@ -1,5 +1,4 @@
 use chrono::Utc;
-
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -18,7 +17,7 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
     let review = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title, slug, review, created_at, updated_at
+            SELECT title, slug, review, created_at, updated_at, user_id
             FROM reviews 
             WHERE slug = $1
         "#,
@@ -37,19 +36,21 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
 pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
     let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
     let time = Utc::now();
+    let user_id: sqlx::types::Uuid = review.user_id.try_into().unwrap();
     let stored_review = sqlx::query_as!(
         StoredReview,
         r#"
-            INSERT INTO reviews (id, title, slug, review, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING title, slug, review, created_at, updated_at
+            INSERT INTO reviews (id, title, slug, review, created_at, updated_at, user_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING title, slug, review, created_at, updated_at, user_id
         "#,
         id,
         review.title.as_ref(),
         review.slug.as_ref(),
         review.text.as_ref(),
         time,
-        time
+        time,
+        user_id
     )
     .fetch_one(pool)
     .await
@@ -84,7 +85,7 @@ pub async fn update_review(
                 review     = COALESCE($3, review),
                 updated_at = $4
             WHERE     slug = $5
-            RETURNING title, slug, review, created_at, updated_at
+            RETURNING title, slug, review, created_at, updated_at, user_id
         "#,
         title,
         update_slug,
