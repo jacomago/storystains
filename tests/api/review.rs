@@ -59,6 +59,21 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 }
 
 #[tokio::test]
+async fn post_review_returns_unauth_when_logged_out() {
+    // Arrange
+    let app = spawn_app().await;
+    app.test_user.login(&app).await;
+    app.post_logout().await;
+
+    // Act
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let response = app.post_review(body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
 async fn post_review_persists_the_new_review() {
     // Arrange
     let app = spawn_app().await;
@@ -157,9 +172,10 @@ async fn post_review_returns_json() {
 }
 
 #[tokio::test]
-async fn get_review_returns_json() {
+async fn get_review_logged_in_returns_json() {
     // Arrange
     let app = spawn_app().await;
+    app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
 
@@ -168,6 +184,28 @@ async fn get_review_returns_json() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
+
+    let json_page = app.get_review_json("dune".to_string()).await;
+    let json: Value = serde_json::from_str(&json_page).unwrap();
+    assert_eq!(json["review"]["review"], "5stars");
+    assert_eq!(json["review"]["title"], "Dune");
+}
+
+#[tokio::test]
+async fn get_review_logged_out_returns_json() {
+    // Arrange
+    let app = spawn_app().await;
+    app.test_user.login(&app).await;
+
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+
+    // Act
+    let response = app.post_review(body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    app.post_logout().await;
 
     let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();

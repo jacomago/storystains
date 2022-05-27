@@ -85,6 +85,23 @@ fn login_error(e: LoginError) -> InternalError<LoginError> {
     InternalError::from_response(e, response)
 }
 
+// Return an opaque 500 while preserving the error root's cause for logging.
+pub fn e500<T>(e: T) -> actix_web::Error
+where
+    T: std::fmt::Debug + std::fmt::Display + 'static,
+{
+    actix_web::error::ErrorInternalServerError(e)
+}
+
+pub async fn log_out(session: TypedSession) -> Result<HttpResponse, actix_web::Error> {
+    if session.get_user_id().map_err(e500)?.is_none() {
+        Ok(HttpResponse::Ok().finish())
+    } else {
+        session.log_out();
+        Ok(HttpResponse::Ok().finish())
+    }
+}
+
 #[derive(thiserror::Error)]
 pub enum SignupError {
     #[error("{0}")]
