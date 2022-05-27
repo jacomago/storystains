@@ -1,5 +1,7 @@
-use actix_web::{error::InternalError, web, HttpResponse};
+use actix_web::{error::InternalError, web, HttpResponse, ResponseError};
 
+use anyhow::Context;
+use reqwest::StatusCode;
 use secrecy::Secret;
 use sqlx::PgPool;
 
@@ -9,7 +11,7 @@ use crate::{
     session_state::TypedSession,
 };
 
-use super::{model::UserResponse, read_user_from_id};
+use super::{model::{UserResponse, NewPassword, NewUsername, NewUser}, read_user_from_id, create_user};
 
 #[derive(thiserror::Error)]
 pub enum LoginError {
@@ -77,4 +79,66 @@ pub async fn login(
 fn login_error(e: LoginError) -> InternalError<LoginError> {
     let response = HttpResponse::BadRequest().finish();
     InternalError::from_response(e, response)
+}
+
+
+#[derive(thiserror::Error)]
+pub enum SignupError {
+    #[error("{0}")]
+    ValidationError(String),
+    #[error(transparent)]
+    UnexpectedError(#[from] anyhow::Error),
+}
+
+impl std::fmt::Debug for SignupError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        error_chain_fmt(self, f)
+    }
+}
+
+impl ResponseError for SignupError {
+    fn status_code(&self) -> StatusCode {
+        match self {
+            SignupError::ValidationError(_) => StatusCode::BAD_REQUEST,
+            SignupError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
+#[derive(serde::Deserialize, Debug)]
+pub struct SignupUser {
+    user: SignupUserData,
+}
+
+#[derive(serde::Deserialize, Debug)]
+pub struct SignupUserData {
+    username: String,
+    password: Secret<String>,
+}
+
+impl TryFrom<SignupUserData> for NewUser {
+    type Error = String;
+    fn try_from(value: SignupUserData) -> Result<Self, Self::Error> {
+        let username = NewUsername::parse(value.username)?;
+        let password = NewPassword::parse(value.password)?;
+        Ok(Self { username, password })
+    }
+}
+
+#[tracing::instrument(
+    name = "Signup a user",
+    skip(pool, json),
+)]
+pub async fn signup(
+    json: web::Json<SignupUser>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, SignupError> {
+    let new_user = json
+        .0
+        .user
+        .try_into()
+        .map_err(SignupError::ValidationError)?;
+    let stored = create_user(new_user, &pool)
+        .await
+        .context("Error storing user")?;
+    Ok(HttpResponse::Ok().json(UserResponse::from(stored)))
 }

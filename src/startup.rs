@@ -1,4 +1,4 @@
-use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review};
+use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review, signup};
 use crate::configuration::Settings;
 use crate::health_check::health_check;
 use actix_web::dev::Server;
@@ -52,6 +52,7 @@ pub fn run(listener: TcpListener, db_pool: PgPool) -> Result<Server, std::io::Er
         App::new()
             .wrap(TracingLogger::default())
             .route("/health_check", web::get().to(health_check))
+            .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
             .route("/reviews", web::post().to(post_review))
             .route("/reviews/{slug}", web::get().to(get_review))

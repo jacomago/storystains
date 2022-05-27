@@ -1,8 +1,10 @@
 use crate::api::users::model::StoredUser;
 use anyhow::Context;
-use secrecy::Secret;
+use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 use uuid::Uuid;
+
+use super::model::NewUser;
 
 #[tracing::instrument(name = "Get stored credentials", skip(username, pool))]
 pub async fn get_stored_credentials(
@@ -48,4 +50,26 @@ pub async fn read_user_from_id(user_id: &Uuid, pool: &PgPool) -> Result<StoredUs
         e
     })?;
     Ok(row)
+}
+
+#[tracing::instrument(name = "Saving new user details in the database", skip(user, pool))]
+pub async fn create_user(user: NewUser, pool: &PgPool) -> Result<StoredUser, anyhow::Error> {
+    let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
+
+    let password_hash = user.password.hash().await?;
+    let stored_user = sqlx::query_as!(
+        StoredUser,
+        r#"
+            INSERT INTO users (user_id, username, password_hash)
+            VALUES ($1, $2, $3)
+            RETURNING username
+        "#,
+        id,
+        user.username.as_ref(),
+        password_hash.expose_secret(),
+    )
+    .fetch_one(pool)
+    .await
+    .context("Failed to store user.")?;
+    Ok(stored_user)
 }

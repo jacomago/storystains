@@ -1,6 +1,8 @@
-
+use anyhow::Context;
 use secrecy::{ExposeSecret, Secret};
 use unicode_segmentation::UnicodeSegmentation;
+
+use crate::{auth::compute_password_hash, telemetry::spawn_blocking_with_tracing};
 
 #[derive(Debug, Clone)]
 pub struct NewPassword(Secret<String>);
@@ -35,6 +37,12 @@ impl NewPassword {
         } else {
             Ok(Self(s))
         }
+    }
+
+    pub async fn hash(self) -> Result<Secret<String>, anyhow::Error> {
+        spawn_blocking_with_tracing(move || compute_password_hash(self.0))
+            .await?
+            .context("Failed to hash password")
     }
 }
 
