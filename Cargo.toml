@@ -5,10 +5,10 @@ authors = ["Sky Brewer"]
 edition = "2021"
 
 [lib]
-path = "src/lib.rs"
+path = "backend/lib.rs"
 
 [[bin]]
-path = "src/main.rs"
+path = "backend/main.rs"
 name = "storystains"
 
 [dependencies]
