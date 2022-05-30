@@ -10,6 +10,7 @@ pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
     pub redis_uri: Secret<String>,
+    pub frontend_origin: String,
 }
 
 #[derive(serde::Deserialize, Clone)]

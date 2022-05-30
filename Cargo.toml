@@ -38,6 +38,7 @@ argon2 = { version = "0.4.0", features = ["std"] }
 actix-session = { version = "0.6", features = ["redis-rs-tls-session"] }
 rand = { version = "0.8", features = ["std_rng"] }
 actix-web-lab = "0.16"
+actix-cors = "0.6.1"
 
 
 [dependencies.reqwest]

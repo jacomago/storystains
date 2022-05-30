@@ -3,6 +3,7 @@ use crate::api::{
 };
 use crate::auth::reject_anonymous_users;
 use crate::configuration::Settings;
+use crate::cors::cors;
 use crate::health_check::health_check;
 use actix_session::storage::RedisSessionStore;
 use actix_session::SessionMiddleware;
@@ -47,6 +48,7 @@ impl Application {
             configuration.application.base_url,
             HmacSecret(configuration.application.hmac_secret),
             configuration.redis_uri,
+            configuration.frontend_origin,
         )
         .await?;
         Ok(Self { port, server })
@@ -72,6 +74,7 @@ async fn run(
     base_url: String,
     hmac_secret: HmacSecret,
     redis_uri: Secret<String>,
+    frontend_origin: String,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
 
@@ -86,6 +89,7 @@ async fn run(
                 secret_key.clone(),
             ))
             .wrap(TracingLogger::default())
+            .wrap(cors(&frontend_origin))
             .configure(routes)
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
