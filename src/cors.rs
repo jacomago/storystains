@@ -1,11 +1,7 @@
 use actix_cors::Cors;
 use actix_web::http;
 
-
-#[tracing::instrument(
-    name = "Cors",
-    skip(frontend_origin)
-)]
+#[tracing::instrument(name = "Cors", skip(frontend_origin))]
 pub fn cors(frontend_origin: &str) -> Cors {
     Cors::default()
         .allowed_origin(frontend_origin)
