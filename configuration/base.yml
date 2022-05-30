@@ -9,3 +9,4 @@ database:
   password: "password"
   database_name: "storystains"
 redis_uri: "redis://127.0.0.1:6379"
+frontend_origin: "http://localhost:50547"
