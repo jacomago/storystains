@@ -1,4 +1,4 @@
-name: Rust
+name: Frontend
 
 on: [push, pull_request]
 
@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        working-directory: ./frontend
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.x'
           channel: 'any'
+        working-directory: ./frontend
       - run: flutter pub get
       - run: flutter test
