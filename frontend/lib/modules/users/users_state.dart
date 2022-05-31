@@ -65,7 +65,7 @@ class UsersState extends ChangeNotifier {
 
     final items = await _service.fetch(query ?? '', 1);
 
-    if (items != null && items is List && items.isNotEmpty) {
+    if (items != null && items.isNotEmpty) {
       _page = 2;
       _query = query ?? '';
       _items = [...items];
