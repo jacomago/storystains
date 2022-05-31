@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,28 +6,32 @@ import 'package:storystains/http_client.dart';
 
 import 'model.dart';
 
-class LoginHttpPage extends StatefulWidget {
+class UserFormHttpPage extends StatefulWidget {
   final http.Client? httpClient;
-  final Cookie? cookie;
+  final String path;
+  final String title;
+  final String submitText;
 
-  const LoginHttpPage({
+  const UserFormHttpPage({
     this.httpClient,
-    this.cookie,
+    required this.path,
+    required this.title,
+    required this.submitText,
     super.key,
   });
 
   @override
-  State<LoginHttpPage> createState() => _LoginHttpPageState();
+  State<UserFormHttpPage> createState() => _UserFormHttpPageState();
 }
 
-class _LoginHttpPageState extends State<LoginHttpPage> {
+class _UserFormHttpPageState extends State<UserFormHttpPage> {
   FormData formData = FormData();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login Form'),
+        title: Text(widget.title),
       ),
       body: Form(
         child: Scrollbar(
@@ -60,18 +63,18 @@ class _LoginHttpPageState extends State<LoginHttpPage> {
                     },
                   ),
                   TextButton(
-                    child: const Text('Login'),
+                    child: Text(widget.submitText),
                     onPressed: () async {
                       // Use a JSON encoded string to send
                       var result = await widget.httpClient!.post(
-                          local('/login'),
+                          local(widget.path),
                           body: json.encode(formData.toJson()),
                           headers: {'content-type': 'application/json'});
 
                       if (result.statusCode == 200) {
-                        _showDialog('Successfully logged in.');
+                        _showDialog('Success.');
                       } else if (result.statusCode == 401) {
-                        _showDialog('Unable to log in.');
+                        _showDialog('Invalid Input.');
                       } else {
                         _showDialog('Something went wrong. Please try again.');
                       }

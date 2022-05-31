@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/user/login.dart';
-import 'package:storystains/user/signup.dart';
+import 'package:storystains/user/form.dart';
 
 import 'http_client.dart';
 
@@ -8,14 +7,20 @@ final navs = [
   Nav(
       name: "Sign up",
       route: '/signup',
-      builder: (context) => SignupHttpPage(
+      builder: (context) => UserFormHttpPage(
             httpClient: client,
+            title: "Sign Up",
+            path: '/signup',
+            submitText: 'Sign Up',
           )),
   Nav(
       name: "Log in",
       route: '/login',
-      builder: (context) => LoginHttpPage(
+      builder: (context) => UserFormHttpPage(
             httpClient: client,
+            title: "Log in",
+            path: '/login',
+            submitText: 'Log in',
           )),
 ];
 
