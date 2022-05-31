@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +34,8 @@ class Login extends StatelessWidget {
       context.pop();
       context.snackbar('Signed in as ${auth.user?.name}');
     } else {
-      _pcontroller.clear();
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => (_pcontroller.clear()));
       context.snackbar('Sign in failed. Please try again.');
     }
   }

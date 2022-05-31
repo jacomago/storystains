@@ -5,7 +5,7 @@ abstract class ApiHandler {
   Future post(String url, dynamic body);
   Future put(String url, dynamic body);
   Future delete(String url);
-  
+
   factory ApiHandler() => _ApiHandlerImpl();
 }
 
@@ -23,7 +23,11 @@ class _ApiHandlerImpl implements ApiHandler {
   @override
   Future post(String url, body) async {
     try {
-      final response = await http.post(Uri.parse(url), body: body);
+      final response = await http.post(Uri.parse(url),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: body);
       return _process(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

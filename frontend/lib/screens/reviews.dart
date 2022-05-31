@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:frontend/modules/reviews/reviews.dart';
+import '../modules/reviews/reviews_service.dart';
+import '../modules/reviews/reviews_state.dart';
+
 
 class Reviews extends StatelessWidget {
   const Reviews({Key? key}) : super(key: key);

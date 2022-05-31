@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:frontend/modules/reviews/reviews.dart';
+import 'reviews_service.dart';
 
 class ReviewsState extends ChangeNotifier {
 

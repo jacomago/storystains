@@ -10,46 +10,25 @@ class Api {
   static final ApiHandler _handler = ApiHandler();
 
   static Future register(String username, String email, String password) async {
-    /* return await _handler.post(registerUrl, {
-      'username': username,
-      'email': email, 
-      'password': password,
-    }); */
-
-    // dummy delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    // dummy register data
-    return {
-      'id': 1,
-      'username': username,
-      'token': username,
-      'name': username,
-      'email': email,
-      'gender': 'male',
-      'status': 'active',
-    };
+    return await _handler.post(
+        registerUrl,
+        jsonEncode({
+          'user': {
+            'username': username,
+            'password': password,
+          }
+        }));
   }
 
   static Future login(String username, String password) async {
-    /* return await _handler.post(loginUrl, {
-      'username': username,
-      'password': password,
-    }); */
-
-    // dummy delay
-    await Future.delayed(const Duration(seconds: 2));
-
-    // dummy login data
-    return {
-      'id': 1,
-      'username': username,
-      'token': username,
-      'name': username,
-      'email': '$username@gmail.com',
-      'gender': 'male',
-      'status': 'active',
-    };
+    return await _handler.post(
+        loginUrl,
+        jsonEncode({
+          'user': {
+            'username': username,
+            'password': password,
+          }
+        }));
   }
 
   static Future user(int id) async {

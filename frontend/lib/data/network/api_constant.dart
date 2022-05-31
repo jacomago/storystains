@@ -1,7 +1,7 @@
 part of 'api.dart';
 
 // Dummy API URL
-String baseUrl = 'https://gorest.co.in/public/v1';
-String registerUrl = '';
-String loginUrl = '';
+String baseUrl = 'http://localhost:8080';
+String registerUrl = '$baseUrl/signup';
+String loginUrl = '$baseUrl/login';
 String userUrl = '$baseUrl/users';
