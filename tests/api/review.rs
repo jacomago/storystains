@@ -4,20 +4,22 @@ use serde_json::{json, Value};
 use crate::helpers::{spawn_app, TestApp};
 
 impl TestApp {
-    pub async fn post_review(&self, body: String) -> reqwest::Response {
+    pub async fn post_review(&self, body: String, token: &str) -> reqwest::Response {
         self.api_client
             .post(&format!("{}/reviews", &self.address))
             .header("Content-Type", "application/json")
+            .bearer_auth(token)
             .body(body)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
-    pub async fn put_review(&self, slug: String, body: String) -> reqwest::Response {
+    pub async fn put_review(&self, slug: String, body: String, token: &str) -> reqwest::Response {
         self.api_client
             .put(&format!("{}/reviews/{}", &self.address, &slug))
             .header("Content-Type", "application/json")
+            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -36,9 +38,10 @@ impl TestApp {
         self.get_review(title).await.text().await.unwrap()
     }
 
-    pub async fn delete_review(&self, slug: String) -> reqwest::Response {
+    pub async fn delete_review(&self, slug: String, token: &str) -> reqwest::Response {
         self.api_client
             .delete(&format!("{}/reviews/{}", &self.address, &slug))
+            .bearer_auth(token)
             .send()
             .await
             .expect("Failed to execute request.")
@@ -52,7 +55,7 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    let response = app.post_review(body.to_string()).await;
+    let response = app.post_review(body.to_string(), "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -62,12 +65,12 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 async fn post_review_returns_unauth_when_logged_out() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
-    app.post_logout().await;
+    let token = app.test_user.login(&app).await;
+    app.test_user.logout().await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    let response = app.post_review(body.to_string()).await;
+    let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -77,11 +80,11 @@ async fn post_review_returns_unauth_when_logged_out() {
 async fn post_review_persists_the_new_review() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    let response = app.post_review(body.to_string()).await;
+    let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -100,7 +103,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = spawn_app().await;
 
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
     let test_cases = vec![
         (json!({"review": {"title": "Dune"} }), "missing the review"),
         (json!({ "review":{"review":"5stars"} }), "missing the title"),
@@ -109,7 +112,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
 
     for (invalid_body, error_message) in test_cases {
         // Act
-        let response = app.post_review(invalid_body.to_string()).await;
+        let response = app.post_review(invalid_body.to_string(), &token).await;
 
         // Assert
         assert_eq!(
@@ -126,7 +129,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
 async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     let test_cases = vec![
         (
@@ -140,7 +143,7 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.post_review(body.to_string()).await;
+        let response = app.post_review(body.to_string(), &token).await;
 
         // Assert
         assert_eq!(
@@ -156,12 +159,12 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
 async fn post_review_returns_json() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
 
     // Act
-    let response = app.post_review(body.to_string()).await;
+    let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -175,12 +178,12 @@ async fn post_review_returns_json() {
 async fn get_review_logged_in_returns_json() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
 
     // Act
-    let response = app.post_review(body.to_string()).await;
+    let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -195,17 +198,17 @@ async fn get_review_logged_in_returns_json() {
 async fn get_review_logged_out_returns_json() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
 
     // Act
-    let response = app.post_review(body.to_string()).await;
+    let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    app.post_logout().await;
+    app.test_user.logout().await;
 
     let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
@@ -244,7 +247,9 @@ async fn put_review_returns_unauth_when_not_logged_in() {
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    let response = app.put_review("dune".to_string(), body.to_string()).await;
+    let response = app
+        .put_review("dune".to_string(), body.to_string(), "")
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -254,13 +259,15 @@ async fn put_review_returns_unauth_when_not_logged_in() {
 async fn put_review_returns_a_200_for_valid_json_data() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    app.post_review(body.to_string()).await;
+    app.post_review(body.to_string(), &token).await;
     let body = json!({"review": {"review":"3stars" }});
-    let response = app.put_review("dune".to_string(), body.to_string()).await;
+    let response = app
+        .put_review("dune".to_string(), body.to_string(), &token)
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -278,13 +285,14 @@ async fn put_review_returns_a_200_for_valid_json_data() {
 async fn put_review_returns_not_found_for_non_existant_review() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     // Act
     let response = app
         .put_review(
             "dune".to_string(),
             json!({"review": {"title": "Dune", "review":"5stars" }}).to_string(),
+            &token,
         )
         .await;
 
@@ -296,11 +304,11 @@ async fn put_review_returns_not_found_for_non_existant_review() {
 async fn put_review_returns_bad_request_for_invalid_slug() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     // Act
     let response = app
-        .put_review("a".repeat(257).to_string(), "".to_string())
+        .put_review("a".repeat(257).to_string(), "".to_string(), &token)
         .await;
 
     // Assert
@@ -311,10 +319,10 @@ async fn put_review_returns_bad_request_for_invalid_slug() {
 async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    app.post_review(body.to_string()).await;
+    app.post_review(body.to_string(), &token).await;
 
     let test_cases = vec![
         (
@@ -328,7 +336,9 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.put_review("dune".to_string(), body.to_string()).await;
+        let response = app
+            .put_review("dune".to_string(), body.to_string(), &token)
+            .await;
 
         // Assert
         assert_eq!(
@@ -344,15 +354,17 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
 async fn put_review_returns_json() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    app.post_review(body.to_string()).await;
+    app.post_review(body.to_string(), &token).await;
 
     let body = json!({"review": {"title": "Dune2", "review":"3stars" }});
 
     // Act
-    let response = app.put_review("dune".to_string(), body.to_string()).await;
+    let response = app
+        .put_review("dune".to_string(), body.to_string(), &token)
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -367,7 +379,7 @@ async fn delete_review_returns_unauth_when_not_logged_in() {
     let app = spawn_app().await;
 
     // Act
-    let response = app.delete_review("dune".to_string()).await;
+    let response = app.delete_review("dune".to_string(), "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -377,10 +389,10 @@ async fn delete_review_returns_unauth_when_not_logged_in() {
 async fn delete_review_returns_bad_request_for_invalid_title() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     // Act
-    let response = app.delete_review("a".repeat(257).to_string()).await;
+    let response = app.delete_review("a".repeat(257).to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
@@ -390,12 +402,12 @@ async fn delete_review_returns_bad_request_for_invalid_title() {
 async fn delete_review_returns_a_200_for_valid_slug() {
     // Arrange
     let app = spawn_app().await;
-    app.test_user.login(&app).await;
+    let token = app.test_user.login(&app).await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "review":"5stars" }});
-    app.post_review(body.to_string()).await;
-    let response = app.delete_review("dune".to_string()).await;
+    app.post_review(body.to_string(), &token).await;
+    let response = app.delete_review("dune".to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);

@@ -34,8 +34,8 @@ impl TryFrom<UserId> for sqlx::types::Uuid {
     }
 }
 
-#[derive(serde::Deserialize, serde::Serialize)]
 pub struct StoredUser {
+    pub user_id: sqlx::types::Uuid,
     pub username: String,
 }
 
@@ -44,11 +44,12 @@ pub struct UserResponse {
     user: UserResponseData,
 }
 
-impl From<StoredUser> for UserResponse {
-    fn from(stored: StoredUser) -> Self {
+impl From<(StoredUser, String)> for UserResponse {
+    fn from(user_token: (StoredUser, String)) -> Self {
         Self {
             user: UserResponseData {
-                username: stored.username,
+                username: user_token.0.username,
+                token: user_token.1,
             },
         }
     }
@@ -57,6 +58,7 @@ impl From<StoredUser> for UserResponse {
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct UserResponseData {
     username: String,
+    token: String,
 }
 
 pub struct NewUser {

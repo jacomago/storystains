@@ -4,11 +4,12 @@ use anyhow::Context;
 use reqwest::StatusCode;
 use secrecy::Secret;
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use crate::{
     api::error_chain_fmt,
-    auth::{validate_credentials, AuthError, Credentials},
-    session_state::TypedSession,
+    auth::{validate_credentials, AuthClaim, AuthError, Credentials},
+    startup::{ExpTokenSeconds, HmacSecret},
 };
 
 use super::{
@@ -43,13 +44,14 @@ pub struct LoginData {
 }
 
 #[tracing::instrument(
-    skip(json, pool, session),
+    skip(json, pool, exp_token_days, secret),
     fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
 )]
 pub async fn login(
     json: web::Json<LoginUser>,
     pool: web::Data<PgPool>,
-    session: TypedSession,
+    exp_token_days: web::Data<ExpTokenSeconds>,
+    secret: web::Data<HmacSecret>,
 ) -> Result<HttpResponse, InternalError<LoginError>> {
     let credentials = Credentials {
         username: json.0.user.username,
@@ -60,15 +62,11 @@ pub async fn login(
 
     match validate_credentials(credentials, &pool).await {
         Ok(user_id) => {
-            tracing::Span::current().record("user_id", &tracing::field::display(&user_id));
-            session.renew();
-            session
-                .insert_user_id(user_id)
-                .map_err(|e| login_error(LoginError::UnexpectedError(e.into())))?;
             let user = read_user_from_id(&user_id, &pool)
                 .await
                 .map_err(|e| login_error(LoginError::UnexpectedError(e)))?;
-            Ok(HttpResponse::Ok().json(UserResponse::from(user)))
+            let token = AuthClaim::new(&user.username, user_id, &exp_token_days).token(&secret);
+            Ok(HttpResponse::Ok().json(UserResponse::from((user, token))))
         }
         Err(e) => {
             let e = match e {
@@ -91,15 +89,6 @@ where
     T: std::fmt::Debug + std::fmt::Display + 'static,
 {
     actix_web::error::ErrorInternalServerError(e)
-}
-
-pub async fn log_out(session: TypedSession) -> Result<HttpResponse, actix_web::Error> {
-    if session.get_user_id().map_err(e500)?.is_none() {
-        Ok(HttpResponse::Ok().finish())
-    } else {
-        session.log_out();
-        Ok(HttpResponse::Ok().finish())
-    }
 }
 
 #[derive(thiserror::Error)]
@@ -144,10 +133,12 @@ impl TryFrom<SignupUserData> for NewUser {
     }
 }
 
-#[tracing::instrument(name = "Signup a user", skip(pool, json))]
+#[tracing::instrument(name = "Signup a user", skip(pool, json, exp_token_days, secret))]
 pub async fn signup(
     json: web::Json<SignupUser>,
     pool: web::Data<PgPool>,
+    exp_token_days: web::Data<ExpTokenSeconds>,
+    secret: web::Data<HmacSecret>,
 ) -> Result<HttpResponse, SignupError> {
     let new_user = json
         .0
@@ -157,5 +148,7 @@ pub async fn signup(
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
-    Ok(HttpResponse::Ok().json(UserResponse::from(stored)))
+    let user_id = Uuid::from_u128(stored.user_id.as_u128());
+    let token = AuthClaim::new(&stored.username, user_id, &exp_token_days).token(&secret);
+    Ok(HttpResponse::Ok().json(UserResponse::from((stored, token))))
 }

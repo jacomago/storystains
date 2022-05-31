@@ -39,7 +39,8 @@ actix-session = { version = "0.6", features = ["redis-rs-tls-session"] }
 rand = { version = "0.8", features = ["std_rng"] }
 actix-web-lab = "0.16"
 actix-cors = "0.6.1"
-
+jsonwebtoken = "8.1.0"
+actix-web-httpauth = "0.6.0"
 
 [dependencies.reqwest]
 version = "0.11"

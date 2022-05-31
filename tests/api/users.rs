@@ -15,14 +15,6 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn post_logout(&self) -> reqwest::Response {
-        self.api_client
-            .post(&format!("{}/logout", &self.address))
-            .send()
-            .await
-            .expect("Failed to execute request.")
-    }
-
     pub async fn post_signup(&self, body: String) -> reqwest::Response {
         self.api_client
             .post(&format!("{}/signup", &self.address))
@@ -70,6 +62,7 @@ async fn login_returns_user_details_after_correct_request() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], app.test_user.username);
+    assert!(json["user"]["token"].is_string());
 }
 
 #[tokio::test]
@@ -119,4 +112,5 @@ async fn signup_return_user_details_after_correct_request() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], username);
+    assert!(json["user"]["token"].is_string());
 }

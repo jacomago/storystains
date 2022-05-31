@@ -1,12 +1,12 @@
 application:
   port: 8080
   base_url: "http://localhost"
-  hmac_secret: "super-long-and-secret-random-key-needed-to-verify-message-integrity"
+  hmac_secret: "E1Ta/KyHHCx8V6GAW1CS2/7IkzTkYEIdDL+FlW8N280="
+  exp_token_seconds: 14400 # 4 hours in seconds
 database:
   host: "localhost"
   port: 5432
   username: "postgres"
   password: "password"
   database_name: "storystains"
-redis_uri: "redis://127.0.0.1:6379"
 frontend_origin: "http://localhost:50547"

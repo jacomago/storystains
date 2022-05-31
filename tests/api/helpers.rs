@@ -1,4 +1,8 @@
+use core::time;
+use std::thread;
+
 use once_cell::sync::Lazy;
+use serde_json::Value;
 use sqlx::{Connection, Executor, PgConnection, PgPool};
 use storystains::startup::get_connection_pool;
 use storystains::telemetry::{get_subscriber, init_subscriber};
@@ -55,6 +59,7 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
 pub async fn spawn_app() -> TestApp {
     Lazy::force(&TRACING);
 
+    let user = TestUser::generate();
     // Randomise configuration to ensure test isolation
     let configuration = {
         let mut c = get_configuration().expect("Failed to read configuration.");
@@ -62,6 +67,7 @@ pub async fn spawn_app() -> TestApp {
         c.database.database_name = Uuid::new_v4().to_string();
         // Use a random OS port
         c.application.port = 0;
+        c.application.exp_token_seconds = user.exp_seconds;
         c
     };
 
@@ -77,11 +83,9 @@ pub async fn spawn_app() -> TestApp {
 
     let api_client = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
-        .cookie_store(true)
         .build()
         .unwrap();
 
-    let user = TestUser::generate();
     let app = TestApp {
         address,
         db_pool: get_connection_pool(&configuration.database),
@@ -96,6 +100,7 @@ pub struct TestUser {
     pub user_id: Uuid,
     pub username: String,
     pub password: String,
+    pub exp_seconds: u64,
 }
 
 impl TestUser {
@@ -104,20 +109,29 @@ impl TestUser {
             user_id: Uuid::new_v4(),
             username: Uuid::new_v4().to_string(),
             password: Uuid::new_v4().to_string(),
+            exp_seconds: 20,
         }
     }
 
-    pub async fn login(&self, app: &TestApp) {
-        app.post_login(
-            serde_json::json!({
-                "user": {
-                    "username": &self.username,
-                    "password": &self.password
-                }
-            })
-            .to_string(),
-        )
-        .await;
+    pub async fn login(&self, app: &TestApp) -> String {
+        let response = app
+            .post_login(
+                serde_json::json!({
+                    "user": {
+                        "username": &self.username,
+                        "password": &self.password
+                    }
+                })
+                .to_string(),
+            )
+            .await;
+
+        let json: Value = response.json().await.expect("expected json response");
+        json["user"]["token"].as_str().unwrap().to_string()
+    }
+
+    pub async fn logout(&self) {
+        thread::sleep(time::Duration::from_secs(self.exp_seconds));
     }
 
     async fn store(&self, app: &TestApp) {

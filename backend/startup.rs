@@ -1,18 +1,13 @@
-use crate::api::{
-    delete_review_by_slug, get_review, log_out, login, post_review, put_review, signup,
-};
-use crate::auth::reject_anonymous_users;
+use crate::api::{delete_review_by_slug, get_review, login, post_review, put_review, signup};
+use crate::auth::bearer_auth;
 use crate::configuration::Settings;
 use crate::cors::cors;
 use crate::health_check::health_check;
-use actix_session::storage::RedisSessionStore;
-use actix_session::SessionMiddleware;
-use actix_web::cookie::Key;
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
-use actix_web_lab::middleware::from_fn;
-use secrecy::{ExposeSecret, Secret};
+use actix_web_httpauth::middleware::HttpAuthentication;
+use secrecy::Secret;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -46,9 +41,9 @@ impl Application {
             listener,
             connection_pool,
             configuration.application.base_url,
-            HmacSecret(configuration.application.hmac_secret),
-            configuration.redis_uri,
+            configuration.application.hmac_secret,
             configuration.frontend_origin,
+            configuration.application.exp_token_seconds,
         )
         .await?;
         Ok(Self { port, server })
@@ -68,31 +63,30 @@ pub struct ApplicationBaseUrl(pub String);
 #[derive(Clone)]
 pub struct HmacSecret(pub Secret<String>);
 
+#[derive(Clone)]
+pub struct ExpTokenSeconds(pub u64);
+
 async fn run(
     listener: TcpListener,
     db_pool: PgPool,
     base_url: String,
-    hmac_secret: HmacSecret,
-    redis_uri: Secret<String>,
+    hmac_secret: Secret<String>,
     frontend_origin: String,
+    exp_token_seconds: u64,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
 
     let base_url = Data::new(ApplicationBaseUrl(base_url));
-    let secret_key = Key::from(hmac_secret.0.expose_secret().as_bytes());
-    let redis_store = RedisSessionStore::new(redis_uri.expose_secret()).await?;
 
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(SessionMiddleware::new(
-                redis_store.clone(),
-                secret_key.clone(),
-            ))
             .wrap(TracingLogger::default())
             .wrap(cors(&frontend_origin))
             .configure(routes)
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
+            .app_data(Data::new(HmacSecret(hmac_secret.clone())))
+            .app_data(Data::new(ExpTokenSeconds(exp_token_seconds)))
     })
     .listen(listener)?
     .run();
@@ -100,16 +94,16 @@ async fn run(
 }
 
 fn routes(cfg: &mut web::ServiceConfig) {
+    let auth = HttpAuthentication::bearer(bearer_auth);
     cfg.service(
         web::scope("")
             .route("/health_check", web::get().to(health_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
-            .route("/logout", web::post().to(log_out))
             .route("/reviews/{slug}", web::get().to(get_review))
             .service(
                 web::scope("/reviews")
-                    .wrap(from_fn(reject_anonymous_users))
+                    .wrap(auth)
                     .route("", web::post().to(post_review))
                     .route("/{slug}", web::put().to(put_review))
                     .route("/{slug}", web::delete().to(delete_review_by_slug)),

@@ -9,7 +9,6 @@ use sqlx::ConnectOptions;
 pub struct Settings {
     pub database: DatabaseSettings,
     pub application: ApplicationSettings,
-    pub redis_uri: Secret<String>,
     pub frontend_origin: String,
 }
 
@@ -20,6 +19,7 @@ pub struct ApplicationSettings {
     pub host: String,
     pub base_url: String,
     pub hmac_secret: Secret<String>,
+    pub exp_token_seconds: u64,
 }
 
 #[derive(serde::Deserialize, Clone)]
