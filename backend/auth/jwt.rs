@@ -25,8 +25,8 @@ impl AuthClaim {
         jwt::encode(&jwt::Header::default(), self, &encoding_key.unwrap()).expect("jwt")
     }
 
-    pub fn new(username: &str, user_id: Uuid, exp_token_days: &ExpTokenSeconds) -> Self {
-        let exp = Utc::now() + Duration::seconds(exp_token_days.0.try_into().unwrap());
+    pub fn new(username: &str, user_id: Uuid, exp_token_seconds: &ExpTokenSeconds) -> Self {
+        let exp = Utc::now() + Duration::seconds(exp_token_seconds.0.try_into().unwrap());
         Self {
             exp: exp.timestamp(),
             id: user_id,
@@ -37,21 +37,19 @@ impl AuthClaim {
 
 /// Decode token into `Auth` struct. If any error is encountered, log it
 /// an return None.
-pub fn decode_token(token: &str, secret: &HmacSecret) -> Option<AuthClaim> {
+pub fn decode_token(token: &str, secret: &HmacSecret, leeway: u64) -> Option<AuthClaim> {
     use jwt::{Algorithm, Validation};
 
     let decoding_key = DecodingKey::from_base64_secret(
         std::str::from_utf8(secret.0.expose_secret().as_bytes()).unwrap(),
     );
 
-    jwt::decode(
-        token,
-        &decoding_key.unwrap(),
-        &Validation::new(Algorithm::HS256),
-    )
-    .map_err(|err| {
-        eprintln!("Auth decode error: {:?}", err);
-    })
-    .ok()
-    .map(|token_data| token_data.claims)
+    let mut validation = Validation::new(Algorithm::HS256);
+    validation.leeway = leeway;
+    jwt::decode(token, &decoding_key.unwrap(), &validation)
+        .map_err(|err| {
+            eprintln!("Auth decode error: {:?}", err);
+        })
+        .ok()
+        .map(|token_data| token_data.claims)
 }

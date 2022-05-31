@@ -109,7 +109,7 @@ impl TestUser {
             user_id: Uuid::new_v4(),
             username: Uuid::new_v4().to_string(),
             password: Uuid::new_v4().to_string(),
-            exp_seconds: 20,
+            exp_seconds: 1,
         }
     }
 
@@ -131,7 +131,7 @@ impl TestUser {
     }
 
     pub async fn logout(&self) {
-        thread::sleep(time::Duration::from_secs(self.exp_seconds));
+        thread::sleep(time::Duration::from_secs(self.exp_seconds + 2));
     }
 
     async fn store(&self, app: &TestApp) {

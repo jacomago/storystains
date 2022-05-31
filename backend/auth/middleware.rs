@@ -1,7 +1,10 @@
 use actix_web::{dev::ServiceRequest, error::InternalError, web, HttpMessage, HttpResponse};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 
-use crate::{api::UserId, startup::HmacSecret};
+use crate::{
+    api::UserId,
+    startup::{ExpTokenSeconds, HmacSecret},
+};
 
 use super::jwt;
 
@@ -18,9 +21,8 @@ pub async fn bearer_auth(
     credentials: BearerAuth,
 ) -> Result<ServiceRequest, actix_web::Error> {
     let key = {
-        let data: Option<&web::Data<HmacSecret>> = req.app_data::<web::Data<HmacSecret>>();
-        match data {
-            Some(k) => k,
+        match req.app_data::<web::Data<HmacSecret>>() {
+            Some(secret) => secret,
             None => {
                 let response = HttpResponse::InternalServerError().finish();
                 let e = anyhow::anyhow!("Error retreiving secret.");
@@ -28,8 +30,19 @@ pub async fn bearer_auth(
             }
         }
     };
+    let exp_seconds = {
+        match req.app_data::<web::Data<ExpTokenSeconds>>() {
+            Some(sec) => sec,
+            None => {
+                let response = HttpResponse::InternalServerError().finish();
+                let e = anyhow::anyhow!("Error retreiving secret.");
+                return Err(InternalError::from_response(e, response).into());
+            }
+        }
+    };
+    let leeway = exp_seconds.0 as f64 * 0.1;
     let token = credentials.token();
-    let claim = jwt::decode_token(token, key);
+    let claim = jwt::decode_token(token, key, leeway as u64);
     match claim {
         Some(c) => {
             req.extensions_mut().insert(UserId::new(c.id));
