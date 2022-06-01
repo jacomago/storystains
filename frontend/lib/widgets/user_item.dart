@@ -26,7 +26,7 @@ class UserItem extends StatelessWidget {
             child: const Icon(Icons.person),
           ),
         ),
-        title: Text(user.name),
+        title: Text(user.username),
         subtitle: Text(user.email),
         trailing: user.isActive ? const Icon(Icons.check) : null,
       ),
