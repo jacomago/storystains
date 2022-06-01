@@ -46,7 +46,7 @@ class Api {
 
   static Future reviews([int? limit, int? offset]) async {
     String url = '$reviewsUrl?';
-    if (limit is int && limit != default_limit) url += 'limit=$limit';
+    if (limit is int && limit != defaultLimit) url += 'limit=$limit';
     if (offset is int && offset > 0) url += 'offset=$offset';
     return await _handler.get(url);
   }

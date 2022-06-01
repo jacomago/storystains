@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/config/config.dart';
@@ -11,7 +10,7 @@ class MockReviewsService extends Mock implements ReviewsService {
   @override
   Future<List<Review>?> fetch(int limit, int offset) async {
     return List.generate(
-        default_limit,
+        defaultLimit,
         ((index) => Review(
             slug: index.toString(),
             title: "s",
@@ -37,7 +36,7 @@ void main() async {
 
       await reviewsState.fetch();
 
-      expect(reviewsState.count, default_limit);
+      expect(reviewsState.count, defaultLimit);
     });
 
     test('reviews state refresh', () async {
@@ -48,7 +47,7 @@ void main() async {
       await reviewsState.fetch();
       await reviewsState.refresh();
 
-      expect(reviewsState.count, default_limit);
+      expect(reviewsState.count, defaultLimit);
     });
   });
 }

@@ -42,14 +42,14 @@ class ReviewsState extends ChangeNotifier {
   Future<void> _init() async {
     _startLoading();
 
-    final items = await _service.fetch(default_limit, 0);
+    final items = await _service.fetch(defaultLimit, 0);
 
     if (items == null) {
       _isFailed = true;
     } else if (items.isEmpty) {
       _isEmpty = true;
     } else {
-      _offset = default_limit;
+      _offset = defaultLimit;
       _items = [...items];
     }
 
@@ -60,10 +60,10 @@ class ReviewsState extends ChangeNotifier {
   Future<void> refresh([int? limit]) async {
     _startLoading();
 
-    final items = await _service.fetch(default_limit, 1);
+    final items = await _service.fetch(defaultLimit, 1);
 
     if (items != null && items.isNotEmpty) {
-      _offset = 2 * default_limit;
+      _offset = 2 * defaultLimit;
       _items = [...items];
     }
 
@@ -75,7 +75,7 @@ class ReviewsState extends ChangeNotifier {
     if (!_isLoading) {
       _startLoading();
 
-      final items = await _service.fetch(default_limit, _offset);
+      final items = await _service.fetch(defaultLimit, _offset);
 
       if (items != null) {
         if (items.isEmpty) {
@@ -83,7 +83,7 @@ class ReviewsState extends ChangeNotifier {
           _isFailed = false;
           _hasReachedMax = true;
         } else {
-          _offset = _offset + default_limit;
+          _offset = _offset + defaultLimit;
           _items = [..._items, ...items];
 
           _isEmpty = false;
