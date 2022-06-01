@@ -29,3 +29,19 @@ class Review {
         'modified_at': modifiedAt.toIso8601String()
       };
 }
+
+class EditReview {
+  final String title;
+  final String review;
+
+  EditReview({required this.title, required this.review});
+
+  EditReview.fromJson(Map<dynamic, dynamic> json)
+      : title = json['title']?.toString() ?? '',
+        review = json['review']?.toString() ?? '';
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'review': review,
+      };
+}

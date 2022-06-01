@@ -9,7 +9,7 @@ import 'review_service.dart';
 
 enum ReviewEvent { add, update, delete }
 
-enum ReviewStatus { initial, open, added, updated, notChanged, deleted, failed }
+enum ReviewStatus { initial, open, changed, notChanged, failed }
 
 class ReviewState extends ChangeNotifier {
   final ReviewService _service;
@@ -27,9 +27,7 @@ class ReviewState extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   bool get isOpen => _status == ReviewStatus.open;
-  bool get isUpdated => _status == ReviewStatus.updated;
-  bool get isCreated => _status == ReviewStatus.added;
-  bool get isDeleted => _status == ReviewStatus.deleted;
+  bool get isChanged => _status == ReviewStatus.changed;
   bool get isFailed => _status == ReviewStatus.failed;
 
   ReviewState(this._service) {
@@ -47,7 +45,7 @@ class ReviewState extends ChangeNotifier {
     }
 
     if (_review != null) {
-      _status = ReviewStatus.open;
+      _status = ReviewStatus.changed;
     } else {
       _status = ReviewStatus.notChanged;
     }
@@ -55,7 +53,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future add(Review review) async {
+  Future add(EditReview review) async {
     _event = ReviewEvent.add;
     _isLoading = true;
 
@@ -69,7 +67,7 @@ class ReviewState extends ChangeNotifier {
 
         await Prefs.setString('review', jsonEncode(review.toJson()));
 
-        _status = ReviewStatus.added;
+        _status = ReviewStatus.changed;
       } else {
         _status = ReviewStatus.notChanged;
       }
@@ -82,7 +80,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future update(Review review) async {
+  Future update(EditReview review) async {
     _event = ReviewEvent.update;
     _isLoading = true;
 
@@ -97,39 +95,10 @@ class ReviewState extends ChangeNotifier {
         await Prefs.setString('review', jsonEncode(review!.toJson()));
         await Prefs.setString('token', data['review']['token']);
 
-        _status = ReviewStatus.updated;
+        _status = ReviewStatus.changed;
       } else {
         _status = ReviewStatus.notChanged;
       }
-    } catch (e) {
-      _status = ReviewStatus.failed;
-      _error = e.toString();
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  Future delete(Review review) async {
-    _event = ReviewEvent.delete;
-    _isLoading = true;
-
-    notifyListeners();
-
-    try {
-      final data = await _service.delete(review);
-
-      _review = Review.fromJson(data['review']);
-
-      await Prefs.remove('review');
-
-      _status = ReviewStatus.initial;
-      _error = '';
-      _event = null;
-      _review = null;
-      _isLoading = false;
-
-      _status = ReviewStatus.deleted;
     } catch (e) {
       _status = ReviewStatus.failed;
       _error = e.toString();

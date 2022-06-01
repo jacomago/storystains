@@ -27,15 +27,11 @@ class MockReviewService extends _i1.Mock implements _i2.ReviewService {
   }
 
   @override
-  _i3.Future<dynamic> add(_i4.Review? review) =>
+  _i3.Future<dynamic> add(_i4.EditReview? review) =>
       (super.noSuchMethod(Invocation.method(#add, [review]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> update(_i4.Review? review) =>
+  _i3.Future<dynamic> update(_i4.EditReview? review) =>
       (super.noSuchMethod(Invocation.method(#update, [review]),
-          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
-  @override
-  _i3.Future<dynamic> delete(_i4.Review? review) =>
-      (super.noSuchMethod(Invocation.method(#delete, [review]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
 }

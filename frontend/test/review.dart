@@ -28,10 +28,15 @@ void main() async {
           review: "r",
           createdAt: DateTime.now(),
           modifiedAt: DateTime.now());
-      when(mockReviewService.update(review)).thenAnswer((_) async => review);
-      await reviewState.update(review);
+      final editReview = EditReview(
+        title: "t",
+        review: "r",
+      );
+      when(mockReviewService.update(editReview))
+          .thenAnswer((_) async => review);
+      await reviewState.update(editReview);
 
-      expect(reviewState.isUpdated, true);
+      expect(reviewState.isChanged, true);
     });
 
     test('post', () async {
@@ -44,30 +49,14 @@ void main() async {
           review: "r",
           createdAt: DateTime.now(),
           modifiedAt: DateTime.now());
-      when(mockReviewService.add(review)).thenAnswer((_) async => review);
-      await reviewState.add(review);
+      final editReview = EditReview(
+        title: "t",
+        review: "r",
+      );
+      when(mockReviewService.add(editReview)).thenAnswer((_) async => review);
+      await reviewState.add(editReview);
 
-      expect(reviewState.isCreated, true);
-    });
-
-    test('deleted', () async {
-      SharedPreferences.setMockInitialValues({});
-      final mockReviewService = MockReviewService();
-      final reviewState = ReviewState(mockReviewService);
-
-      final review = Review(
-          slug: "s",
-          title: "t",
-          review: "r",
-          createdAt: DateTime.now(),
-          modifiedAt: DateTime.now());
-      when(mockReviewService.add(review)).thenAnswer((_) async => review);
-      await reviewState.add(review);
-
-      expect(reviewState.isCreated, true);
-
-      await reviewState.delete(review);
-      expect(reviewState.isDeleted, false);
+      expect(reviewState.isChanged, true);
     });
   });
 }

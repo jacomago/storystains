@@ -67,6 +67,13 @@ class HomePage extends StatelessWidget {
                   label: const Text('List Reviews'),
                   style: homeButtonStyle,
                 ),
+                const Gap(20),
+                OutlinedButton.icon(
+                  onPressed: () => context.push(Routes.editReview),
+                  icon: const Icon(Icons.book_outlined),
+                  label: const Text('Edit Reviews'),
+                  style: homeButtonStyle,
+                ),
                 const Gap(10),
                 auth.isAuthenticated
                     ? OutlinedButton(

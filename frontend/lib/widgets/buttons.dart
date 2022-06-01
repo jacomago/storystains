@@ -22,6 +22,28 @@ class LoginButton extends StatelessWidget {
   }
 }
 
+class UpdateButton extends StatelessWidget {
+  final String? text;
+  final double? width;
+  final void Function(BuildContext) onUpdate;
+
+  const UpdateButton(this.text, {Key? key, this.width, required this.onUpdate})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseButton(
+      width: width,
+      elevation: 2.4,
+      radius: 40.0,
+      text: text,
+      background: Colors.lightBlue,
+      gradientColors: [Colors.lightBlue, Colors.lightBlue[800]!],
+      onPressed: () => onUpdate(context),
+    );
+  }
+}
+
 class BaseButton extends StatelessWidget {
   /// This is a builder class for a nice button
   ///

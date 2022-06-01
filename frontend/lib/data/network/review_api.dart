@@ -10,18 +10,18 @@ class ReviewApi {
     return await _handler.get(url);
   }
 
-  static Future add(Review review) async {
+  static Future add(EditReview review) async {
     String url = '$reviewsUrl/$review.slug';
     return await _handler.post(url, review.toJson());
   }
 
-  static Future update(Review review) async {
+  static Future update(EditReview review) async {
     String url = '$reviewsUrl/$review.slug';
     return await _handler.put(url, review.toJson());
   }
 
-  static Future delete(Review review) async {
-    String url = '$reviewsUrl/$review.slug';
+  static Future delete(String slug) async {
+    String url = '$reviewsUrl/$slug';
     return await _handler.delete(url);
   }
 }
