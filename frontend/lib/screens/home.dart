@@ -35,7 +35,7 @@ class HomePage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.person_rounded),
                   onPressed: () => context.snackbar(
-                    'Hello ${auth.user?.name}',
+                    'Hello ${auth.user?.username}',
                   ),
                 ),
             ],

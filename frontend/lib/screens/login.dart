@@ -31,7 +31,7 @@ class Login extends StatelessWidget {
 
     if (auth.isAuthenticated) {
       context.pop();
-      context.snackbar('Signed in as ${auth.user?.name}');
+      context.snackbar('Signed in as ${auth.user?.username}');
     } else {
       WidgetsBinding.instance
           .addPostFrameCallback((_) => (_pcontroller.clear()));
