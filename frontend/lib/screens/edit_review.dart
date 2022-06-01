@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/config/themes.dart';
 
@@ -44,17 +43,17 @@ class ReviewEdit extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.all(16.w),
+        padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(24.w),
+                padding: const EdgeInsets.all(24),
                 child: TextFormField(
                   controller: _ucontroller,
                   decoration: const InputDecoration(
-                    labelText: 'Username',
-                    prefixIcon: Icon(Icons.person),
+                    labelText: 'Title',
+                    prefixIcon: Icon(Icons.title),
                   ),
                   textInputAction: TextInputAction.next,
                   enableSuggestions: false,
@@ -62,18 +61,18 @@ class ReviewEdit extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(24.w),
+                padding: const EdgeInsets.all(24),
                 child: TextField(
                   textInputAction: TextInputAction.newline,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Content',
+                    labelText: 'Review',
                     alignLabelWithHint: true,
-                    hintText: 'Write your article (in markdown)',
+                    hintText: 'Write your review (in markdown)',
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 28.sp,
+                    fontSize: 28,
                   ),
                   controller: _rcontroller,
                   minLines: 5,
@@ -89,9 +88,9 @@ class ReviewEdit extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onUpdate(context),
-        child: Icon(
+        child: const Icon(
           Icons.send_rounded,
-          size: 48.w,
+          size: 40,
           color: Colors.white,
         ),
         backgroundColor: appTheme.primaryColor,

@@ -5,7 +5,7 @@ import 'package:storystains/screens/login.dart';
 import 'package:storystains/screens/splash.dart';
 import 'package:storystains/screens/users.dart';
 
-import '../screens/review.dart';
+import '../screens/edit_review.dart';
 import '../screens/reviews.dart';
 
 class Routes {
