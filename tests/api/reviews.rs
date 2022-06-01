@@ -34,8 +34,21 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_review_json(&self, title: String) -> String {
-        self.get_review(title).await.text().await.unwrap()
+    pub async fn get_review_json(&self, slug: String) -> String {
+        self.get_review(slug).await.text().await.unwrap()
+    }
+
+    pub async fn get_reviews(&self, limit: i64, offset: i64) -> reqwest::Response {
+        self.api_client
+            .get(&format!("{}/reviews", &self.address))
+            .query(&[("limit", limit), ("offset", offset)])
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+
+    pub async fn get_reviews_json(&self, limit: i64, offset: i64) -> String {
+        self.get_reviews(limit, offset).await.text().await.unwrap()
     }
 
     pub async fn delete_review(&self, slug: String, token: &str) -> reqwest::Response {
@@ -418,4 +431,21 @@ async fn delete_review_returns_a_200_for_valid_slug() {
         .expect("Query failed to execute.");
 
     assert!(saved.is_none());
+}
+
+#[tokio::test]
+async fn get_reviews_returns_empty_list() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.get_reviews(10, 0).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json_page = response.text().await.unwrap();
+    let json: Value = serde_json::from_str(&json_page).unwrap();
+    assert!(json["reviews"].is_array());
+    assert!(json["reviews"].as_array().unwrap().is_empty())
 }

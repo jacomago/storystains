@@ -1,4 +1,4 @@
 mod health_check;
 mod helpers;
-mod review;
+mod reviews;
 mod users;

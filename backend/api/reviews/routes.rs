@@ -3,11 +3,14 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, UserId};
+use crate::api::{error_chain_fmt, Limits, UserId};
 
 use super::{
-    db::{create_review, delete_review, read_review, update_review},
-    model::{NewReview, ReviewResponse, ReviewSlug, ReviewText, ReviewTitle, UpdateReview},
+    db::{create_review, delete_review, read_review, read_reviews, update_review},
+    model::{
+        NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewText, ReviewTitle,
+        ReviewsResponse, UpdateReview,
+    },
 };
 
 #[derive(thiserror::Error)]
@@ -83,7 +86,9 @@ pub async fn post_review(
     let stored = create_review(&new_review, pool.get_ref())
         .await
         .context("Failed to store new review.")?;
-    Ok(HttpResponse::Ok().json(ReviewResponse::from(stored)))
+    Ok(HttpResponse::Ok().json(ReviewResponse {
+        review: ReviewResponseData::from(stored),
+    }))
 }
 
 #[tracing::instrument(
@@ -102,7 +107,9 @@ pub async fn get_review(
         .await
         .map_err(ReviewError::NoDataError)?;
 
-    Ok(HttpResponse::Ok().json(ReviewResponse::from(stored)))
+    Ok(HttpResponse::Ok().json(ReviewResponse {
+        review: ReviewResponseData::from(stored),
+    }))
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -156,7 +163,9 @@ pub async fn put_review(
     let stored = update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
-    Ok(HttpResponse::Ok().json(ReviewResponse::from(stored)))
+    Ok(HttpResponse::Ok().json(ReviewResponse {
+        review: ReviewResponseData::from(stored),
+    }))
 }
 
 #[tracing::instrument(
@@ -175,4 +184,24 @@ pub async fn delete_review_by_slug(
         .await
         .context("delete query failed")?;
     Ok(HttpResponse::Ok().finish())
+}
+
+#[tracing::instrument(
+    name = "Getting reviews",
+    skip(pool),
+    fields(
+        limit = %query.limit,
+        offset = %query.offset
+    )
+)]
+pub async fn get_reviews(
+    query: web::Query<Limits>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ReviewError> {
+    let limits = query.0;
+    let stored = read_reviews(&limits, pool.get_ref())
+        .await
+        .map_err(ReviewError::NoDataError)?;
+
+    Ok(HttpResponse::Ok().json(ReviewsResponse::from(stored)))
 }

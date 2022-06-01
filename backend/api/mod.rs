@@ -18,3 +18,9 @@ pub fn error_chain_fmt(
     }
     Ok(())
 }
+
+#[derive(Debug, serde::Deserialize)]
+pub struct Limits {
+    limit: i64,
+    offset: i64,
+}

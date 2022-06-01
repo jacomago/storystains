@@ -40,21 +40,7 @@ impl Serialize for ResponseTime {
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct ReviewResponse {
-    review: ReviewResponseData,
-}
-
-impl From<StoredReview> for ReviewResponse {
-    fn from(stored: StoredReview) -> Self {
-        Self {
-            review: ReviewResponseData {
-                title: stored.title,
-                slug: stored.slug,
-                review: stored.review,
-                created_at: ResponseTime(stored.created_at),
-                updated_at: ResponseTime(stored.updated_at),
-            },
-        }
-    }
+    pub review: ReviewResponseData,
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -64,4 +50,29 @@ pub struct ReviewResponseData {
     review: String,
     created_at: ResponseTime,
     updated_at: ResponseTime,
+}
+
+impl From<StoredReview> for ReviewResponseData {
+    fn from(stored: StoredReview) -> Self {
+        Self {
+            title: stored.title,
+            slug: stored.slug,
+            review: stored.review,
+            created_at: ResponseTime(stored.created_at),
+            updated_at: ResponseTime(stored.updated_at),
+        }
+    }
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct ReviewsResponse {
+    reviews: Vec<ReviewResponseData>,
+}
+
+impl From<Vec<StoredReview>> for ReviewsResponse {
+    fn from(stored: Vec<StoredReview>) -> Self {
+        Self {
+            reviews: stored.into_iter().map(ReviewResponseData::from).collect(),
+        }
+    }
 }

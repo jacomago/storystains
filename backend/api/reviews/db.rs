@@ -2,7 +2,7 @@ use chrono::Utc;
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::api::reviews::model::StoredReview;
+use crate::api::{reviews::model::StoredReview, Limits};
 
 use super::model::{NewReview, ReviewSlug, UpdateReview};
 
@@ -30,6 +30,39 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
         e
     })?;
     Ok(review)
+}
+
+#[tracing::instrument(
+    name = "Retreive review details from the database", 
+    skip( pool),
+    fields(
+        limit = %limits.limit,
+        offset = %limits.offset
+    )
+)]
+pub async fn read_reviews(
+    limits: &Limits,
+    pool: &PgPool,
+) -> Result<Vec<StoredReview>, sqlx::Error> {
+    let reviews = sqlx::query_as!(
+        StoredReview,
+        r#"
+            SELECT title, slug, review, created_at, updated_at, user_id
+            FROM reviews 
+            ORDER BY updated_at
+            LIMIT $1
+            OFFSET $2
+        "#,
+        limits.limit,
+        limits.offset
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(reviews)
 }
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
