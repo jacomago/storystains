@@ -3,7 +3,7 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, Limits, UserId};
+use crate::api::{error_chain_fmt, QueryLimits, UserId};
 
 use super::{
     db::{create_review, delete_review, read_review, read_reviews, update_review},
@@ -186,19 +186,12 @@ pub async fn delete_review_by_slug(
     Ok(HttpResponse::Ok().finish())
 }
 
-#[tracing::instrument(
-    name = "Getting reviews",
-    skip(pool),
-    fields(
-        limit = %query.limit,
-        offset = %query.offset
-    )
-)]
+#[tracing::instrument(name = "Getting reviews", skip(pool, query), fields())]
 pub async fn get_reviews(
-    query: web::Query<Limits>,
+    query: web::Query<QueryLimits>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
-    let limits = query.0;
+    let limits = query.0.into();
     let stored = read_reviews(&limits, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;

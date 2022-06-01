@@ -38,7 +38,7 @@ impl TestApp {
         self.get_review(slug).await.text().await.unwrap()
     }
 
-    pub async fn get_reviews(&self, limit: i64, offset: i64) -> reqwest::Response {
+    pub async fn get_reviews(&self, limit: Option<i64>, offset: Option<i64>) -> reqwest::Response {
         self.api_client
             .get(&format!("{}/reviews", &self.address))
             .query(&[("limit", limit), ("offset", offset)])
@@ -47,7 +47,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_reviews_json(&self, limit: i64, offset: i64) -> String {
+    pub async fn get_reviews_json(&self, limit: Option<i64>, offset: Option<i64>) -> String {
         self.get_reviews(limit, offset).await.text().await.unwrap()
     }
 
@@ -439,12 +439,27 @@ async fn get_reviews_returns_empty_list() {
     let app = spawn_app().await;
 
     // Act
-    let response = app.get_reviews(10, 0).await;
+    let response = app.get_reviews(Some(10), Some(0)).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
     let json_page = response.text().await.unwrap();
+    let json: Value = serde_json::from_str(&json_page).unwrap();
+    assert!(json["reviews"].is_array());
+    assert!(json["reviews"].as_array().unwrap().is_empty())
+}
+
+#[tokio::test]
+async fn get_reviews_returns_allows_empty_query() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let json_page = app.get_reviews_json(None, None).await;
+
+
+    // Assert
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert!(json["reviews"].is_array());
     assert!(json["reviews"].as_array().unwrap().is_empty())
