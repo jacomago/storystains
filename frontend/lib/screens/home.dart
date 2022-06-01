@@ -60,6 +60,13 @@ class HomePage extends StatelessWidget {
                   label: const Text('List Users'),
                   style: homeButtonStyle,
                 ),
+                const Gap(20),
+                OutlinedButton.icon(
+                  onPressed: () => context.push(Routes.reviews),
+                  icon: const Icon(Icons.book),
+                  label: const Text('List Reviews'),
+                  style: homeButtonStyle,
+                ),
                 const Gap(10),
                 auth.isAuthenticated
                     ? OutlinedButton(

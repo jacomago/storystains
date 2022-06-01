@@ -4,3 +4,4 @@ part of 'api.dart';
 String registerUrl = '$baseUrl/signup';
 String loginUrl = '$baseUrl/login';
 String userUrl = '$baseUrl/users';
+String reviewsUrl = '$baseUrl/reviews';
