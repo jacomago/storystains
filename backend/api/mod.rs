@@ -19,11 +19,11 @@ pub fn error_chain_fmt(
     Ok(())
 }
 
-const DEFAULT_LIMIT: i64 = 20;
+const DEFAULT_LIMIT: u64 = 20;
 #[derive(Debug, serde::Deserialize)]
 pub struct QueryLimits {
-    limit: Option<i64>,
-    offset: Option<i64>,
+    limit: Option<u64>,
+    offset: Option<u64>,
 }
 
 #[derive(Debug)]
@@ -36,6 +36,9 @@ impl From<QueryLimits> for Limits {
     fn from(query: QueryLimits) -> Self {
         let limit = query.limit.unwrap_or(DEFAULT_LIMIT);
         let offset = query.offset.unwrap_or(0);
-        Self { limit, offset }
+        Self {
+            limit: limit as i64,
+            offset: offset as i64,
+        }
     }
 }

@@ -458,9 +458,20 @@ async fn get_reviews_returns_allows_empty_query() {
     // Act
     let json_page = app.get_reviews_json(None, None).await;
 
-
     // Assert
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert!(json["reviews"].is_array());
     assert!(json["reviews"].as_array().unwrap().is_empty())
+}
+
+#[tokio::test]
+async fn get_reviews_returns_bad_request_for_invalid_query() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let response = app.get_reviews(Some(-10), Some(-10)).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 }
