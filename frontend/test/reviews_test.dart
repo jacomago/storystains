@@ -7,9 +7,20 @@ import 'package:storystains/config/config.dart';
 import 'package:storystains/models/review.dart';
 import 'package:storystains/modules/reviews/reviews.dart';
 
-import 'reviews_test.mocks.dart';
+class MockReviewsService extends Mock implements ReviewsService {
+  @override
+  Future<List<Review>?> fetch(int limit, int offset) async {
+    return List.generate(
+        default_limit,
+        ((index) => Review(
+            slug: index.toString(),
+            title: "s",
+            review: "review",
+            createdAt: DateTime.now(),
+            modifiedAt: DateTime.now())));
+  }
+}
 
-@GenerateMocks([ReviewsService])
 void main() async {
   group('basic reviews', () {
     test('starts not logged in', () async {
@@ -23,18 +34,7 @@ void main() async {
       SharedPreferences.setMockInitialValues({});
       final mockReviewsService = MockReviewsService();
       final reviewsState = ReviewsState(mockReviewsService);
-      
-      final reviews = List.generate(
-          default_limit,
-          ((index) => Review(
-              slug: index.toString(),
-              title: "s",
-              review: "review",
-              createdAt: DateTime.now(),
-              modifiedAt: DateTime.now())));
 
-      when(mockReviewsService.fetch( ))
-          .thenAnswer((_) async => reviews);
       await reviewsState.fetch();
 
       expect(reviewsState.count, default_limit);
@@ -45,21 +45,10 @@ void main() async {
       final mockReviewsService = MockReviewsService();
       final reviewsState = ReviewsState(mockReviewsService);
 
-      final reviews = List.generate(
-          default_limit,
-          ((index) => Review(
-              slug: index.toString(),
-              title: "s",
-              review: "review",
-              createdAt: DateTime.now(),
-              modifiedAt: DateTime.now())));
-
-      when(mockReviewsService.fetch(default_limit, 0))
-          .thenAnswer((_) async => reviews);
       await reviewsState.fetch();
       await reviewsState.refresh();
 
-      expect(reviewsState.count, 2 * default_limit);
+      expect(reviewsState.count, default_limit);
     });
   });
 }

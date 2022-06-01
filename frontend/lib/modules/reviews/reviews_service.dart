@@ -2,7 +2,7 @@ import 'package:storystains/data/network/api.dart';
 import 'package:storystains/models/review.dart';
 
 class ReviewsService {
-  Future<List<Review>?> fetch([int? limit, int? offset]) async {
+  Future<List<Review>?> fetch(int limit, int offset) async {
     try {
       final res = await Api.reviews(limit, offset);
 
