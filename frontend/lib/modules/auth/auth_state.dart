@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 
@@ -7,6 +8,7 @@ import 'package:storystains/modules/auth/auth.dart';
 import 'package:storystains/utils/utils.dart';
 
 enum AuthEvent { register, login, logout }
+
 enum AuthStatus { initial, authenticated, notauthenticated, failed }
 
 class AuthState extends ChangeNotifier {
@@ -58,20 +60,20 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future register(String username, String email, String password) async {
+  Future register(String username, String password) async {
     _event = AuthEvent.register;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      final data = await _service.register(username, email, password);
+      final data = await _service.register(username, password);
 
-      if (data is Map && data.containsKey('token')) {
-        _user = User.fromJson(data);
+      if (data is Map && data.containsKey('user')) {
+        _user = User.fromJson(data['user']);
 
         await Prefs.setString('user', jsonEncode(user!.toJson()));
-        await Prefs.setString('token', data['token']);
+        await Prefs.setString('token', data['user']['token']);
 
         _status = AuthStatus.authenticated;
       } else {
@@ -95,11 +97,11 @@ class AuthState extends ChangeNotifier {
     try {
       final data = await _service.login(username, password);
 
-      if (data is Map && data.containsKey('token')) {
-        _user = User.fromJson(data);
+      if (data is Map && data.containsKey('user')) {
+        _user = User.fromJson(data['user']);
 
         await Prefs.setString('user', jsonEncode(user!.toJson()));
-        await Prefs.setString('token', data['token']);
+        await Prefs.setString('token', data['user']['token']);
 
         _status = AuthStatus.authenticated;
       } else {

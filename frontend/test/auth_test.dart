@@ -1,14 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:storystains/config/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/modules/auth/auth.dart';
 
 import 'auth_test.mocks.dart';
 
-@GenerateMocks([http.Client])
+@GenerateMocks([AuthService])
 void main() async {
   group('basic auth', () {
     test('starts not logged in', () async {
@@ -19,15 +18,46 @@ void main() async {
     });
 
     test('logging in', () async {
-      final authService = AuthService();
-      final authState = AuthState(authService);
-      final client = MockClient();
+      SharedPreferences.setMockInitialValues({});
+      final mockAuthService = MockAuthService();
+      final authState = AuthState(mockAuthService);
 
-      when(client.post(Uri.parse('$baseUrl/login'))).thenAnswer((_) async =>
-          http.Response('{"user":{"username":"user", "token": "token"}}', 200));
+      when(mockAuthService.login("user", "password")).thenAnswer((_) async => {
+            "user": {"username": "user", "token": "token"}
+          });
       await authState.login("user", "password");
 
       expect(authState.isAuthenticated, true);
+    });
+
+    test('register', () async {
+      SharedPreferences.setMockInitialValues({});
+      final mockAuthService = MockAuthService();
+      final authState = AuthState(mockAuthService);
+
+      when(mockAuthService.register("user", "password"))
+          .thenAnswer((_) async => {
+                "user": {"username": "user", "token": "token"}
+              });
+      await authState.register("user", "password");
+
+      expect(authState.isAuthenticated, true);
+    });
+
+    test('log out', () async {
+      SharedPreferences.setMockInitialValues({});
+      final mockAuthService = MockAuthService();
+      final authState = AuthState(mockAuthService);
+
+      when(mockAuthService.login("user", "password")).thenAnswer((_) async => {
+            "user": {"username": "user", "token": "token"}
+          });
+      await authState.login("user", "password");
+
+      expect(authState.isAuthenticated, true);
+
+      await authState.logout();
+      expect(authState.isAuthenticated, false);
     });
   });
 }

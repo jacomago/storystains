@@ -11,7 +11,7 @@ part 'api_handler.dart';
 class Api {
   static final ApiHandler _handler = ApiHandler();
 
-  static Future register(String username, String email, String password) async {
+  static Future register(String username, String password) async {
     return await _handler.post(
         registerUrl,
         jsonEncode({
