@@ -475,3 +475,32 @@ async fn get_reviews_returns_bad_request_for_invalid_query() {
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 }
+
+#[tokio::test]
+async fn get_reviews_returns_reviews() {
+    // Arrange
+    let app = spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    // Act
+    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    app.post_review(body.to_string(), &token).await;
+    let body = json!({"review": {"title": "LoTR", "review":"4 stars" }});
+    app.post_review(body.to_string(), &token).await;
+
+    let response = app.get_reviews(Some(10), Some(0)).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json_page = response.text().await.unwrap();
+    let json: Value = serde_json::from_str(&json_page).unwrap();
+    assert!(json["reviews"].is_array());
+    assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
+
+    assert_eq!(json["reviews"][0]["title"], "Dune");
+    assert_eq!(json["reviews"][0]["review"], "5stars");
+
+    assert_eq!(json["reviews"][1]["title"], "LoTR");
+    assert_eq!(json["reviews"][1]["review"], "4 stars");
+}
