@@ -2,14 +2,14 @@ import 'package:storystains/data/network/api.dart';
 
 class AuthService {
   Future register(String username, String password) async {
-    return await Api.register(username, password);
+    return await UserApi.register(username, password);
   }
 
   Future login(String username, String password) async {
-    return await Api.login(username, password);
+    return await UserApi.login(username, password);
   }
 
   Future user(int id) async {
-    return await Api.user(id);
+    return await UserApi.user(id);
   }
 }

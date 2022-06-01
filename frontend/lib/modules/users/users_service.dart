@@ -4,7 +4,7 @@ import 'package:storystains/models/user.dart';
 class UsersService {
   Future<List<User>?> fetch([String? query, int? page]) async {
     try {
-      final res = await Api.users(query, page);
+      final res = await UserApi.users(query, page);
 
       if (res is Map && res.containsKey('data')) {
         final data = res['data'];

@@ -4,7 +4,7 @@ import 'package:storystains/models/review.dart';
 class ReviewsService {
   Future<List<Review>?> fetch(int limit, int offset) async {
     try {
-      final res = await Api.reviews(limit, offset);
+      final res = await ReviewApi.reviews(limit, offset);
 
       if (res is Map && res.containsKey('reviews')) {
         final data = res['reviews'];
