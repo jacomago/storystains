@@ -6,8 +6,8 @@ class ReviewsService {
     try {
       final res = await Api.reviews(limit, offset);
 
-      if (res is Map && res.containsKey('data')) {
-        final data = res['data'];
+      if (res is Map && res.containsKey('reviews')) {
+        final data = res['reviews'];
 
         if (data is List) {
           return data.map<Review>((u) => Review.fromJson(u)).toList();
