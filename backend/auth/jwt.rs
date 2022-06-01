@@ -47,8 +47,8 @@ pub fn decode_token(token: &str, secret: &HmacSecret, leeway: u64) -> Option<Aut
     let mut validation = Validation::new(Algorithm::HS256);
     validation.leeway = leeway;
     jwt::decode(token, &decoding_key.unwrap(), &validation)
-        .map_err(|err| {
-            eprintln!("Auth decode error: {:?}", err);
+        .map_err(|e| {
+            tracing::error!("Failed to decode key: {:?}", e);
         })
         .ok()
         .map(|token_data| token_data.claims)
