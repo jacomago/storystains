@@ -10,11 +10,9 @@ ReviewsResp _$ReviewsRespFromJson(Map<String, dynamic> json) => ReviewsResp(
       reviews: (json['reviews'] as List<dynamic>)
           .map((e) => Review.fromJson(e as Map<String, dynamic>))
           .toList(),
-      reviewsCount: json['reviewsCount'] as int,
     );
 
 Map<String, dynamic> _$ReviewsRespToJson(ReviewsResp instance) =>
     <String, dynamic>{
       'reviews': instance.reviews,
-      'reviewsCount': instance.reviewsCount,
     };

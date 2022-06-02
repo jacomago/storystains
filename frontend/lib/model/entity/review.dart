@@ -7,9 +7,11 @@ part 'review.g.dart';
 @JsonSerializable()
 class Review {
   String body;
+  @JsonKey(name: 'created_at')
   String createdAt;
   String slug;
   String title;
+  @JsonKey(name: 'updated_at')
   String updatedAt;
 
   Review({

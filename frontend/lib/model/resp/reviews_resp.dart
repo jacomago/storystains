@@ -7,9 +7,8 @@ part 'reviews_resp.g.dart';
 @JsonSerializable()
 class ReviewsResp {
   List<Review> reviews;
-  int reviewsCount;
 
-  ReviewsResp({required this.reviews, required this.reviewsCount});
+  ReviewsResp({required this.reviews});
 
   factory ReviewsResp.fromJson(Map<String, dynamic> json) =>
       _$ReviewsRespFromJson(json);
