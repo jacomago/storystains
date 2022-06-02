@@ -23,6 +23,7 @@ dependencies:
   flutter_markdown: ^0.6.9
   logger: ^1.1.0  #for logging purpose
   universal_platform: ^1.0.0+1 # for solve flutter web issue: https://github.com/flutter/flutter/issues/36126#issuecomment-596215587
+  google_fonts: ^3.0.1
 
 
 dev_dependencies:

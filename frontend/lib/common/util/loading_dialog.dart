@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../constant/app_size.dart';
 
 class LoadingDialog {
@@ -61,7 +61,7 @@ class LoadingDialog {
         )),
         useSafeArea: false,
         barrierDismissible: false,
-        barrierColor: Colors.transparent);
+        barrierColor: Get.context!.colors.primaryContainer);
   }
 }
 
@@ -76,7 +76,7 @@ class DialogWrapper extends StatelessWidget {
     return Container(
       width: Get.width,
       height: Get.height,
-      color: AppColors.transparent,
+      color: context.colors.surfaceTint,
       child: child,
     );
   }

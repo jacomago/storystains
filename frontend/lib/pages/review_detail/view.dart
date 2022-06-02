@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import '../../common/constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../../common/constant/app_size.dart';
 import '../../common/widget/app_bar.dart';
 
@@ -35,12 +34,11 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
                       Text(
                         controller.state.reviewTitle ?? '',
                         style: TextStyle(
-                          color: AppColors.main,
+                          color: context.colors.primary,
                           fontSize: AppSize.s_48,
                         ),
                       ),
                       SizedBox(height: AppSize.w_24),
-                      _genAuthor(),
                       SizedBox(height: AppSize.w_24),
                       Markdown(
                         physics: const NeverScrollableScrollPhysics(),
@@ -48,11 +46,6 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
                         selectable: true,
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        // style: TextStyle(
-                        //   color: AppColors.app_383A3C,
-                        //   fontSize: AppSize.s_32,
-                        //   fontStyle: FontStyle.italic,
-                        // ),
                       ),
                       Divider(height: AppSize.w_48),
                     ],
@@ -63,28 +56,4 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
     );
   }
 
-  Widget _genAuthor() {
-    return Row(
-      children: [
-        SizedBox(width: AppSize.w_12),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: AppSize.w_8),
-            Text(
-              DateFormat.yMMMMEEEEd().format(
-                  DateTime.tryParse(controller.state.review.value!.createdAt)!),
-              style: TextStyle(
-                color: AppColors.app_989898,
-                fontSize: AppSize.s_18,
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        SizedBox(width: AppSize.w_24),
-        SizedBox(width: AppSize.w_2),
-      ],
-    );
-  }
 }

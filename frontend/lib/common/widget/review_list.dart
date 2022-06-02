@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../../model/entity/review.dart';
 import '../../pages/pages.dart';
 import '../../services/rest_client.dart';
-import '../constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../constant/app_size.dart';
 import '../util/toast_utils.dart';
 import 'load_wrapper.dart';
@@ -39,8 +39,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
         controller: widget.controller,
         child: ListView.separated(
           itemBuilder: (context, index) => _buildReviewItem(reviews[index]),
-          separatorBuilder: (context, index) =>
-              Divider(height: AppSize.w_24, color: Colors.transparent),
+          separatorBuilder: (context, index) => Divider(
+              height: AppSize.w_24, color: context.colors.primaryContainer),
           itemCount: reviews.length,
         ),
         pageService: (offset, limit) => fetchReviews(offset, limit),
@@ -56,7 +56,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
         padding: EdgeInsets.all(AppSize.w_24),
         margin: EdgeInsets.symmetric(horizontal: AppSize.w_24),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: context.colors.surface,
           borderRadius: BorderRadius.all(Radius.circular(AppSize.w_24)),
         ),
         child: Column(
@@ -73,7 +73,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                       DateFormat.yMMMMEEEEd()
                           .format(DateTime.tryParse(review.createdAt)!),
                       style: TextStyle(
-                        color: AppColors.app_989898,
+                        color: context.colors.surfaceVariant,
                         fontSize: AppSize.s_18,
                       ),
                     ),
@@ -86,7 +86,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             Text(
               review.title,
               style: TextStyle(
-                color: AppColors.app_383A3C,
+                color: context.colors.primary,
                 fontSize: AppSize.s_36,
                 fontWeight: FontWeight.bold,
               ),
@@ -94,7 +94,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
             Text(
               review.body,
               style: TextStyle(
-                color: AppColors.app_808080,
+                color: context.colors.primary,
                 fontSize: AppSize.s_28,
               ),
               maxLines: 2,
@@ -119,5 +119,4 @@ class _ReviewsPageState extends State<ReviewsPage> {
       return [];
     }
   }
-
 }

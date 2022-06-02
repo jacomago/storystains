@@ -5,14 +5,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-import '../constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../constant/app_size.dart';
 
 class ToastUtils {
   static showError(dynamic e) {
     if (e is DioError) {
       show(e.message);
-    }  else {
+    } else {
       show(e.toString());
     }
   }
@@ -28,7 +28,8 @@ class ToastUtils {
       );
     } else {
       // it may not show toast. see: https://github.com/flutter/flutter/issues/30294
-      FToast().init(Get.context!).showToast(
+      final context = Get.context!;
+      FToast().init(context).showToast(
             child: Container(
               constraints:
                   BoxConstraints.loose(Size(AppSize.w_700, AppSize.w_64)),
@@ -36,7 +37,7 @@ class ToastUtils {
                   horizontal: AppSize.w_24, vertical: AppSize.w_12),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(AppSize.w_26),
-                color: AppColors.black_50,
+                color: context.colors.background,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -45,7 +46,7 @@ class ToastUtils {
                     child: Text(
                       text,
                       style: TextStyle(
-                        color: AppColors.white,
+                        color: context.colors.onBackground,
                         fontSize: AppSize.s_28,
                       ),
                       maxLines: 1,

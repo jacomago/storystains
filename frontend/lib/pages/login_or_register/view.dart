@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:storystains/common/extensions.dart';
 
-import '../../common/constant/app_colors.dart';
 import '../../common/constant/app_config.dart';
 import '../../common/constant/app_keys.dart';
 import '../../common/constant/app_size.dart';
@@ -39,13 +39,13 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                 onTap: () => controller.setNewBaseUrl(),
                 height: AppSize.w_96,
                 decoration: BoxDecoration(
-                  color: AppColors.main,
+                  color: context.colors.primary,
                   borderRadius: BorderRadius.all(Radius.circular(AppSize.r_8)),
                 ),
                 child: Text(
                   'Submit',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: context.colors.primary,
                     fontSize: AppSize.s_28,
                   ),
                 ),
@@ -55,7 +55,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
           child: Icon(
             Icons.settings_rounded,
             size: AppSize.w_48,
-            color: AppColors.main,
+            color: context.colors.primary,
           ),
         ),
       ),
@@ -113,13 +113,13 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                           : controller.signUp(),
                       height: AppSize.w_96,
                       minWidth: AppSize.w_600,
-                      color: AppColors.main,
+                      color: context.colors.primary,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(AppSize.w_48)),
                       child: Text(
                         controller.state.isLogin.value ? 'Sign in' : 'Sign up',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: context.colors.onBackground,
                           fontSize: AppSize.s_28,
                           fontWeight: FontWeight.bold,
                         ),
@@ -136,7 +136,8 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                           ? 'New User? Create Account'
                           : 'Has Account? To Login',
                       style: TextStyle(
-                          color: AppColors.app_383A3C, fontSize: AppSize.s_24),
+                          color: context.colors.onBackground,
+                          fontSize: AppSize.s_24),
                     ),
                   ),
                 ],

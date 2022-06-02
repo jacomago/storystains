@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:storystains/common/extensions.dart';
 
-import '../constant/app_colors.dart';
 import '../constant/app_size.dart';
 
 class PageBar extends PreferredSize {
@@ -23,7 +23,7 @@ class PageBar extends PreferredSize {
     this.middleMenu,
     this.rightMenu,
   }) : super(
-    key: key,
+          key: key,
           preferredSize: Size(MediaQuery.of(context).size.width, AppSize.w_88),
           child: Container(
             height: MediaQuery.of(context).padding.top + AppSize.w_88,
@@ -32,7 +32,7 @@ class PageBar extends PreferredSize {
                 left: AppSize.w_24,
                 right: AppSize.w_24),
             decoration: BoxDecoration(
-              color: backgroundColor ?? AppColors.bg,
+              color: backgroundColor ?? context.colors.background,
             ),
             child: Flex(
               direction: Axis.horizontal,
@@ -52,7 +52,7 @@ class PageBar extends PreferredSize {
                                 child: Icon(
                                   Icons.arrow_back_rounded,
                                   size: AppSize.w_48,
-                                  color: AppColors.main,
+                                  color: context.colors.primary,
                                 ),
                               ),
                             ),
@@ -65,7 +65,7 @@ class PageBar extends PreferredSize {
                         Text(
                           title ?? '',
                           style: TextStyle(
-                            color: AppColors.main,
+                            color: context.colors.primary,
                             fontSize: AppSize.s_36,
                             fontWeight: FontWeight.bold,
                           ),

@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../constant/app_size.dart';
 
 class LoadingView extends StatefulWidget {
@@ -46,7 +46,7 @@ class _LoadingView extends State<LoadingView>
           angle: animation.value,
           child: Icon(
             Icons.sync_rounded,
-            color: AppColors.main,
+            color: context.colors.primary,
             size: AppSize.w_56,
           ),
         ),
@@ -117,7 +117,7 @@ class _RefreshLoadingView extends State<RefreshLoadingView>
               right: AppSize.w_8,
             ),
             decoration: BoxDecoration(
-                color: AppColors.main,
+                color: context.colors.primary,
                 borderRadius: BorderRadius.all(Radius.circular(AppSize.r_20))),
           ),
         ),
@@ -128,7 +128,7 @@ class _RefreshLoadingView extends State<RefreshLoadingView>
             width: AppSize.w_16,
             height: AppSize.w_16,
             decoration: BoxDecoration(
-                color: AppColors.main,
+                color: context.colors.primary,
                 borderRadius: BorderRadius.all(Radius.circular(AppSize.r_20))),
           ),
         ),
@@ -149,17 +149,17 @@ class LoadFooter extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'conduit',
+            'Story Stains',
             style: TextStyle(
-              color: AppColors.main,
+              color: context.colors.primary,
               fontSize: AppSize.s_28,
               fontWeight: FontWeight.bold,
             ),
           ),
           Text(
-            'A place to share your knowledge.',
+            'A place to share your feelings.',
             style: TextStyle(
-                color: AppColors.primaryColor.shade300,
+                color: context.colors.primary,
                 fontSize: AppSize.s_16,
                 fontStyle: FontStyle.italic),
           ),
@@ -189,7 +189,7 @@ class LoadError extends StatelessWidget {
             child: Icon(
               Icons.error_rounded,
               size: AppSize.w_48,
-              color: AppColors.main,
+              color: context.colors.primary,
             ),
           ),
           Container(
@@ -205,13 +205,14 @@ class LoadError extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                   horizontal: AppSize.w_80, vertical: AppSize.w_20),
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: AppSize.w_1, color: AppColors.main),
+                  color: context.colors.onBackground,
+                  border: Border.all(
+                      width: AppSize.w_1, color: context.colors.primary),
                   borderRadius:
                       BorderRadius.all(Radius.circular(AppSize.r_40))),
-              child: const Text(
+              child: Text(
                 'Retry',
-                style: TextStyle(color: AppColors.main),
+                style: TextStyle(color: context.colors.error),
               ),
             ),
           ),
@@ -229,7 +230,7 @@ class LoadEmpty extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: AppSize.w_750,
-      color: AppColors.bg,
+      color: context.colors.background,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -239,7 +240,7 @@ class LoadEmpty extends StatelessWidget {
             child: Icon(
               Icons.error_rounded,
               size: AppSize.w_48,
-              color: AppColors.main,
+              color: context.colors.primary,
             ),
           ),
           Container(

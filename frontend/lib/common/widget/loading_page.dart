@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../constant/app_size.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -52,7 +52,7 @@ class _LoadingPageState extends State<LoadingPage>
                   child: Icon(
                     Icons.sync_rounded,
                     size: AppSize.w_56,
-                    color: AppColors.main,
+                    color: context.colors.primary,
                   ),
                   builder: (context, child) {
                     return Transform.rotate(
@@ -65,7 +65,7 @@ class _LoadingPageState extends State<LoadingPage>
               Text(
                 'Loading...',
                 style: TextStyle(
-                    fontSize: AppSize.s_24, color: AppColors.app_999999),
+                    fontSize: AppSize.s_24, color: context.colors.secondary),
               )
           ],
         ));

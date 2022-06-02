@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../util/loading_dialog.dart';
 import 'load_widgets.dart';
 
@@ -249,7 +249,7 @@ class _LoadWrapper<T> extends State<LoadWrapper>
                       body = const LoadFooter();
                     }
                     return Container(
-                      color: AppColors.bg,
+                      color: context.colors.background,
                       child: Center(child: body),
                     );
                   },

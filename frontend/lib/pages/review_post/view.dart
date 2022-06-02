@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../common/constant/app_colors.dart';
+import 'package:storystains/common/extensions.dart';
 import '../../common/constant/app_size.dart';
 import '../../common/widget/app_bar.dart';
 
@@ -32,7 +32,7 @@ class ReviewPostPage extends GetView<ReviewPostLogic> {
                     hintText: 'Review title',
                   ),
                   style: TextStyle(
-                    color: AppColors.app_383A3C,
+                    color: context.colors.onBackground,
                     fontSize: AppSize.s_32,
                     fontWeight: FontWeight.bold,
                   ),
@@ -50,7 +50,7 @@ class ReviewPostPage extends GetView<ReviewPostLogic> {
                     hintText: 'Write your review (in markdown)',
                   ),
                   style: TextStyle(
-                    color: AppColors.app_383A3C,
+                    color: context.colors.onBackground,
                     fontSize: AppSize.s_28,
                   ),
                   controller: controller.bodyController,
@@ -67,11 +67,11 @@ class ReviewPostPage extends GetView<ReviewPostLogic> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => controller.postReview(),
-        backgroundColor: AppColors.main,
+        backgroundColor: context.colors.primary,
         child: Icon(
           Icons.send_rounded,
           size: AppSize.w_48,
-          color: AppColors.white,
+          color: context.colors.onBackground,
         ),
       ),
     );
