@@ -19,11 +19,7 @@ class HomePage extends GetView<HomeLogic> {
         context: context,
         leftMenu: Text(
           'Story Stains',
-          style: TextStyle(
-            color: context.colors.primary,
-            fontSize: AppSize.s_48,
-            fontWeight: FontWeight.bold,
-          ),
+          style: context.displayLarge,
         ),
         rightMenu: GetBuilder<HomeLogic>(
             id: 'rightMenu',

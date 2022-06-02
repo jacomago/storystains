@@ -44,10 +44,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                 ),
                 child: Text(
                   'Submit',
-                  style: TextStyle(
-                    color: context.colors.primary,
-                    fontSize: AppSize.s_28,
-                  ),
+                  style: context.labelLarge,
                 ),
               )
             ],
@@ -118,11 +115,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                           borderRadius: BorderRadius.circular(AppSize.w_48)),
                       child: Text(
                         controller.state.isLogin.value ? 'Sign in' : 'Sign up',
-                        style: TextStyle(
-                          color: context.colors.onBackground,
-                          fontSize: AppSize.s_28,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: context.labelLarge,
                       ),
                     ),
                   ),
@@ -135,9 +128,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                       controller.state.isLogin.value
                           ? 'New User? Create Account'
                           : 'Has Account? To Login',
-                      style: TextStyle(
-                          color: context.colors.onBackground,
-                          fontSize: AppSize.s_24),
+                      style: context.labelMedium,
                     ),
                   ),
                 ],

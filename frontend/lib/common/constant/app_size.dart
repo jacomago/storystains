@@ -128,25 +128,4 @@ abstract class AppSize {
   static final r_4 = 4.r;
   static final r_2 = 2.r;
 
-  /// font size
-  static final s_56 = 56.sp;
-  static final s_50 = 50.sp;
-  static final s_48 = 48.sp;
-  static final s_46 = 46.sp;
-  static final s_44 = 44.sp;
-  static final s_40 = 40.sp;
-  static final s_36 = 36.sp;
-  static final s_34 = 34.sp;
-  static final s_32 = 32.sp;
-  static final s_30 = 30.sp;
-  static final s_28 = 28.sp;
-  static final s_26 = 26.sp;
-  static final s_24 = 24.sp;
-  static final s_22 = 22.sp;
-  static final s_20 = 20.sp;
-  static final s_18 = 18.sp;
-  static final s_16 = 16.sp;
-  static final s_14 = 14.sp;
-  static final s_12 = 12.sp;
-  static final s_10 = 10.sp;
 }

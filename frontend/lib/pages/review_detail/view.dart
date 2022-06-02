@@ -33,10 +33,7 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
                     children: [
                       Text(
                         controller.state.reviewTitle ?? '',
-                        style: TextStyle(
-                          color: context.colors.primary,
-                          fontSize: AppSize.s_48,
-                        ),
+                        style: context.displayMedium,
                       ),
                       SizedBox(height: AppSize.w_24),
                       SizedBox(height: AppSize.w_24),

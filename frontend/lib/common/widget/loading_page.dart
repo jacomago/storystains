@@ -64,8 +64,7 @@ class _LoadingPageState extends State<LoadingPage>
             if (!widget.hideText)
               Text(
                 'Loading...',
-                style: TextStyle(
-                    fontSize: AppSize.s_24, color: context.colors.secondary),
+                style: context.displayMedium,
               )
           ],
         ));

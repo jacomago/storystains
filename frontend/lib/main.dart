@@ -29,8 +29,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       theme: ThemeData(
-          // This is the theme of your application.
-          colorScheme: lightColorScheme),
+        fontFamily: 'Baskerville',
+        colorScheme: lightColorScheme,
+      ),
       initialRoute: Pages.home,
       getPages: Pages.all,
       scrollBehavior: MobileAndDesktopBehavior(),

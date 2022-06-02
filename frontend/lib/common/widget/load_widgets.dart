@@ -54,7 +54,7 @@ class _LoadingView extends State<LoadingView>
           margin: EdgeInsets.only(top: AppSize.w_12),
           child: Text(
             widget.text ?? 'Loading...',
-            style: TextStyle(fontSize: AppSize.s_24),
+            style: context.labelLarge,
           ),
         ),
       ],
@@ -150,18 +150,11 @@ class LoadFooter extends StatelessWidget {
         children: [
           Text(
             'Story Stains',
-            style: TextStyle(
-              color: context.colors.primary,
-              fontSize: AppSize.s_28,
-              fontWeight: FontWeight.bold,
-            ),
+            style: context.displayLarge,
           ),
           Text(
             'A place to share your feelings.',
-            style: TextStyle(
-                color: context.colors.primary,
-                fontSize: AppSize.s_16,
-                fontStyle: FontStyle.italic),
+            style: context.displaySmall!.copyWith(fontStyle: FontStyle.italic),
           ),
         ],
       ),

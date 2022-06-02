@@ -24,7 +24,6 @@ class ToastUtils {
         msg: text,
         gravity: ToastGravity.CENTER,
         toastLength: Toast.LENGTH_SHORT,
-        fontSize: AppSize.s_14,
       );
     } else {
       // it may not show toast. see: https://github.com/flutter/flutter/issues/30294
@@ -45,10 +44,7 @@ class ToastUtils {
                   Expanded(
                     child: Text(
                       text,
-                      style: TextStyle(
-                        color: context.colors.onBackground,
-                        fontSize: AppSize.s_28,
-                      ),
+                      style: context.labelLarge,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),

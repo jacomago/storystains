@@ -64,11 +64,7 @@ class PageBar extends PreferredSize {
                     child: middleMenu ??
                         Text(
                           title ?? '',
-                          style: TextStyle(
-                            color: context.colors.primary,
-                            fontSize: AppSize.s_36,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: context.displayMedium,
                           overflow: TextOverflow.ellipsis,
                         ),
                   ),

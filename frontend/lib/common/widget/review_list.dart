@@ -72,10 +72,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                     Text(
                       DateFormat.yMMMMEEEEd()
                           .format(DateTime.tryParse(review.createdAt)!),
-                      style: TextStyle(
-                        color: context.colors.surfaceVariant,
-                        fontSize: AppSize.s_18,
-                      ),
+                      style: context.labelSmall,
                     ),
                   ],
                 ),
@@ -85,18 +82,11 @@ class _ReviewsPageState extends State<ReviewsPage> {
             SizedBox(height: AppSize.w_24),
             Text(
               review.title,
-              style: TextStyle(
-                color: context.colors.primary,
-                fontSize: AppSize.s_36,
-                fontWeight: FontWeight.bold,
-              ),
+              style: context.displaySmall
             ),
             Text(
               review.body,
-              style: TextStyle(
-                color: context.colors.primary,
-                fontSize: AppSize.s_28,
-              ),
+              style: context.bodySmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
