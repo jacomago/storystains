@@ -44,8 +44,7 @@ class LoadingDialog {
               // padding: EdgeInsets.all(AppSize.w_32),
               decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.1),
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(AppSize.r_20))),
+                  borderRadius: BorderRadius.circular(20)),
               child: OverflowBox(
                 minHeight: AppSize.w_240,
                 maxHeight: AppSize.w_240,

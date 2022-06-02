@@ -63,7 +63,6 @@ class ReviewPostPage extends GetView<ReviewPostLogic> {
         backgroundColor: context.colors.primary,
         child: Icon(
           Icons.send_rounded,
-          size: AppSize.w_48,
           color: context.colors.onBackground,
         ),
       ),

@@ -112,20 +112,5 @@ abstract class AppSize {
   static final h_8 = 8.h;
   static final h_1 = 1.h;
 
-  /// r
-  static final r_48 = 48.r;
-  static final r_40 = 40.r;
-  static final r_32 = 32.r;
-  static final r_30 = 30.r;
-  static final r_28 = 28.r;
-  static final r_24 = 24.r;
-  static final r_20 = 20.r;
-  static final r_16 = 16.r;
-  static final r_12 = 12.r;
-  static final r_10 = 10.r;
-  static final r_8 = 8.r;
-  static final r_6 = 6.r;
-  static final r_4 = 4.r;
-  static final r_2 = 2.r;
 
 }

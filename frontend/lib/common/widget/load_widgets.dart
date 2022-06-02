@@ -118,7 +118,7 @@ class _RefreshLoadingView extends State<RefreshLoadingView>
             ),
             decoration: BoxDecoration(
                 color: context.colors.primary,
-                borderRadius: BorderRadius.all(Radius.circular(AppSize.r_20))),
+                borderRadius: BorderRadius.circular(20)),
           ),
         ),
         AnimatedOpacity(
@@ -129,7 +129,7 @@ class _RefreshLoadingView extends State<RefreshLoadingView>
             height: AppSize.w_16,
             decoration: BoxDecoration(
                 color: context.colors.primary,
-                borderRadius: BorderRadius.all(Radius.circular(AppSize.r_20))),
+                borderRadius: BorderRadius.circular(20)),
           ),
         ),
       ],
@@ -201,8 +201,7 @@ class LoadError extends StatelessWidget {
                   color: context.colors.onBackground,
                   border: Border.all(
                       width: AppSize.w_1, color: context.colors.primary),
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(AppSize.r_40))),
+                  borderRadius: BorderRadius.circular(40)),
               child: Text(
                 'Retry',
                 style: TextStyle(color: context.colors.error),

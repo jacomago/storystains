@@ -40,7 +40,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                 height: AppSize.w_96,
                 decoration: BoxDecoration(
                   color: context.colors.primary,
-                  borderRadius: BorderRadius.all(Radius.circular(AppSize.r_8)),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'Submit',
