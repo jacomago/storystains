@@ -134,13 +134,16 @@ impl TestUser {
         thread::sleep(time::Duration::from_secs(self.exp_seconds + 2));
     }
 
-    async fn store(&self, app: &TestApp) {
+    pub async fn store(&self, app: &TestApp) -> String {
         let signup_body = serde_json::json!({
             "user": {
                 "username": &self.username,
                 "password": &self.password
             }
         });
-        app.post_signup(signup_body.to_string()).await;
+        let response = app.post_signup(signup_body.to_string()).await;
+
+        let json: Value = response.json().await.expect("expected json response");
+        json["user"]["token"].as_str().unwrap().to_string()
     }
 }

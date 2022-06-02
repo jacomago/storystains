@@ -6,14 +6,14 @@ use crate::api::UserId;
 use super::{ReviewSlug, ReviewText, ReviewTitle};
 
 pub struct NewReview {
-    pub text: ReviewText,
+    pub body: ReviewText,
     pub title: ReviewTitle,
     pub slug: ReviewSlug,
     pub user_id: UserId,
 }
 
 pub struct UpdateReview {
-    pub text: Option<ReviewText>,
+    pub body: Option<ReviewText>,
     pub title: Option<ReviewTitle>,
     pub slug: Option<ReviewSlug>,
 }
@@ -22,7 +22,7 @@ pub struct UpdateReview {
 pub struct StoredReview {
     pub title: String,
     pub slug: String,
-    pub review: String,
+    pub body: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub user_id: sqlx::types::Uuid,
@@ -47,7 +47,7 @@ pub struct ReviewResponse {
 pub struct ReviewResponseData {
     title: String,
     slug: String,
-    review: String,
+    body: String,
     created_at: ResponseTime,
     updated_at: ResponseTime,
 }
@@ -57,7 +57,7 @@ impl From<StoredReview> for ReviewResponseData {
         Self {
             title: stored.title,
             slug: stored.slug,
-            review: stored.review,
+            body: stored.body,
             created_at: ResponseTime(stored.created_at),
             updated_at: ResponseTime(stored.updated_at),
         }

@@ -17,7 +17,7 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
     let review = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title, slug, review, created_at, updated_at, user_id
+            SELECT title, slug, body, created_at, updated_at, user_id
             FROM reviews 
             WHERE slug = $1
         "#,
@@ -47,7 +47,7 @@ pub async fn read_reviews(
     let reviews = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title, slug, review, created_at, updated_at, user_id
+            SELECT title, slug, body, created_at, updated_at, user_id
             FROM reviews 
             ORDER BY updated_at
             LIMIT $1
@@ -73,14 +73,14 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
     let stored_review = sqlx::query_as!(
         StoredReview,
         r#"
-            INSERT INTO reviews (id, title, slug, review, created_at, updated_at, user_id)
+            INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING title, slug, review, created_at, updated_at, user_id
+            RETURNING title, slug, body, created_at, updated_at, user_id
         "#,
         id,
         review.title.as_ref(),
         review.slug.as_ref(),
-        review.text.as_ref(),
+        review.body.as_ref(),
         time,
         time,
         user_id
@@ -108,21 +108,21 @@ pub async fn update_review(
 ) -> Result<StoredReview, sqlx::Error> {
     let title = review.title.as_ref().map(|t| t.as_ref());
     let update_slug = review.slug.as_ref().map(|t| t.as_ref());
-    let text = review.text.as_ref().map(|t| t.as_ref());
+    let body = review.body.as_ref().map(|t| t.as_ref());
     let stored_review = sqlx::query_as!(
         StoredReview,
         r#"
             UPDATE reviews
             SET title      = COALESCE($1, title),
                 slug       = COALESCE($2, slug),
-                review     = COALESCE($3, review),
+                body       = COALESCE($3, body),
                 updated_at = $4
             WHERE     slug = $5
-            RETURNING title, slug, review, created_at, updated_at, user_id
+            RETURNING title, slug, body, created_at, updated_at, user_id
         "#,
         title,
         update_slug,
-        text,
+        body,
         Utc::now(),
         slug.as_ref()
     )

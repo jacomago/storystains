@@ -9,27 +9,30 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  json_annotation: any
+  dio: any
+  get: ^4.6.1
   intl: ^0.17.0
-  meta: ^1.7.0
-  http: ^0.13.4
-  gap: ^2.0.0
-  colour: ^1.0.5
-  shared_preferences: ^2.0.9
-  cached_network_image: ^3.1.0+1
-  scrollable_positioned_list: ^0.2.3
-  provider: ^6.0.1
+  fluttertoast: ^8.0.8
+  shared_preferences: ^2.0.12
+  pull_to_refresh: ^2.0.0
+  lottie: ^1.2.1
+  flutter_screenutil: ^5.0.3
+  retrofit: '>=3.0.0 <4.0.0'
+  file_picker: ^4.3.3
+  flutter_markdown: ^0.6.9
+  logger: any  #for logging purpose
+  universal_platform: ^1.0.0+1 # for solve flutter web issue: https://github.com/flutter/flutter/issues/36126#issuecomment-596215587
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.2.0
-  build_runner: ^2.1.11
-
-  flutter_lints: ^1.0.0
+  retrofit_generator: ^4.0.1
+  build_runner: any
+  json_serializable: '>4.4.0'
+  mockito: any
+  flutter_lints: ^2.0.1
 
 flutter:
   uses-material-design: true

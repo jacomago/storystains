@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{spawn_app, TestApp};
+use crate::helpers::{spawn_app, TestApp, TestUser};
 
 impl TestApp {
     pub async fn post_review(&self, body: String, token: &str) -> reqwest::Response {
@@ -67,7 +67,7 @@ async fn post_review_returns_unauth_when_not_logged_in() {
     let app = spawn_app().await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     let response = app.post_review(body.to_string(), "").await;
 
     // Assert
@@ -82,7 +82,27 @@ async fn post_review_returns_unauth_when_logged_out() {
     app.test_user.logout().await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let response = app.post_review(body.to_string(), &token).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // create new user
+    let user = TestUser::generate();
+    // take token
+    let token = user.store(&app).await;
+    // delete user
+    app.delete_user(&token).await;
+
+    // Act
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
@@ -96,18 +116,18 @@ async fn post_review_persists_the_new_review() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, review FROM reviews",)
+    let saved = sqlx::query!("SELECT title, body FROM reviews",)
         .fetch_one(&app.db_pool)
         .await
         .expect("Failed to fetch saved subscription.");
 
-    assert_eq!(saved.review, "5stars");
+    assert_eq!(saved.body, "5stars");
     assert_eq!(saved.title, "Dune");
 }
 
@@ -119,7 +139,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     let token = app.test_user.login(&app).await;
     let test_cases = vec![
         (json!({"review": {"title": "Dune"} }), "missing the review"),
-        (json!({ "review":{"review":"5stars"} }), "missing the title"),
+        (json!({ "review":{"body":"5stars"} }), "missing the title"),
         (json!({"review":{}}), "missing both title and review"),
     ];
 
@@ -146,11 +166,11 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
 
     let test_cases = vec![
         (
-            json!({"review": {"title": "", "review":"5stars" }}),
+            json!({"review": {"title": "", "body":"5stars" }}),
             "empty title",
         ),
         (
-            json!({"review": {"title": "Dune", "review":"" }}),
+            json!({"review": {"title": "Dune", "body":"" }}),
             "empty review",
         ),
     ];
@@ -174,7 +194,7 @@ async fn post_review_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
 
     // Act
     let response = app.post_review(body.to_string(), &token).await;
@@ -183,7 +203,7 @@ async fn post_review_returns_json() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let json: Value = response.json().await.expect("expected json response");
-    assert_eq!(json["review"]["review"], "5stars");
+    assert_eq!(json["review"]["body"], "5stars");
     assert_eq!(json["review"]["title"], "Dune");
 }
 
@@ -193,7 +213,7 @@ async fn get_review_logged_in_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
 
     // Act
     let response = app.post_review(body.to_string(), &token).await;
@@ -203,7 +223,7 @@ async fn get_review_logged_in_returns_json() {
 
     let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(json["review"]["review"], "5stars");
+    assert_eq!(json["review"]["body"], "5stars");
     assert_eq!(json["review"]["title"], "Dune");
 }
 
@@ -213,7 +233,7 @@ async fn get_review_logged_out_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
 
     // Act
     let response = app.post_review(body.to_string(), &token).await;
@@ -225,7 +245,7 @@ async fn get_review_logged_out_returns_json() {
 
     let json_page = app.get_review_json("dune".to_string()).await;
     let json: Value = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(json["review"]["review"], "5stars");
+    assert_eq!(json["review"]["body"], "5stars");
     assert_eq!(json["review"]["title"], "Dune");
 }
 
@@ -259,7 +279,7 @@ async fn put_review_returns_unauth_when_not_logged_in() {
     let app = spawn_app().await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     let response = app
         .put_review("dune".to_string(), body.to_string(), "")
         .await;
@@ -275,9 +295,9 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
-    let body = json!({"review": {"review":"3stars" }});
+    let body = json!({"review": {"body":"3stars" }});
     let response = app
         .put_review("dune".to_string(), body.to_string(), &token)
         .await;
@@ -285,12 +305,12 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, review FROM reviews",)
+    let saved = sqlx::query!("SELECT title, body FROM reviews",)
         .fetch_one(&app.db_pool)
         .await
         .expect("Failed to fetch saved subscription.");
 
-    assert_eq!(saved.review, "3stars");
+    assert_eq!(saved.body, "3stars");
     assert_eq!(saved.title, "Dune");
 }
 
@@ -304,7 +324,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
     let response = app
         .put_review(
             "dune".to_string(),
-            json!({"review": {"title": "Dune", "review":"5stars" }}).to_string(),
+            json!({"review": {"title": "Dune", "body":"5stars" }}).to_string(),
             &token,
         )
         .await;
@@ -334,16 +354,16 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
 
     let test_cases = vec![
         (
-            json!({"review": {"title": "", "review":"5stars" }}),
+            json!({"review": {"title": "", "body":"5stars" }}),
             "empty title",
         ),
         (
-            json!({"review": {"title": "Dune", "review":"" }}),
+            json!({"review": {"title": "Dune", "body":"" }}),
             "empty review",
         ),
     ];
@@ -369,10 +389,10 @@ async fn put_review_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
 
-    let body = json!({"review": {"title": "Dune2", "review":"3stars" }});
+    let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
 
     // Act
     let response = app
@@ -382,7 +402,7 @@ async fn put_review_returns_json() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
     let json: Value = response.json().await.expect("expected json response");
-    assert_eq!(json["review"]["review"], "3stars");
+    assert_eq!(json["review"]["body"], "3stars");
     assert_eq!(json["review"]["title"], "Dune2");
 }
 
@@ -418,14 +438,14 @@ async fn delete_review_returns_a_200_for_valid_slug() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
     let response = app.delete_review("dune".to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, review FROM reviews",)
+    let saved = sqlx::query!("SELECT title, body FROM reviews",)
         .fetch_optional(&app.db_pool)
         .await
         .expect("Query failed to execute.");
@@ -483,9 +503,9 @@ async fn get_reviews_returns_reviews() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "review":"5stars" }});
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
-    let body = json!({"review": {"title": "LoTR", "review":"4 stars" }});
+    let body = json!({"review": {"title": "LoTR", "body":"4 stars" }});
     app.post_review(body.to_string(), &token).await;
 
     let response = app.get_reviews(Some(10), Some(0)).await;
@@ -499,8 +519,8 @@ async fn get_reviews_returns_reviews() {
     assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
 
     assert_eq!(json["reviews"][0]["title"], "Dune");
-    assert_eq!(json["reviews"][0]["review"], "5stars");
+    assert_eq!(json["reviews"][0]["body"], "5stars");
 
     assert_eq!(json["reviews"][1]["title"], "LoTR");
-    assert_eq!(json["reviews"][1]["review"], "4 stars");
+    assert_eq!(json["reviews"][1]["body"], "4 stars");
 }

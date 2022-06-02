@@ -47,7 +47,7 @@ pub struct PostReview {
 #[derive(serde::Deserialize)]
 pub struct PostReviewData {
     title: String,
-    review: String,
+    body: String,
 }
 
 impl TryFrom<(PostReviewData, UserId)> for NewReview {
@@ -55,11 +55,11 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     fn try_from(pair: (PostReviewData, UserId)) -> Result<Self, Self::Error> {
         let (value, user_id) = pair;
         let title = ReviewTitle::parse(value.title)?;
-        let text = ReviewText::parse(value.review)?;
+        let body = ReviewText::parse(value.body)?;
         let slug = ReviewSlug::parse(title.slugify())?;
         Ok(Self {
             title,
-            text,
+            body,
             slug,
             user_id,
         })
@@ -71,7 +71,7 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     skip(json, pool),
     fields(
         reviews_title = %json.review.title,
-        reviews_review = %json.review.review
+        reviews_review = %json.review.body
     )
 )]
 pub async fn post_review(
@@ -120,7 +120,7 @@ pub struct PutReview {
 #[derive(serde::Deserialize, Debug)]
 pub struct PutReviewData {
     title: Option<String>,
-    review: Option<String>,
+    body: Option<String>,
 }
 
 impl TryFrom<PutReviewData> for UpdateReview {
@@ -130,7 +130,7 @@ impl TryFrom<PutReviewData> for UpdateReview {
             Some(t) => Some(ReviewTitle::parse(t.to_string())?),
             None => None,
         };
-        let text = match &value.review {
+        let body = match &value.body {
             Some(t) => Some(ReviewText::parse(t.to_string())?),
             None => None,
         };
@@ -138,7 +138,7 @@ impl TryFrom<PutReviewData> for UpdateReview {
             Some(t) => Some(ReviewSlug::parse(t.slugify())?),
             None => None,
         };
-        Ok(Self { title, text, slug })
+        Ok(Self { title, body, slug })
     }
 }
 

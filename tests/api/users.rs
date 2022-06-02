@@ -24,6 +24,16 @@ impl TestApp {
             .await
             .expect("Failed to execute request.")
     }
+
+    pub async fn delete_user(&self, token: &str) -> reqwest::Response {
+        self.api_client
+            .post(&format!("{}/signup", &self.address))
+            .header("Content-Type", "application/json")
+            .bearer_auth(token)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
 }
 
 #[tokio::test]

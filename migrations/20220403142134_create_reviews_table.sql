@@ -3,7 +3,7 @@ CREATE TABLE reviews(
     PRIMARY KEY (id),
     slug TEXT NOT NULL UNIQUE,
     title TEXT NOT NULL,
-    review TEXT NOT NULL,
+    body TEXT NOT NULL,
     created_at timestamptz NOT NULL,
     updated_at timestamptz NOT NULL
 );
