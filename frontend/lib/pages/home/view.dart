@@ -20,25 +20,15 @@ class HomePage extends GetView<HomeLogic> {
         ),
         rightMenu: GetBuilder<HomeLogic>(
             id: 'rightMenu',
-            builder: (c) => c.state.isLogin
-                ? GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => c.goProfile(),
-                    child: Icon(
-                      Icons.person,
-                      size: 48,
-                      color: context.colors.primary,
-                    ),
-                  )
-                : GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => c.login(),
-                    child: Icon(
-                      Icons.login_rounded,
-                      size: 48,
-                      color: context.colors.primary,
-                    ),
-                  )),
+            builder: (c) => GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => c.login(),
+                  child: Icon(
+                    Icons.login_rounded,
+                    size: 48,
+                    color: context.colors.primary,
+                  ),
+                )),
       ),
       body: ReviewsPage(controller: controller.listController),
       floatingActionButton: FloatingActionButton(
