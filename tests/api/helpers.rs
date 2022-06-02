@@ -119,7 +119,8 @@ impl TestUser {
                 "username": &self.username,
                 "password": &self.password
             }
-        }).to_string()
+        })
+        .to_string()
     }
 
     pub async fn login(&self, app: &TestApp) -> String {

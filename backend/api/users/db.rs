@@ -4,7 +4,7 @@ use secrecy::{ExposeSecret, Secret};
 use sqlx::{PgPool, Postgres, Transaction};
 use uuid::Uuid;
 
-use super::model::NewUser;
+use super::{model::NewUser, UserId};
 
 #[tracing::instrument(name = "Get stored credentials", skip(username, pool))]
 pub async fn get_stored_credentials(
@@ -50,6 +50,27 @@ pub async fn read_user_from_id(user_id: &Uuid, pool: &PgPool) -> Result<StoredUs
         e
     })?;
     Ok(row)
+}
+
+#[tracing::instrument(name = "Check user exists", skip(user_id, pool))]
+pub async fn check_user_exists(user_id: &UserId, pool: &PgPool) -> Result<bool, anyhow::Error> {
+    let id = uuid_to_sqlx_uuid(user_id);
+
+    let row = sqlx::query!(
+        r#"
+            SELECT user_id 
+            FROM users
+            WHERE user_id = $1
+        "#,
+        id,
+    )
+    .fetch_optional(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(row.is_some())
 }
 
 #[tracing::instrument(name = "Saving new user details in the database", skip(user, pool))]
