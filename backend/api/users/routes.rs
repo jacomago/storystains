@@ -13,7 +13,7 @@ use crate::{
 };
 
 use super::{
-    create_user, delete_user,
+    create_user, delete_user_by_id,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
     read_user_from_id, UserId,
 };
@@ -174,7 +174,7 @@ impl ResponseError for DeleteUserError {
 }
 
 #[tracing::instrument(skip(pool, user_id), fields())]
-pub async fn delete(
+pub async fn delete_user(
     user_id: web::ReqData<UserId>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, DeleteUserError> {
@@ -186,7 +186,7 @@ pub async fn delete(
     delete_reviews_by_user_id(&user_id, &mut transaction)
         .await
         .context("Failed to delete new reviews fromthe database.")?;
-    delete_user(&user_id, &mut transaction)
+    delete_user_by_id(&user_id, &mut transaction)
         .await
         .context("Failed to delete user from the database")?;
     transaction

@@ -113,6 +113,15 @@ impl TestUser {
         }
     }
 
+    pub fn to_json(&self) -> String {
+        serde_json::json!({
+            "user": {
+                "username": &self.username,
+                "password": &self.password
+            }
+        }).to_string()
+    }
+
     pub async fn login(&self, app: &TestApp) -> String {
         let response = app
             .post_login(

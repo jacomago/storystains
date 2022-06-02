@@ -81,7 +81,7 @@ pub async fn create_user(user: NewUser, pool: &PgPool) -> Result<StoredUser, any
         user_id = %user_id
     )
 )]
-pub async fn delete_user(
+pub async fn delete_user_by_id(
     user_id: &Uuid,
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<(), sqlx::Error> {

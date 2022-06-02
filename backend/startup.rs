@@ -1,5 +1,6 @@
 use crate::api::{
-    delete_review_by_slug, get_review, get_reviews, login, post_review, put_review, signup,
+    delete_review_by_slug, delete_user, get_review, get_reviews, login, post_review, put_review,
+    signup,
 };
 use crate::auth::bearer_auth;
 use crate::configuration::Settings;
@@ -96,7 +97,9 @@ async fn run(
 }
 
 fn routes(cfg: &mut web::ServiceConfig) {
-    let auth = HttpAuthentication::bearer(bearer_auth);
+    // TODO is this a nice hack??
+    let auth_reviews = HttpAuthentication::bearer(bearer_auth);
+    let auth_users = HttpAuthentication::bearer(bearer_auth);
     cfg.service(
         web::scope("")
             .route("/health_check", web::get().to(health_check))
@@ -106,10 +109,15 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/reviews/{slug}", web::get().to(get_review))
             .service(
                 web::scope("/reviews")
-                    .wrap(auth)
+                    .wrap(auth_reviews)
                     .route("", web::post().to(post_review))
                     .route("/{slug}", web::put().to(put_review))
                     .route("/{slug}", web::delete().to(delete_review_by_slug)),
+            )
+            .service(
+                web::scope("/users")
+                    .wrap(auth_users)
+                    .route("", web::delete().to(delete_user)),
             ),
     );
 }

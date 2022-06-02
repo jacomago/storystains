@@ -2,7 +2,7 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 use uuid::Uuid;
 
-use crate::helpers::{spawn_app, TestApp};
+use crate::helpers::{spawn_app, TestApp, TestUser};
 
 impl TestApp {
     pub async fn post_login(&self, body: String) -> reqwest::Response {
@@ -27,7 +27,7 @@ impl TestApp {
 
     pub async fn delete_user(&self, token: &str) -> reqwest::Response {
         self.api_client
-            .post(&format!("{}/signup", &self.address))
+            .delete(&format!("{}/users", &self.address))
             .header("Content-Type", "application/json")
             .bearer_auth(token)
             .send()
@@ -49,6 +49,25 @@ async fn login_returns_bad_request_for_incorrect_credentials() {
         }
     });
     let response = app.post_login(login_body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn login_returns_bad_request_for_deleted_user() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // create new user
+    let user = TestUser::generate();
+    // take token
+    let token = user.store(&app).await;
+    // delete user
+    app.delete_user(&token).await;
+
+    // Act
+    let response = app.post_login(user.to_json()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
@@ -123,4 +142,31 @@ async fn signup_return_user_details_after_correct_request() {
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], username);
     assert!(json["user"]["token"].is_string());
+}
+
+#[tokio::test]
+async fn delete_user_deletes_user() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // create new user
+    let user = TestUser::generate();
+    // take token
+    let token = user.store(&app).await;
+    // delete user
+    app.delete_user(&token).await;
+
+    // Act
+    app.delete_user(&token).await;
+
+    let saved = sqlx::query!(
+        "SELECT user_id FROM users WHERE username = $1",
+        user.username
+    )
+    .fetch_optional(&app.db_pool)
+    .await
+    .expect("Failed to fetch saved subscription.");
+
+    // Assert
+    assert!(saved.is_none());
 }
