@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storystains/common/extensions.dart';
-import '../../common/constant/app_size.dart';
 import '../../common/util/screen_adapter.dart';
 import '../../common/widget/app_bar.dart';
 import '../../common/widget/review_list.dart';
@@ -29,7 +28,7 @@ class HomePage extends GetView<HomeLogic> {
                     onTap: () => c.goProfile(),
                     child: Icon(
                       Icons.person,
-                      size: AppSize.w_48,
+                      size: 48,
                       color: context.colors.primary,
                     ),
                   )
@@ -38,7 +37,7 @@ class HomePage extends GetView<HomeLogic> {
                     onTap: () => c.login(),
                     child: Icon(
                       Icons.login_rounded,
-                      size: AppSize.w_48,
+                      size: 48,
                       color: context.colors.primary,
                     ),
                   )),
@@ -49,7 +48,7 @@ class HomePage extends GetView<HomeLogic> {
         backgroundColor: context.colors.primary,
         child: Icon(
           Icons.add_rounded,
-          size: AppSize.w_56,
+          size: 56,
           color: context.colors.onPrimary,
         ),
       ),

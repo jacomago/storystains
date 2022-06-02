@@ -6,7 +6,7 @@ import '../../model/entity/review.dart';
 import '../../pages/pages.dart';
 import '../../services/rest_client.dart';
 import 'package:storystains/common/extensions.dart';
-import '../constant/app_size.dart';
+
 import '../util/toast_utils.dart';
 import 'load_wrapper.dart';
 
@@ -34,13 +34,13 @@ class _ReviewsPageState extends State<ReviewsPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: AppSize.w_24),
+      padding: EdgeInsets.symmetric(vertical: 24),
       child: LoadWrapper<Review>(
         controller: widget.controller,
         child: ListView.separated(
           itemBuilder: (context, index) => _buildReviewItem(reviews[index]),
-          separatorBuilder: (context, index) => Divider(
-              height: AppSize.w_24, color: context.colors.primaryContainer),
+          separatorBuilder: (context, index) =>
+              Divider(height: 24, color: context.colors.primaryContainer),
           itemCount: reviews.length,
         ),
         pageService: (offset, limit) => fetchReviews(offset, limit),
@@ -53,22 +53,22 @@ class _ReviewsPageState extends State<ReviewsPage> {
     return GestureDetector(
       onTap: () => Get.toNamed(Pages.reviewDetail, arguments: review),
       child: Container(
-        padding: EdgeInsets.all(AppSize.w_24),
-        margin: EdgeInsets.symmetric(horizontal: AppSize.w_24),
+        padding: EdgeInsets.all(24),
+        margin: EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
           color: context.colors.surface,
-          borderRadius: BorderRadius.all(Radius.circular(AppSize.w_24)),
+          borderRadius: BorderRadius.all(Radius.circular(24)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                SizedBox(width: AppSize.w_12),
+                SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: AppSize.w_8),
+                    SizedBox(height: 8),
                     Text(
                       DateFormat.yMMMMEEEEd()
                           .format(DateTime.tryParse(review.createdAt)!),
@@ -79,18 +79,15 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 const Spacer(),
               ],
             ),
-            SizedBox(height: AppSize.w_24),
-            Text(
-              review.title,
-              style: context.displaySmall
-            ),
+            SizedBox(height: 24),
+            Text(review.title, style: context.displaySmall),
             Text(
               review.body,
               style: context.bodySmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: AppSize.w_24),
+            SizedBox(height: 24),
           ],
         ),
       ),

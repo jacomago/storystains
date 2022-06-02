@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storystains/common/extensions.dart';
 
-import '../constant/app_size.dart';
-
 class PageBar extends PreferredSize {
   final BuildContext context;
   final String? title;
@@ -24,13 +22,11 @@ class PageBar extends PreferredSize {
     this.rightMenu,
   }) : super(
           key: key,
-          preferredSize: Size(MediaQuery.of(context).size.width, AppSize.w_88),
+          preferredSize: Size(MediaQuery.of(context).size.width, 88),
           child: Container(
-            height: MediaQuery.of(context).padding.top + AppSize.w_88,
+            height: MediaQuery.of(context).padding.top + 88,
             padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top,
-                left: AppSize.w_24,
-                right: AppSize.w_24),
+                top: MediaQuery.of(context).padding.top, left: 24, right: 24),
             decoration: BoxDecoration(
               color: backgroundColor ?? context.colors.background,
             ),
@@ -47,11 +43,11 @@ class PageBar extends PreferredSize {
                             GestureDetector(
                               onTap: () => Get.back(),
                               child: SizedBox(
-                                width: AppSize.w_48,
-                                height: AppSize.w_48,
+                                width: 48,
+                                height: 48,
                                 child: Icon(
                                   Icons.arrow_back_rounded,
-                                  size: AppSize.w_48,
+                                  size: 48,
                                   color: context.colors.primary,
                                 ),
                               ),
@@ -74,8 +70,8 @@ class PageBar extends PreferredSize {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: SizedBox(
-                      width: AppSize.w_48,
-                      height: AppSize.w_48,
+                      width: 48,
+                      height: 48,
                       child: rightMenu,
                     ),
                   ),

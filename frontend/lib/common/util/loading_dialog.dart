@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
 import 'package:storystains/common/extensions.dart';
-import '../constant/app_size.dart';
 
 class LoadingDialog {
   static BuildContext? dialogContext;
@@ -39,17 +38,17 @@ class LoadingDialog {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: AppSize.w_160,
-              height: AppSize.w_160,
-              // padding: EdgeInsets.all(AppSize.w_32),
+              width: 160,
+              height: 160,
+              // padding: EdgeInsets.all(32),
               decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20)),
               child: OverflowBox(
-                minHeight: AppSize.w_240,
-                maxHeight: AppSize.w_240,
-                minWidth: AppSize.w_240,
-                maxWidth: AppSize.w_240,
+                minHeight: 240,
+                maxHeight: 240,
+                minWidth: 240,
+                maxWidth: 240,
                 child: Lottie.asset(
                   'assets/lottie/loading.json',
                   fit: BoxFit.cover,

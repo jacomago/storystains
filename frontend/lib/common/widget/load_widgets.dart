@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:storystains/common/extensions.dart';
-import '../constant/app_size.dart';
 
 class LoadingView extends StatefulWidget {
   final String? text;
@@ -47,11 +46,11 @@ class _LoadingView extends State<LoadingView>
           child: Icon(
             Icons.sync_rounded,
             color: context.colors.primary,
-            size: AppSize.w_56,
+            size: 56,
           ),
         ),
         Container(
-          margin: EdgeInsets.only(top: AppSize.w_12),
+          margin: EdgeInsets.only(top: 12),
           child: Text(
             widget.text ?? 'Loading...',
             style: context.labelLarge,
@@ -111,10 +110,10 @@ class _RefreshLoadingView extends State<RefreshLoadingView>
           opacity: animationLeft.value,
           duration: const Duration(milliseconds: 100),
           child: Container(
-            width: AppSize.w_16,
-            height: AppSize.w_16,
+            width: 16,
+            height: 16,
             margin: EdgeInsets.only(
-              right: AppSize.w_8,
+              right: 8,
             ),
             decoration: BoxDecoration(
                 color: context.colors.primary,
@@ -125,8 +124,8 @@ class _RefreshLoadingView extends State<RefreshLoadingView>
           opacity: animationRight.value,
           duration: const Duration(milliseconds: 100),
           child: Container(
-            width: AppSize.w_16,
-            height: AppSize.w_16,
+            width: 16,
+            height: 16,
             decoration: BoxDecoration(
                 color: context.colors.primary,
                 borderRadius: BorderRadius.circular(20)),
@@ -143,9 +142,9 @@ class LoadFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: AppSize.w_750,
-      padding: EdgeInsets.symmetric(vertical: AppSize.w_14),
-      margin: EdgeInsets.only(bottom: AppSize.w_200),
+      width: 750,
+      padding: EdgeInsets.symmetric(vertical: 14),
+      margin: EdgeInsets.only(bottom: 200),
       child: Column(
         children: [
           Text(
@@ -178,15 +177,15 @@ class LoadError extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: AppSize.w_70),
+            margin: EdgeInsets.only(bottom: 70),
             child: Icon(
               Icons.error_rounded,
-              size: AppSize.w_48,
+              size: 48,
               color: context.colors.primary,
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: AppSize.w_40),
+            margin: EdgeInsets.only(bottom: 40),
             child: Text(text),
           ),
           GestureDetector(
@@ -194,13 +193,11 @@ class LoadError extends StatelessWidget {
               callback();
             },
             child: Container(
-              margin: EdgeInsets.only(bottom: AppSize.w_80),
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppSize.w_80, vertical: AppSize.w_20),
+              margin: EdgeInsets.only(bottom: 80),
+              padding: EdgeInsets.symmetric(horizontal: 80, vertical: 20),
               decoration: BoxDecoration(
                   color: context.colors.onBackground,
-                  border: Border.all(
-                      width: AppSize.w_1, color: context.colors.primary),
+                  border: Border.all(width: 1, color: context.colors.primary),
                   borderRadius: BorderRadius.circular(40)),
               child: Text(
                 'Retry',
@@ -221,22 +218,22 @@ class LoadEmpty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: AppSize.w_750,
+      width: 750,
       color: context.colors.background,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: AppSize.w_70),
+            margin: EdgeInsets.only(bottom: 70),
             child: Icon(
               Icons.error_rounded,
-              size: AppSize.w_48,
+              size: 48,
               color: context.colors.primary,
             ),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: AppSize.w_40),
+            margin: EdgeInsets.only(bottom: 40),
             child: const Text(
               'No Data!',
               style: TextStyle(),

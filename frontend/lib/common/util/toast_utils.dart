@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 import 'package:storystains/common/extensions.dart';
-import '../constant/app_size.dart';
 
 class ToastUtils {
   static showError(dynamic e) {
@@ -30,12 +29,10 @@ class ToastUtils {
       final context = Get.context!;
       FToast().init(context).showToast(
             child: Container(
-              constraints:
-                  BoxConstraints.loose(Size(AppSize.w_700, AppSize.w_64)),
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppSize.w_24, vertical: AppSize.w_12),
+              constraints: BoxConstraints.loose(Size(700, 64)),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(AppSize.w_26),
+                borderRadius: BorderRadius.circular(26),
                 color: context.colors.background,
               ),
               child: Row(

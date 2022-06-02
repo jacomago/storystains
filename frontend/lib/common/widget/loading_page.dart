@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:storystains/common/extensions.dart';
-import '../constant/app_size.dart';
 
 class LoadingPage extends StatefulWidget {
   final double? width;
@@ -46,12 +45,12 @@ class _LoadingPageState extends State<LoadingPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(bottom: AppSize.w_10),
+              margin: EdgeInsets.only(bottom: 10),
               child: AnimatedBuilder(
                   animation: _rotateController,
                   child: Icon(
                     Icons.sync_rounded,
-                    size: AppSize.w_56,
+                    size: 56,
                     color: context.colors.primary,
                   ),
                   builder: (context, child) {

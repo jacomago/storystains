@@ -4,7 +4,6 @@ import 'package:storystains/common/extensions.dart';
 
 import '../../common/constant/app_config.dart';
 import '../../common/constant/app_keys.dart';
-import '../../common/constant/app_size.dart';
 import '../../common/util/storage.dart';
 import '../../common/widget/app_bar.dart';
 import '../../common/widget/ripple_button.dart';
@@ -23,7 +22,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
         rightMenu: GestureDetector(
           onTap: () => Get.dialog(SimpleDialog(
             title: const Text('Set the base url'),
-            contentPadding: EdgeInsets.all(AppSize.w_24),
+            contentPadding: EdgeInsets.all(24),
             children: [
               TextField(
                 decoration: InputDecoration(
@@ -34,10 +33,10 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                 ),
                 controller: controller.urlController,
               ),
-              SizedBox(height: AppSize.w_24),
+              SizedBox(height: 24),
               RippleButton(
                 onTap: () => controller.setNewBaseUrl(),
-                height: AppSize.w_96,
+                height: 96,
                 decoration: BoxDecoration(
                   color: context.colors.primary,
                   borderRadius: BorderRadius.circular(8),
@@ -51,13 +50,13 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
           )),
           child: Icon(
             Icons.settings_rounded,
-            size: AppSize.w_48,
+            size: 48,
             color: context.colors.primary,
           ),
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.all(AppSize.w_16),
+        padding: EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: IntrinsicHeight(
             child: Obx(() {
@@ -65,23 +64,23 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                 children: [
                   Container(
                     padding: EdgeInsets.fromLTRB(
-                      AppSize.w_48,
-                      AppSize.w_144,
-                      AppSize.w_48,
-                      AppSize.w_96,
+                      48,
+                      144,
+                      48,
+                      96,
                     ),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(AppSize.w_200),
+                      borderRadius: BorderRadius.circular(200),
                     ),
                     child: Center(
                       child: Image.asset(
                         'assets/logo/logo.png',
-                        height: AppSize.w_110,
+                        height: 110,
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(AppSize.w_24),
+                    padding: EdgeInsets.all(24),
                     child: TextField(
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -91,7 +90,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(AppSize.w_24),
+                    padding: EdgeInsets.all(24),
                     child: TextField(
                       obscureText: true,
                       decoration: const InputDecoration(
@@ -101,18 +100,18 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                       controller: controller.passwordController,
                     ),
                   ),
-                  SizedBox(height: AppSize.w_96),
+                  SizedBox(height: 96),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSize.w_32),
+                    padding: EdgeInsets.symmetric(horizontal: 32),
                     child: MaterialButton(
                       onPressed: () => controller.state.isLogin.value
                           ? controller.signIn()
                           : controller.signUp(),
-                      height: AppSize.w_96,
-                      minWidth: AppSize.w_600,
+                      height: 96,
+                      minWidth: 600,
                       color: context.colors.primary,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppSize.w_48)),
+                          borderRadius: BorderRadius.circular(48)),
                       child: Text(
                         controller.state.isLogin.value ? 'Sign in' : 'Sign up',
                         style: context.labelLarge,
