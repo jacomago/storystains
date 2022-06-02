@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:storystains/common/extensions.dart';
-import '../../common/util/screen_adapter.dart';
 import '../../common/widget/app_bar.dart';
 import '../../common/widget/review_list.dart';
 import '../pages.dart';
@@ -12,7 +11,6 @@ class HomePage extends GetView<HomeLogic> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenAdapter.init(context);
     return Scaffold(
       appBar: PageBar(
         context: context,
