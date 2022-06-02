@@ -42,3 +42,7 @@ impl From<QueryLimits> for Limits {
         }
     }
 }
+
+pub fn uuid_to_sqlx_uuid(id: &uuid::Uuid) -> sqlx::types::Uuid {
+    sqlx::types::Uuid::from_u128(id.as_u128())
+}

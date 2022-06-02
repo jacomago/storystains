@@ -1,8 +1,8 @@
 use chrono::Utc;
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres, Transaction};
 use uuid::Uuid;
 
-use crate::api::{reviews::model::StoredReview, Limits};
+use crate::api::{reviews::model::StoredReview, uuid_to_sqlx_uuid, Limits, UserId};
 
 use super::model::{NewReview, ReviewSlug, UpdateReview};
 
@@ -151,6 +151,34 @@ pub async fn delete_review(slug: &ReviewSlug, pool: &PgPool) -> Result<(), sqlx:
         slug.as_ref()
     )
     .execute(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(())
+}
+
+#[tracing::instrument(
+    name = "Deleting reviews from the database",
+    skip(transaction),
+    fields(
+        user_id = %user_id
+    )
+)]
+pub async fn delete_reviews_by_user_id(
+    user_id: &UserId,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
+    let id = uuid_to_sqlx_uuid(user_id);
+    sqlx::query!(
+        r#"
+            DELETE FROM reviews
+            WHERE       user_id = $1
+        "#,
+        id
+    )
+    .execute(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);

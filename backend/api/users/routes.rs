@@ -7,15 +7,15 @@ use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::{
-    api::error_chain_fmt,
+    api::{error_chain_fmt, reviews::delete_reviews_by_user_id},
     auth::{validate_credentials, AuthClaim, AuthError, Credentials},
     startup::{ExpTokenSeconds, HmacSecret},
 };
 
 use super::{
-    create_user,
+    create_user, delete_user,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
-    read_user_from_id,
+    read_user_from_id, UserId,
 };
 
 #[derive(thiserror::Error)]
@@ -151,4 +151,48 @@ pub async fn signup(
     let user_id = Uuid::from_u128(stored.user_id.as_u128());
     let token = AuthClaim::new(&stored.username, user_id, &exp_token_days).token(&secret);
     Ok(HttpResponse::Ok().json(UserResponse::from((stored, token))))
+}
+
+#[derive(thiserror::Error)]
+pub enum DeleteUserError {
+    #[error(transparent)]
+    UnexpectedError(#[from] anyhow::Error),
+}
+
+impl std::fmt::Debug for DeleteUserError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        error_chain_fmt(self, f)
+    }
+}
+
+impl ResponseError for DeleteUserError {
+    fn status_code(&self) -> StatusCode {
+        match self {
+            DeleteUserError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
+
+#[tracing::instrument(skip(pool, user_id), fields())]
+pub async fn delete(
+    user_id: web::ReqData<UserId>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, DeleteUserError> {
+    let user_id = user_id.into_inner();
+    let mut transaction = pool
+        .begin()
+        .await
+        .context("Failed to acquire a Postgres connection from the pool")?;
+    delete_reviews_by_user_id(&user_id, &mut transaction)
+        .await
+        .context("Failed to delete new reviews fromthe database.")?;
+    delete_user(&user_id, &mut transaction)
+        .await
+        .context("Failed to delete user from the database")?;
+    transaction
+        .commit()
+        .await
+        .context("Failed to commit SQL transaction to delete user and data.")?;
+
+    Ok(HttpResponse::Ok().finish())
 }

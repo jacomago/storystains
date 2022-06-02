@@ -1,7 +1,7 @@
-use crate::api::users::model::StoredUser;
+use crate::api::{users::model::StoredUser, uuid_to_sqlx_uuid};
 use anyhow::Context;
 use secrecy::{ExposeSecret, Secret};
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres, Transaction};
 use uuid::Uuid;
 
 use super::model::NewUser;
@@ -32,7 +32,7 @@ pub async fn get_stored_credentials(
 
 #[tracing::instrument(name = "Read user details from db", skip(user_id, pool))]
 pub async fn read_user_from_id(user_id: &Uuid, pool: &PgPool) -> Result<StoredUser, anyhow::Error> {
-    let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(user_id.as_u128());
+    let id = uuid_to_sqlx_uuid(user_id);
 
     let row = sqlx::query_as!(
         StoredUser,
@@ -54,7 +54,7 @@ pub async fn read_user_from_id(user_id: &Uuid, pool: &PgPool) -> Result<StoredUs
 
 #[tracing::instrument(name = "Saving new user details in the database", skip(user, pool))]
 pub async fn create_user(user: NewUser, pool: &PgPool) -> Result<StoredUser, anyhow::Error> {
-    let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
+    let id = uuid_to_sqlx_uuid(&Uuid::new_v4());
 
     let password_hash = user.password.hash().await?;
     let stored_user = sqlx::query_as!(
@@ -72,4 +72,33 @@ pub async fn create_user(user: NewUser, pool: &PgPool) -> Result<StoredUser, any
     .await
     .context("Failed to store user.")?;
     Ok(stored_user)
+}
+
+#[tracing::instrument(
+    name = "Deleting user details from the database",
+    skip(transaction),
+    fields(
+        user_id = %user_id
+    )
+)]
+pub async fn delete_user(
+    user_id: &Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
+    let id = uuid_to_sqlx_uuid(user_id);
+
+    sqlx::query!(
+        r#"
+            DELETE FROM users
+            WHERE       user_id = $1
+        "#,
+        id
+    )
+    .execute(transaction)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(())
 }
