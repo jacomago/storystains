@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/config/themes.dart';
 
 import 'package:storystains/modules/review/review.dart';
 import 'package:storystains/utils/utils.dart';
 import '../models/review.dart';
+import '../widgets/buttons.dart';
 
 class ReviewEdit extends StatelessWidget {
   ReviewEdit({Key? key}) : super(key: key);
@@ -40,61 +40,52 @@ class ReviewEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: TextFormField(
-                  controller: _ucontroller,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    prefixIcon: Icon(Icons.title),
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: TextFormField(
+                    controller: _ucontroller,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      prefixIcon: Icon(Icons.title),
+                    ),
+                    textInputAction: TextInputAction.next,
+                    enableSuggestions: false,
+                    autocorrect: false,
                   ),
-                  textInputAction: TextInputAction.next,
-                  enableSuggestions: false,
-                  autocorrect: false,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: TextField(
-                  textInputAction: TextInputAction.newline,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Review',
-                    alignLabelWithHint: true,
-                    hintText: 'Write your review (in markdown)',
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: TextField(
+                    textInputAction: TextInputAction.newline,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Review',
+                      alignLabelWithHint: true,
+                      hintText: 'Write your review (in markdown)',
+                    ),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 28,
+                    ),
+                    controller: _rcontroller,
+                    minLines: 5,
+                    maxLines: 50,
+                    textAlign: TextAlign.start,
+                    textAlignVertical: TextAlignVertical.top,
+                    keyboardType: TextInputType.multiline,
                   ),
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 28,
-                  ),
-                  controller: _rcontroller,
-                  minLines: 5,
-                  maxLines: 50,
-                  textAlign: TextAlign.start,
-                  textAlignVertical: TextAlignVertical.top,
-                  keyboardType: TextInputType.multiline,
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _onUpdate(context),
-        child: const Icon(
-          Icons.send_rounded,
-          size: 40,
-          color: Colors.white,
-        ),
-        backgroundColor: appTheme.primaryColor,
-      ),
-    );
+        floatingActionButton: UpdateButton('Update', onUpdate: _onUpdate));
   }
 }

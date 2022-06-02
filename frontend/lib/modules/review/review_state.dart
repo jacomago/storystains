@@ -45,7 +45,7 @@ class ReviewState extends ChangeNotifier {
     }
 
     if (_review != null) {
-      _status = ReviewStatus.changed;
+      _status = ReviewStatus.open;
     } else {
       _status = ReviewStatus.notChanged;
     }

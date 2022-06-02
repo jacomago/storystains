@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../config/config.dart';
+
 class LoginButton extends StatelessWidget {
   final String? text;
   final double? width;
@@ -32,13 +34,13 @@ class UpdateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseButton(
-      width: width,
-      elevation: 2.4,
-      radius: 40.0,
-      text: text,
-      background: Colors.lightBlue,
-      gradientColors: [Colors.lightBlue, Colors.lightBlue[800]!],
+    return FloatingActionButton(
+      child: const Icon(
+        Icons.send_rounded,
+        size: 40,
+        color: Colors.white,
+      ),
+      backgroundColor: appTheme.primaryColor,
       onPressed: () => onUpdate(context),
     );
   }
