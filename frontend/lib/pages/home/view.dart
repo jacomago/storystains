@@ -14,10 +14,7 @@ class HomePage extends GetView<HomeLogic> {
     return Scaffold(
       appBar: PageBar(
         context: context,
-        leftMenu: Text(
-          'Story Stains',
-          style: context.displayLarge,
-        ),
+        title: 'Story Stains',
         rightMenu: GetBuilder<HomeLogic>(
             id: 'rightMenu',
             builder: (c) => GestureDetector(
