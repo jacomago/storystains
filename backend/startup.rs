@@ -6,6 +6,7 @@ use crate::auth::bearer_auth;
 use crate::configuration::Settings;
 use crate::cors::cors;
 use crate::health_check::health_check;
+use actix_files::Files;
 use actix_web::dev::Server;
 use actix_web::web::Data;
 use actix_web::{web, App, HttpServer};
@@ -118,6 +119,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
                 web::scope("/users")
                     .wrap(auth_users)
                     .route("", web::delete().to(delete_user)),
-            ),
+            )
+            .service(Files::new("/", "./static/root/").index_file("index.html")),
     );
 }
