@@ -26,9 +26,4 @@ class HomeLogic extends GetxController {
     listController.initData?.call();
   }
 
-  void goProfile() async {
-    await Get.toNamed(Pages.profile, arguments: state.user.value?.username);
-    fetchLogin();
-    listController.initData?.call();
-  }
 }

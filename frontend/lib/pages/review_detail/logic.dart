@@ -6,8 +6,6 @@ import 'state.dart';
 class ReviewDetailLogic extends GetxController {
   final ReviewDetailState state = ReviewDetailState();
 
-  var commentController = TextEditingController();
-
   @override
   void onReady() {
     super.onReady();

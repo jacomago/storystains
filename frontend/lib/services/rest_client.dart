@@ -29,6 +29,10 @@ abstract class RestClient {
   @retrofit.POST("/reviews")
   Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
 
+  @retrofit.PUT("/reviews/{slug}")
+  Future<ReviewResp> updateReview(@retrofit.Path() String slug,
+      @retrofit.Body() CreateReview updatedReview);
+
   // login user in database
   @retrofit.POST("/login")
   Future<UserResp> loginUser(@retrofit.Body() Login login);

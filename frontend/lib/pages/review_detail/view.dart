@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:storystains/common/extensions.dart';
 import '../../common/widget/app_bar.dart';
 
+import '../pages.dart';
 import 'logic.dart';
 
 class ReviewDetailPage extends GetView<ReviewDetailLogic> {
@@ -48,6 +49,17 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
                   ),
                 ),
               ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => () async {
+          await Get.toNamed(Pages.editReview,
+              arguments: controller.state.review.value);
+        },
+        backgroundColor: context.colors.primary,
+        child: Icon(
+          Icons.edit,
+          color: context.colors.onBackground,
+        ),
       ),
     );
   }
