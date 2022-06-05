@@ -8,11 +8,6 @@ import 'logic.dart';
 class ReviewEditPage extends GetView<ReviewEditLogic> {
   ReviewEditPage({Key? key}) : super(key: key);
 
-  final String _tag = Get.arguments.toString();
-
-  @override
-  String? get tag => _tag;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
