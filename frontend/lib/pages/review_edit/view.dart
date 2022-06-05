@@ -19,49 +19,51 @@ class ReviewEditPage extends GetView<ReviewEditLogic> {
       resizeToAvoidBottomInset: false,
       appBar: PageBar(
         context: context,
-        title: 'New Review',
+        title: 'Edit Review',
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(24),
-                child: TextField(
-                  textInputAction: TextInputAction.next,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Title',
-                    hintText: 'Review title',
-                  ),
-                  style: context.headlineMedium,
-                  controller: controller.titleController,
+      body: Obx(() => controller.state.review.value == null
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(24),
+                      child: TextField(
+                        textInputAction: TextInputAction.next,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Title',
+                          hintText: 'Review title',
+                        ),
+                        style: context.headlineMedium,
+                        controller: controller.titleController,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(24),
+                      child: TextField(
+                        textInputAction: TextInputAction.newline,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Content',
+                          alignLabelWithHint: true,
+                          hintText: 'Write your review (in markdown)',
+                        ),
+                        style: context.bodySmall,
+                        controller: controller.bodyController,
+                        minLines: 5,
+                        maxLines: 50,
+                        textAlign: TextAlign.start,
+                        textAlignVertical: TextAlignVertical.top,
+                        keyboardType: TextInputType.multiline,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.all(24),
-                child: TextField(
-                  textInputAction: TextInputAction.newline,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Content',
-                    alignLabelWithHint: true,
-                    hintText: 'Write your review (in markdown)',
-                  ),
-                  style: context.bodySmall,
-                  controller: controller.bodyController,
-                  minLines: 5,
-                  maxLines: 50,
-                  textAlign: TextAlign.start,
-                  textAlignVertical: TextAlignVertical.top,
-                  keyboardType: TextInputType.multiline,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            )),
       floatingActionButton: FloatingActionButton(
         onPressed: () => controller.editReview(),
         backgroundColor: context.colors.primary,

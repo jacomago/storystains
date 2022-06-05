@@ -51,7 +51,7 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
               ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => () async {
+        onPressed: () async {
           await Get.toNamed(Pages.editReview,
               arguments: controller.state.review.value);
         },
