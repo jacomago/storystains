@@ -1,3 +1,13 @@
+#Stage 1 - Install dependencies and build the app
+FROM cirrusci/flutter:stable AS frontflutterget
+
+FROM frontflutterget as frontbuild
+# Copy files to container and build
+RUN mkdir /app/
+COPY ./frontend /app/
+WORKDIR /app/
+RUN flutter build web
+
 FROM lukemathwalker/cargo-chef:latest-rust-1.61 as chef
 WORKDIR /app
 RUN apt update && apt install lld clang -y
@@ -17,6 +27,7 @@ COPY . .
 ENV SQLX_OFFLINE true
 # Build our project
 RUN cargo build --release --bin storystains
+
 FROM debian:bullseye-slim AS runtime
 WORKDIR /app
 RUN apt-get update -y \
@@ -26,6 +37,7 @@ RUN apt-get update -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/target/release/storystains storystains
+COPY --from=frontbuild /app/build/web /static/root
 COPY configuration configuration
 ENV APP_ENVIRONMENT production
 ENTRYPOINT ["./storystains"]
