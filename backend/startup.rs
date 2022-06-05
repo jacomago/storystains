@@ -102,7 +102,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
     let auth_reviews = HttpAuthentication::bearer(bearer_auth);
     let auth_users = HttpAuthentication::bearer(bearer_auth);
     cfg.service(
-        web::scope("")
+        web::scope("/api")
             .route("/health_check", web::get().to(health_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
@@ -119,7 +119,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
                 web::scope("/users")
                     .wrap(auth_users)
                     .route("", web::delete().to(delete_user)),
-            )
-            .service(Files::new("/", "./static/root/").index_file("index.html")),
-    );
+            ),
+    )
+    .service(Files::new("/", "./static/root/").index_file("index.html"));
 }
