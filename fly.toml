@@ -54,3 +54,13 @@ protocol = "http"
 restart_limit = 0
 timeout = 2000
 tls_skip_verify = false
+
+[[services.http_checks]]
+interval = 10000000
+grace_period = "5s"
+method = "get"
+path = "/api/db_check"
+protocol = "http"
+restart_limit = 0
+timeout = 2000
+tls_skip_verify = false
