@@ -34,7 +34,6 @@ pub struct DatabaseSettings {
 }
 
 impl DatabaseSettings {
-    // Renamed from `connection_string_without_db`
     pub fn without_db(&self) -> PgConnectOptions {
         let ssl_mode = if self.require_ssl {
             PgSslMode::Require
@@ -48,7 +47,6 @@ impl DatabaseSettings {
             .port(self.port)
             .ssl_mode(ssl_mode)
     }
-    // Renamed from `connection_string`
     pub fn with_db(&self) -> PgConnectOptions {
         let mut options = self.without_db().database(&self.database_name);
         options.log_statements(tracing::log::LevelFilter::Trace);
