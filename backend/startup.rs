@@ -5,7 +5,7 @@ use crate::api::{
 use crate::auth::bearer_auth;
 use crate::configuration::Settings;
 use crate::cors::cors;
-use crate::health_check::health_check;
+use crate::health_check::{db_check, health_check};
 use actix_files::Files;
 use actix_web::dev::Server;
 use actix_web::web::Data;
@@ -104,6 +104,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
     cfg.service(
         web::scope("/api")
             .route("/health_check", web::get().to(health_check))
+            .route("/db_check", web::get().to(db_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
             .route("/reviews", web::get().to(get_reviews))
