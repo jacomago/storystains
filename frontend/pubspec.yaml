@@ -32,6 +32,7 @@ dev_dependencies:
   json_serializable: '>4.4.0'
   mockito: ^5.2.0
   flutter_lints: ^2.0.1
+  dependency_validator: ^3.0.0
 
 flutter:
   uses-material-design: true
@@ -41,6 +42,7 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/logo/
+    - assets/lottie/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
