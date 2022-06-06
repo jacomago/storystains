@@ -5,6 +5,7 @@ kill_timeout = 5
 processes = []
 
 [env]
+
 # Need the following to be secrets:
 # APP_APPLICATION__HMAC_SECRET
 # APP_APPLICATION__BASE_URL
@@ -19,7 +20,6 @@ allowed_public_ports = []
 auto_rollback = true
 
 [[services]]
-http_checks = []
 internal_port = 8080
 processes = ["app"]
 protocol = "tcp"
@@ -44,3 +44,13 @@ grace_period = "1s"
 interval = "15s"
 restart_limit = 0
 timeout = "2s"
+
+[[services.http_checks]]
+interval = 10000
+grace_period = "5s"
+method = "get"
+path = "/api/health_check"
+protocol = "http"
+restart_limit = 0
+timeout = 2000
+tls_skip_verify = false
