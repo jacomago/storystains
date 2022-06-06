@@ -34,7 +34,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 24),
+      padding: const EdgeInsets.symmetric(vertical: 24),
       child: LoadWrapper<Review>(
         controller: widget.controller,
         child: ListView.separated(
@@ -53,22 +53,22 @@ class _ReviewsPageState extends State<ReviewsPage> {
     return GestureDetector(
       onTap: () => Get.toNamed(Pages.reviewDetail, arguments: review),
       child: Container(
-        padding: EdgeInsets.all(24),
-        margin: EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.all(24),
+        margin: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
           color: context.colors.surface,
-          borderRadius: BorderRadius.all(Radius.circular(24)),
+          borderRadius: const BorderRadius.all(Radius.circular(24)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       DateFormat.yMMMMEEEEd()
                           .format(DateTime.tryParse(review.createdAt)!),
@@ -79,7 +79,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 const Spacer(),
               ],
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Text(review.title, style: context.displaySmall),
             Text(
               review.body,
@@ -87,7 +87,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),
