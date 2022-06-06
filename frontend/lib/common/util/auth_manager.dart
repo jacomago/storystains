@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:storystains/common/util/storage.dart';
-import 'package:storystains/common/util/toast_utils.dart';
+import 'package:storystains/common/util/snackbar.dart';
 
 import '../../model/entity/user.dart';
 import '../../pages/pages.dart';

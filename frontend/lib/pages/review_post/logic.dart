@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../common/util/loading_dialog.dart';
-import '../../common/util/toast_utils.dart';
+import '../../common/util/snackbar.dart';
 import '../../model/req/create_review.dart';
 import '../../model/resp/review_resp.dart';
 import '../../pages/pages.dart';

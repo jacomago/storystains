@@ -6,7 +6,7 @@ import '../../common/constant/app_keys.dart';
 import '../../common/http/dio_manager.dart';
 import '../../common/util/auth_manager.dart';
 import '../../common/util/storage.dart';
-import '../../common/util/toast_utils.dart';
+import '../../common/util/snackbar.dart';
 import '../../model/req/add_user.dart';
 import '../../model/req/login.dart';
 import '../../services/rest_client.dart';

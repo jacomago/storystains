@@ -7,7 +7,7 @@ import '../../pages/pages.dart';
 import '../../services/rest_client.dart';
 import 'package:storystains/common/extensions.dart';
 
-import '../util/toast_utils.dart';
+import '../util/snackbar.dart';
 import 'load_wrapper.dart';
 
 class ReviewsPage extends StatefulWidget {
