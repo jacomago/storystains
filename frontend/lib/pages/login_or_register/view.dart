@@ -45,8 +45,8 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                     child: TextField(
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'user name',
-                          hintText: 'Enter your user name'),
+                          labelText: 'Userame',
+                          hintText: 'Enter your Username'),
                       controller: controller.nameController,
                     ),
                   ),

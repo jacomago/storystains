@@ -6,6 +6,7 @@ import '../../model/entity/user.dart';
 import '../../pages/pages.dart';
 import '../constant/app_keys.dart';
 import '../http/dio_manager.dart';
+
 class AuthManager {
   static User? _loginUser;
 
@@ -31,7 +32,7 @@ class AuthManager {
     _loginUser = null;
     await Storage.remove(AppKeys.loginUser);
     DioManager.cancelAll(reason);
-    ToastUtils.show(reason);
+    SnackBarUtil.show(reason);
     if (jumpToHome) {
       Get.until((route) => route.settings.name == Pages.home);
     }

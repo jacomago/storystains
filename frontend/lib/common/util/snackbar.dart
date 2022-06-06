@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ToastUtils {
+class SnackBarUtil {
   static showError(dynamic e) {
     if (e is DioError) {
       show(e.message);

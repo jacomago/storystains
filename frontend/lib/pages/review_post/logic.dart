@@ -28,10 +28,10 @@ class ReviewPostLogic extends GetxController {
     final body = bodyController.value.text;
     final title = titleController.value.text;
     if (title.isEmpty) {
-      ToastUtils.show('Title can\'t be blank');
+      SnackBarUtil.show('Title can\'t be blank');
       return;
     } else if (body.isEmpty) {
-      ToastUtils.show('Content can\'t be blank');
+      SnackBarUtil.show('Content can\'t be blank');
       return;
     }
     LoadingDialog.show();
@@ -47,7 +47,7 @@ class ReviewPostLogic extends GetxController {
       result = true;
     } catch (e, stackTrace) {
       log(stackTrace.toString());
-      ToastUtils.showError(e);
+      SnackBarUtil.showError(e);
     } finally {
       LoadingDialog.hide();
     }

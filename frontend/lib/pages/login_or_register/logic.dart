@@ -39,7 +39,7 @@ class LoginOrRegisterLogic extends GetxController {
       AuthManager.login(userResp.user);
       Get.back(result: userResp.user);
     } catch (e) {
-      ToastUtils.showError(e);
+      SnackBarUtil.showError(e);
     }
   }
 
@@ -54,7 +54,7 @@ class LoginOrRegisterLogic extends GetxController {
       AuthManager.login(userResp.user);
       Get.back(result: userResp.user);
     } catch (e) {
-      ToastUtils.showError(e);
+      SnackBarUtil.showError(e);
     }
   }
 
@@ -71,7 +71,7 @@ class LoginOrRegisterLogic extends GetxController {
     if (result) {
       Get.back();
     } else {
-      ToastUtils.show('set base url fail');
+      SnackBarUtil.show('set base url fail');
     }
   }
 }

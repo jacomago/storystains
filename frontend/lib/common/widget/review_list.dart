@@ -102,7 +102,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
       );
       return resp.reviews;
     } catch (e) {
-      ToastUtils.showError(e);
+      SnackBarUtil.showError(e);
       return [];
     }
   }
