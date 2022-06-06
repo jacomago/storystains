@@ -65,13 +65,4 @@ class LoginOrRegisterLogic extends GetxController {
     nameController.dispose();
     urlController.dispose();
   }
-
-  void setNewBaseUrl() async {
-    final result = await DioManager.setBaseUrl(urlController.value.text);
-    if (result) {
-      Get.back();
-    } else {
-      SnackBarUtil.show('set base url fail');
-    }
-  }
 }
