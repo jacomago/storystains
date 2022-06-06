@@ -6,7 +6,7 @@ import '../../common/widget/app_bar.dart';
 import 'logic.dart';
 
 class ReviewEditPage extends GetView<ReviewEditLogic> {
-  ReviewEditPage({Key? key}) : super(key: key);
+  const ReviewEditPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,12 @@ class ReviewEditPage extends GetView<ReviewEditLogic> {
       body: Obx(() => controller.state.review.value == null
           ? const SizedBox.shrink()
           : Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: TextField(
                         textInputAction: TextInputAction.next,
                         decoration: const InputDecoration(
@@ -37,7 +37,7 @@ class ReviewEditPage extends GetView<ReviewEditLogic> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: TextField(
                         textInputAction: TextInputAction.newline,
                         decoration: const InputDecoration(

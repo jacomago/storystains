@@ -17,12 +17,12 @@ class ReviewPostPage extends GetView<ReviewPostLogic> {
         title: 'New Review',
       ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: TextField(
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
@@ -35,7 +35,7 @@ class ReviewPostPage extends GetView<ReviewPostLogic> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: TextField(
                   textInputAction: TextInputAction.newline,
                   decoration: const InputDecoration(

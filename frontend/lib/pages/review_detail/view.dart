@@ -26,7 +26,7 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
         () => controller.state.review.value == null
             ? const SizedBox.shrink()
             : Padding(
-                padding: EdgeInsets.all(24),
+                padding: const EdgeInsets.all(24),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,8 +35,8 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
                         controller.state.reviewTitle ?? '',
                         style: context.displayMedium,
                       ),
-                      SizedBox(height: 24),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Markdown(
                         physics: const NeverScrollableScrollPhysics(),
                         data: controller.state.body ?? '',
@@ -44,7 +44,7 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                       ),
-                      Divider(height: 48),
+                      const Divider(height: 48),
                     ],
                   ),
                 ),
