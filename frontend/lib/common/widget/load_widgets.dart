@@ -149,7 +149,7 @@ class LoadFooter extends StatelessWidget {
         children: [
           Text(
             'Story Stains',
-            style: context.displayLarge,
+            style: context.displayMedium,
           ),
           Text(
             'A place to share your feelings.',

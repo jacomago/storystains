@@ -45,7 +45,7 @@ class _LoadingPageState extends State<LoadingPage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(bottom: 10),
+              margin: const EdgeInsets.only(bottom: 10),
               child: AnimatedBuilder(
                   animation: _rotateController,
                   child: Icon(
