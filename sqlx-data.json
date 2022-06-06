@@ -303,6 +303,24 @@
     },
     "query": "\n            INSERT INTO users (user_id, username, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING user_id, username\n        "
   },
+  "89d8bd39a355aef1d7592d28c7a63701d0811f608405f062a3a8e97f79744365": {
+    "describe": {
+      "columns": [
+        {
+          "name": "success",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        SELECT success\n        FROM _sqlx_migrations\n    "
+  },
   "93f5c539d6cbae65038e5dd0425c72b437810360d59bb5990c440e8bb0f6dc0a": {
     "describe": {
       "columns": [],
