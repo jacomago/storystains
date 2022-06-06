@@ -5,15 +5,16 @@ kill_timeout = 5
 processes = []
 
 [env]
-APP_APPLICATION__BASE_URL = "https://storystains.fly.dev"
+APP__APPLICATION__BASE_URL = "https://storystains.fly.dev"
 APP__FRONTEND_ORIGIN = "https://storystains.fly.dev"
-APP_DATABASE__HOST = "top2.nearest.of.storystains-db.internal"
-APP_DATABASE__PORT = "5432"
-APP_DATABASE__DATABASE_NAME = "storystains"
-APP_DATABASE__USERNAME = "storystains"
+APP__DATABASE__HOST = "top2.nearest.of.storystains-db.internal"
+APP__DATABASE__PORT = "5432"
+APP__DATABASE__DATABASE_NAME = "storystains"
+APP__DATABASE__USERNAME = "storystains"
+APP__DATABASE__REQUIRE_SSL = "false"
 # Need the following to be secrets:
-# APP_APPLICATION__HMAC_SECRET
-# APP_DATABASE__PASSWORD
+# APP__APPLICATION__HMAC_SECRET
+# APP__DATABASE__PASSWORD
 
 # DATABASE_URL??
 [experimental]
@@ -56,12 +57,12 @@ restart_limit = 0
 timeout = 2000
 tls_skip_verify = false
 
-# [[services.http_checks]]
-# interval = 1000000
-# grace_period = "5s"
-# method = "get"
-# path = "/api/db_check"
-# protocol = "http"
-# restart_limit = 0
-# timeout = 2000
-# tls_skip_verify = false
+[[services.http_checks]]
+interval = 1000000
+grace_period = "5s"
+method = "get"
+path = "/api/db_check"
+protocol = "http"
+restart_limit = 0
+timeout = 2000
+tls_skip_verify = false

@@ -9,4 +9,3 @@ database:
   username: "postgres"
   password: "password"
   database_name: "storystains"
-frontend_origin: "http://localhost:50547"

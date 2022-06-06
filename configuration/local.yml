@@ -3,3 +3,4 @@ application:
 database:
   host: localhost
   require_ssl: false
+frontend_origin: "http://localhost:50547"

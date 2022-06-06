@@ -8,6 +8,7 @@ async fn main() -> anyhow::Result<()> {
     init_subscriber(subscriber);
 
     let configuration = get_configuration().expect("Failed to read configuration.");
+    tracing_log::log::info!("base url {}", configuration.application.base_url);
     let application = Application::build(configuration).await?;
     application.run_until_stopped().await?;
     Ok(())
