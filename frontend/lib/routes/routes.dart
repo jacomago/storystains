@@ -4,7 +4,6 @@ import 'package:storystains/pages/login_or_register/view.dart';
 import 'package:storystains/pages/review_detail/view.dart';
 
 import '../pages/review_edit/view.dart';
-import '../pages/review_post/view.dart';
 
 class Routes {
   static const String root = '/';
@@ -19,18 +18,18 @@ class Routes {
 Route routes(RouteSettings settings) {
   switch (settings.name) {
     case Routes.home:
-      return _page(const HomePage(), settings);
+      return _page(HomePage(), settings);
     case Routes.login:
-      return _page(const LoginOrRegisterPage(), settings);
+      return _page(LoginOrRegisterPage(), settings);
     case Routes.reviewDetail:
       return _page(ReviewDetailPage(), settings);
     case Routes.reviewEdit:
-      return _page(const ReviewEditPage(), settings);
+      return _page(const EditReview(), settings);
     case Routes.reviewNew:
-      return _page(ReviewPostPage(), settings);
+      return _page(const CreateReview(), settings);
     case Routes.root:
     default:
-      return _page(const HomePage(), settings);
+      return _page(HomePage(), settings);
   }
 }
 

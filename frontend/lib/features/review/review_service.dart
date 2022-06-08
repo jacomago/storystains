@@ -14,4 +14,8 @@ class ReviewService {
     return await Api.updateReview(
         slug, CreateReview(review: NewReview(title: title, body: body)));
   }
+  Future read(String slug) async {
+    return await Api.readReview(
+        slug);
+  }
 }

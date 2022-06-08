@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
+import 'package:storystains/pages/review_edit/view.dart';
+import 'package:storystains/routes/routes.dart';
 import 'package:storystains/utils/extensions.dart';
 import '../../common/widget/app_bar.dart';
 
@@ -52,8 +54,8 @@ class ReviewDetailPage extends GetView<ReviewDetailLogic> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Get.toNamed(Pages.editReview,
-              arguments: controller.state.review.value);
+          await Navigator.pushNamed(context, Routes.reviewEdit,
+              arguments: ReviewArguement(review.slug));
         },
         backgroundColor: context.colors.primary,
         child: Icon(

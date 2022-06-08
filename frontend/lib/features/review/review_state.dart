@@ -2,56 +2,66 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import '../../model/entity/user.dart';
+import '../../model/entity/review.dart';
 import '../../utils/prefs.dart';
 import 'review_service.dart';
 
 enum ReviewEvent { create, read, update, delete }
 
-enum ReviewStatus { initial, updated, notupdated, failed }
+enum ReviewStatus { initial, read, updated, notupdated, failed }
 
 class ReviewState extends ChangeNotifier {
   final ReviewService _service;
 
-  User? _user;
+  Review? _review;
   ReviewEvent? _event;
   ReviewStatus _status = ReviewStatus.initial;
   bool _isLoading = false;
   String? _token;
   String _error = '';
+  bool _isCreate = true;
+  String _slug = "";
 
-  User? get user => _user;
+  Review? get review => _review;
   ReviewEvent? get event => _event;
   ReviewStatus get status => _status;
   String? get token => _token;
   String get error => _error;
+  bool get isCreate => _isCreate;
+  String get slug => _slug;
 
   bool get isLoading => _isLoading;
   bool get isUpdated => _status == ReviewStatus.updated;
   bool get notUpdated => _status == ReviewStatus.notupdated;
   bool get isFailed => _status == ReviewStatus.failed;
 
-  ReviewState(this._service) {
+  ReviewState(this._service, [String slug = ""]) {
     _event = null;
     _status = ReviewStatus.initial;
     _isLoading = false;
     _error = '';
+    _isCreate = slug.isEmpty;
+    _slug = slug;
   }
 
-  Future init() async {
-    final user = await Prefs.getString('user');
-    final token = await Prefs.getString('token');
+  Future<void> init() async {
+    var review;
 
-    if (user != null) {
-      _user = User.fromJson(jsonDecode(user));
+    if (!_isCreate) {
+      _isLoading = true;
+
+      review = await _service.read(_slug);
+
+      _isLoading = false;
     }
 
-    if (token != null) {
-      _token = token;
+    if (review != null) {
+      _review = review;
+      _isCreate = false;
     }
 
-    if (_user != null && _token != null) {
-      _status = ReviewStatus.updated;
+    if (_review != null) {
+      _status = ReviewStatus.read;
     } else {
       _status = ReviewStatus.notupdated;
     }
@@ -68,11 +78,10 @@ class ReviewState extends ChangeNotifier {
     try {
       final data = await _service.create(title, body);
 
-      if (data is User && data.token.isNotEmpty) {
-        _user = data;
+      if (data is Review) {
+        _review = data;
 
-        await Prefs.setString('user', jsonEncode(user!.toJson()));
-        await Prefs.setString('token', data.token);
+        await Prefs.setString('review', jsonEncode(review!.toJson()));
 
         _status = ReviewStatus.updated;
       } else {
@@ -87,20 +96,19 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future update(String slug, String title, String body) async {
+  Future update(String title, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      final data = await _service.update(slug, title, body);
+      final data = await _service.update(_review!.slug, title, body);
 
-      if (data is User && data.token.isNotEmpty) {
-        _user = data;
+      if (data is Review) {
+        _review = data;
 
-        await Prefs.setString('user', jsonEncode(user!.toJson()));
-        await Prefs.setString('token', data.token);
+        await Prefs.setString('review', jsonEncode(review!.toJson()));
 
         _status = ReviewStatus.updated;
       } else {
@@ -115,19 +123,18 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future logout() async {
+  Future delete() async {
     _event = ReviewEvent.delete;
     _isLoading = true;
 
     notifyListeners();
 
-    await Prefs.remove('user');
-    await Prefs.remove('token');
+    await Prefs.remove('review');
 
     _status = ReviewStatus.initial;
     _error = '';
     _event = null;
-    _user = null;
+    _review = null;
     _token = null;
     _isLoading = false;
 
