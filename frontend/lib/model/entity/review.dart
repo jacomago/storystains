@@ -8,11 +8,11 @@ part 'review.g.dart';
 class Review {
   String body;
   @JsonKey(name: 'created_at')
-  String createdAt;
+  DateTime createdAt;
   String slug;
   String title;
   @JsonKey(name: 'updated_at')
-  String updatedAt;
+  DateTime updatedAt;
 
   Review({
     required this.body,

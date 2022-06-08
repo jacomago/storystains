@@ -81,7 +81,7 @@ class ReviewsPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 8),
                     Text(
-                      review.createdAt,
+                      review.createdAt.toIso8601String(),
                       style: context.labelSmall,
                     ),
                   ],
