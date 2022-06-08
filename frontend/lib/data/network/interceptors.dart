@@ -1,9 +1,8 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:storystains/utils/utils.dart';
-
 import '../../common/constant/app_config.dart';
+import '../../features/auth/auth.dart';
 import 'api.dart';
 
 final interceptors = [
@@ -29,16 +28,14 @@ class CancelInterceptors extends Interceptor {
 }
 
 class AuthInterceptors extends Interceptor {
-
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final uri = options.uri;
-    final tokenExists = await Prefs.containsKey('token');
+    final tokenExists = Auth.tokenExists();
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         tokenExists) {
-      options.headers['authorization'] =
-          'Bearer ${await Prefs.getString('token')}';
+      options.headers['authorization'] = 'Bearer ${Auth.getToken()}';
     }
     handler.next(options);
   }
@@ -48,7 +45,7 @@ class AuthInterceptors extends Interceptor {
     final uri = response.requestOptions.uri;
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         response.statusCode == 401) {
-      await Auth.logout(response.data, true);
+      await Auth.logout();
     } else {
       handler.next(response);
     }

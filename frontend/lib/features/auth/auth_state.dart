@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:storystains/model/resp/user_resp.dart';
 
 import '../../model/entity/user.dart';
 import '../../utils/prefs.dart';
+import 'auth.dart';
 import 'auth_service.dart';
 
 enum AuthEvent { register, login, logout }
@@ -53,7 +55,7 @@ class AuthState extends ChangeNotifier {
 
   Future init() async {
     final user = await Prefs.getString('user');
-    final token = await Prefs.getString('token');
+    final token = Auth.getToken();
 
     if (user != null) {
       _user = User.fromJson(jsonDecode(user));
@@ -81,11 +83,11 @@ class AuthState extends ChangeNotifier {
     try {
       final data = await _service.register(username, password);
 
-      if (data is User && data.token.isNotEmpty) {
-        _user = data;
+      if (data is UserResp && data.user.token.isNotEmpty) {
+        _user = data.user;
 
-        await Prefs.setString('user', jsonEncode(user!.toJson()));
-        await Prefs.setString('token', data.token);
+        await Prefs.setString('user', jsonEncode(_user!.toJson()));
+        await Prefs.setString('token', _user!.token);
 
         _status = AuthStatus.authenticated;
       } else {
@@ -109,11 +111,11 @@ class AuthState extends ChangeNotifier {
     try {
       final data = await _service.login(username, password);
 
-      if (data is User && data.token.isNotEmpty) {
-        _user = data;
+      if (data is UserResp && data.user.token.isNotEmpty) {
+        _user = data.user;
 
-        await Prefs.setString('user', jsonEncode(user!.toJson()));
-        await Prefs.setString('token', data.token);
+        await Prefs.setString('user', jsonEncode(_user!.toJson()));
+        await Prefs.setString('token', _user!.token);
 
         _status = AuthStatus.authenticated;
       } else {
@@ -134,8 +136,7 @@ class AuthState extends ChangeNotifier {
 
     notifyListeners();
 
-    await Prefs.remove('user');
-    await Prefs.remove('token');
+    Auth.logout();
 
     _status = AuthStatus.initial;
     _error = '';
