@@ -4,9 +4,10 @@ import 'package:intl/intl.dart';
 
 import '../../model/entity/review.dart';
 import '../../pages/pages.dart';
-import '../../services/rest_client.dart';
 import 'package:storystains/common/extensions.dart';
 
+import '../../services/rest_client.dart';
+import '../util/init_utils.dart';
 import '../util/snackbar.dart';
 import 'load_wrapper.dart';
 
@@ -96,7 +97,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   Future<List<Review>> fetchReviews([int offset = 0, int limit = 10]) async {
     try {
-      final resp = await RestClient.client.getReviews(
+      final resp = await sl<RestClient>().getReviews(
         offset: offset,
         limit: limit,
       );

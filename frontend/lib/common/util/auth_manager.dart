@@ -6,32 +6,33 @@ import '../../model/entity/user.dart';
 import '../../pages/pages.dart';
 import '../constant/app_keys.dart';
 import '../http/dio_manager.dart';
+import 'init_utils.dart';
 
 class AuthManager {
-  static User? _loginUser;
+  User? _loginUser;
 
-  static init() async {
+  AuthManager() {
     _loginUser = Storage.getJsonObject<User>(
         AppKeys.loginUser, (json) => User.fromJson(json));
   }
 
-  static get isLogin => _loginUser != null && _loginUser!.token.isNotEmpty;
+  get isLogin => _loginUser != null && _loginUser!.token.isNotEmpty;
 
-  static get token => _loginUser?.token;
+  get token => _loginUser?.token;
 
-  static User? get user => _loginUser;
+  User? get user => _loginUser;
 
-  static String? get userName => _loginUser?.username;
+  String? get userName => _loginUser?.username;
 
-  static login(User user) async {
+  login(User user) async {
     _loginUser = user;
     await Storage.setJsonObject(AppKeys.loginUser, user);
   }
 
-  static logout(String reason, [bool jumpToHome = false]) async {
+  logout(String reason, [bool jumpToHome = false]) async {
     _loginUser = null;
     await Storage.remove(AppKeys.loginUser);
-    DioManager.cancelAll(reason);
+    sl<DioManager>().cancelAll(reason);
     SnackBarUtil.show(reason);
     if (jumpToHome) {
       Get.until((route) => route.settings.name == Pages.home);

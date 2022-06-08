@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../common/util/init_utils.dart';
 import '../../common/util/loading_dialog.dart';
 import '../../common/util/snackbar.dart';
 import '../../model/req/create_review.dart';
@@ -52,7 +53,7 @@ class ReviewEditLogic extends GetxController {
     var result = false;
     ReviewResp? editResp;
     try {
-      editResp = await RestClient.client.updateReview(
+      editResp = await sl<RestClient>().updateReview(
           slug,
           CreateReview(
             review: NewReview(

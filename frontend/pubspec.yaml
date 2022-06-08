@@ -22,6 +22,7 @@ dependencies:
   logger: ^1.1.0  #for logging purpose
   universal_platform: ^1.0.0+1 # for solve flutter web issue: https://github.com/flutter/flutter/issues/36126#issuecomment-596215587
   google_fonts: ^3.0.1
+  get_it: ^7.2.0
 
 
 dev_dependencies:
@@ -30,9 +31,10 @@ dev_dependencies:
   retrofit_generator: ^4.0.1
   build_runner: ^2.1.11
   json_serializable: '>4.4.0'
-  mockito: ^5.2.0
+  mocktail: ^0.3.0
   flutter_lints: ^2.0.1
   dependency_validator: ^3.0.0
+  mock_web_server: ^5.0.0-nullsafety.1
 
 flutter:
   uses-material-design: true

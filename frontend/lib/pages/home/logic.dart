@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../common/util/auth_manager.dart';
+import '../../common/util/init_utils.dart';
 import '../../common/widget/load_wrapper.dart';
 import '../pages.dart';
 import 'state.dart';
@@ -16,7 +17,7 @@ class HomeLogic extends GetxController {
   }
 
   Future<void> fetchLogin() async {
-    state.user.value = AuthManager.user;
+    state.user.value = sl<AuthManager>().user;
     update(['rightMenu']);
   }
 
@@ -25,5 +26,4 @@ class HomeLogic extends GetxController {
     fetchLogin();
     listController.initData?.call();
   }
-
 }

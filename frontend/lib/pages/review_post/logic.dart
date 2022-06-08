@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../common/util/init_utils.dart';
 import '../../common/util/loading_dialog.dart';
 import '../../common/util/snackbar.dart';
 import '../../model/req/create_review.dart';
@@ -38,7 +39,7 @@ class ReviewPostLogic extends GetxController {
     var result = false;
     ReviewResp? postResp;
     try {
-      postResp = await RestClient.client.createReview(CreateReview(
+      postResp = await sl<RestClient>().createReview(CreateReview(
         review: NewReview(
           body: body,
           title: title,

@@ -2,9 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart' as retrofit;
 
 import '../common/constant/app_config.dart';
-import '../common/constant/app_keys.dart';
-import '../common/http/dio_manager.dart';
-import '../common/util/storage.dart';
 import '../model/req/add_user.dart';
 import '../model/req/create_review.dart';
 import '../model/req/login.dart';
@@ -17,9 +14,6 @@ part 'rest_client.g.dart';
 @retrofit.RestApi(baseUrl: AppConfig.baseUrl)
 abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
-
-  static RestClient get client => RestClient(DioManager.dio,
-      baseUrl: Storage.getString(AppKeys.baseUrl) ?? AppConfig.baseUrl);
 
   // add new user in database
   @retrofit.POST("/signup")

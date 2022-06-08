@@ -18,6 +18,7 @@ void main() {
     );
   }
 
+  getItSetUp();
   InitUtils.init().then((value) => runApp(const MyApp()));
 }
 
