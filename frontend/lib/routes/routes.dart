@@ -19,18 +19,18 @@ class Routes {
 Route routes(RouteSettings settings) {
   switch (settings.name) {
     case Routes.home:
-      return _page(HomePage(), settings);
+      return _page(const Home(), settings);
     case Routes.login:
       return _page(LoginOrRegisterPage(), settings);
     case Routes.reviewDetail:
-      return _page(ReviewDetailPage(), settings);
+      return _page(const ReviewDetailPage(), settings);
     case Routes.reviewEdit:
       return _page(const EditReview(), settings);
     case Routes.reviewNew:
       return _page(const CreateReview(), settings);
     case Routes.root:
     default:
-      return _page(HomePage(), settings);
+      return _page(const Home(), settings);
   }
 }
 

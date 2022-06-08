@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import '../../common/constant/app_config.dart';
-import '../../features/auth/auth.dart';
+import '../../features/auth/auth_storage.dart';
 import 'api.dart';
 
 final interceptors = [
@@ -32,10 +32,10 @@ class AuthInterceptors extends Interceptor {
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final uri = options.uri;
-    final tokenExists = Auth.tokenExists();
+    final tokenExists = AuthStorage.tokenExists();
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         tokenExists) {
-      options.headers['authorization'] = 'Bearer ${Auth.getToken()}';
+      options.headers['authorization'] = 'Bearer ${AuthStorage.getToken()}';
     }
     handler.next(options);
   }
@@ -45,7 +45,7 @@ class AuthInterceptors extends Interceptor {
     final uri = response.requestOptions.uri;
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         response.statusCode == 401) {
-      await Auth.logout();
+      await AuthStorage.logout();
     } else {
       handler.next(response);
     }

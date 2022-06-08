@@ -6,7 +6,6 @@ import 'package:storystains/model/resp/user_resp.dart';
 import '../../model/entity/user.dart';
 import '../../utils/prefs.dart';
 import 'auth.dart';
-import 'auth_service.dart';
 
 enum AuthEvent { register, login, logout }
 
@@ -55,7 +54,7 @@ class AuthState extends ChangeNotifier {
 
   Future init() async {
     final user = await Prefs.getString('user');
-    final token = Auth.getToken();
+    final token = AuthStorage.getToken();
 
     if (user != null) {
       _user = User.fromJson(jsonDecode(user));
@@ -136,7 +135,7 @@ class AuthState extends ChangeNotifier {
 
     notifyListeners();
 
-    Auth.logout();
+    AuthStorage.logout();
 
     _status = AuthStatus.initial;
     _error = '';

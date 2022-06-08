@@ -42,8 +42,9 @@ class ReviewsPage extends StatelessWidget {
                     bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
 
                     // User Item
-                    if (isItem)
+                    if (isItem) {
                       return _buildReviewItem(context, reviews.item(index));
+                    }
 
                     // Show loading more at the bottom
                     if (isLoadingMore) return const LoadingMore();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/utils/extensions.dart';
 import 'package:storystains/utils/navigation.dart';
@@ -9,6 +10,18 @@ import 'package:storystains/utils/snackbar.dart';
 import '../common/widget/review_list.dart';
 import '../features/auth/auth_state.dart';
 import '../features/reviews/reviews_state.dart';
+
+class Home extends StatelessWidget {
+  const Home({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ReviewsState(ReviewsService()),
+      child: const HomePage(),
+    );
+  }
+}
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

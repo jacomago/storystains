@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/navigation.dart';
 import 'package:storystains/utils/snackbar.dart';
 
 import '../features/auth/auth_state.dart';
@@ -32,7 +31,7 @@ class LoginOrRegisterPage extends StatelessWidget {
     }
 
     if (auth.isAuthenticated) {
-      context.pop();
+      Navigator.of(context).pop();
       context.snackbar('Signed in as ${auth.user?.username}');
     } else {
       _passwordController.clear();

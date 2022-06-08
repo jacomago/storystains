@@ -15,7 +15,6 @@ class ReviewEditPage extends StatelessWidget {
   void editReview(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    final auth = context.read<AuthState>();
     final state = context.read<ReviewState>();
     final body = bodyController.value.text;
     final title = titleController.value.text;
