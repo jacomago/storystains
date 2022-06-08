@@ -1,5 +1,3 @@
-
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +13,7 @@ import 'auth_test.mocks.dart';
 @GenerateMocks([AuthService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("auth", () {
+  group("login", () {
     test('After logging in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
       const username = "username";
@@ -43,9 +41,7 @@ void main() {
       expect(authState.isAuthenticated, false);
 
       when(mockService.login("", "")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
-              statusCode: 401));
+          Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
 
       await authState.login("", "");
 
@@ -54,11 +50,67 @@ void main() {
       expect(authState.error, "");
     });
   });
-}
+  group("signup", () {
+    test('After signup in isAuthenticated', () async {
+      SharedPreferences.setMockInitialValues({});
+      const username = "username";
+      const password = "password";
+      final user = User(token: "token", username: username);
+      final userResp = UserResp(user: user);
 
-// TODO Test Signup
-// TODO Test handle signup error
-// TODO Test Login
-// TODO Test handle login error
-// TODO Test Logout
-// TODO Test handle logout error
+      final mockService = MockAuthService();
+      final authState = AuthState(mockService);
+
+      expect(authState.isAuthenticated, false);
+
+      when(mockService.register(username, password))
+          .thenAnswer((realInvocation) async => userResp);
+
+      await authState.register(username, password);
+
+      verify(mockService.register(username, password));
+      expect(authState.isAuthenticated, true);
+    });
+  
+    test('error message on bad info', () async {
+      final mockService = MockAuthService();
+      final authState = AuthState(mockService);
+
+      expect(authState.isAuthenticated, false);
+
+      when(mockService.register("", "")).thenAnswer((realInvocation) async =>
+          Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
+
+      await authState.register("", "");
+
+      verify(mockService.register("", ""));
+      expect(authState.isAuthenticated, false);
+      expect(authState.error, "");
+    });
+  });
+  group("logout", () {
+    test('After logout not isAuthenticated', () async {
+      SharedPreferences.setMockInitialValues({});
+      const username = "username";
+      const password = "password";
+      final user = User(token: "token", username: username);
+      final userResp = UserResp(user: user);
+
+      final mockService = MockAuthService();
+      final authState = AuthState(mockService);
+
+      expect(authState.isAuthenticated, false);
+
+      when(mockService.register(username, password))
+          .thenAnswer((realInvocation) async => userResp);
+
+      await authState.register(username, password);
+
+      verify(mockService.register(username, password));
+      expect(authState.isAuthenticated, true);
+
+      await authState.logout();
+      expect(authState.isAuthenticated, false);
+    });
+  });
+}
