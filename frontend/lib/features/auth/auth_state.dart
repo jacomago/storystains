@@ -54,7 +54,7 @@ class AuthState extends ChangeNotifier {
 
   Future init() async {
     final user = await Prefs.getString('user');
-    final token = AuthStorage.getToken();
+    final token = await AuthStorage.getToken();
 
     if (user != null) {
       _user = User.fromJson(jsonDecode(user));

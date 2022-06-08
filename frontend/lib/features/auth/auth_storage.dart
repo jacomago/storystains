@@ -6,11 +6,11 @@ class AuthStorage {
     await Prefs.remove('token');
   }
 
-  static getToken() async {
-    await Prefs.getString('token');
+  static Future<String?> getToken() async {
+    return await Prefs.getString('token');
   }
 
-  static tokenExists() async {
-    await Prefs.containsKey('token');
+  static Future<bool> tokenExists() async {
+    return await Prefs.containsKey('token');
   }
 }
