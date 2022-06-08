@@ -1,27 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:storystains/common/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:storystains/utils/extensions.dart';
+import 'package:storystains/utils/navigation.dart';
+import 'package:storystains/utils/snackbar.dart';
 
-import '../../common/widget/app_bar.dart';
-import 'logic.dart';
+import '../../features/auth/auth_state.dart';
 
-class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
-  const LoginOrRegisterPage({Key? key}) : super(key: key);
+class LoginOrRegisterPage extends StatelessWidget {
+  LoginOrRegisterPage({Key? key}) : super(key: key);
+
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _onLogin(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+
+    final auth = context.read<AuthState>();
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    final empty = username.isEmpty || password.isEmpty;
+
+    if (empty) {
+      context.snackbar('Wrong username or password.');
+      return;
+    }
+
+    if (auth.isLogin) {
+      await auth.login(username, password);
+    } else {
+      await auth.register(username, password);
+    }
+
+    if (auth.isAuthenticated) {
+      context.pop();
+      context.snackbar('Signed in as ${auth.user?.username}');
+    } else {
+      _passwordController.clear();
+      context.snackbar('Sign in failed. Please try again.');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: PageBar(
-        context: context,
-        title: 'Login/Register',
+      appBar: AppBar(
+        title: const Text('Login/Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
           child: IntrinsicHeight(
-            child: Obx(() {
-              return Column(
+            child: Consumer<AuthState>(
+              builder: (_, auth, __) => Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.fromLTRB(
@@ -47,7 +78,7 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                           border: OutlineInputBorder(),
                           labelText: 'Userame',
                           hintText: 'Enter your Username'),
-                      controller: controller.nameController,
+                      controller: _usernameController,
                     ),
                   ),
                   Padding(
@@ -58,23 +89,21 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                           border: OutlineInputBorder(),
                           labelText: 'Password',
                           hintText: 'Enter your secure password'),
-                      controller: controller.passwordController,
+                      controller: _passwordController,
                     ),
                   ),
                   const SizedBox(height: 96),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32),
                     child: MaterialButton(
-                      onPressed: () => controller.state.isLogin.value
-                          ? controller.signIn()
-                          : controller.signUp(),
+                      onPressed: () => _onLogin(context),
                       height: 96,
                       minWidth: 600,
                       color: context.colors.primary,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(48)),
                       child: Text(
-                        controller.state.isLogin.value ? 'Sign in' : 'Sign up',
+                        auth.isLogin ? 'Sign in' : 'Sign up',
                         style: context.labelLarge,
                       ),
                     ),
@@ -82,18 +111,18 @@ class LoginOrRegisterPage extends GetView<LoginOrRegisterLogic> {
                   const Spacer(),
                   TextButton(
                     onPressed: () {
-                      controller.state.isLogin(!controller.state.isLogin.value);
+                      auth.switchLoginRegister();
                     },
                     child: Text(
-                      controller.state.isLogin.value
+                      auth.isLogin
                           ? 'New User? Create Account'
                           : 'Has Account? To Login',
                       style: context.labelMedium,
                     ),
                   ),
                 ],
-              );
-            }),
+              ),
+            ),
           ),
         ),
       ),

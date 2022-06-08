@@ -1,48 +1,31 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_theme.dart';
-import 'package:storystains/pages/pages.dart';
-import 'package:universal_platform/universal_platform.dart';
+import 'package:storystains/routes/routes.dart';
 
-import 'common/util/init_utils.dart';
+import 'common/constant/app_config.dart';
+import 'features/auth/auth_service.dart';
+import 'features/auth/auth_state.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  if (UniversalPlatform.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark),
-    );
-  }
 
-  getItSetUp();
-  InitUtils.init().then((value) => runApp(const MyApp()));
+  runApp(ChangeNotifierProvider(
+    create: (_) => AuthState(AuthService()),
+    child: const App(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      theme: ThemeData(
-        colorScheme: lightColorScheme,
-      ),
-      initialRoute: Pages.home,
-      getPages: Pages.all,
-      scrollBehavior: MobileAndDesktopBehavior(),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: AppConfig.appTitle,
+      theme: ThemeData(colorScheme: lightColorScheme),
+      onGenerateRoute: routes,
     );
   }
-}
-
-class MobileAndDesktopBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-      };
 }

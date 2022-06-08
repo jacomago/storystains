@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
-import 'package:storystains/common/extensions.dart';
+import 'package:storystains/utils/extensions.dart';
 import '../../common/widget/app_bar.dart';
 
 import '../pages.dart';

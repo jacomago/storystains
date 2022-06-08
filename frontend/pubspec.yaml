@@ -11,18 +11,15 @@ dependencies:
     sdk: flutter
   json_annotation: ^4.5.0
   dio: ^4.0.6
-  get: ^4.6.1
-  intl: ^0.17.0
   shared_preferences: ^2.0.12
-  pull_to_refresh: ^2.0.0
-  lottie: ^1.2.1
   retrofit: '>=3.0.0 <4.0.0'
-  file_picker: ^4.3.3
   flutter_markdown: ^0.6.9
   logger: ^1.1.0  #for logging purpose
-  universal_platform: ^1.0.0+1 # for solve flutter web issue: https://github.com/flutter/flutter/issues/36126#issuecomment-596215587
   google_fonts: ^3.0.1
-  get_it: ^7.2.0
+  cached_network_image: ^3.1.0+1
+  scrollable_positioned_list: ^0.2.3
+  equatable: ^2.0.3
+  provider: ^6.0.1
 
 
 dev_dependencies:
@@ -34,7 +31,6 @@ dev_dependencies:
   mocktail: ^0.3.0
   flutter_lints: ^2.0.1
   dependency_validator: ^3.0.0
-  mock_web_server: ^5.0.0-nullsafety.1
 
 flutter:
   uses-material-design: true

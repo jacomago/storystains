@@ -1,13 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart' as retrofit;
 
-import '../common/constant/app_config.dart';
-import '../model/req/add_user.dart';
-import '../model/req/create_review.dart';
-import '../model/req/login.dart';
-import '../model/resp/review_resp.dart';
-import '../model/resp/reviews_resp.dart';
-import '../model/resp/user_resp.dart';
+import '../../common/constant/app_config.dart';
+import '../../model/req/add_user.dart';
+import '../../model/req/create_review.dart';
+import '../../model/req/login.dart';
+import '../../model/resp/review_resp.dart';
+import '../../model/resp/reviews_resp.dart';
+import '../../model/resp/user_resp.dart';
 
 part 'rest_client.g.dart';
 

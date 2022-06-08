@@ -1,11 +1,10 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:storystains/utils/utils.dart';
 
-import '../constant/app_config.dart';
-import '../util/auth_manager.dart';
-import '../util/init_utils.dart';
-import 'dio_manager.dart';
+import '../../common/constant/app_config.dart';
+import 'api.dart';
 
 final interceptors = [
   CancelInterceptors(),
@@ -23,19 +22,22 @@ final interceptors = [
 class CancelInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    sl<DioManager>()
-        .addToken(options.cancelToken ??= sl<DioManager>().defaultCancelToken);
+    Api.dioManager
+        .addToken(options.cancelToken ??= Api.dioManager.defaultCancelToken);
     handler.next(options);
   }
 }
 
 class AuthInterceptors extends Interceptor {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+  Future<void> onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     final uri = options.uri;
+    final tokenExists = await Prefs.containsKey('token');
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
-        sl<AuthManager>().isLogin) {
-      options.headers['authorization'] = 'Bearer ${sl<AuthManager>().token}';
+        tokenExists) {
+      options.headers['authorization'] =
+          'Bearer ${await Prefs.getString('token')}';
     }
     handler.next(options);
   }
@@ -45,7 +47,7 @@ class AuthInterceptors extends Interceptor {
     final uri = response.requestOptions.uri;
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         response.statusCode == 401) {
-      await sl<AuthManager>().logout(response.data, true);
+      await Auth.logout(response.data, true);
     } else {
       handler.next(response);
     }

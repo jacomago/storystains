@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:storystains/utils/navigation.dart';
 
 import '../../model/entity/review.dart';
-import '../../pages/pages.dart';
-import 'package:storystains/common/extensions.dart';
+import 'package:storystains/utils/extensions.dart';
 
-import '../../services/rest_client.dart';
-import '../util/init_utils.dart';
-import '../util/snackbar.dart';
+import '../../routes/routes.dart';
 import 'load_wrapper.dart';
+
 
 class ReviewsPage extends StatefulWidget {
   final String? author;
@@ -52,7 +49,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   Widget _buildReviewItem(Review review) {
     return GestureDetector(
-      onTap: () => Get.toNamed(Pages.reviewDetail, arguments: review),
+      onTap: () => context.push(Routes.reviewDetail, arguments: review),
       child: Container(
         padding: const EdgeInsets.all(24),
         margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -71,8 +68,7 @@ class _ReviewsPageState extends State<ReviewsPage> {
                   children: [
                     const SizedBox(height: 8),
                     Text(
-                      DateFormat.yMMMMEEEEd()
-                          .format(DateTime.tryParse(review.createdAt)!),
+                      review.createdAt,
                       style: context.labelSmall,
                     ),
                   ],
