@@ -6,15 +6,12 @@ import 'package:storystains/utils/extensions.dart';
 import 'package:storystains/utils/navigation.dart';
 import 'package:storystains/utils/snackbar.dart';
 
-import '../../common/widget/load_wrapper.dart';
-import '../../common/widget/review_list.dart';
-import '../../features/auth/auth_state.dart';
-import '../../features/reviews/reviews_state.dart';
+import '../common/widget/review_list.dart';
+import '../features/auth/auth_state.dart';
+import '../features/reviews/reviews_state.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  final LoadController listController = LoadController();
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +31,7 @@ class HomePage extends StatelessWidget {
                   onPressed: () => context.push(Routes.login),
                   icon: const Icon(Icons.login)),
           ]),
-          body: ReviewsPage(controller: listController),
+          body: const ReviewsPage(),
           floatingActionButton: FloatingActionButton(
             onPressed: () => context.push(Routes.reviewNew),
             backgroundColor: context.colors.primary,

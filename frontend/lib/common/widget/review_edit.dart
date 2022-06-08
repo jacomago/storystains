@@ -6,37 +6,6 @@ import 'package:storystains/utils/extensions.dart';
 import 'package:storystains/utils/utils.dart';
 import '../../features/auth/auth_state.dart';
 
-class ReviewArguement {
-  final String slug;
-  ReviewArguement(this.slug);
-}
-
-class EditReview extends StatelessWidget {
-  const EditReview({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ReviewArguement;
-
-    return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService(), args.slug),
-      child: ReviewEditPage(),
-    );
-  }
-}
-
-class CreateReview extends StatelessWidget {
-  const CreateReview({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService()),
-      child: ReviewEditPage(),
-    );
-  }
-}
-
 class ReviewEditPage extends StatelessWidget {
   ReviewEditPage({Key? key}) : super(key: key);
 
@@ -79,7 +48,7 @@ class ReviewEditPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer2<ReviewState, AuthState>(
-      builder: (context, reivew, auth, _) {
+      builder: (context, review, auth, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(

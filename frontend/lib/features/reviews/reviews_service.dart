@@ -2,9 +2,9 @@ import '../../data/network/api.dart';
 import '../../model/entity/review.dart';
 
 class ReviewsService {
-  Future<List<Review>?> fetch([String? query, int? page]) async {
+  Future<List<Review>?> fetch([String? query, int? offset]) async {
     try {
-      final res = await Api.reviews(query: query, offset: page);
+      final res = await Api.reviews();
 
       if (res is Map && res.containsKey('data')) {
         final data = res['data'];

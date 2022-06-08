@@ -1,55 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/utils/navigation.dart';
+import 'package:provider/provider.dart';
 
+import '../../features/reviews/reviews_state.dart';
 import '../../model/entity/review.dart';
 import 'package:storystains/utils/extensions.dart';
 
 import '../../routes/routes.dart';
-import 'load_wrapper.dart';
+import 'error.dart';
+import 'loading_more.dart';
 
-
-class ReviewsPage extends StatefulWidget {
-  final String? author;
-  final String? tag;
-  final String? favoriteBy;
-  final LoadController? controller;
-
-  const ReviewsPage({
-    Key? key,
-    this.author,
-    this.tag,
-    this.favoriteBy,
-    this.controller,
-  }) : super(key: key);
-
-  @override
-  State<ReviewsPage> createState() => _ReviewsPageState();
-}
-
-class _ReviewsPageState extends State<ReviewsPage> {
-  var reviews = <Review>[];
+class ReviewsPage extends StatelessWidget {
+  const ReviewsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: LoadWrapper<Review>(
-        controller: widget.controller,
-        child: ListView.separated(
-          itemBuilder: (context, index) => _buildReviewItem(reviews[index]),
-          separatorBuilder: (context, index) =>
-              Divider(height: 24, color: context.colors.primaryContainer),
-          itemCount: reviews.length,
-        ),
-        pageService: (offset, limit) => fetchReviews(offset, limit),
-        onPageLoaded: (list) => setState(() => reviews = list),
-      ),
+    return Consumer<ReviewsState>(
+      builder: (_, reviews, __) {
+        if (reviews.isFailed) {
+          return ErrorMessage('Fetching data failed',
+              onRefresh: reviews.refresh);
+        }
+
+        if (reviews.isEmpty) {
+          return ErrorMessage('No data', onRefresh: reviews.refresh);
+        }
+
+        if (reviews.isLoadingFirst) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: RefreshIndicator(
+                onRefresh: reviews.refresh,
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    bool isItem = index < reviews.count;
+                    bool isLastIndex = index == reviews.count;
+                    bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
+
+                    // User Item
+                    if (isItem)
+                      return _buildReviewItem(context, reviews.item(index));
+
+                    // Show loading more at the bottom
+                    if (isLoadingMore) return const LoadingMore();
+// Default empty content
+                    return Container();
+                  },
+                  separatorBuilder: (context, index) => Divider(
+                      height: 24, color: context.colors.primaryContainer),
+                  itemCount: reviews.count,
+                )));
+      },
     );
   }
 
-  Widget _buildReviewItem(Review review) {
+  Widget _buildReviewItem(BuildContext context, Review review) {
     return GestureDetector(
-      onTap: () => context.push(Routes.reviewDetail, arguments: review),
+      onTap: () => Navigator.pushNamed(context, Routes.reviewDetail,
+          arguments: review.slug),
       child: Container(
         padding: const EdgeInsets.all(24),
         margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -89,18 +101,5 @@ class _ReviewsPageState extends State<ReviewsPage> {
         ),
       ),
     );
-  }
-
-  Future<List<Review>> fetchReviews([int offset = 0, int limit = 10]) async {
-    try {
-      final resp = await sl<RestClient>().getReviews(
-        offset: offset,
-        limit: limit,
-      );
-      return resp.reviews;
-    } catch (e) {
-      SnackBarUtil.showError(e);
-      return [];
-    }
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/pages/home/view.dart';
-import 'package:storystains/pages/login_or_register/view.dart';
-import 'package:storystains/pages/review_detail/view.dart';
+import 'package:storystains/pages/home.dart';
+import 'package:storystains/pages/login_register.dart';
+import 'package:storystains/pages/review_detail.dart';
 
-import '../pages/review_edit/view.dart';
+import '../pages/review_edit.dart';
+import '../pages/review_new.dart';
 
 class Routes {
   static const String root = '/';

@@ -29,6 +29,7 @@ class CancelInterceptors extends Interceptor {
 }
 
 class AuthInterceptors extends Interceptor {
+
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {

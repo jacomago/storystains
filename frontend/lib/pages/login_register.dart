@@ -4,7 +4,7 @@ import 'package:storystains/utils/extensions.dart';
 import 'package:storystains/utils/navigation.dart';
 import 'package:storystains/utils/snackbar.dart';
 
-import '../../features/auth/auth_state.dart';
+import '../features/auth/auth_state.dart';
 
 class LoginOrRegisterPage extends StatelessWidget {
   LoginOrRegisterPage({Key? key}) : super(key: key);

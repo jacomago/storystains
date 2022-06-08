@@ -35,7 +35,7 @@ class Api {
   }
 
   static Future reviews(
-      {String query = "", int limit = 10, int offset = 0}) async {
+      [String query = "", int limit = 10, int offset = 0]) async {
     return await _restClient.getReviews(limit: limit, offset: offset);
   }
 }

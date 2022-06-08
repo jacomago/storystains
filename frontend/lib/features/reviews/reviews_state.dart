@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:storystains/common/constant/app_config.dart';
 
 import '../../model/entity/review.dart';
 import 'reviews_service.dart';
@@ -7,7 +8,7 @@ import 'reviews_service.dart';
 class ReviewsState extends ChangeNotifier {
   final ReviewsService _service;
 
-  int _page = 1;
+  int _offset = 0;
   String _query = '';
   List<Review> _items = [];
 
@@ -16,7 +17,7 @@ class ReviewsState extends ChangeNotifier {
   bool _isLoading = false;
   bool _hasReachedMax = false;
 
-  int get page => _page;
+  int get offset => _offset;
   int get count => _items.length;
   String get query => _query;
   List<Review> get items => _items;
@@ -26,9 +27,9 @@ class ReviewsState extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get hasReachedMax => _hasReachedMax;
 
-  bool get isFirstPage => _page == 1;
+  bool get isFirstPage => _offset == 0;
   bool get isLoadingFirst => _isLoading && isFirstPage;
-  bool get isLoadingMore => _isLoading && _page > 1;
+  bool get isLoadingMore => _isLoading && _offset > 1;
 
   Review item(int index) => _items[index];
 
@@ -50,7 +51,7 @@ class ReviewsState extends ChangeNotifier {
     } else if (items.isEmpty) {
       _isEmpty = true;
     } else {
-      _page = 2;
+      _offset = 2 * AppConfig.defaultLimit;
       _query = '';
       _items = [...items];
     }
@@ -62,10 +63,10 @@ class ReviewsState extends ChangeNotifier {
   Future<void> refresh([String? query]) async {
     _startLoading();
 
-    final items = await _service.fetch(query ?? '', 1);
+    final items = await _service.fetch(query ?? '', 0);
 
-    if (items != null && items is List && items.isNotEmpty) {
-      _page = 2;
+    if (items != null && items.isNotEmpty) {
+      _offset = 2 * AppConfig.defaultLimit;
       _query = query ?? '';
       _items = [...items];
     }
@@ -78,7 +79,7 @@ class ReviewsState extends ChangeNotifier {
     if (!_isLoading) {
       _startLoading();
 
-      final items = await _service.fetch(_query, _page);
+      final items = await _service.fetch(_query, _offset);
 
       if (items != null) {
         if (items.isEmpty) {
@@ -86,7 +87,7 @@ class ReviewsState extends ChangeNotifier {
           _isFailed = false;
           _hasReachedMax = true;
         } else {
-          _page = _page + 1;
+          _offset = _offset + AppConfig.defaultLimit;
           _items = [..._items, ...items];
 
           _isEmpty = false;
@@ -118,7 +119,7 @@ class ReviewsState extends ChangeNotifier {
       final isAtBottom = pos.isNotEmpty && pos.last.index == lastIndex;
       final isLoadMore = isAtBottom && !isLoading && !hasReachedMax;
 
-      // load data from the next page
+      // load data from the next offset
       if (isLoadMore) {
         fetch();
       }
@@ -127,7 +128,7 @@ class ReviewsState extends ChangeNotifier {
 
   @override
   void dispose() {
-    _page = 1;
+    _offset = 0;
     _items = [];
     _isEmpty = false;
     _isFailed = false;
