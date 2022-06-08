@@ -9,8 +9,8 @@ class AuthService {
   }
 
   Future login(String username, String password) async {
-    return await Api.login(
+    final resp = await Api.login(
         Login(user: LoginUser(username: username, password: password)));
+    return resp;
   }
-
 }

@@ -11,6 +11,16 @@ class LoginOrRegisterPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  void afterLoging(BuildContext context, AuthState auth) {
+    if (auth.isAuthenticated) {
+      Navigator.of(context).pop();
+      context.snackbar('Signed in as ${auth.user?.username}');
+    } else {
+      _passwordController.clear();
+      context.snackbar('Sign in failed. Please try again.');
+    }
+  }
+
   void _onLogin(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
@@ -25,17 +35,13 @@ class LoginOrRegisterPage extends StatelessWidget {
     }
 
     if (auth.isLogin) {
-      await auth.login(username, password);
+      await auth.login(username, password).then((value) {
+        afterLoging(context, auth);
+      });
     } else {
-      await auth.register(username, password);
-    }
-
-    if (auth.isAuthenticated) {
-      Navigator.of(context).pop();
-      context.snackbar('Signed in as ${auth.user?.username}');
-    } else {
-      _passwordController.clear();
-      context.snackbar('Sign in failed. Please try again.');
+      await auth.register(username, password).then((value) {
+        afterLoging(context, auth);
+      });
     }
   }
 

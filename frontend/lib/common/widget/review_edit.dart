@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
@@ -11,6 +10,15 @@ class ReviewEditPage extends StatelessWidget {
 
   final titleController = TextEditingController();
   final bodyController = TextEditingController();
+
+  void afterSend(BuildContext context, ReviewState state) {
+    if (state.isUpdated) {
+      context.pop();
+      context.snackbar('Created Review');
+    } else {
+      context.snackbar('Review creation failed, please try again.');
+    }
+  }
 
   void editReview(BuildContext context) async {
     FocusScope.of(context).unfocus();
@@ -28,19 +36,16 @@ class ReviewEditPage extends StatelessWidget {
     }
 
     if (state.isCreate) {
-      await state.create(
-        title,
-        body,
-      );
+      await state
+          .create(
+            title,
+            body,
+          )
+          .then((value) => afterSend(context, state));
     } else {
-      await state.update(title, body);
-    }
-
-    if (state.isUpdated) {
-      context.pop();
-      context.snackbar('Created Review');
-    } else {
-      context.snackbar('Review creation failed, please try again.');
+      await state
+          .update(title, body)
+          .then((value) => afterSend(context, state));
     }
   }
 

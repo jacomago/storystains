@@ -32,10 +32,10 @@ class AuthInterceptors extends Interceptor {
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final uri = options.uri;
-    final tokenExists = AuthStorage.tokenExists();
+    final tokenExists = await AuthStorage.tokenExists();
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         tokenExists) {
-      options.headers['authorization'] = 'Bearer ${AuthStorage.getToken()}';
+      options.headers['authorization'] = 'Bearer ${await AuthStorage.getToken()}';
     }
     handler.next(options);
   }
