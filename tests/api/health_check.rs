@@ -19,7 +19,6 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
-
 #[tokio::test]
 async fn db_check_works() {
     // Arrange
