@@ -51,7 +51,7 @@ class ReviewsState extends ChangeNotifier {
     } else if (items.isEmpty) {
       _isEmpty = true;
     } else {
-      _offset = AppConfig.defaultLimit - 1;
+      _offset = AppConfig.defaultLimit;
       _query = '';
       _items = [...items];
     }
@@ -66,7 +66,7 @@ class ReviewsState extends ChangeNotifier {
     final items = await _service.fetch();
 
     if (items != null && items.isNotEmpty) {
-      _offset = AppConfig.defaultLimit - 1;
+      _offset = AppConfig.defaultLimit;
       _query = query ?? '';
       _items = [...items];
     }

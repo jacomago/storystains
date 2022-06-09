@@ -28,12 +28,12 @@ void main() {
       final reviewsResp = ReviewsResp(reviews: [review]);
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0))
+      when(mockService.fetch())
           .thenAnswer((realInvocation) async => reviewsResp.reviews);
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
     });
@@ -41,11 +41,11 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async => null);
+      when(mockService.fetch()).thenAnswer((realInvocation) async => null);
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
     });
@@ -62,15 +62,15 @@ void main() {
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async =>
+      when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch('', 2 * AppConfig.defaultLimit)).thenAnswer(
+      when(mockService.fetch(offset: 2 * AppConfig.defaultLimit)).thenAnswer(
           (realInvocation) async => reviewsResp.reviews
               .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
 
@@ -84,31 +84,33 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       const title = "title";
       const body = "body";
-      final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title);
-      final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
+      final reviewsResp = ReviewsResp(
+          reviews: List.generate(
+              45,
+              (int index) => Review(
+                  title: title + index.toString(),
+                  body: body,
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                  slug: title + index.toString())));
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async =>
+      when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch('', 2 * AppConfig.defaultLimit)).thenAnswer(
-          (realInvocation) async => reviewsResp.reviews
+      when(mockService.fetch(query: '', offset: AppConfig.defaultLimit))
+          .thenAnswer((realInvocation) async => reviewsResp.reviews
               .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
 
       await reviewState.fetch();
       await reviewState.fetch();
 
-      verify(mockService.fetch('', 2 * AppConfig.defaultLimit));
+      verify(mockService.fetch(offset: AppConfig.defaultLimit));
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
       expect(reviewState.count, 2 * AppConfig.defaultLimit);
@@ -118,11 +120,11 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async => null);
+      when(mockService.fetch()).thenAnswer((realInvocation) async => null);
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
       await reviewState.fetch();
@@ -136,11 +138,11 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async => []);
+      when(mockService.fetch()).thenAnswer((realInvocation) async => []);
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
       await reviewState.fetch();
@@ -163,17 +165,17 @@ void main() {
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async =>
+      when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch('', 2 * AppConfig.defaultLimit)).thenAnswer(
+      when(mockService.fetch(offset:  AppConfig.defaultLimit)).thenAnswer(
           (realInvocation) async => reviewsResp.reviews
               .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
-      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async =>
+      when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
 
       final reviewState = ReviewsState(mockService);
 
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
 
@@ -185,7 +187,7 @@ void main() {
       expect(reviewState.count, 2 * AppConfig.defaultLimit);
 
       await reviewState.refresh();
-      verify(mockService.fetch('', 0));
+      verify(mockService.fetch());
       expect(reviewState.isLoadingMore, false);
       expect(reviewState.isEmpty, false);
     });
