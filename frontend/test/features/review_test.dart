@@ -272,7 +272,3 @@ void main() {
     });
   });
 }
-
-// TODO Test Get all reviews
-// TODO Test handle get reviews error
-// TODO Test handle get reviews no data

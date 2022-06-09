@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -31,6 +30,18 @@ void main() {
       final mockService = MockReviewsService();
       when(mockService.fetch('', 0))
           .thenAnswer((realInvocation) async => reviewsResp.reviews);
+
+      final reviewState = ReviewsState(mockService);
+
+      verify(mockService.fetch('', 0));
+      expect(reviewState.isLoadingMore, false);
+      expect(reviewState.isEmpty, false);
+    });
+    test('init null test', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      final mockService = MockReviewsService();
+      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async => null);
 
       final reviewState = ReviewsState(mockService);
 
@@ -102,6 +113,43 @@ void main() {
       expect(reviewState.isEmpty, false);
       expect(reviewState.count, 2 * AppConfig.defaultLimit);
     });
+
+    test('fetch null test', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      final mockService = MockReviewsService();
+      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async => null);
+
+      final reviewState = ReviewsState(mockService);
+
+      verify(mockService.fetch('', 0));
+      expect(reviewState.isLoadingMore, false);
+      expect(reviewState.isEmpty, false);
+      await reviewState.fetch();
+
+      expect(reviewState.isLoadingMore, false);
+      expect(reviewState.isEmpty, false);
+      expect(reviewState.isFailed, true);
+    });
+
+    test('fetch empty test', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      final mockService = MockReviewsService();
+      when(mockService.fetch('', 0)).thenAnswer((realInvocation) async => []);
+
+      final reviewState = ReviewsState(mockService);
+
+      verify(mockService.fetch('', 0));
+      expect(reviewState.isLoadingMore, false);
+      expect(reviewState.isEmpty, false);
+      await reviewState.fetch();
+
+      expect(reviewState.isLoadingMore, false);
+      expect(reviewState.isFailed, false);
+      expect(reviewState.isEmpty, true);
+    });
+
     test('refresh test', () async {
       SharedPreferences.setMockInitialValues({});
       const title = "title";
@@ -143,7 +191,3 @@ void main() {
     });
   });
 }
-
-// TODO Test Get all reviews
-// TODO Test handle get reviews error
-// TODO Test handle get reviews no data
