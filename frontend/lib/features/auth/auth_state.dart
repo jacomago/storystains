@@ -22,7 +22,7 @@ class AuthState extends ChangeNotifier {
   bool _isLoading = false;
   String? _token;
   String _error = '';
-  LoginRegister _loginRegsiter = LoginRegister.login;
+  LoginRegister _loginRegister = LoginRegister.login;
 
   User? get user => _user;
   AuthEvent? get event => _event;
@@ -30,7 +30,7 @@ class AuthState extends ChangeNotifier {
   String? get token => _token;
   String get error => _error;
 
-  bool get isLogin => _loginRegsiter == LoginRegister.login;
+  bool get isLogin => _loginRegister == LoginRegister.login;
   bool get isLoading => _isLoading;
   bool get isAuthenticated => _status == AuthStatus.authenticated;
   bool get notAuthenticated => _status == AuthStatus.notauthenticated;
@@ -40,16 +40,17 @@ class AuthState extends ChangeNotifier {
     _event = null;
     _status = AuthStatus.initial;
     _isLoading = false;
-    _loginRegsiter = LoginRegister.login;
+    _loginRegister = LoginRegister.login;
     _error = '';
   }
 
-  Future switchLoginRegister() async {
-    if (_loginRegsiter == LoginRegister.login) {
-      _loginRegsiter = LoginRegister.register;
-      return;
+  Future<void> switchLoginRegister() async {
+    if (_loginRegister == LoginRegister.login) {
+      _loginRegister = LoginRegister.register;
+    } else {
+      _loginRegister = LoginRegister.login;
     }
-    _loginRegsiter = LoginRegister.login;
+    notifyListeners();
   }
 
   Future init() async {
@@ -101,14 +102,16 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future login(String username, String password) async {
+  Future loginRegister(String username, String password) async {
     _event = AuthEvent.login;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      final data = await _service.login(username, password);
+      final data = _loginRegister == LoginRegister.login
+          ? await _service.login(username, password)
+          : await _service.register(username, password);
 
       if (data is UserResp && data.user.token.isNotEmpty) {
         _user = data.user;

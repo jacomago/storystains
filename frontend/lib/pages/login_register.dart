@@ -34,15 +34,9 @@ class LoginOrRegisterPage extends StatelessWidget {
       return;
     }
 
-    if (auth.isLogin) {
-      await auth.login(username, password).then((value) {
-        afterLoging(context, auth);
-      });
-    } else {
-      await auth.register(username, password).then((value) {
-        afterLoging(context, auth);
-      });
-    }
+    await auth.loginRegister(username, password).then((value) {
+      afterLoging(context, auth);
+    });
   }
 
   @override
@@ -115,9 +109,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () {
-                      auth.switchLoginRegister();
-                    },
+                    onPressed: () => {auth.switchLoginRegister()},
                     child: Text(
                       auth.isLogin
                           ? 'New User? Create Account'
