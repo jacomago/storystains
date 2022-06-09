@@ -4,7 +4,6 @@ import 'package:storystains/data/network/api.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 
 import '../../model/entity/review.dart';
-import '../../utils/prefs.dart';
 import 'review_service.dart';
 
 enum ReviewEvent { create, read, update, delete }

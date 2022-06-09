@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -265,7 +263,6 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title);
-      final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService, review);

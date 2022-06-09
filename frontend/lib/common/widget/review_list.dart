@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import '../../features/reviews/reviews_state.dart';
 import '../../model/entity/review.dart';
@@ -35,7 +36,9 @@ class ReviewsPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 24),
             child: RefreshIndicator(
                 onRefresh: reviews.refresh,
-                child: ListView.separated(
+                child: ScrollablePositionedList.builder(
+                  itemScrollController: reviews.itemScrollController,
+                  itemPositionsListener: reviews.itemPositionsListener,
                   itemBuilder: (context, index) {
                     bool isItem = index < reviews.count;
                     bool isLastIndex = index == reviews.count;
@@ -48,12 +51,11 @@ class ReviewsPage extends StatelessWidget {
 
                     // Show loading more at the bottom
                     if (isLoadingMore) return const LoadingMore();
-// Default empty content
+
+                    // Default empty content
                     return Container();
                   },
-                  separatorBuilder: (context, index) => Divider(
-                      height: 24, color: context.colors.primaryContainer),
-                  itemCount: reviews.count,
+                  itemCount: reviews.count + 1,
                 )));
       },
     );

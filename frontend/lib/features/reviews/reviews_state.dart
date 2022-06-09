@@ -29,7 +29,7 @@ class ReviewsState extends ChangeNotifier {
 
   bool get isFirstPage => _offset == 0;
   bool get isLoadingFirst => _isLoading && isFirstPage;
-  bool get isLoadingMore => _isLoading && _offset > 1;
+  bool get isLoadingMore => _isLoading && _offset > 0;
 
   Review item(int index) => _items[index];
 
@@ -44,7 +44,7 @@ class ReviewsState extends ChangeNotifier {
   Future<void> _init() async {
     _startLoading();
 
-    final items = await _service.fetch('', 1);
+    final items = await _service.fetch('', _offset);
 
     if (items == null) {
       _isFailed = true;
