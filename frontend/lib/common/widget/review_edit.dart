@@ -11,7 +11,8 @@ class ReviewEditPage extends StatelessWidget {
   void afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
       context.pop();
-      context.snackbar('Created Review');
+      final msg = state.isCreate ? 'Created Review' : 'Updated Review';
+      context.snackbar(msg);
     } else {
       context.snackbar('Review creation failed, please try again.');
     }
