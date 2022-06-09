@@ -24,6 +24,9 @@ void main() {
       await tester.pumpWidget(wrapWithMaterial(LoginOrRegisterPage()));
       final passField = find.bySemanticsLabel('Password');
       expect(passField, findsOneWidget);
+      final userField = find.bySemanticsLabel('Username');
+      expect(userField, findsOneWidget);
+
     });
   });
 }

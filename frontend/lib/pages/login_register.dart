@@ -81,7 +81,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                     child: TextField(
                       decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'Userame',
+                          labelText: 'Username',
                           hintText: 'Enter your Username'),
                       controller: _usernameController,
                     ),
