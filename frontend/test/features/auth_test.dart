@@ -29,7 +29,7 @@ void main() {
       when(mockService.login(username, password))
           .thenAnswer((realInvocation) async => userResp);
 
-      await authState.login(username, password);
+      await authState.loginRegister(username, password);
 
       verify(mockService.login(username, password));
       expect(authState.isAuthenticated, true);
@@ -43,7 +43,7 @@ void main() {
       when(mockService.login("", "")).thenAnswer((realInvocation) async =>
           Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
 
-      await authState.login("", "");
+      await authState.loginRegister("", "");
 
       verify(mockService.login("", ""));
       expect(authState.isAuthenticated, false);
@@ -65,13 +65,13 @@ void main() {
 
       when(mockService.register(username, password))
           .thenAnswer((realInvocation) async => userResp);
-
-      await authState.register(username, password);
+      await authState.switchLoginRegister();
+      await authState.loginRegister(username, password);
 
       verify(mockService.register(username, password));
       expect(authState.isAuthenticated, true);
     });
-  
+
     test('error message on bad info', () async {
       final mockService = MockAuthService();
       final authState = AuthState(mockService);
@@ -80,8 +80,9 @@ void main() {
 
       when(mockService.register("", "")).thenAnswer((realInvocation) async =>
           Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
+      await authState.switchLoginRegister();
 
-      await authState.register("", "");
+      await authState.loginRegister("", "");
 
       verify(mockService.register("", ""));
       expect(authState.isAuthenticated, false);
@@ -103,8 +104,9 @@ void main() {
 
       when(mockService.register(username, password))
           .thenAnswer((realInvocation) async => userResp);
+      await authState.switchLoginRegister();
 
-      await authState.register(username, password);
+      await authState.loginRegister(username, password);
 
       verify(mockService.register(username, password));
       expect(authState.isAuthenticated, true);

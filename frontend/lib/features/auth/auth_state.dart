@@ -74,36 +74,10 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future register(String username, String password) async {
-    _event = AuthEvent.register;
-    _isLoading = true;
-
-    notifyListeners();
-
-    try {
-      final data = await _service.register(username, password);
-
-      if (data is UserResp && data.user.token.isNotEmpty) {
-        _user = data.user;
-
-        await Prefs.setString('user', jsonEncode(_user!.toJson()));
-        await Prefs.setString('token', _user!.token);
-
-        _status = AuthStatus.authenticated;
-      } else {
-        _status = AuthStatus.notauthenticated;
-      }
-    } catch (e) {
-      _status = AuthStatus.failed;
-      _error = e.toString();
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
   Future loginRegister(String username, String password) async {
-    _event = AuthEvent.login;
+    _event = _loginRegister == LoginRegister.login
+        ? AuthEvent.login
+        : AuthEvent.register;
     _isLoading = true;
 
     notifyListeners();
