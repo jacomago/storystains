@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/utils/extensions.dart';
 import 'package:storystains/utils/utils.dart';
-import '../../features/auth/auth_state.dart';
 
 class ReviewEditPage extends StatelessWidget {
   const ReviewEditPage({Key? key}) : super(key: key);
@@ -49,8 +48,8 @@ class ReviewEditPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ReviewState, AuthState>(
-      builder: (context, state, auth, _) {
+    return Consumer<ReviewState>(
+      builder: (context, state, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
