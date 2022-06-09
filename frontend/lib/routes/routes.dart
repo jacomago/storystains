@@ -23,7 +23,7 @@ Route routes(RouteSettings settings) {
     case Routes.login:
       return _page(LoginOrRegisterPage(), settings);
     case Routes.reviewDetail:
-      return _page(const ReviewDetailPage(), settings);
+      return _page(const ReviewDetail(), settings);
     case Routes.reviewEdit:
       return _page(const EditReview(), settings);
     case Routes.reviewNew:

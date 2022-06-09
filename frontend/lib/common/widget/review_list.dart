@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:storystains/utils/navigation.dart';
 
+import '../../features/review/review.dart';
 import '../../features/reviews/reviews_state.dart';
 import '../../model/entity/review.dart';
 import 'package:storystains/utils/extensions.dart';
@@ -63,8 +65,8 @@ class ReviewsPage extends StatelessWidget {
 
   Widget _buildReviewItem(BuildContext context, Review review) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, Routes.reviewDetail,
-          arguments: review.slug),
+      onTap: () =>
+          context.push(Routes.reviewDetail, arguments: ReviewArguement(review)),
       child: Container(
         padding: const EdgeInsets.all(24),
         margin: const EdgeInsets.symmetric(horizontal: 24),
