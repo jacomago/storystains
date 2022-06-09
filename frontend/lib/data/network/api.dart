@@ -1,3 +1,5 @@
+
+import 'package:dio/dio.dart';
 import 'package:storystains/data/network/dio_manager.dart';
 import 'package:storystains/data/network/rest_client.dart';
 import 'package:storystains/model/req/add_user.dart';

@@ -1,6 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
+import 'package:storystains/data/network/api.dart';
+import 'package:storystains/model/resp/review_resp.dart';
 
 import '../../model/entity/review.dart';
 import '../../utils/prefs.dart';
@@ -20,7 +20,6 @@ class ReviewState extends ChangeNotifier {
   String? _token;
   String _error = '';
   bool _isCreate = true;
-  String _slug = "";
 
   Review? get review => _review;
   ReviewEvent? get event => _event;
@@ -28,37 +27,22 @@ class ReviewState extends ChangeNotifier {
   String? get token => _token;
   String get error => _error;
   bool get isCreate => _isCreate;
-  String get slug => _slug;
 
   bool get isLoading => _isLoading;
   bool get isUpdated => _status == ReviewStatus.updated;
   bool get notUpdated => _status == ReviewStatus.notupdated;
   bool get isFailed => _status == ReviewStatus.failed;
 
-  ReviewState(this._service, [String slug = ""]) {
+  ReviewState(this._service, [Review? review]) {
     _event = null;
     _status = ReviewStatus.initial;
     _isLoading = false;
     _error = '';
-    _isCreate = slug.isEmpty;
-    _slug = slug;
+    _isCreate = review == null;
+    _review = review;
   }
 
   Future<void> init() async {
-    var review;
-
-    if (!_isCreate) {
-      _isLoading = true;
-
-      review = await _service.read(_slug);
-
-      _isLoading = false;
-    }
-
-    if (review != null) {
-      _review = review;
-      _isCreate = false;
-    }
 
     if (_review != null) {
       _status = ReviewStatus.read;
@@ -66,6 +50,32 @@ class ReviewState extends ChangeNotifier {
       _status = ReviewStatus.notupdated;
     }
 
+    notifyListeners();
+  }
+
+  Future read(String slug) async {
+    _event = ReviewEvent.read;
+    _isLoading = true;
+
+    notifyListeners();
+
+    try {
+      final data = await _service.read(slug);
+
+      if (data is ReviewResp) {
+        _review = data.review;
+
+        _status = ReviewStatus.read;
+      } else {
+        final e = StatusCodeException.exception(data);
+        throw e;
+      }
+    } catch (e) {
+      _status = ReviewStatus.failed;
+      _error = e.toString();
+    }
+
+    _isLoading = false;
     notifyListeners();
   }
 
@@ -78,14 +88,13 @@ class ReviewState extends ChangeNotifier {
     try {
       final data = await _service.create(title, body);
 
-      if (data is Review) {
-        _review = data;
-
-        await Prefs.setString('review', jsonEncode(review!.toJson()));
+      if (data is ReviewResp) {
+        _review = data.review;
 
         _status = ReviewStatus.updated;
       } else {
-        _status = ReviewStatus.notupdated;
+        final e = StatusCodeException.exception(data);
+        throw e;
       }
     } catch (e) {
       _status = ReviewStatus.failed;
@@ -105,14 +114,13 @@ class ReviewState extends ChangeNotifier {
     try {
       final data = await _service.update(_review!.slug, title, body);
 
-      if (data is Review) {
-        _review = data;
-
-        await Prefs.setString('review', jsonEncode(review!.toJson()));
+      if (data is ReviewResp) {
+        _review = data.review;
 
         _status = ReviewStatus.updated;
       } else {
-        _status = ReviewStatus.notupdated;
+        final e = StatusCodeException.exception(data);
+        throw e;
       }
     } catch (e) {
       _status = ReviewStatus.failed;

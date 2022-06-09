@@ -14,7 +14,7 @@ class ReviewDetail extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as ReviewArguement;
 
     return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService(), args.slug),
+      create: (_) => ReviewState(ReviewService(), args.review),
       child: const ReviewDetailPage(),
     );
   }
@@ -59,7 +59,7 @@ class ReviewDetailPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
               await Navigator.pushNamed(context, Routes.reviewEdit,
-                  arguments: ReviewArguement(review.slug));
+                  arguments: ReviewArguement(review.review!));
             },
             backgroundColor: context.colors.primary,
             child: Icon(

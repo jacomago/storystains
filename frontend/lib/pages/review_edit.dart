@@ -11,7 +11,7 @@ class EditReview extends StatelessWidget {
     final args = ModalRoute.of(context)!.settings.arguments as ReviewArguement;
 
     return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService(), args.slug),
+      create: (_) => ReviewState(ReviewService(), args.review),
       child: ReviewEditPage(),
     );
   }

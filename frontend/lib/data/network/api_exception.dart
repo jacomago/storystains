@@ -17,7 +17,7 @@ class FetchDataException extends ApiException {
 }
 
 class BadRequestException extends ApiException {
-  BadRequestException([message]) : super(message, 'Invalid Request: ');
+  BadRequestException([message]) : super(message, 'Bad Request: ');
 }
 
 class UnauthorisedException extends ApiException {
@@ -26,4 +26,24 @@ class UnauthorisedException extends ApiException {
 
 class InternalErrorException extends ApiException {
   InternalErrorException([message]) : super(message, 'Internal server error: ');
+}
+
+class StatusCodeException {
+  static ApiException exception(Response response) {
+    switch (response.statusCode) {
+      case 401:
+        {
+          return UnauthorisedException(response.statusMessage);
+        }
+      case 400:
+        {
+          return BadRequestException(response.statusMessage);
+        }
+      case 500:
+        {
+          return InternalErrorException(response.statusMessage);
+        }
+    }
+    return FetchDataException(response.statusMessage);
+  }
 }
