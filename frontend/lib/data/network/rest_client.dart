@@ -32,6 +32,11 @@ abstract class RestClient {
     @retrofit.Path() String slug,
   );
 
+  @retrofit.DELETE("/reviews/{slug}")
+  Future<ReviewResp> deleteReview(
+    @retrofit.Path() String slug,
+  );
+
   // login user in database
   @retrofit.POST("/login")
   Future<UserResp> loginUser(@retrofit.Body() Login login);

@@ -16,4 +16,8 @@ class ReviewService {
     return await Api.readReview(
         slug);
   }
+  Future delete(String slug) async {
+    return await Api.deleteReview(
+        slug);
+  }
 }

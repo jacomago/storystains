@@ -85,6 +85,22 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<ReviewResp> deleteReview(slug) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewResp>(
+            Options(method: 'DELETE', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/reviews/${slug}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<UserResp> loginUser(login) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

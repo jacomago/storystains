@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:storystains/data/network/api.dart';
 import 'package:storystains/model/resp/review_resp.dart';
@@ -43,7 +44,6 @@ class ReviewState extends ChangeNotifier {
   }
 
   Future<void> init() async {
-
     if (_review != null) {
       _status = ReviewStatus.read;
     } else {
@@ -131,19 +131,32 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete() async {
+  Future delete(slug) async {
     _event = ReviewEvent.delete;
     _isLoading = true;
 
     notifyListeners();
 
-    await Prefs.remove('review');
+    try {
+      final data = await _service.delete(slug);
 
-    _status = ReviewStatus.initial;
-    _error = '';
-    _event = null;
-    _review = null;
-    _token = null;
+      if (data is Response && data.statusCode == 200) {
+        _review = null;
+
+        _status = ReviewStatus.initial;
+        _error = '';
+        _event = null;
+        _review = null;
+        _token = null;
+      } else {
+        final e = StatusCodeException.exception(data);
+        throw e;
+      }
+    } catch (e) {
+      _status = ReviewStatus.failed;
+      _error = e.toString();
+    }
+
     _isLoading = false;
 
     notifyListeners();

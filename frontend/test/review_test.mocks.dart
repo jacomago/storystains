@@ -37,4 +37,8 @@ class MockReviewService extends _i1.Mock implements _i2.ReviewService {
   _i3.Future<dynamic> read(String? slug) =>
       (super.noSuchMethod(Invocation.method(#read, [slug]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> delete(String? slug) =>
+      (super.noSuchMethod(Invocation.method(#delete, [slug]),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
 }

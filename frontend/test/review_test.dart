@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,6 +80,92 @@ void main() {
 
       verify(mockService.create("", ""));
       expect(reviewState.isUpdated, false);
+      expect(reviewState.error, "Unauthorised: User not logged in.");
+    });
+  });
+  group("delete", () {
+    test('After delete in initial', () async {
+      SharedPreferences.setMockInitialValues({});
+      const title = "title";
+      const body = "body";
+      final review = Review(
+          title: title,
+          body: body,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          slug: title);
+
+      final mockService = MockReviewService();
+
+      final reviewState = ReviewState(mockService, review);
+
+      expect(reviewState.isCreate, false);
+      expect(reviewState.isUpdated, false);
+
+      when(mockService.delete(title)).thenAnswer((realInvocation) async =>
+          Response(requestOptions: RequestOptions(path: ""), statusCode: 200));
+
+      await reviewState.delete(title);
+
+      verify(mockService.delete(title));
+      expect(reviewState.isUpdated, false);
+      expect(reviewState.status, ReviewStatus.initial);
+    });
+
+    test('error message on bad info', () async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(
+          mockService,
+          Review(
+              title: "",
+              body: "",
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              slug: ""));
+
+      expect(reviewState.isCreate, false);
+      expect(reviewState.isUpdated, false);
+
+      when(mockService.delete("")).thenAnswer((realInvocation) async =>
+          Response(
+              requestOptions: RequestOptions(path: ""),
+              statusCode: 400,
+              statusMessage: "Cannot be empty."));
+
+      await reviewState.delete("");
+
+      verify(mockService.delete(""));
+      expect(reviewState.isUpdated, false);
+      expect(reviewState.error, "Bad Request: Cannot be empty.");
+    });
+
+    test('error message on unauthorised info', () async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(
+          mockService,
+          Review(
+              title: "",
+              body: "",
+              createdAt: DateTime.now(),
+              updatedAt: DateTime.now(),
+              slug: ""));
+
+      expect(reviewState.isCreate, false);
+      expect(reviewState.isUpdated, false);
+
+      when(mockService.delete("")).thenAnswer((realInvocation) async =>
+          Response(
+              requestOptions: RequestOptions(path: ""),
+              statusCode: 401,
+              statusMessage: "User not logged in."));
+
+      await reviewState.delete("");
+
+      verify(mockService.delete(""));
+      expect(reviewState.isUpdated, false);
+      expect(reviewState.error, "Bad Request: Cannot be empty.");
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });
   });
