@@ -12,7 +12,7 @@ class EditReview extends StatelessWidget {
 
     return ChangeNotifierProvider(
       create: (_) => ReviewState(ReviewService(), args.review),
-      child: ReviewEditPage(),
+      child: const ReviewEditPage(),
     );
   }
 }

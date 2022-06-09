@@ -12,7 +12,7 @@ class CreateReview extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => ReviewState(ReviewService()),
-      child: ReviewEditPage(),
+      child: const ReviewEditPage(),
     );
   }
 }

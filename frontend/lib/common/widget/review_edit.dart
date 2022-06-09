@@ -6,10 +6,7 @@ import 'package:storystains/utils/utils.dart';
 import '../../features/auth/auth_state.dart';
 
 class ReviewEditPage extends StatelessWidget {
-  ReviewEditPage({Key? key}) : super(key: key);
-
-  final titleController = TextEditingController();
-  final bodyController = TextEditingController();
+  const ReviewEditPage({Key? key}) : super(key: key);
 
   void afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
@@ -24,8 +21,8 @@ class ReviewEditPage extends StatelessWidget {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewState>();
-    final body = bodyController.value.text;
-    final title = titleController.value.text;
+    final body = state.bodyController.value.text;
+    final title = state.titleController.value.text;
 
     if (title.isEmpty) {
       context.snackbar('Title can\'t be blank');
@@ -52,7 +49,7 @@ class ReviewEditPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer2<ReviewState, AuthState>(
-      builder: (context, review, auth, _) {
+      builder: (context, state, auth, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
@@ -73,7 +70,7 @@ class ReviewEditPage extends StatelessWidget {
                         hintText: 'Review title',
                       ),
                       style: context.headlineMedium,
-                      controller: titleController,
+                      controller: state.titleController,
                     ),
                   ),
                   Padding(
@@ -82,12 +79,12 @@ class ReviewEditPage extends StatelessWidget {
                       textInputAction: TextInputAction.newline,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Content',
+                        labelText: 'Body',
                         alignLabelWithHint: true,
                         hintText: 'Write your review (in markdown)',
                       ),
                       style: context.bodySmall,
-                      controller: bodyController,
+                      controller: state.bodyController,
                       minLines: 5,
                       maxLines: 50,
                       textAlign: TextAlign.start,

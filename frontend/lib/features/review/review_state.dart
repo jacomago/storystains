@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:storystains/data/network/api.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 
@@ -33,6 +34,9 @@ class ReviewState extends ChangeNotifier {
   bool get notUpdated => _status == ReviewStatus.notupdated;
   bool get isFailed => _status == ReviewStatus.failed;
 
+  late TextEditingController titleController;
+  late TextEditingController bodyController;
+
   ReviewState(this._service, [Review? review]) {
     _event = null;
     _status = ReviewStatus.initial;
@@ -40,6 +44,8 @@ class ReviewState extends ChangeNotifier {
     _error = '';
     _isCreate = review == null;
     _review = review;
+    titleController = TextEditingController(text: review?.title);
+    bodyController = TextEditingController(text: review?.body);
   }
 
   Future<void> init() async {

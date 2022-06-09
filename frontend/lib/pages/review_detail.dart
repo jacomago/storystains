@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/utils/extensions.dart';
+import 'package:storystains/utils/navigation.dart';
 
 import '../features/review/review.dart';
 
@@ -57,10 +58,8 @@ class ReviewDetailPage extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () async {
-              await Navigator.pushNamed(context, Routes.reviewEdit,
-                  arguments: ReviewArguement(review.review!));
-            },
+            onPressed: () => context.push(Routes.reviewEdit,
+                arguments: ReviewArguement(review.review!)),
             backgroundColor: context.colors.primary,
             child: Icon(
               Icons.edit,
