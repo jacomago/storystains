@@ -21,6 +21,9 @@ APP__DATABASE__REQUIRE_SSL = "false"
 allowed_public_ports = []
 auto_rollback = true
 
+[build.args]
+FRONT_BASE_URL = "https://storystains.fly.dev/api"
+
 [[services]]
 internal_port = 8080
 processes = ["app"]

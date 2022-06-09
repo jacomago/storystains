@@ -6,7 +6,8 @@ FROM frontflutterget as frontbuild
 RUN mkdir /app/
 COPY ./frontend /app/
 WORKDIR /app/
-RUN flutter build web --dart-define BASE_URL="api"
+ARG FRONT_BASE_URL
+RUN flutter build web --dart-define BASE_URL=${FRONT_BASE_URL}
 
 FROM lukemathwalker/cargo-chef:latest-rust-1.61 as chef
 WORKDIR /app
