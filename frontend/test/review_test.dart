@@ -165,7 +165,6 @@ void main() {
 
       verify(mockService.delete(""));
       expect(reviewState.isUpdated, false);
-      expect(reviewState.error, "Bad Request: Cannot be empty.");
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });
   });
