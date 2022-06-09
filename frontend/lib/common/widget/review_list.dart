@@ -46,7 +46,7 @@ class ReviewsPage extends StatelessWidget {
                     bool isLastIndex = index == reviews.count;
                     bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
 
-                    // User Item
+                    // Review Item
                     if (isItem) {
                       return _buildReviewItem(context, reviews.item(index));
                     }
@@ -57,7 +57,7 @@ class ReviewsPage extends StatelessWidget {
                     // Default empty content
                     return Container();
                   },
-                  itemCount: reviews.count + 1,
+                  itemCount: reviews.count,
                 )));
       },
     );

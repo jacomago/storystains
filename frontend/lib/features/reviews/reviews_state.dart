@@ -44,14 +44,14 @@ class ReviewsState extends ChangeNotifier {
   Future<void> _init() async {
     _startLoading();
 
-    final items = await _service.fetch('', _offset);
+    final items = await _service.fetch();
 
     if (items == null) {
       _isFailed = true;
     } else if (items.isEmpty) {
       _isEmpty = true;
     } else {
-      _offset = 2 * AppConfig.defaultLimit;
+      _offset = AppConfig.defaultLimit - 1;
       _query = '';
       _items = [...items];
     }
@@ -63,10 +63,10 @@ class ReviewsState extends ChangeNotifier {
   Future<void> refresh([String? query]) async {
     _startLoading();
 
-    final items = await _service.fetch(query ?? '', 0);
+    final items = await _service.fetch();
 
     if (items != null && items.isNotEmpty) {
-      _offset = 2 * AppConfig.defaultLimit;
+      _offset = AppConfig.defaultLimit - 1;
       _query = query ?? '';
       _items = [...items];
     }
@@ -79,7 +79,7 @@ class ReviewsState extends ChangeNotifier {
     if (!_isLoading) {
       _startLoading();
 
-      final items = await _service.fetch(_query, _offset);
+      final items = await _service.fetch(query: _query, offset: _offset);
 
       if (items != null) {
         if (items.isEmpty) {

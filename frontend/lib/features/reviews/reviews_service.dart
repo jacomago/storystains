@@ -4,9 +4,9 @@ import '../../data/network/api.dart';
 import '../../model/entity/review.dart';
 
 class ReviewsService {
-  Future<List<Review>?> fetch([String? query, int? offset]) async {
+  Future<List<Review>?> fetch({String query = "", int offset = 0}) async {
     try {
-      final res = await Api.reviews();
+      final res = await Api.reviews(query: query, offset: offset);
 
       if (res is ReviewsResp) {
         final data = res.reviews;
