@@ -1,5 +1,5 @@
+mod delete;
+mod get;
+mod get_list;
 mod post;
 mod put;
-mod get;
-mod delete;
-mod get_list;

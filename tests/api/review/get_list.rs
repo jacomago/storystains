@@ -1,11 +1,9 @@
 use reqwest::StatusCode;
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 
 use crate::helpers::{spawn_app, TestApp};
 
-
 impl TestApp {
-
     pub async fn get_reviews(&self, limit: Option<i64>, offset: Option<i64>) -> reqwest::Response {
         self.api_client
             .get(&format!("{}/reviews", &self.address))
@@ -19,8 +17,6 @@ impl TestApp {
         self.get_reviews(limit, offset).await.text().await.unwrap()
     }
 }
-
-
 
 #[tokio::test]
 async fn get_reviews_returns_empty_list() {

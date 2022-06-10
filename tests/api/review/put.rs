@@ -3,9 +3,7 @@ use serde_json::{json, Value};
 
 use crate::helpers::{spawn_app, TestApp, TestUser};
 
-
 impl TestApp {
-
     pub async fn put_review(&self, slug: String, body: String, token: &str) -> reqwest::Response {
         self.api_client
             .put(&format!("{}/reviews/{}", &self.address, &slug))

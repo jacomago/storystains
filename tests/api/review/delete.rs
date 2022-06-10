@@ -1,11 +1,9 @@
 use reqwest::StatusCode;
 use serde_json::json;
 
-use crate::helpers::{TestApp, spawn_app};
-
+use crate::helpers::{spawn_app, TestApp};
 
 impl TestApp {
-
     pub async fn delete_review(&self, slug: String, token: &str) -> reqwest::Response {
         self.api_client
             .delete(&format!("{}/reviews/{}", &self.address, &slug))

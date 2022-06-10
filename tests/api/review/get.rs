@@ -3,9 +3,7 @@ use serde_json::{json, Value};
 
 use crate::helpers::{spawn_app, TestApp};
 
-
 impl TestApp {
-
     pub async fn get_review(&self, slug: String) -> reqwest::Response {
         self.api_client
             .get(&format!("{}/reviews/{}", &self.address, &slug))
@@ -18,7 +16,6 @@ impl TestApp {
         self.get_review(slug).await.text().await.unwrap()
     }
 }
-
 
 #[tokio::test]
 async fn get_review_logged_in_returns_json() {
