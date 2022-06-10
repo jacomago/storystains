@@ -102,6 +102,26 @@
     },
     "query": "\n            SELECT title, slug, body, created_at, updated_at, user_id\n            FROM reviews \n            WHERE slug = $1\n        "
   },
+  "3b03b7931bc45d6608a6fa609ce1c8f1cb8e4ae249aac6853c22edbb4f22064c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            SELECT user_id\n            FROM reviews \n            WHERE slug = $1\n        "
+  },
   "5123965bb62988ca59490654b5ce343abcc750558fb74ce2af3f08ca392022b2": {
     "describe": {
       "columns": [
