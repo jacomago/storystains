@@ -6,7 +6,9 @@ use sqlx::PgPool;
 use crate::api::{error_chain_fmt, QueryLimits, UserId};
 
 use super::{
-    db::{create_review, delete_review, read_review, read_reviews, update_review},
+    db::{
+        create_review, delete_review, read_review, read_review_user, read_reviews, update_review,
+    },
     model::{
         NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewText, ReviewTitle,
         ReviewsResponse, UpdateReview,
@@ -17,6 +19,8 @@ use super::{
 pub enum ReviewError {
     #[error("{0}")]
     ValidationError(String),
+    #[error("{0}")]
+    NotAllowedError(String),
     #[error(transparent)]
     NoDataError(#[from] sqlx::Error),
     #[error(transparent)]
@@ -33,6 +37,7 @@ impl ResponseError for ReviewError {
     fn status_code(&self) -> StatusCode {
         match self {
             ReviewError::ValidationError(_) => StatusCode::BAD_REQUEST,
+            ReviewError::NotAllowedError(_) => StatusCode::FORBIDDEN,
             ReviewError::NoDataError(_) => StatusCode::NOT_FOUND,
             ReviewError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
@@ -151,10 +156,23 @@ impl TryFrom<PutReviewData> for UpdateReview {
 )]
 pub async fn put_review(
     slug: web::Path<String>,
+    user_id: web::ReqData<UserId>,
     json: web::Json<PutReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
+    let user_id = user_id.into_inner();
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
+
+    let review_user_id = read_review_user(&slug, &pool)
+        .await
+        .map_err(ReviewError::NoDataError)?;
+
+    if user_id != review_user_id {
+        return Err(ReviewError::NotAllowedError(
+            "Must be the creator of the review.".to_string(),
+        ));
+    }
+
     let updated_review = json
         .0
         .review

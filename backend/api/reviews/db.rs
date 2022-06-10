@@ -95,6 +95,31 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
 }
 
 #[tracing::instrument(
+    name = "Retreive user_id of review from database.", 
+    skip(pool),
+    fields(
+        slug = %slug
+    )
+)]
+pub async fn read_review_user(slug: &ReviewSlug, pool: &PgPool) -> Result<UserId, sqlx::Error> {
+    let row = sqlx::query!(
+        r#"
+            SELECT user_id
+            FROM reviews 
+            WHERE slug = $1
+        "#,
+        slug.as_ref()
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(row.user_id.into())
+}
+
+#[tracing::instrument(
     name = "Saving updated review details in the database",
     skip(review, pool),
     fields(

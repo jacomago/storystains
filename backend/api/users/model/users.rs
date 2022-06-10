@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use super::{NewPassword, NewUsername};
 
-#[derive(Copy, Clone, Debug, serde::Serialize)]
+#[derive(Copy, Clone, Debug, serde::Serialize, PartialEq, Eq)]
 pub struct UserId(Uuid);
 
 impl UserId {
@@ -31,6 +31,12 @@ impl TryFrom<UserId> for sqlx::types::Uuid {
     fn try_from(value: UserId) -> Result<Self, Self::Error> {
         let id = sqlx::types::Uuid::from_u128(value.0.as_u128());
         Ok(id)
+    }
+}
+
+impl From<sqlx::types::Uuid> for UserId {
+    fn from(uuid: sqlx::types::Uuid) -> Self {
+        Self(Uuid::from_u128(uuid.as_u128()))
     }
 }
 
