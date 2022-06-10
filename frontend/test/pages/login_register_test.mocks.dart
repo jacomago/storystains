@@ -58,10 +58,9 @@ class MockAuthState extends _i1.Mock implements _i2.AuthState {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
   @override
-  _i3.Future<void> switchLoginRegister() =>
-      (super.noSuchMethod(Invocation.method(#switchLoginRegister, []),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i3.Future<void>);
+  void switchLoginRegister() =>
+      super.noSuchMethod(Invocation.method(#switchLoginRegister, []),
+          returnValueForMissingStub: null);
   @override
   _i3.Future<dynamic> init() =>
       (super.noSuchMethod(Invocation.method(#init, []),

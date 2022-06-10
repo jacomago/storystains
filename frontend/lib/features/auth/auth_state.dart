@@ -44,7 +44,7 @@ class AuthState extends ChangeNotifier {
     _error = '';
   }
 
-  Future<void> switchLoginRegister() async {
+  void switchLoginRegister() {
     if (_loginRegister == LoginRegister.login) {
       _loginRegister = LoginRegister.register;
     } else {

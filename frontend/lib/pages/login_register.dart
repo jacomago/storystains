@@ -39,8 +39,8 @@ class LoginOrRegisterPage extends StatelessWidget {
     });
   }
 
-  void _switchLoginRegister(AuthState state) async {
-    await state.switchLoginRegister();
+  void _switchLoginRegister(AuthState state) {
+    state.switchLoginRegister();
   }
 
   @override
@@ -113,7 +113,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () => _switchLoginRegister(auth),
+                    onPressed: auth.switchLoginRegister,
                     child: Text(
                       auth.isLogin
                           ? 'New User? Create Account'

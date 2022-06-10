@@ -65,7 +65,7 @@ void main() {
 
       when(mockService.register(username, password))
           .thenAnswer((realInvocation) async => userResp);
-      await authState.switchLoginRegister();
+      authState.switchLoginRegister();
       await authState.loginRegister(username, password);
 
       verify(mockService.register(username, password));
@@ -80,7 +80,7 @@ void main() {
 
       when(mockService.register("", "")).thenAnswer((realInvocation) async =>
           Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
-      await authState.switchLoginRegister();
+      authState.switchLoginRegister();
 
       await authState.loginRegister("", "");
 
@@ -104,7 +104,7 @@ void main() {
 
       when(mockService.register(username, password))
           .thenAnswer((realInvocation) async => userResp);
-      await authState.switchLoginRegister();
+      authState.switchLoginRegister();
 
       await authState.loginRegister(username, password);
 
