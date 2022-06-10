@@ -9,7 +9,7 @@ class ReviewEditPage extends StatelessWidget {
 
   void afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
-      context.pop();
+      context.pop(state.review);
       final msg = state.isCreate ? 'Created Review' : 'Updated Review';
       context.snackbar(msg);
     } else {

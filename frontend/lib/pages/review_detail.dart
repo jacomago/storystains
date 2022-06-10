@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
+import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/navigation.dart';
 
 import '../features/review/review.dart';
+import '../model/entity/review.dart';
 
 class ReviewDetail extends StatelessWidget {
   const ReviewDetail({Key? key}) : super(key: key);
@@ -58,8 +59,17 @@ class ReviewDetailPage extends StatelessWidget {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => context.push(Routes.reviewEdit,
-                arguments: ReviewArguement(review.review!)),
+            onPressed: () async => Navigator.of(context)
+                .push(
+                  MaterialPageRoute<Review>(
+                      settings: RouteSettings(
+                          name: Routes.reviewEdit,
+                          arguments: ReviewArguement(review.review!)),
+                      builder: (BuildContext context) {
+                        return const EditReview();
+                      }),
+                )
+                .then((value) async => await review.putReview(value!)),
             backgroundColor: context.colors.primary,
             child: Icon(
               Icons.edit,

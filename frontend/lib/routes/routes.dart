@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/pages/home.dart';
 import 'package:storystains/pages/login_register.dart';
 import 'package:storystains/pages/review_detail.dart';
@@ -25,7 +26,7 @@ Route routes(RouteSettings settings) {
     case Routes.reviewDetail:
       return _page(const ReviewDetail(), settings);
     case Routes.reviewEdit:
-      return _page(const EditReview(), settings);
+      return _page(const EditReview<Review>(), settings);
     case Routes.reviewNew:
       return _page(const CreateReview(), settings);
     case Routes.root:

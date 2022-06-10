@@ -113,7 +113,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                     child: Text(
                       auth.isLogin
                           ? 'New User? Create Account'
-                          : 'Has Account? To Login',
+                          : 'Have Account? To Login',
                       style: context.labelMedium,
                     ),
                   ),

@@ -47,6 +47,11 @@ class ReviewState extends ChangeNotifier {
     bodyController = TextEditingController(text: review?.body);
   }
 
+  Future putReview(Review review) async {
+    _review = review;
+    notifyListeners();
+  }
+
   Future<void> init() async {
     if (_review != null) {
       _status = ReviewStatus.read;

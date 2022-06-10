@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
 import '../common/widget/review_edit.dart';
 
-class EditReview extends StatelessWidget {
+class EditReview<Review> extends StatelessWidget {
   const EditReview({Key? key}) : super(key: key);
 
   @override
