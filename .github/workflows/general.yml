@@ -86,6 +86,21 @@ jobs:
           command: fmt
           args: --all -- --check
 
+  doc:
+    name: Rustdoc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+          components: doc
+      - uses: actions-rs/cargo@v1
+        with:
+          command: doc
+          args: --no-deps --all-features
+
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
@@ -198,7 +213,7 @@ jobs:
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
-          args: '--ignore-tests --avoid-cfg-tarpaulin'
+          args: '--verbose --all-features --timeout 120 --out Xml'
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v2
