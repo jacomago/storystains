@@ -61,15 +61,8 @@ pub async fn bearer_auth(
                 .map_err(AuthError::UnexpectedError)?;
 
             if user_exists {
-                let res = req.extensions_mut().insert(user_id);
-                match res {
-                    Some(_) => Ok(req),
-                    None => {
-                        return Err(actix_web::Error::from(AuthError::UnexpectedError(
-                            anyhow::anyhow!("Storing user in extension failed"),
-                        )));
-                    }
-                }
+                let _ = req.extensions_mut().insert(user_id);
+                Ok(req)
             } else {
                 Err(actix_web::Error::from(AuthError::InvalidCredentials(
                     anyhow::anyhow!("User doesn't exist."),
