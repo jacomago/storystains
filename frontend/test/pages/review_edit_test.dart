@@ -3,10 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/widget/review_edit.dart';
-import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/pages/login_register.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
     ChangeNotifierProvider<ReviewState>(
