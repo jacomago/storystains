@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{spawn_app, TestApp};
+use crate::helpers::{spawn_app, TestApp, TestUser};
 
 
 impl TestApp {
@@ -149,4 +149,27 @@ async fn put_review_returns_json() {
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "3stars");
     assert_eq!(json["review"]["title"], "Dune2");
+}
+
+#[tokio::test]
+async fn put_review_only_allows_creator_to_modify() {
+    // Arrange
+    let app = spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    app.post_review(body.to_string(), &token).await;
+
+    let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
+
+    let new_user = TestUser::generate();
+    let new_token = new_user.store(&app).await;
+
+    // Act
+    let response = app
+        .put_review("dune".to_string(), body.to_string(), &new_token)
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::FORBIDDEN);
 }
