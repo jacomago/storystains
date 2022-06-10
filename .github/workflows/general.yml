@@ -95,7 +95,7 @@ jobs:
         with:
           toolchain: stable
           override: true
-          components: docs
+          components: rust-docs
       - uses: actions-rs/cargo@v1
         with:
           command: doc
