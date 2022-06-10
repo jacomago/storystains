@@ -6,10 +6,11 @@ use crate::api::{
 use crate::auth::bearer_auth;
 use crate::configuration::Settings;
 use crate::cors::cors;
+use crate::telemetry::get_metrics;
 use actix_files::Files;
-use actix_web::dev::Server;
+use actix_web::dev::{self, Server};
 use actix_web::web::Data;
-use actix_web::{web, App, HttpServer};
+use actix_web::{http, web, App, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
 use secrecy::Secret;
 use sqlx::postgres::PgPoolOptions;
@@ -43,7 +44,6 @@ impl Application {
         );
         let listener = TcpListener::bind(&address)?;
         let port = listener.local_addr().unwrap().port();
-
         let server = run(
             listener,
             connection_pool,
@@ -90,10 +90,13 @@ async fn run(
     let db_pool = Data::new(db_pool);
 
     let base_url = Data::new(ApplicationBaseUrl(base_url));
-
+    let metrics_route =
+        |req: &dev::ServiceRequest| req.path() == "/metrics" && req.method() == http::Method::GET;
+    let metrics = get_metrics(metrics_route);
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
+            .wrap(metrics.clone())
             .wrap(cors(&frontend_origin))
             .configure(routes)
             .app_data(db_pool.clone())

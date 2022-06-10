@@ -69,3 +69,8 @@ protocol = "http"
 restart_limit = 0
 timeout = 2000
 tls_skip_verify = false
+
+
+[metrics]
+port = 9091
+path = "/metrics"
