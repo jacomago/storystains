@@ -17,6 +17,19 @@ impl TestApp {
 }
 
 #[tokio::test]
+async fn post_review_returns_unauth_when_not_logged_in() {
+    // Arrange
+    let app = spawn_app().await;
+
+    // Act
+    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let response = app.post_review(body.to_string(), "").await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
 async fn post_review_returns_unauth_when_logged_out() {
     // Arrange
     let app = spawn_app().await;
