@@ -46,7 +46,9 @@ class HomePage extends StatelessWidget {
           ]),
           body: const ReviewsPage(),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => context.push(Routes.reviewNew),
+            onPressed: () => context
+                .push(Routes.reviewNew)
+                .then((value) => reviews.refresh()),
             backgroundColor: context.colors.primary,
             child: Icon(
               Icons.add_rounded,
