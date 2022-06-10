@@ -95,7 +95,7 @@ jobs:
         with:
           toolchain: stable
           override: true
-          components: doc
+          components: docs
       - uses: actions-rs/cargo@v1
         with:
           command: doc
