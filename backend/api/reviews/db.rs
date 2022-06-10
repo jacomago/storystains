@@ -1,8 +1,7 @@
 use chrono::Utc;
-use sqlx::{PgPool, Postgres, Transaction};
-use uuid::Uuid;
+use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
-use crate::api::{reviews::model::StoredReview, uuid_to_sqlx_uuid, Limits, UserId};
+use crate::api::{reviews::model::StoredReview, Limits, UserId};
 
 use super::model::{NewReview, ReviewSlug, UpdateReview};
 
@@ -168,7 +167,7 @@ pub async fn update_review(
     )
 )]
 pub async fn delete_review(slug: &ReviewSlug, pool: &PgPool) -> Result<(), sqlx::Error> {
-    sqlx::query!(
+    let _ = sqlx::query!(
         r#"
             DELETE FROM reviews
             WHERE     slug = $1
@@ -195,8 +194,8 @@ pub async fn delete_reviews_by_user_id(
     user_id: &UserId,
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<(), sqlx::Error> {
-    let id = uuid_to_sqlx_uuid(user_id);
-    sqlx::query!(
+    let id = Uuid::from(*user_id);
+    let _ = sqlx::query!(
         r#"
             DELETE FROM reviews
             WHERE       user_id = $1

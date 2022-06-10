@@ -6,6 +6,11 @@ pub use users::db::*;
 pub use users::model::UserId;
 pub use users::routes::*;
 
+mod health_check;
+pub use health_check::db_check;
+pub use health_check::health_check;
+
+/// Formats errors into a nice format.
 pub fn error_chain_fmt(
     e: &impl std::error::Error,
     f: &mut std::fmt::Formatter<'_>,
@@ -19,13 +24,17 @@ pub fn error_chain_fmt(
     Ok(())
 }
 
+// TODO move to config
 const DEFAULT_LIMIT: u64 = 20;
+
+/// Basic query limits
 #[derive(Debug, serde::Deserialize)]
 pub struct QueryLimits {
     limit: Option<u64>,
     offset: Option<u64>,
 }
 
+/// Query limits without being optional for database level
 #[derive(Debug)]
 pub struct Limits {
     limit: i64,
@@ -41,8 +50,4 @@ impl From<QueryLimits> for Limits {
             offset: offset as i64,
         }
     }
-}
-
-pub fn uuid_to_sqlx_uuid(id: &uuid::Uuid) -> sqlx::types::Uuid {
-    sqlx::types::Uuid::from_u128(id.as_u128())
 }

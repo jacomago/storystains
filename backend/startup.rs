@@ -1,11 +1,11 @@
 use crate::api::{
-    delete_review_by_slug, delete_user, get_review, get_reviews, login, post_review, put_review,
-    signup,
+    db_check, delete_review_by_slug, delete_user, get_review, get_reviews, health_check, login,
+    post_review, put_review, signup,
 };
+
 use crate::auth::bearer_auth;
 use crate::configuration::Settings;
 use crate::cors::cors;
-use crate::health_check::{db_check, health_check};
 use actix_files::Files;
 use actix_web::dev::Server;
 use actix_web::web::Data;
@@ -19,18 +19,21 @@ use tracing_actix_web::TracingLogger;
 
 use crate::configuration::DatabaseSettings;
 
+/// Set up connection pool
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
         .connect_timeout(std::time::Duration::from_secs(2))
         .connect_lazy_with(configuration.with_db())
 }
 
+/// The full application
 pub struct Application {
     port: u16,
     server: Server,
 }
 
 impl Application {
+    /// Build the application from configuration
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
 
@@ -53,23 +56,29 @@ impl Application {
         Ok(Self { port, server })
     }
 
+    /// Get the port
     pub fn port(&self) -> u16 {
         self.port
     }
 
+    /// The run method
     pub async fn run_until_stopped(self) -> Result<(), std::io::Error> {
         self.server.await
     }
 }
 
+/// Wrapper around base url for passing through as web::Data
 pub struct ApplicationBaseUrl(pub String);
 
+/// Wrapper around secret for passing through as web::Data
 #[derive(Clone)]
 pub struct HmacSecret(pub Secret<String>);
 
+/// Wrapper around Expiry token seconds for passing through as web::Data
 #[derive(Clone)]
 pub struct ExpTokenSeconds(pub u64);
 
+/// The main startup method for the running the application with all the parts
 async fn run(
     listener: TcpListener,
     db_pool: PgPool,
@@ -97,30 +106,34 @@ async fn run(
     Ok(server)
 }
 
+/// Configuration of all the routes
+/// Currently creates two duplicate authenticator middlewares for different routes
+/// which isn't elegant
 fn routes(cfg: &mut web::ServiceConfig) {
     // TODO is this a nice hack??
     let auth_reviews = HttpAuthentication::bearer(bearer_auth);
     let auth_users = HttpAuthentication::bearer(bearer_auth);
-    cfg.service(
-        web::scope("/api")
-            .route("/health_check", web::get().to(health_check))
-            .route("/db_check", web::get().to(db_check))
-            .route("/signup", web::post().to(signup))
-            .route("/login", web::post().to(login))
-            .route("/reviews", web::get().to(get_reviews))
-            .route("/reviews/{slug}", web::get().to(get_review))
-            .service(
-                web::scope("/reviews")
-                    .wrap(auth_reviews)
-                    .route("", web::post().to(post_review))
-                    .route("/{slug}", web::put().to(put_review))
-                    .route("/{slug}", web::delete().to(delete_review_by_slug)),
-            )
-            .service(
-                web::scope("/users")
-                    .wrap(auth_users)
-                    .route("", web::delete().to(delete_user)),
-            ),
-    )
-    .service(Files::new("/", "./static/root/").index_file("index.html"));
+    let _ = cfg
+        .service(
+            web::scope("/api")
+                .route("/health_check", web::get().to(health_check))
+                .route("/db_check", web::get().to(db_check))
+                .route("/signup", web::post().to(signup))
+                .route("/login", web::post().to(login))
+                .route("/reviews", web::get().to(get_reviews))
+                .route("/reviews/{slug}", web::get().to(get_review))
+                .service(
+                    web::scope("/reviews")
+                        .wrap(auth_reviews)
+                        .route("", web::post().to(post_review))
+                        .route("/{slug}", web::put().to(put_review))
+                        .route("/{slug}", web::delete().to(delete_review_by_slug)),
+                )
+                .service(
+                    web::scope("/users")
+                        .wrap(auth_users)
+                        .route("", web::delete().to(delete_user)),
+                ),
+        )
+        .service(Files::new("/", "./static/root/").index_file("index.html"));
 }

@@ -15,14 +15,21 @@ use super::{
     },
 };
 
+/// Review Error expresses problems that can happen during the evaluation of the reviews api.
 #[derive(thiserror::Error)]
 pub enum ReviewError {
     #[error("{0}")]
+    /// Validation error i.e. empty title
     ValidationError(String),
     #[error("{0}")]
+    /// Not Allowed Error i.e. user editing another users review
     NotAllowedError(String),
     #[error(transparent)]
+    // TODO make a more general db error and separate from no data
+    /// Nothing found from the database
     NoDataError(#[from] sqlx::Error),
+
+    /// Any other error that could happen
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -44,11 +51,13 @@ impl ResponseError for ReviewError {
     }
 }
 
+/// Review input on Post
 #[derive(serde::Deserialize)]
 pub struct PostReview {
     review: PostReviewData,
 }
 
+/// Data of review input on Post
 #[derive(serde::Deserialize)]
 pub struct PostReviewData {
     title: String,
@@ -71,6 +80,7 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     }
 }
 
+/// API for adding a new review
 #[tracing::instrument(
     name = "Adding a new review",
     skip(json, pool),
@@ -96,6 +106,7 @@ pub async fn post_review(
     }))
 }
 
+/// API for getting a review, takes slug as id
 #[tracing::instrument(
     name = "Getting a review",
     skip(pool),
@@ -117,11 +128,13 @@ pub async fn get_review(
     }))
 }
 
+/// Review input on Put
 #[derive(serde::Deserialize, Debug)]
 pub struct PutReview {
     review: PutReviewData,
 }
 
+/// Review input data on Put
 #[derive(serde::Deserialize, Debug)]
 pub struct PutReviewData {
     title: Option<String>,
@@ -147,6 +160,8 @@ impl TryFrom<PutReviewData> for UpdateReview {
     }
 }
 
+// TODO Add support for patch
+/// API for updating a review
 #[tracing::instrument(
     name = "Putting a review",
     skip(pool, json),
@@ -186,6 +201,7 @@ pub async fn put_review(
     }))
 }
 
+/// API for deleting a review
 #[tracing::instrument(
     name = "Deleting a review",
     skip(pool),
@@ -204,6 +220,7 @@ pub async fn delete_review_by_slug(
     Ok(HttpResponse::Ok().finish())
 }
 
+/// API for getting many review via an input query of offset and limit
 #[tracing::instrument(name = "Getting reviews", skip(pool, query), fields())]
 pub async fn get_reviews(
     query: web::Query<QueryLimits>,

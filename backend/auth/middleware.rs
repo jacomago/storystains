@@ -10,7 +10,7 @@ use crate::{
 
 use super::{jwt, AuthError};
 
-// Return an opaque 500 while preserving the error root's cause for logging.
+/// Return an opaque 500 while preserving the error root's cause for logging.
 pub fn e500<T>(e: T) -> actix_web::Error
 where
     T: std::fmt::Debug + std::fmt::Display + 'static,
@@ -27,6 +27,8 @@ impl From<AuthError> for actix_web::Error {
         InternalError::from_response(cause, response).into()
     }
 }
+
+/// Implements bearer authenticaion
 pub async fn bearer_auth(
     req: ServiceRequest,
     credentials: BearerAuth,
@@ -59,8 +61,15 @@ pub async fn bearer_auth(
                 .map_err(AuthError::UnexpectedError)?;
 
             if user_exists {
-                req.extensions_mut().insert(user_id);
-                Ok(req)
+                let res = req.extensions_mut().insert(user_id);
+                match res {
+                    Some(_) => Ok(req),
+                    None => {
+                        return Err(actix_web::Error::from(AuthError::UnexpectedError(
+                            anyhow::anyhow!("Storing user in extension failed"),
+                        )));
+                    }
+                }
             } else {
                 Err(actix_web::Error::from(AuthError::InvalidCredentials(
                     anyhow::anyhow!("User doesn't exist."),

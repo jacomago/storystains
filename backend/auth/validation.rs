@@ -1,4 +1,7 @@
-use crate::{api::get_stored_credentials, telemetry::spawn_blocking_with_tracing};
+use crate::{
+    api::{get_stored_credentials, UserId},
+    telemetry::spawn_blocking_with_tracing,
+};
 use anyhow::Context;
 use argon2::{
     password_hash::SaltString, Algorithm, Argon2, Params, PasswordHash, PasswordHasher,
@@ -7,24 +10,31 @@ use argon2::{
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 
+/// Errors that can happen during authenticaion
 #[derive(thiserror::Error, Debug)]
 pub enum AuthError {
     #[error("Invalid credentials.")]
+    /// Invalid input error
     InvalidCredentials(#[source] anyhow::Error),
+    /// Any other error
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
 
+/// Credentials for authentication
 pub struct Credentials {
+    /// username
     pub username: String,
+    /// password as a secret
     pub password: Secret<String>,
 }
 
+/// Authenticating credentials
 #[tracing::instrument(name = "Validate credentials", skip(credentials, pool))]
 pub async fn validate_credentials(
     credentials: Credentials,
     pool: &PgPool,
-) -> Result<uuid::Uuid, AuthError> {
+) -> Result<UserId, AuthError> {
     let mut user_id = None;
     let mut expected_password_hash = Secret::new(
         "$argon2id$v=19$m=15000,t=2,p=1$\
@@ -76,6 +86,7 @@ fn verify_password_hash(
         .map_err(AuthError::InvalidCredentials)
 }
 
+/// Computing the hash of the password
 pub fn compute_password_hash(password: Secret<String>) -> Result<Secret<String>, anyhow::Error> {
     let salt = SaltString::generate(&mut rand::thread_rng());
     let password_hash = Argon2::new(

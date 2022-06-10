@@ -6,18 +6,24 @@ use serde::{Deserialize, Serialize};
 use jsonwebtoken as jwt;
 use uuid::Uuid;
 
-use crate::startup::{ExpTokenSeconds, HmacSecret};
+use crate::{
+    api::UserId,
+    startup::{ExpTokenSeconds, HmacSecret},
+};
 
+/// Claim is structure of the jwt token before encryption
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AuthClaim {
     /// timestamp
     pub exp: i64,
     /// user id
     pub id: Uuid,
+    /// username
     pub username: String,
 }
 
 impl AuthClaim {
+    /// Generate jwt token from claim
     pub fn token(&self, secret: &HmacSecret) -> String {
         let encoding_key = EncodingKey::from_base64_secret(
             std::str::from_utf8(secret.0.expose_secret().as_bytes()).unwrap(),
@@ -25,11 +31,12 @@ impl AuthClaim {
         jwt::encode(&jwt::Header::default(), self, &encoding_key.unwrap()).expect("jwt")
     }
 
-    pub fn new(username: &str, user_id: Uuid, exp_token_seconds: &ExpTokenSeconds) -> Self {
+    /// Create new claim from basic input
+    pub fn new(username: &str, user_id: UserId, exp_token_seconds: &ExpTokenSeconds) -> Self {
         let exp = Utc::now() + Duration::seconds(exp_token_seconds.0.try_into().unwrap());
         Self {
             exp: exp.timestamp(),
-            id: user_id,
+            id: *user_id,
             username: username.to_string(),
         }
     }

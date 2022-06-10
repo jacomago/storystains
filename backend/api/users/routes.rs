@@ -4,7 +4,6 @@ use anyhow::Context;
 use reqwest::StatusCode;
 use secrecy::Secret;
 use sqlx::PgPool;
-use uuid::Uuid;
 
 use crate::{
     api::{error_chain_fmt, reviews::delete_reviews_by_user_id},
@@ -18,10 +17,13 @@ use super::{
     read_user_from_id, UserId,
 };
 
+/// Errors that can happen during login flow
 #[derive(thiserror::Error)]
 pub enum LoginError {
+    /// Auth failure
     #[error("Authentication failed")]
     AuthError(#[source] anyhow::Error),
+    /// Other type of error
     #[error("Something went wrong")]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -32,17 +34,20 @@ impl std::fmt::Debug for LoginError {
     }
 }
 
+/// Input of user for login api
 #[derive(serde::Deserialize)]
 pub struct LoginUser {
     user: LoginData,
 }
 
+/// Input of data for user
 #[derive(serde::Deserialize)]
 pub struct LoginData {
     username: String,
     password: Secret<String>,
 }
 
+/// Login endpoint handler
 #[tracing::instrument(
     skip(json, pool, exp_token_days, secret),
     fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
@@ -58,7 +63,8 @@ pub async fn login(
         password: json.0.user.password,
     };
 
-    tracing::Span::current().record("username", &tracing::field::display(&credentials.username));
+    let _ = tracing::Span::current()
+        .record("username", &tracing::field::display(&credentials.username));
 
     match validate_credentials(credentials, &pool).await {
         Ok(user_id) => {
@@ -83,18 +89,13 @@ fn login_error(e: LoginError) -> InternalError<LoginError> {
     InternalError::from_response(e, response)
 }
 
-// Return an opaque 500 while preserving the error root's cause for logging.
-pub fn e500<T>(e: T) -> actix_web::Error
-where
-    T: std::fmt::Debug + std::fmt::Display + 'static,
-{
-    actix_web::error::ErrorInternalServerError(e)
-}
-
+/// Errors from Signup flow
 #[derive(thiserror::Error)]
 pub enum SignupError {
+    /// Incorrect username or password
     #[error("{0}")]
     ValidationError(String),
+    /// Something else went wrong
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -113,11 +114,14 @@ impl ResponseError for SignupError {
         }
     }
 }
+
+/// Input for signup api
 #[derive(serde::Deserialize, Debug)]
 pub struct SignupUser {
     user: SignupUserData,
 }
 
+/// input for signup api
 #[derive(serde::Deserialize, Debug)]
 pub struct SignupUserData {
     username: String,
@@ -133,6 +137,7 @@ impl TryFrom<SignupUserData> for NewUser {
     }
 }
 
+/// Sign up api handler
 #[tracing::instrument(name = "Signup a user", skip(pool, json, exp_token_days, secret))]
 pub async fn signup(
     json: web::Json<SignupUser>,
@@ -148,13 +153,15 @@ pub async fn signup(
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
-    let user_id = Uuid::from_u128(stored.user_id.as_u128());
+    let user_id = stored.user_id.into();
     let token = AuthClaim::new(&stored.username, user_id, &exp_token_days).token(&secret);
     Ok(HttpResponse::Ok().json(UserResponse::from((stored, token))))
 }
 
+/// Delete User api error
 #[derive(thiserror::Error)]
 pub enum DeleteUserError {
+    /// We only expect the unexpected
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
 }
@@ -173,6 +180,7 @@ impl ResponseError for DeleteUserError {
     }
 }
 
+/// Delete user api handler currently deletes all user's review
 #[tracing::instrument(skip(pool, user_id), fields())]
 pub async fn delete_user(
     user_id: web::ReqData<UserId>,

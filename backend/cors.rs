@@ -1,6 +1,7 @@
 use actix_cors::Cors;
 use actix_web::http;
 
+/// Cross Origin Requests middleware
 pub fn cors(frontend_origin: &str) -> Cors {
     Cors::default()
         .allowed_origin(frontend_origin)

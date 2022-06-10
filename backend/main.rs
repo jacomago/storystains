@@ -2,6 +2,7 @@ use storystains::configuration::get_configuration;
 use storystains::startup::Application;
 use storystains::telemetry::{get_subscriber, init_subscriber};
 
+/// Runs the full application
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let subscriber = get_subscriber("storystains".into(), "info".into(), std::io::stdout);

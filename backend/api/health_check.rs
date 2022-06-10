@@ -5,6 +5,8 @@ use sqlx::PgPool;
 
 use crate::api::error_chain_fmt;
 
+/// Checks if the api is alive.
+/// Returns OK if so.
 pub async fn health_check() -> HttpResponse {
     HttpResponse::Ok().finish()
 }
@@ -29,9 +31,11 @@ impl ResponseError for CheckError {
     }
 }
 
+/// Checks if can connect to the database
+/// Returns OK if it can.
 #[tracing::instrument(name = "Check DB status", skip(pool))]
 pub async fn db_check(pool: web::Data<PgPool>) -> Result<HttpResponse, CheckError> {
-    sqlx::query!(
+    let _ = sqlx::query!(
         r#"
         SELECT success
         FROM _sqlx_migrations

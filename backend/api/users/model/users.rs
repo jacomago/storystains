@@ -1,14 +1,15 @@
 use std::ops::Deref;
 
-use uuid::Uuid;
-
 use super::{NewPassword, NewUsername};
 
+/// Format of an id of a user to stay consistent across application
+/// with multiple Uuid implementations
 #[derive(Copy, Clone, Debug, serde::Serialize, PartialEq, Eq)]
-pub struct UserId(Uuid);
+pub struct UserId(uuid::Uuid);
 
 impl UserId {
-    pub fn new(uuid: Uuid) -> Self {
+    /// Generates a new UserId
+    pub fn new(uuid: uuid::Uuid) -> Self {
         Self(uuid)
     }
 }
@@ -20,23 +21,21 @@ impl std::fmt::Display for UserId {
 }
 
 impl Deref for UserId {
-    type Target = Uuid;
+    type Target = uuid::Uuid;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl TryFrom<UserId> for sqlx::types::Uuid {
-    type Error = String;
-    fn try_from(value: UserId) -> Result<Self, Self::Error> {
-        let id = sqlx::types::Uuid::from_u128(value.0.as_u128());
-        Ok(id)
+impl From<UserId> for sqlx::types::Uuid {
+    fn from(value: UserId) -> Self {
+        sqlx::types::Uuid::from_u128(value.0.as_u128())
     }
 }
 
 impl From<sqlx::types::Uuid> for UserId {
     fn from(uuid: sqlx::types::Uuid) -> Self {
-        Self(Uuid::from_u128(uuid.as_u128()))
+        Self(uuid::Uuid::from_u128(uuid.as_u128()))
     }
 }
 
