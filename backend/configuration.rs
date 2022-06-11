@@ -14,6 +14,8 @@ pub struct Settings {
     pub application: ApplicationSettings,
     /// The possible input origin for Cross Origin requests
     pub frontend_origin: String,
+    /// Folder whre static files are stored
+    pub static_files: String,
 }
 
 /// Settings for the application

@@ -50,6 +50,7 @@ impl Application {
             configuration.application.base_url,
             configuration.application.hmac_secret,
             configuration.frontend_origin,
+            configuration.static_files,
             configuration.application.exp_token_seconds,
         )
         .await?;
@@ -85,6 +86,7 @@ async fn run(
     base_url: String,
     hmac_secret: Secret<String>,
     frontend_origin: String,
+    static_files: String,
     exp_token_seconds: u64,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
@@ -99,6 +101,7 @@ async fn run(
             .wrap(metrics.clone())
             .wrap(cors(&frontend_origin))
             .configure(routes)
+            .service(Files::new("/", &static_files).index_file("index.html"))
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
             .app_data(Data::new(HmacSecret(hmac_secret.clone())))
@@ -116,27 +119,25 @@ fn routes(cfg: &mut web::ServiceConfig) {
     // TODO is this a nice hack??
     let auth_reviews = HttpAuthentication::bearer(bearer_auth);
     let auth_users = HttpAuthentication::bearer(bearer_auth);
-    let _ = cfg
-        .service(
-            web::scope("/api")
-                .route("/health_check", web::get().to(health_check))
-                .route("/db_check", web::get().to(db_check))
-                .route("/signup", web::post().to(signup))
-                .route("/login", web::post().to(login))
-                .route("/reviews", web::get().to(get_reviews))
-                .route("/reviews/{slug}", web::get().to(get_review))
-                .service(
-                    web::scope("/reviews")
-                        .wrap(auth_reviews)
-                        .route("", web::post().to(post_review))
-                        .route("/{slug}", web::put().to(put_review))
-                        .route("/{slug}", web::delete().to(delete_review_by_slug)),
-                )
-                .service(
-                    web::scope("/users")
-                        .wrap(auth_users)
-                        .route("", web::delete().to(delete_user)),
-                ),
-        )
-        .service(Files::new("/", "./static/root/").index_file("index.html"));
+    let _ = cfg.service(
+        web::scope("/api")
+            .route("/health_check", web::get().to(health_check))
+            .route("/db_check", web::get().to(db_check))
+            .route("/signup", web::post().to(signup))
+            .route("/login", web::post().to(login))
+            .route("/reviews", web::get().to(get_reviews))
+            .route("/reviews/{slug}", web::get().to(get_review))
+            .service(
+                web::scope("/reviews")
+                    .wrap(auth_reviews)
+                    .route("", web::post().to(post_review))
+                    .route("/{slug}", web::put().to(put_review))
+                    .route("/{slug}", web::delete().to(delete_review_by_slug)),
+            )
+            .service(
+                web::scope("/users")
+                    .wrap(auth_users)
+                    .route("", web::delete().to(delete_user)),
+            ),
+    );
 }
