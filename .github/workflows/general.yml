@@ -20,7 +20,7 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.5.13
-      SQLX_FEATURES: postgres
+      SQLX_FEATURES: postgres,runtime-actix-rustls
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -89,6 +89,8 @@ jobs:
   doc:
     name: Rustdoc
     runs-on: ubuntu-latest
+    env:
+      SQLX_OFFLINE: true
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -115,7 +117,7 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.5.13
-      SQLX_FEATURES: postgres
+      SQLX_FEATURES: postgres,runtime-actix-rustls
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -173,7 +175,7 @@ jobs:
           - 5432:5432
     env:
       SQLX_VERSION: 0.5.13
-      SQLX_FEATURES: postgres
+      SQLX_FEATURES: postgres,runtime-actix-rustls
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
