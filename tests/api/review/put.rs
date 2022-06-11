@@ -1,7 +1,10 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{spawn_app, TestApp, TestUser};
+use crate::{
+    helpers::{spawn_app, TestApp, TestUser},
+    review::helpers::TestReview,
+};
 
 impl TestApp {
     pub async fn put_review(&self, slug: String, body: String, token: &str) -> reqwest::Response {
@@ -38,11 +41,11 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    let review = TestReview::generate();
+    review.store(&app, &token).await;
     let body = json!({"review": {"body":"3stars" }});
     let response = app
-        .put_review("dune".to_string(), body.to_string(), &token)
+        .put_review(review.slug(), body.to_string(), &token)
         .await;
 
     // Assert
@@ -54,7 +57,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
         .expect("Failed to fetch saved subscription.");
 
     assert_eq!(saved.body, "3stars");
-    assert_eq!(saved.title, "Dune");
+    assert_eq!(saved.title, review.title());
 }
 
 #[tokio::test]
@@ -97,8 +100,8 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    let review = TestReview::generate();
+    review.store(&app, &token).await;
 
     let test_cases = vec![
         (
@@ -113,7 +116,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     for (body, description) in test_cases {
         // Act
         let response = app
-            .put_review("dune".to_string(), body.to_string(), &token)
+            .put_review(review.slug(), body.to_string(), &token)
             .await;
 
         // Assert
@@ -132,14 +135,14 @@ async fn put_review_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    let review = TestReview::generate();
+    review.store(&app, &token).await;
 
     let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
 
     // Act
     let response = app
-        .put_review("dune".to_string(), body.to_string(), &token)
+        .put_review(review.slug(), body.to_string(), &token)
         .await;
 
     // Assert
@@ -155,8 +158,8 @@ async fn put_review_only_allows_creator_to_modify() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    let review = TestReview::generate();
+    review.store(&app, &token).await;
 
     let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
 
@@ -165,7 +168,7 @@ async fn put_review_only_allows_creator_to_modify() {
 
     // Act
     let response = app
-        .put_review("dune".to_string(), body.to_string(), &new_token)
+        .put_review(review.slug(), body.to_string(), &new_token)
         .await;
 
     // Assert

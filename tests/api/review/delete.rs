@@ -1,7 +1,9 @@
 use reqwest::StatusCode;
-use serde_json::json;
 
-use crate::helpers::{spawn_app, TestApp};
+use crate::{
+    helpers::{spawn_app, TestApp},
+    review::helpers::TestReview,
+};
 
 impl TestApp {
     pub async fn delete_review(&self, slug: String, token: &str) -> reqwest::Response {
@@ -46,9 +48,9 @@ async fn delete_review_returns_a_200_for_valid_slug() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
-    let response = app.delete_review("dune".to_string(), &token).await;
+    let review = TestReview::generate();
+    review.store(&app, &token).await;
+    let response = app.delete_review(review.slug(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
