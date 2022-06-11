@@ -1,6 +1,9 @@
 mod reviews;
 pub use reviews::routes::*;
 
+mod emotions;
+pub use emotions::routes::*;
+
 mod users;
 pub use users::db::*;
 pub use users::model::UserId;
