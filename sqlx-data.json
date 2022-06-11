@@ -26,6 +26,54 @@
     },
     "query": "\n        SELECT user_id, password_hash FROM users\n        WHERE username = $1\n        "
   },
+  "27927c424586f720b157e0e55c7c4c2e37145f6f6a0b031095fc4ff3e810c347": {
+    "describe": {
+      "columns": [
+        {
+          "name": "title",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "slug",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 3,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 4,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            UPDATE reviews\n            SET title      = COALESCE($1, title),\n                slug       = COALESCE($2, slug),\n                body       = COALESCE($3, body),\n                updated_at = $4\n            WHERE     slug = $5\n            RETURNING title, slug, body, created_at, user_id\n        "
+  },
   "2c46d9b3160ef9ad68700bb4c6aad60da9de1c0011e9c484acd438f4c18cf32f": {
     "describe": {
       "columns": [
@@ -52,56 +100,6 @@
     },
     "query": "\n        SELECT user_id, username \n        FROM users\n        WHERE user_id = $1\n        "
   },
-  "313111a9c161e84fb20505f8f6ebb3fdf9b59ffe854856ff2212a76f9ce2a155": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 5,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            SELECT title, slug, body, created_at, updated_at, user_id\n            FROM reviews \n            WHERE slug = $1\n        "
-  },
   "3b03b7931bc45d6608a6fa609ce1c8f1cb8e4ae249aac6853c22edbb4f22064c": {
     "describe": {
       "columns": [
@@ -122,57 +120,6 @@
     },
     "query": "\n            SELECT user_id\n            FROM reviews \n            WHERE slug = $1\n        "
   },
-  "5123965bb62988ca59490654b5ce343abcc750558fb74ce2af3f08ca392022b2": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 5,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8"
-        ]
-      }
-    },
-    "query": "\n            SELECT title, slug, body, created_at, updated_at, user_id\n            FROM reviews \n            ORDER BY updated_at\n            LIMIT $1\n            OFFSET $2\n        "
-  },
   "670dfcff9385a45e93291925c6208bc300c1d3d1af9412646480bea77a3328a3": {
     "describe": {
       "columns": [],
@@ -185,7 +132,7 @@
     },
     "query": "\n            DELETE FROM reviews\n            WHERE       user_id = $1\n        "
   },
-  "693be631a69018ba7401cd3e517ef739605861764d75f255129df5e9261b0b12": {
+  "78a6b5b7af569f2622526af28fbd170e36b265f7b29bcfb71629166681ff3b93": {
     "describe": {
       "columns": [
         {
@@ -214,9 +161,9 @@
           "type_info": "Timestamptz"
         },
         {
-          "name": "user_id",
+          "name": "username",
           "ordinal": 5,
-          "type_info": "Uuid"
+          "type_info": "Text"
         }
       ],
       "nullable": [
@@ -229,71 +176,11 @@
       ],
       "parameters": {
         "Left": [
-          "Text",
-          "Text",
-          "Text",
-          "Timestamptz",
           "Text"
         ]
       }
     },
-    "query": "\n            UPDATE reviews\n            SET title      = COALESCE($1, title),\n                slug       = COALESCE($2, slug),\n                body       = COALESCE($3, body),\n                updated_at = $4\n            WHERE     slug = $5\n            RETURNING title, slug, body, created_at, updated_at, user_id\n        "
-  },
-  "7b7653bdf851b7ad73a81f74f4e56b5bf2a2455e7c2130f23773cd5f3205ab88": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 5,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Timestamptz",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n            INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)\n            VALUES ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING title, slug, body, created_at, updated_at, user_id\n        "
+    "query": "\n            SELECT title,\n                   slug, \n                   body, \n                   created_at, \n                   updated_at, \n                   username\n              FROM reviews,\n                   users\n            WHERE  slug          = $1\n              AND  users.user_id = reviews.user_id\n        "
   },
   "8219707831f28b7fb24d2dc85cdc894c2eb4e7138306a660c536a0b0caa5b1da": {
     "describe": {
@@ -353,6 +240,57 @@
     },
     "query": "\n            DELETE FROM reviews\n            WHERE     slug = $1\n        "
   },
+  "b5bcaf49c6fd37f7963d4feeca94d476246457461819dcc2bc799e98c87f2652": {
+    "describe": {
+      "columns": [
+        {
+          "name": "title",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "slug",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 3,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "username",
+          "ordinal": 5,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n            SELECT  title, \n                    slug, \n                    body, \n                    created_at, \n                    updated_at, \n                    username\n              FROM  reviews, \n                    users\n            WHERE   users.user_id = reviews.user_id\n            ORDER BY updated_at\n            LIMIT $1\n            OFFSET $2\n        "
+  },
   "c99d9e22fcc337ad063d3c6165b47ad0fcd61fb4d319685fc5b4f3c92d4a2a47": {
     "describe": {
       "columns": [
@@ -384,5 +322,23 @@
       }
     },
     "query": "\n            DELETE FROM users\n            WHERE       user_id = $1\n        "
+  },
+  "ee03d31895f480706d6eb4847ae23167d57a4f8c375300be2d1e1d0a2c7a7ea9": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Timestamptz",
+          "Uuid"
+        ]
+      }
+    },
+    "query": " \n            INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)\n            VALUES ($1, $2, $3, $4, $5, $6, $7)\n        "
   }
 }
