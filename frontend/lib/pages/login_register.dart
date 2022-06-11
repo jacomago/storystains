@@ -39,10 +39,6 @@ class LoginOrRegisterPage extends StatelessWidget {
     });
   }
 
-  void _switchLoginRegister(AuthState state) {
-    state.switchLoginRegister();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
