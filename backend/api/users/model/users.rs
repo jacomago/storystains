@@ -71,3 +71,8 @@ pub struct NewUser {
     pub username: NewUsername,
     pub password: NewPassword,
 }
+
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct UserProfileData {
+    pub username: String,
+}

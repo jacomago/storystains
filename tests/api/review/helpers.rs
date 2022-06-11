@@ -18,6 +18,11 @@ pub struct TestReview {
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
+    user: TestUserProfile,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TestUserProfile {
     username: String,
 }
 
@@ -36,7 +41,9 @@ impl TestReview {
             slug: title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
-            username: user.username.to_string(),
+            user: TestUserProfile {
+                username: user.username.to_string(),
+            },
         }
     }
 
@@ -64,5 +71,6 @@ impl PartialEq for TestReview {
             && self.slug == other.slug
             && 10 > (self.created_at - other.created_at).num_seconds()
             && 10 > (self.updated_at - other.updated_at).num_seconds()
+            && self.user.username == other.user.username
     }
 }

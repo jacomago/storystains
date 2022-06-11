@@ -1,7 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Serialize, Serializer};
 
-use crate::api::{users::model::StoredUser, UserId};
+use crate::api::{
+    users::model::{StoredUser, UserProfileData},
+    UserId,
+};
 
 use super::{ReviewSlug, ReviewText, ReviewTitle};
 
@@ -70,7 +73,7 @@ pub struct ReviewResponseData {
     body: String,
     created_at: ResponseTime,
     updated_at: ResponseTime,
-    username: String,
+    user: UserProfileData,
 }
 
 impl From<StoredReview> for ReviewResponseData {
@@ -81,7 +84,9 @@ impl From<StoredReview> for ReviewResponseData {
             body: stored.body,
             created_at: ResponseTime(stored.created_at),
             updated_at: ResponseTime(stored.updated_at),
-            username: stored.username,
+            user: UserProfileData {
+                username: stored.username,
+            },
         }
     }
 }
