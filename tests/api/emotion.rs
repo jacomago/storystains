@@ -23,9 +23,12 @@ async fn get_emotions_returns_list() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
+
     let json_page = response.text().await.unwrap();
     let json: Value = serde_json::from_str(&json_page).unwrap();
+
     assert!(json["emotions"].is_array());
+
     let emotions = json["emotions"].as_array().unwrap();
     assert_eq!(emotions.len(), 21);
     assert!(emotions
