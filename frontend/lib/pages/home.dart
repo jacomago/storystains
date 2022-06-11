@@ -31,19 +31,26 @@ class HomePage extends StatelessWidget {
     return Consumer2<ReviewsState, AuthState>(
       builder: (context, reviews, auth, _) {
         return Scaffold(
-          appBar: AppBar(title: const Text(AppConfig.appName), actions: [
-            if (auth.isAuthenticated)
-              IconButton(
-                icon: const Icon(Icons.person_rounded),
-                onPressed: () => context.snackbar(
-                  'Hello ${auth.user?.username}',
-                ),
-              )
-            else
-              IconButton(
-                  onPressed: () => context.push(Routes.login),
-                  icon: const Icon(Icons.login)),
-          ]),
+          appBar: AppBar(
+              title: Text(
+                AppConfig.appName,
+                style: context.displaySmall
+                    ?.copyWith(color: context.colors.onPrimary),
+              ),
+              toolbarHeight: 70,
+              actions: [
+                if (auth.isAuthenticated)
+                  IconButton(
+                    icon: const Icon(Icons.person_rounded),
+                    onPressed: () => context.snackbar(
+                      'Hello ${auth.user?.username}',
+                    ),
+                  )
+                else
+                  IconButton(
+                      onPressed: () => context.push(Routes.login),
+                      icon: const Icon(Icons.login)),
+              ]),
           body: const ReviewsPage(),
           floatingActionButton: FloatingActionButton(
             onPressed: () => context
