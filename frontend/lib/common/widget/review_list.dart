@@ -66,55 +66,72 @@ class ReviewsPage extends StatelessWidget {
 
   Widget _buildReviewItem(BuildContext context, Review review) {
     return GestureDetector(
-      onTap: () =>
-          context.push(Routes.reviewDetail, arguments: ReviewArguement(review)),
-      child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: SizedBox(
-            height: 100,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        review.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 2.0)),
-                      Text(
-                        review.body,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.bodyMedium,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
-                        review.user.username,
-                        style: context.bodySmall,
-                      ),
-                      Text(
-                        DateFormat.yMMMMEEEEd().format(review.updatedAt),
-                        style: context.caption,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )),
-    );
+        onTap: () => context.push(Routes.reviewDetail,
+            arguments: ReviewArguement(review)),
+        child: Container(
+            padding: const EdgeInsets.all(10),
+            child: Card(
+                color: context.colors.primaryContainer,
+                elevation: 8.0,
+                child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    height: 125,
+                    width: 350,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 4),
+                                Text(review.title,
+                                    style: context.headlineSmall
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis),
+                                const SizedBox(height: 4),
+                                Text(review.body,
+                                    style: context.bodyMedium,
+                                    overflow: TextOverflow.ellipsis),
+                              ],
+                            )
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                SizedBox(
+                                  height: 4.0,
+                                )
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                const SizedBox(height: 4),
+                                Text(review.user.username,
+                                    style: context.bodySmall
+                                        ?.copyWith(fontStyle: FontStyle.italic),
+                                    overflow: TextOverflow.ellipsis),
+                                const SizedBox(height: 4),
+                                Text(
+                                    DateFormat.yMMMMEEEEd()
+                                        .format(review.updatedAt),
+                                    style: context.caption,
+                                    overflow: TextOverflow.ellipsis),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
+                    )))));
   }
 }
