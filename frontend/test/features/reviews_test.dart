@@ -7,6 +7,7 @@ import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 import 'package:storystains/model/entity/review.dart';
 import 'package:mockito/annotations.dart';
+import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/reviews_resp.dart';
 
 import 'reviews_test.mocks.dart';
@@ -24,7 +25,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
       final reviewsResp = ReviewsResp(reviews: [review]);
 
       final mockService = MockReviewsService();
@@ -58,7 +60,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
@@ -92,7 +95,8 @@ void main() {
                   body: body,
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now(),
-                  slug: title + index.toString())));
+                  slug: title + index.toString(),
+          user: UserProfile(username: "username"))));
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
@@ -161,7 +165,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();

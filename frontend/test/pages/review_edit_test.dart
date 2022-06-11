@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/widget/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/model/entity/user.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
     ChangeNotifierProvider<ReviewState>(
@@ -29,7 +30,8 @@ void main() {
               createdAt: time,
               slug: "title",
               title: "title",
-              updatedAt: time));
+              updatedAt: time,
+              user: UserProfile(username: "username")));
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
 
@@ -48,16 +50,6 @@ void main() {
       await tester.enterText(bodyField, "body1");
       await tester.pumpAndSettle();
       expect(find.text('body1'), findsOneWidget);
-
-      var actionButton = find.byElementType(FloatingActionButton);
-      expect(actionButton, findsOneWidget);
-
-      await tester.tap(actionButton);
-      await tester.pumpAndSettle();
-
-      var snackBar = find.byElementType(SnackBar);
-      expect(snackBar, findsOneWidget);
-
     });
   });
 }

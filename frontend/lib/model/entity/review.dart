@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:storystains/model/entity/user.dart';
 
 part 'review.g.dart';
 
@@ -13,6 +14,7 @@ class Review {
   String title;
   @JsonKey(name: 'updated_at')
   DateTime updatedAt;
+  UserProfile user;
 
   Review({
     required this.body,
@@ -20,6 +22,7 @@ class Review {
     required this.slug,
     required this.title,
     required this.updatedAt,
+    required this.user
   });
 
   factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);

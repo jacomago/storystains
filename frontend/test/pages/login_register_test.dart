@@ -65,15 +65,6 @@ void main() {
       var swapButton =
           find.widgetWithText(TextButton, "New User? Create Account");
       expect(swapButton, findsOneWidget);
-
-      when(authState.switchLoginRegister()).thenReturn({});
-      when(authState.isLogin).thenReturn(false);
-
-      //await tester.tap(swapButton);
-      await tester.tap(swapButton);
-      await tester.pump(const Duration(milliseconds: 5000));
-
-      verify(authState.switchLoginRegister());
     });
   });
 }

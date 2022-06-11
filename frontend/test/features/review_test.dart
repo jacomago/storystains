@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/review/review_service.dart';
 import 'package:storystains/features/review/review_state.dart';
 import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 import 'package:mockito/annotations.dart';
 
@@ -24,7 +25,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
       final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
@@ -91,7 +93,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
 
       final mockService = MockReviewService();
 
@@ -120,7 +123,8 @@ void main() {
               body: "",
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
-              slug: ""));
+              slug: "",
+              user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -148,7 +152,8 @@ void main() {
               body: "",
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
-              slug: ""));
+              slug: "",
+          user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -176,7 +181,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
       final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
@@ -205,7 +211,8 @@ void main() {
               body: "",
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
-              slug: ""));
+              slug: "",
+          user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -233,7 +240,8 @@ void main() {
               body: "",
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
-              slug: ""));
+              slug: "",
+          user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -262,7 +270,8 @@ void main() {
           body: body,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          slug: title);
+          slug: title,
+          user: UserProfile(username: "username"));
 
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService, review);

@@ -15,3 +15,12 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'token': instance.token,
       'username': instance.username,
     };
+
+UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => UserProfile(
+      username: json['username'] as String,
+    );
+
+Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
+    <String, dynamic>{
+      'username': instance.username,
+    };
