@@ -1,7 +1,12 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{spawn_app, TestApp};
+use crate::{
+    helpers::{spawn_app, TestApp},
+    review::TestReview,
+};
+
+use super::TestReviewResponse;
 
 impl TestApp {
     pub async fn get_review(&self, slug: String) -> reqwest::Response {
@@ -21,20 +26,13 @@ impl TestApp {
 async fn get_review_logged_in_returns_json() {
     // Arrange
     let app = spawn_app().await;
-    let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let review = TestReview::generate();
+    review.store(&app, &app.test_user).await;
 
-    // Act
-    let response = app.post_review(body.to_string(), &token).await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::OK);
-
-    let json_page = app.get_review_json("dune".to_string()).await;
-    let json: Value = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(json["review"]["body"], "5stars");
-    assert_eq!(json["review"]["title"], "Dune");
+    let json_page = app.get_review_json(review.slug.to_string()).await;
+    let response_review: TestReviewResponse = serde_json::from_str(&json_page).unwrap();
+    assert_eq!(review, response_review.review);
 }
 
 #[tokio::test]
