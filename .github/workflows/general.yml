@@ -213,7 +213,7 @@ jobs:
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
-          args: '--verbose --all-features --timeout 120 --out Xml'
+          args: '--ignore-tests --avoid-cfg-tarpaulin'
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v2
