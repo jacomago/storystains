@@ -53,6 +53,10 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool sameUser(UserProfile other) {
+    return _user?.username == other.username;
+  }
+
   Future init() async {
     final user = await Prefs.getString('user');
     final token = await AuthStorage.getToken();
