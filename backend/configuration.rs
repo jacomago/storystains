@@ -51,6 +51,8 @@ pub struct DatabaseSettings {
     pub database_name: String,
     /// Require use of ssl (not supported by fly, not needed for local)
     pub require_ssl: bool,
+    /// Maximum connections - needs to be lower for CI
+    pub max_connections: u32,
 }
 
 impl DatabaseSettings {

@@ -24,6 +24,7 @@ use crate::configuration::DatabaseSettings;
 pub fn get_connection_pool(configuration: &DatabaseSettings) -> PgPool {
     PgPoolOptions::new()
         .connect_timeout(std::time::Duration::from_secs(2))
+        .max_connections(configuration.max_connections)
         .connect_lazy_with(configuration.with_db())
 }
 

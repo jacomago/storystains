@@ -9,3 +9,4 @@ database:
   username: "postgres"
   password: "password"
   database_name: "storystains"
+  max_connections: 10
