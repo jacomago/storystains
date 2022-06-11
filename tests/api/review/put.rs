@@ -41,7 +41,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
     let body = json!({"review": {"body":"3stars" }});
     let response = app
@@ -100,7 +100,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
     let test_cases = vec![
@@ -135,7 +135,7 @@ async fn put_review_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
     let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
@@ -158,7 +158,7 @@ async fn put_review_only_allows_creator_to_modify() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
     let body = json!({"review": {"title": "Dune2", "body":"3stars" }});

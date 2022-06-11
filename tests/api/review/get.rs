@@ -27,7 +27,7 @@ async fn get_review_logged_in_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
     let json_page = app.get_review_json(review.slug()).await;
@@ -41,7 +41,7 @@ async fn get_review_logged_out_returns_json() {
     let app = spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
     app.test_user.logout().await;

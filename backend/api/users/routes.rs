@@ -14,7 +14,7 @@ use crate::{
 use super::{
     create_user, delete_user_by_id,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
-    read_user_from_id, UserId,
+    read_user_by_id, UserId,
 };
 
 /// Errors that can happen during login flow
@@ -68,9 +68,9 @@ pub async fn login(
 
     match validate_credentials(credentials, &pool).await {
         Ok(user_id) => {
-            let user = read_user_from_id(&user_id, &pool)
+            let user = read_user_by_id(&user_id, &pool)
                 .await
-                .map_err(|e| login_error(LoginError::UnexpectedError(e)))?;
+                .map_err(|e| login_error(LoginError::UnexpectedError(e.into())))?;
             let token = AuthClaim::new(&user.username, user_id, &exp_token_days).token(&secret);
             Ok(HttpResponse::Ok().json(UserResponse::from((user, token))))
         }

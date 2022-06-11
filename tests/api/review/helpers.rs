@@ -4,7 +4,7 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::helpers::TestApp;
+use crate::helpers::{TestApp, TestUser};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestReviewResponse {
@@ -18,6 +18,7 @@ pub struct TestReview {
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
+    username: String,
 }
 
 impl TestReview {
@@ -25,7 +26,7 @@ impl TestReview {
         json!({"review": {"title": self.title.to_string(), "body":self.body.to_string()}})
     }
 
-    pub fn generate() -> Self {
+    pub fn generate(user: &TestUser) -> Self {
         let title: String = faker::lorem::en::Word().fake();
         Self {
             title: title.to_string(),
@@ -35,6 +36,7 @@ impl TestReview {
             slug: title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
+            username: user.username.to_string(),
         }
     }
 

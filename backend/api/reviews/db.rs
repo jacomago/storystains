@@ -1,7 +1,7 @@
 use chrono::Utc;
 use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
-use crate::api::{reviews::model::StoredReview, Limits, UserId};
+use crate::api::{read_user_by_id, reviews::model::StoredReview, Limits, UserId};
 
 use super::model::{NewReview, ReviewSlug, UpdateReview};
 
@@ -16,9 +16,16 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
     let review = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title, slug, body, created_at, updated_at, user_id
-            FROM reviews 
-            WHERE slug = $1
+            SELECT title,
+                   slug, 
+                   body, 
+                   created_at, 
+                   updated_at, 
+                   username
+              FROM reviews,
+                   users
+            WHERE  slug          = $1
+              AND  users.user_id = reviews.user_id
         "#,
         slug.as_ref()
     )
@@ -46,8 +53,15 @@ pub async fn read_reviews(
     let reviews = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title, slug, body, created_at, updated_at, user_id
-            FROM reviews 
+            SELECT  title, 
+                    slug, 
+                    body, 
+                    created_at, 
+                    updated_at, 
+                    username
+              FROM  reviews, 
+                    users
+            WHERE   users.user_id = reviews.user_id
             ORDER BY updated_at
             LIMIT $1
             OFFSET $2
@@ -66,15 +80,13 @@ pub async fn read_reviews(
 
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
 pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
-    let id: sqlx::types::Uuid = sqlx::types::Uuid::from_u128(Uuid::new_v4().as_u128());
+    let id = Uuid::new_v4();
     let time = Utc::now();
     let user_id: sqlx::types::Uuid = review.user_id.try_into().unwrap();
-    let stored_review = sqlx::query_as!(
-        StoredReview,
-        r#"
+    let _ = sqlx::query!(
+        r#" 
             INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING title, slug, body, created_at, updated_at, user_id
         "#,
         id,
         review.title.as_ref(),
@@ -84,13 +96,14 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
         time,
         user_id
     )
-    .fetch_one(pool)
+    .execute(pool)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
-    Ok(stored_review)
+    let user = read_user_by_id(&review.user_id, pool).await?;
+    Ok(StoredReview::from((review, time, time, user)))
 }
 
 #[tracing::instrument(
@@ -133,8 +146,8 @@ pub async fn update_review(
     let title = review.title.as_ref().map(|t| t.as_ref());
     let update_slug = review.slug.as_ref().map(|t| t.as_ref());
     let body = review.body.as_ref().map(|t| t.as_ref());
-    let stored_review = sqlx::query_as!(
-        StoredReview,
+    let updated_at = Utc::now();
+    let row = sqlx::query!(
         r#"
             UPDATE reviews
             SET title      = COALESCE($1, title),
@@ -142,12 +155,12 @@ pub async fn update_review(
                 body       = COALESCE($3, body),
                 updated_at = $4
             WHERE     slug = $5
-            RETURNING title, slug, body, created_at, updated_at, user_id
+            RETURNING title, slug, body, created_at, user_id
         "#,
         title,
         update_slug,
         body,
-        Utc::now(),
+        updated_at,
         slug.as_ref()
     )
     .fetch_one(pool)
@@ -156,7 +169,17 @@ pub async fn update_review(
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
-    Ok(stored_review)
+
+    let user = read_user_by_id(&row.user_id.into(), pool).await?;
+    let updated_review = StoredReview {
+        body: row.body,
+        title: row.title,
+        slug: row.slug,
+        created_at: row.created_at,
+        updated_at,
+        username: user.username,
+    };
+    Ok(updated_review)
 }
 
 #[tracing::instrument(

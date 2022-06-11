@@ -48,7 +48,7 @@ async fn delete_review_returns_a_200_for_valid_slug() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let review = TestReview::generate();
+    let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
     let response = app.delete_review(review.slug(), &token).await;
 

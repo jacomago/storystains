@@ -27,10 +27,7 @@ pub async fn get_stored_credentials(
 
 /// Retreive User details by ID
 #[tracing::instrument(name = "Read user details from db", skip(user_id, pool))]
-pub async fn read_user_from_id(
-    user_id: &UserId,
-    pool: &PgPool,
-) -> Result<StoredUser, anyhow::Error> {
+pub async fn read_user_by_id(user_id: &UserId, pool: &PgPool) -> Result<StoredUser, sqlx::Error> {
     let id = Uuid::from(*user_id);
 
     let row = sqlx::query_as!(
@@ -53,7 +50,7 @@ pub async fn read_user_from_id(
 
 /// Check a User exists in the database
 #[tracing::instrument(name = "Check user exists", skip(user_id, pool))]
-pub async fn check_user_exists(user_id: &UserId, pool: &PgPool) -> Result<bool, anyhow::Error> {
+pub async fn check_user_exists(user_id: &UserId, pool: &PgPool) -> Result<bool, sqlx::Error> {
     let id = Uuid::from(*user_id);
 
     let row = sqlx::query!(

@@ -39,6 +39,7 @@ impl From<sqlx::types::Uuid> for UserId {
     }
 }
 
+#[derive(Debug)]
 pub struct StoredUser {
     pub user_id: sqlx::types::Uuid,
     pub username: String,

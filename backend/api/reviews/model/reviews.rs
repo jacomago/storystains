@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Serialize, Serializer};
 
-use crate::api::UserId;
+use crate::api::{users::model::StoredUser, UserId};
 
 use super::{ReviewSlug, ReviewText, ReviewTitle};
 
@@ -25,7 +25,27 @@ pub struct StoredReview {
     pub body: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
-    pub user_id: sqlx::types::Uuid,
+    pub username: String,
+}
+
+impl From<(&NewReview, DateTime<Utc>, DateTime<Utc>, StoredUser)> for StoredReview {
+    fn from(
+        (review, created_at, updated_at, user): (
+            &NewReview,
+            DateTime<Utc>,
+            DateTime<Utc>,
+            StoredUser,
+        ),
+    ) -> Self {
+        Self {
+            title: review.title.as_ref().to_string(),
+            slug: review.slug.as_ref().to_string(),
+            body: review.body.as_ref().to_string(),
+            created_at,
+            updated_at,
+            username: user.username,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, serde::Deserialize)]
@@ -50,6 +70,7 @@ pub struct ReviewResponseData {
     body: String,
     created_at: ResponseTime,
     updated_at: ResponseTime,
+    username: String,
 }
 
 impl From<StoredReview> for ReviewResponseData {
@@ -60,6 +81,7 @@ impl From<StoredReview> for ReviewResponseData {
             body: stored.body,
             created_at: ResponseTime(stored.created_at),
             updated_at: ResponseTime(stored.updated_at),
+            username: stored.username,
         }
     }
 }
