@@ -26,6 +26,15 @@ class Home extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
+  _goNewReview(BuildContext context, ReviewsState reviewsState,
+      AuthState authState) async {
+    if (authState.isAuthenticated) {
+      context.push(Routes.reviewNew).then((value) => reviewsState.refresh());
+    } else {
+      context.snackbar("Must be logged in to create a review.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ReviewsState, AuthState>(
@@ -53,9 +62,7 @@ class HomePage extends StatelessWidget {
               ]),
           body: const ReviewsPage(),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => context
-                .push(Routes.reviewNew)
-                .then((value) => reviews.refresh()),
+            onPressed: () => _goNewReview(context, reviews, auth),
             backgroundColor: context.colors.primary,
             child: Icon(
               Icons.add_rounded,
