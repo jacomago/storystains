@@ -29,7 +29,7 @@ where
 {
     let env_filter =
         EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
-    let formatting_layer = BunyanFormattingLayer::new(name.to_string(), sink);
+    let formatting_layer = BunyanFormattingLayer::new(name, sink);
     let tracer = stdout::new_pipeline().install_simple();
     let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
     Registry::default()
