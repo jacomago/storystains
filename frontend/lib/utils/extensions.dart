@@ -51,6 +51,15 @@ extension TypographyUtils on BuildContext {
   TextStyle? get bodySmall => textTheme.bodySmall?.copyWith(
         color: colors.onSurface,
       );
+  TextStyle? get button => textTheme.button?.copyWith(
+        color: colors.onSurface,
+      );
+  TextStyle? get caption => textTheme.caption?.copyWith(
+        color: colors.onSurface,
+      );
+  TextStyle? get overline => textTheme.overline?.copyWith(
+        color: colors.onSurface,
+      );
 }
 
 extension BreakpointUtils on BoxConstraints {

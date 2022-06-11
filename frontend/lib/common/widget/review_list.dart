@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/utils/navigation.dart';
@@ -67,44 +68,53 @@ class ReviewsPage extends StatelessWidget {
     return GestureDetector(
       onTap: () =>
           context.push(Routes.reviewDetail, arguments: ReviewArguement(review)),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        margin: const EdgeInsets.symmetric(horizontal: 24),
-        decoration: BoxDecoration(
-          color: context.colors.surface,
-          borderRadius: const BorderRadius.all(Radius.circular(24)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 8),
-                    Text(
-                      review.createdAt.toIso8601String(),
-                      style: context.labelSmall,
-                    ),
-                  ],
+      child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: SizedBox(
+            height: 100,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        review.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      const Padding(padding: EdgeInsets.only(bottom: 2.0)),
+                      Text(
+                        review.body,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.bodyMedium,
+                      ),
+                    ],
+                  ),
                 ),
-                const Spacer(),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        review.user.username,
+                        style: context.bodySmall,
+                      ),
+                      Text(
+                        DateFormat.yMMMMEEEEd().format(review.updatedAt),
+                        style: context.caption,
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 24),
-            Text(review.title, style: context.displaySmall),
-            Text(
-              review.body,
-              style: context.bodySmall,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+          )),
     );
   }
 }
