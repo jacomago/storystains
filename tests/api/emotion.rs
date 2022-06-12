@@ -68,7 +68,7 @@ async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
     let json: Value = json!({
         "review_emotion": {
             "emotion": "Joy",
-            "position": 100_u32,
+            "position": 100_i32,
             "notes": "None"
         }
     });
@@ -90,7 +90,7 @@ async fn post_review_emotion_to_review_unauth_when_logged_out() {
     let json: Value = json!({
         "review_emotion": {
             "emotion": "Joy",
-            "position": 100_u32,
+            "position": 100_i32,
             "notes": "None"
         }
     });
@@ -119,7 +119,7 @@ async fn post_review_emotion_returns_a_400_when_data_is_missing() {
             "missing the position",
         ),
         (
-            json!({ "review_emotion":{"position":100_u32} }),
+            json!({ "review_emotion":{"position":100_i32} }),
             "missing the emotion",
         ),
         (
@@ -157,7 +157,7 @@ async fn post_review_emotion_persists_the_new_review() {
     let body = json!({
         "review_emotion": {
             "emotion": "Joy",
-            "position": 100_u32,
+            "position": 100_i32,
             "notes": "None"
         }
     });
@@ -174,8 +174,8 @@ async fn post_review_emotion_persists_the_new_review() {
         .expect("Failed to fetch saved review emotions.");
 
     assert_eq!(saved.emotion_id, 4);
-    assert_eq!(saved.position, 100);
-    assert_eq!(saved.notes, "None");
+    assert_eq!(saved.position, 100_i32);
+    assert_eq!(saved.notes, Some("None".to_string()));
 }
 
 #[tokio::test]
@@ -190,11 +190,11 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
 
     let test_cases = vec![
         (
-            json!({"review_emotion": {"emotion": "", "position":100_u32 }}),
+            json!({"review_emotion": {"emotion": "", "position":100_i32 }}),
             "empty emotion",
         ),
         (
-            json!({"review_emotion": {"emotion": "Joy", "position":101_u32 }}),
+            json!({"review_emotion": {"emotion": "Joy", "position":101_i32 }}),
             "empty incorrect position numer format",
         ),
     ];
@@ -226,7 +226,7 @@ async fn post_review_emotion_returns_json() {
     let body = json!({
         "review_emotion": {
             "emotion": "Joy",
-            "position": 100_u32,
+            "position": 100_i32,
             "notes": "None"
         }
     });
@@ -239,6 +239,6 @@ async fn post_review_emotion_returns_json() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review_emotion"]["emotion"], "Joy");
-    assert_eq!(json["review_emotion"]["position"], 100_u32);
+    assert_eq!(json["review_emotion"]["position"], 100_i32);
     assert_eq!(json["review_emotion"]["notes"], "None");
 }

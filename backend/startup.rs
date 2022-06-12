@@ -1,6 +1,6 @@
 use crate::api::{
-    db_check, delete_review_by_slug, delete_user, get_review, get_reviews, health_check, login,
-    post_review, put_review, signup, get_emotions,
+    db_check, delete_review_by_slug, delete_user, get_emotions, get_review, get_reviews,
+    health_check, login, post_review, put_review, signup,
 };
 
 use crate::auth::bearer_auth;

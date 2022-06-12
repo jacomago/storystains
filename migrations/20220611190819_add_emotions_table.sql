@@ -7,7 +7,7 @@ CREATE TABLE review_emotions(
     id uuid PRIMARY KEY,
     review_id uuid NOT NULL REFERENCES reviews(id),
     emotion_id SERIAL REFERENCES emotions(id),
-    position NUMERIC(6) NOT NULL,
+    position INTEGER NOT NULL,
     notes TEXT,
     UNIQUE(review_id, emotion_id, position)
 );
