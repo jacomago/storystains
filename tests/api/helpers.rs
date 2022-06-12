@@ -65,7 +65,6 @@ pub async fn spawn_app() -> TestApp {
         let mut c = get_configuration().expect("Failed to read configuration.");
         // Use a different database for each test case
         c.database.database_name = Uuid::new_v4().to_string();
-        c.database.max_connections = 100;
         // Use a random OS port
         c.application.port = 0;
         c.application.exp_token_seconds = user.exp_seconds;
