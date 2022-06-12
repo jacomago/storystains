@@ -31,7 +31,7 @@ impl From<&NewReviewEmotion> for StoredReviewEmotion {
         Self {
             emotion: review_emotion.emotion.to_string(),
             position: *review_emotion.position.as_ref(),
-            notes: review_emotion.notes.map(|n| n.to_string()),
+            notes: review_emotion.notes.as_ref().map(|n| n.to_string()),
         }
     }
 }

@@ -2,10 +2,15 @@ use std::fmt::Display;
 
 use unicode_segmentation::UnicodeSegmentation;
 
+/// Struct for any long form text in the application
+/// cannot be only whitespace
+/// cannot be too long
+/// cannot contain forbidden characters
 #[derive(Debug)]
 pub struct LongFormText(String);
 
 impl LongFormText {
+    /// Parse a string into a Long form text to confirm it follows guidlines for long form text
     pub fn parse(s: String) -> Result<LongFormText, String> {
         // `.trim()` returns a view over the input `s` without trailing
         // whitespace-like characters.

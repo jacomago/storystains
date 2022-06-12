@@ -54,13 +54,15 @@ impl ResponseError for ReviewEmotionError {
     }
 }
 
-struct PostReviewEmotionData {
+/// Input of format for data of a review's emotion
+pub struct PostReviewEmotionData {
     emotion: String,
     position: i32,
     notes: Option<String>,
 }
 
-struct PostReviewEmotion {
+/// Input format for posting a review's emotion
+pub struct PostReviewEmotion {
     review_emotion: PostReviewEmotionData,
 }
 
