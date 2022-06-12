@@ -3,7 +3,7 @@ name: Frontend
 on: [push, pull_request]
 
 jobs:
-  test:
+  flutter-test:
     name: Test
     runs-on: ubuntu-latest
     steps:
@@ -20,10 +20,14 @@ jobs:
         working-directory: ./frontend
         run: flutter pub get
 
+      - name: analyze
+        working-directory: ./frontend
+        run: flutter analyze
+
       - name: test
         working-directory: ./frontend
         run: flutter test
-  coverage:
+  flutter-coverage:
     name: Coverage
     runs-on: ubuntu-latest
     steps:
@@ -39,6 +43,10 @@ jobs:
       - name: pub get
         working-directory: ./frontend
         run: flutter pub get
+
+      - name: analyze
+        working-directory: ./frontend
+        run: flutter analyze
 
       - name: test with coverage
         working-directory: ./frontend
