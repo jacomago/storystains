@@ -2,7 +2,7 @@ use serde::Serialize;
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
-#[derive(Debug, PartialEq, Serialize, EnumIter, EnumString, Display)]
+#[derive(Debug, PartialEq, Serialize, EnumIter, EnumString, Display, Clone, Copy)]
 pub enum Emotion {
     Anger = 1,
     Disgust = 2,
