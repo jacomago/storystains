@@ -22,7 +22,10 @@ impl TestApp {
         body: String,
     ) -> reqwest::Response {
         self.api_client
-            .post(&format!("{}/reviews/{}", &self.address, &review_slug))
+            .post(&format!(
+                "{}/reviews/{}/emotions",
+                &self.address, &review_slug
+            ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)
             .body(body)

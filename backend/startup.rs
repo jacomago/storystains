@@ -1,6 +1,6 @@
 use crate::api::{
     db_check, delete_review_by_slug, delete_user, get_emotions, get_review, get_reviews,
-    health_check, login, post_review, put_review, signup,
+    health_check, login, post_review, post_review_emotion, put_review, signup,
 };
 
 use crate::auth::bearer_auth;
@@ -134,7 +134,8 @@ fn routes(cfg: &mut web::ServiceConfig) {
                     .wrap(auth_reviews)
                     .route("", web::post().to(post_review))
                     .route("/{slug}", web::put().to(put_review))
-                    .route("/{slug}", web::delete().to(delete_review_by_slug)),
+                    .route("/{slug}", web::delete().to(delete_review_by_slug))
+                    .route("/{slug}/emotions", web::post().to(post_review_emotion)),
             )
             .service(
                 web::scope("/users")

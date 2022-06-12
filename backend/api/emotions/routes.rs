@@ -55,6 +55,7 @@ impl ResponseError for ReviewEmotionError {
 }
 
 /// Input of format for data of a review's emotion
+#[derive(serde::Deserialize)]
 pub struct PostReviewEmotionData {
     emotion: String,
     position: i32,
@@ -62,6 +63,7 @@ pub struct PostReviewEmotionData {
 }
 
 /// Input format for posting a review's emotion
+#[derive(serde::Deserialize)]
 pub struct PostReviewEmotion {
     review_emotion: PostReviewEmotionData,
 }
