@@ -9,5 +9,5 @@ CREATE TABLE review_emotions(
     emotion_id SERIAL REFERENCES emotions(id),
     position NUMERIC(6) NOT NULL,
     notes TEXT,
-    UNIQUE(review_id, emotion_id, story_position)
+    UNIQUE(review_id, emotion_id, position)
 );
