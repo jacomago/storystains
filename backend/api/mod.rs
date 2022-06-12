@@ -1,3 +1,6 @@
+mod shared;
+pub use shared::long_form_text::*;
+
 mod reviews;
 pub use reviews::routes::*;
 

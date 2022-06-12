@@ -3,15 +3,15 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, QueryLimits, UserId};
+use crate::api::{error_chain_fmt, LongFormText, QueryLimits, UserId};
 
 use super::{
     db::{
         create_review, delete_review, read_review, read_review_user, read_reviews, update_review,
     },
     model::{
-        NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewText, ReviewTitle,
-        ReviewsResponse, UpdateReview,
+        NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewTitle, ReviewsResponse,
+        UpdateReview,
     },
 };
 
@@ -69,7 +69,7 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     fn try_from(pair: (PostReviewData, UserId)) -> Result<Self, Self::Error> {
         let (value, user_id) = pair;
         let title = ReviewTitle::parse(value.title)?;
-        let body = ReviewText::parse(value.body)?;
+        let body = LongFormText::parse(value.body)?;
         let slug = ReviewSlug::parse(title.slugify())?;
         Ok(Self {
             title,
@@ -149,7 +149,7 @@ impl TryFrom<PutReviewData> for UpdateReview {
             None => None,
         };
         let body = match &value.body {
-            Some(t) => Some(ReviewText::parse(t.to_string())?),
+            Some(t) => Some(LongFormText::parse(t.to_string())?),
             None => None,
         };
         let slug = match &title {

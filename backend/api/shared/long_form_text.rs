@@ -1,10 +1,12 @@
+use std::fmt::Display;
+
 use unicode_segmentation::UnicodeSegmentation;
 
 #[derive(Debug)]
-pub struct ReviewText(String);
+pub struct LongFormText(String);
 
-impl ReviewText {
-    pub fn parse(s: String) -> Result<ReviewText, String> {
+impl LongFormText {
+    pub fn parse(s: String) -> Result<LongFormText, String> {
         // `.trim()` returns a view over the input `s` without trailing
         // whitespace-like characters.
         // `.is_empty` checks if the view contains any character.
@@ -23,58 +25,63 @@ impl ReviewText {
         let contains_forbidden_characters = s.chars().any(|g| forbidden_characters.contains(&g));
 
         if is_empty_or_whitespace || is_too_long || contains_forbidden_characters {
-            Err(format!("{} is not a valid review.", s))
+            Err(format!("{} is not a valid text.", s))
         } else {
             Ok(Self(s))
         }
     }
 }
 
-impl AsRef<str> for ReviewText {
+impl AsRef<str> for LongFormText {
     fn as_ref(&self) -> &str {
         &self.0
     }
 }
 
+impl Display for LongFormText {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
 #[cfg(test)]
 mod tests {
-    use super::ReviewText;
+    use super::LongFormText;
     use claim::{assert_err, assert_ok};
     use fake::faker::lorem::en::Paragraphs;
     use fake::Fake;
 
     #[test]
     fn empty_string_is_rejected() {
-        let review = "".to_string();
-        assert_err!(ReviewText::parse(review));
+        let text = "".to_string();
+        assert_err!(LongFormText::parse(text));
     }
 
     #[test]
     fn basic_string_is_accepted() {
-        let review = "It was rubbish!".to_string();
-        assert_ok!(ReviewText::parse(review));
+        let text = "It was rubbish!".to_string();
+        assert_ok!(LongFormText::parse(text));
     }
 
     #[test]
-    fn whitespace_only_reviews_are_rejected() {
-        let review = " ".to_string();
-        assert_err!(ReviewText::parse(review));
+    fn whitespace_only_texts_are_rejected() {
+        let text = " ".to_string();
+        assert_err!(LongFormText::parse(text));
     }
 
     #[test]
-    fn a_review_longer_than_256000_graphemes_is_rejected() {
-        let review = "a".repeat(256001);
-        assert_err!(ReviewText::parse(review));
+    fn a_text_longer_than_256000_graphemes_is_rejected() {
+        let text = "a".repeat(256001);
+        assert_err!(LongFormText::parse(text));
     }
 
     #[derive(Debug, Clone)]
-    struct ValidReviewFixture(pub String);
+    struct ValidFixture(pub String);
 
-    impl quickcheck::Arbitrary for ValidReviewFixture {
+    impl quickcheck::Arbitrary for ValidFixture {
         fn arbitrary(_: &mut quickcheck::Gen) -> Self {
-            let review_paras: Vec<String> = Paragraphs(10..50).fake();
-            let review = review_paras.join("\n");
-            Self(review)
+            let text_paras: Vec<String> = Paragraphs(10..50).fake();
+            let text = text_paras.join("\n");
+            Self(text)
         }
 
         fn shrink(&self) -> Box<dyn Iterator<Item = Self>> {
@@ -83,7 +90,7 @@ mod tests {
     }
 
     #[quickcheck_macros::quickcheck]
-    fn valid_reviews_are_parsed_successfully(valid_review: ValidReviewFixture) -> bool {
-        ReviewText::parse(valid_review.0).is_ok()
+    fn valid_texts_are_parsed_successfully(valid_text: ValidFixture) -> bool {
+        LongFormText::parse(valid_text.0).is_ok()
     }
 }

@@ -2,21 +2,22 @@ use chrono::{DateTime, Utc};
 use serde::{Serialize, Serializer};
 
 use crate::api::{
+    shared::long_form_text::LongFormText,
     users::model::{StoredUser, UserProfileData},
     UserId,
 };
 
-use super::{ReviewSlug, ReviewText, ReviewTitle};
+use super::{ReviewSlug, ReviewTitle};
 
 pub struct NewReview {
-    pub body: ReviewText,
+    pub body: LongFormText,
     pub title: ReviewTitle,
     pub slug: ReviewSlug,
     pub user_id: UserId,
 }
 
 pub struct UpdateReview {
-    pub body: Option<ReviewText>,
+    pub body: Option<LongFormText>,
     pub title: Option<ReviewTitle>,
     pub slug: Option<ReviewSlug>,
 }
