@@ -70,10 +70,10 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, body FROM reviews",)
+    let saved = sqlx::query!("SELECT emotion_id, position, notes FROM review_emotions",)
         .fetch_optional(&app.db_pool)
         .await
-        .expect("Query failed to execute.");
+        .expect("Failed to fetch saved review emotions.");
 
     assert!(saved.is_none());
 

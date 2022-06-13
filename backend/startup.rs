@@ -131,7 +131,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/reviews", web::get().to(get_reviews))
             .route("/reviews/{slug}", web::get().to(get_review))
             .route(
-                "/{slug}/emotions/{position}",
+                "/reviews/{slug}/emotions/{position}",
                 web::get().to(get_review_emotion),
             )
             .service(
