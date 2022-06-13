@@ -26,16 +26,13 @@ pub async fn emotions_check(pool: web::Data<PgPool>) -> Result<(), EmotionError>
 /// Update all emotions if not already inserted
 #[tracing::instrument(name = "Insert emotions if not exist", skip(pool), fields())]
 pub async fn insert_emotions(pool: &PgPool) -> Result<(), EmotionError> {
-    let stored = retreive_all_emotions(&pool)
+    let stored = retreive_all_emotions(pool)
         .await
         .map_err(EmotionError::NoDataError)?;
-    match stored.len() {
-        0 => {
-            store_emotions(emotions(), &pool)
-                .await
-                .context("Problems storing the emotions enum")?;
-        }
-        _ => {}
+    if stored.is_empty() {
+        store_emotions(emotions(), pool)
+            .await
+            .context("Problems storing the emotions enum")?;
     }
     Ok(())
 }
