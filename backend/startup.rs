@@ -130,6 +130,10 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/emotions", web::get().to(get_emotions))
             .route("/reviews", web::get().to(get_reviews))
             .route("/reviews/{slug}", web::get().to(get_review))
+            .route(
+                "/{slug}/emotions/{position}",
+                web::get().to(get_review_emotion),
+            )
             .service(
                 web::scope("/reviews")
                     .wrap(auth_reviews)
@@ -144,10 +148,6 @@ fn routes(cfg: &mut web::ServiceConfig) {
                     .route(
                         "/{slug}/emotions/{position}",
                         web::delete().to(delete_review_emotion),
-                    )
-                    .route(
-                        "/{slug}/emotions/{position}",
-                        web::get().to(get_review_emotion),
                     ),
             )
             .service(

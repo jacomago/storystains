@@ -3,6 +3,7 @@ use std::str::FromStr;
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use reqwest::StatusCode;
+use serde::Deserialize;
 use sqlx::PgPool;
 
 use crate::api::{
@@ -137,23 +138,30 @@ pub async fn post_review_emotion(
     }))
 }
 
+/// Input parameters for accessing a review emotion url
+#[derive(Deserialize)]
+pub struct ReviewEmotionPath {
+    slug: String,
+    position: i32,
+}
+
 /// API for getting a review_emotion, takes slug as id
 #[tracing::instrument(
     name = "Getting a review_emotion",
-    skip(pool),
+    skip(pool, path),
     fields(
-        slug = %slug,
-        position = %position
+        slug = %path.slug,
+        position = %path.position
     )
 )]
 pub async fn get_review_emotion(
-    slug: web::Path<String>,
-    position: web::Path<i32>,
+    path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let slug =
+        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
     let position =
-        EmotionPosition::parse(*position).map_err(ReviewEmotionError::ValidationError)?;
+        EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
     let stored = read_review_emotion(&slug, position, pool.get_ref())
         .await
         .map_err(ReviewEmotionError::NoDataError)?;
@@ -204,23 +212,23 @@ impl TryFrom<PutReviewEmotionData> for UpdateReviewEmotion {
 /// API for updating a review_emotion
 #[tracing::instrument(
     name = "Putting a review_emotion",
-    skip(pool, json),
+    skip(pool, path, json),
     fields(
-        slug = %slug,
-        position = %position
+        slug = %path.slug,
+        position = %path.position
     )
 )]
 pub async fn put_review_emotion(
     user_id: web::ReqData<UserId>,
-    slug: web::Path<String>,
-    position: web::Path<i32>,
+    path: web::Path<ReviewEmotionPath>,
     json: web::Json<PutReviewEmotion>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
     let user_id = user_id.into_inner();
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let slug =
+        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
     let position =
-        EmotionPosition::parse(*position).map_err(ReviewEmotionError::ValidationError)?;
+        EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
 
     block_non_creator(&slug, user_id, pool.get_ref()).await?;
     let updated_review_emotion = json
@@ -239,22 +247,22 @@ pub async fn put_review_emotion(
 /// API for deleting a review_emotion
 #[tracing::instrument(
     name = "Deleting a review_emotion",
-    skip(pool),
+    skip(pool, path),
     fields(
-        slug = %slug,
-        position = %position
+        slug = %path.slug,
+        position = %path.position
     )
 )]
 pub async fn delete_review_emotion(
     user_id: web::ReqData<UserId>,
-    slug: web::Path<String>,
-    position: web::Path<i32>,
+    path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
     let user_id = user_id.into_inner();
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let slug =
+        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
     let position =
-        EmotionPosition::parse(*position).map_err(ReviewEmotionError::ValidationError)?;
+        EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
 
     block_non_creator(&slug, user_id, pool.get_ref()).await?;
 
