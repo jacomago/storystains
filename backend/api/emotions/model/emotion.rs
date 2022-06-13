@@ -1,9 +1,25 @@
+use std::collections::HashMap;
+
 use serde::Serialize;
-use strum::IntoEnumIterator;
+use strum::{EnumProperty, IntoEnumIterator};
 use strum_macros::{Display, EnumIter, EnumProperty, EnumString};
 
 //TODO refactor to be a combination of the first six emotions with different amounts
-#[derive(Debug, PartialEq, Serialize, EnumIter, EnumString, Display, Clone, Copy, EnumProperty)]
+#[derive(
+    Debug,
+    PartialEq,
+    Serialize,
+    EnumIter,
+    EnumString,
+    Display,
+    Clone,
+    Copy,
+    EnumProperty,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+)]
 pub enum Emotion {
     #[strum(props(description = "Strong displeasure against a someone or something."))]
     Anger = 1,
@@ -63,6 +79,28 @@ pub enum Emotion {
 
 pub fn emotions() -> Vec<Emotion> {
     Emotion::iter().collect()
+}
+
+pub struct StoredEmotion {
+    id: i32,
+    name: String,
+    description: String,
+}
+
+pub fn stored_emotions() -> HashMap<Emotion, StoredEmotion> {
+    emotions()
+        .into_iter()
+        .map(|f| {
+            (
+                f,
+                StoredEmotion {
+                    id: f as i32,
+                    name: f.to_string(),
+                    description: f.get_str("description").unwrap().to_string(),
+                },
+            )
+        })
+        .collect()
 }
 
 #[cfg(test)]

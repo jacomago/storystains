@@ -1,8 +1,9 @@
-use sqlx::{types::Uuid, PgPool};
+use sqlx::{types::Uuid, PgPool, QueryBuilder};
+use strum::EnumProperty;
 
 use crate::api::reviews::ReviewSlug;
 
-use super::model::{NewReviewEmotion, StoredReviewEmotion};
+use super::model::{Emotion, NewReviewEmotion, StoredReviewEmotion};
 
 #[tracing::instrument(
     name = "Saving new review emotion details in the database",
@@ -49,4 +50,28 @@ pub async fn create_review_emotion(
         e
     })?;
     Ok(StoredReviewEmotion::from(review_emotion))
+}
+
+#[tracing::instrument(name = "Saving all emotions into the db", skip(pool))]
+pub async fn store_emotions(emotions: Vec<Emotion>, pool: &PgPool) -> Result<(), sqlx::Error> {
+    let mut builder = QueryBuilder::new(
+        r#" 
+            INSERT INTO emotions(
+                id,
+                name,
+                description
+            )
+        "#,
+    );
+    builder.push_values(&emotions, |mut b, e| {
+        b.push_bind(*e as i32)
+            .push_bind(e.to_string())
+            .push_bind(e.get_str("description").unwrap());
+    });
+    let query = builder.build();
+    query.execute(pool).await.map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(())
 }
