@@ -38,6 +38,8 @@ pub struct TestApp {
 }
 
 impl TestApp {
+    // TODO make a wrapper around each test as a macro
+    // see test-context crate and https://lik.ai/blog/async-setup-and-teardown-in-rust
     pub async fn teardown(&self) {
         self.db_pool.close().await;
         let config = get_configuration().expect("Failed to read configuration.");
