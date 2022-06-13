@@ -3,7 +3,11 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, LongFormText, QueryLimits, UserId};
+use crate::api::{
+    error_chain_fmt,
+    shared::put_block::{block_non_creator, BlockError},
+    LongFormText, QueryLimits, UserId,
+};
 
 use super::{
     db::{
@@ -51,6 +55,14 @@ impl ResponseError for ReviewError {
     }
 }
 
+impl From<BlockError> for ReviewError {
+    fn from(e: BlockError) -> Self {
+        match e {
+            BlockError::NoDataError(d) => ReviewError::NoDataError(d),
+            BlockError::NotAllowedError(d) => ReviewError::NotAllowedError(d),
+        }
+    }
+}
 /// Review input on Post
 #[derive(serde::Deserialize)]
 pub struct PostReview {
@@ -178,16 +190,7 @@ pub async fn put_review(
     let user_id = user_id.into_inner();
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
 
-    let review_user_id = read_review_user(&slug, &pool)
-        .await
-        .map_err(ReviewError::NoDataError)?;
-
-    if user_id != review_user_id {
-        return Err(ReviewError::NotAllowedError(
-            "Must be the creator of the review.".to_string(),
-        ));
-    }
-
+    block_non_creator(&slug, user_id, &pool.get_ref()).await?;
     let updated_review = json
         .0
         .review

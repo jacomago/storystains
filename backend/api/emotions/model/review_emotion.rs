@@ -8,6 +8,12 @@ pub struct NewReviewEmotion {
     pub notes: Option<LongFormText>,
 }
 
+pub struct UpdateReviewEmotion {
+    pub emotion: Option<Emotion>,
+    pub position: Option<EmotionPosition>,
+    pub notes: Option<LongFormText>,
+}
+
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct ReviewEmotionData {
     pub emotion: String,
