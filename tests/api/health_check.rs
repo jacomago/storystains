@@ -63,7 +63,8 @@ async fn db_check_fails_if_emotion_data_doesnt_match() {
 
     // Assert
     assert!(response.status().is_server_error());
-    assert_eq!(Some(0), response.content_length());
+    let text = &response.text().await.unwrap();
+    assert_eq!(text, "Check on emotions failed.");
 
     app.teardown().await;
 }
