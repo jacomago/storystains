@@ -1,6 +1,5 @@
 use actix_web::dev;
 use actix_web_opentelemetry::RequestMetrics;
-use opentelemetry::sdk::export::trace::stdout;
 use tokio::task::JoinHandle;
 use tracing::subscriber::set_global_default;
 use tracing::Subscriber;
@@ -30,12 +29,9 @@ where
     let env_filter =
         EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
     let formatting_layer = BunyanFormattingLayer::new(name, sink);
-    let tracer = stdout::new_pipeline().install_simple();
-    let telemetry = tracing_opentelemetry::layer().with_tracer(tracer);
     Registry::default()
         .with(env_filter)
         .with(JsonStorageLayer)
-        .with(telemetry)
         .with(formatting_layer)
 }
 

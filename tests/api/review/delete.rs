@@ -1,9 +1,6 @@
 use reqwest::StatusCode;
 
-use crate::{
-    helpers::{spawn_app, TestApp},
-    review::helpers::TestReview,
-};
+use crate::{helpers::TestApp, review::helpers::TestReview};
 
 impl TestApp {
     pub async fn delete_review(&self, slug: String, token: &str) -> reqwest::Response {
@@ -19,19 +16,21 @@ impl TestApp {
 #[tokio::test]
 async fn delete_review_returns_unauth_when_not_logged_in() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.delete_review("dune".to_string(), "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn delete_review_returns_bad_request_for_invalid_title() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -39,12 +38,14 @@ async fn delete_review_returns_bad_request_for_invalid_title() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn delete_review_returns_a_200_for_valid_slug() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -61,4 +62,6 @@ async fn delete_review_returns_a_200_for_valid_slug() {
         .expect("Query failed to execute.");
 
     assert!(saved.is_none());
+
+    app.teardown().await;
 }

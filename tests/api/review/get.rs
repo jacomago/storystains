@@ -1,9 +1,6 @@
 use reqwest::StatusCode;
 
-use crate::{
-    helpers::{spawn_app, TestApp},
-    review::helpers::TestReview,
-};
+use crate::{helpers::TestApp, review::helpers::TestReview};
 
 use super::helpers::TestReviewResponse;
 
@@ -24,7 +21,7 @@ impl TestApp {
 #[tokio::test]
 async fn get_review_logged_in_returns_json() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
@@ -33,12 +30,14 @@ async fn get_review_logged_in_returns_json() {
     let json_page = app.get_review_json(review.slug()).await;
     let response_review: TestReviewResponse = serde_json::from_str(&json_page).unwrap();
     assert_eq!(review, response_review.review);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn get_review_logged_out_returns_json() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
@@ -49,28 +48,34 @@ async fn get_review_logged_out_returns_json() {
     let json_page = app.get_review_json(review.slug()).await;
     let response_review: TestReviewResponse = serde_json::from_str(&json_page).unwrap();
     assert_eq!(review, response_review.review);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn get_review_returns_not_found_for_non_existant_review() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.get_review("dune".to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn get_review_returns_bad_request_for_invalid_title() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.get_review("a".repeat(257).to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    app.teardown().await;
 }

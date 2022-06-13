@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{spawn_app, TestApp, TestUser};
+use crate::helpers::{TestApp, TestUser};
 
 impl TestApp {
     pub async fn post_review(&self, body: String, token: &str) -> reqwest::Response {
@@ -19,7 +19,7 @@ impl TestApp {
 #[tokio::test]
 async fn post_review_returns_unauth_when_not_logged_in() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let body = json!({"review": {"title": "Dune", "body":"5stars" }});
@@ -32,7 +32,7 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 #[tokio::test]
 async fn post_review_returns_unauth_when_logged_out() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
     app.test_user.logout().await;
 
@@ -47,7 +47,7 @@ async fn post_review_returns_unauth_when_logged_out() {
 #[tokio::test]
 async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // create new user
     let user = TestUser::generate();
@@ -67,7 +67,7 @@ async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
 #[tokio::test]
 async fn post_review_persists_the_new_review() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -89,7 +89,7 @@ async fn post_review_persists_the_new_review() {
 #[tokio::test]
 async fn post_review_returns_a_400_when_data_is_missing() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     let token = app.test_user.login(&app).await;
     let test_cases = vec![
@@ -116,7 +116,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
 #[tokio::test]
 async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     let test_cases = vec![
@@ -146,7 +146,7 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
 #[tokio::test]
 async fn post_review_returns_json() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     let body = json!({"review": {"title": "Dune", "body":"5stars" }});

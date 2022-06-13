@@ -20,10 +20,14 @@ DB_PASSWORD="${POSTGRES_PASSWORD:=password}"
 DB_NAME="${POSTGRES_DB:=storystains}"
 DB_PORT="${POSTGRES_PORT:=5432}"
 
+BRANCH_NAME="${OUT:=$(git branch --show-current)}"
+HOST_NAME="${POSTGRES_NAME:=postgres}_story_${BRANCH_NAME}"
+
 # Allow to skip Docker if a dockerized Postgres database is already running
 if [[ -z "${SKIP_DOCKER}" ]]
 then
     docker run \
+    --name ${HOST_NAME} \
     -e POSTGRES_USER=${DB_USER} \
     -e POSTGRES_PASSWORD=${DB_PASSWORD} \
     -e POSTGRES_DB=${DB_NAME} \
