@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::{helpers::TestApp, review::TestReview};
+use crate::{emotion::helpers::emotions, helpers::TestApp, review::TestReview};
 
 impl TestApp {
     pub async fn post_emotion(
@@ -216,5 +216,53 @@ async fn post_review_emotion_returns_json() {
     assert_eq!(json["review_emotion"]["emotion"], "Joy");
     assert_eq!(json["review_emotion"]["position"], 100_i32);
     assert_eq!(json["review_emotion"]["notes"], "None");
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn post_every_emotion_succeds() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+
+    let test_cases: Vec<Value> = emotions()
+        .iter()
+        .enumerate()
+        .map(|(index, emotion)| {
+            json!({
+                "review_emotion": {
+                    "emotion": emotion.to_string(),
+                    "position": index + 1,
+                    "notes": "None"
+                }
+            })
+        })
+        .collect();
+
+    // Act
+    for body in test_cases {
+        // Act
+        let response = app
+            .post_emotion(&token, &review.slug(), body.to_string())
+            .await;
+
+        // Assert
+        assert_eq!(200, response.status().as_u16(),);
+
+        let json: Value = response.json().await.expect("expected json response");
+        assert_eq!(
+            json["review_emotion"]["emotion"],
+            body["review_emotion"]["emotion"]
+        );
+        assert_eq!(
+            json["review_emotion"]["position"],
+            body["review_emotion"]["position"]
+        );
+        assert_eq!(json["review_emotion"]["notes"], "None");
+    }
+
     app.teardown().await;
 }

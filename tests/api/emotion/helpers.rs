@@ -5,7 +5,7 @@ use serde_json::{json, Value};
 
 use crate::helpers::{long_form, TestApp};
 
-fn emotions() -> Vec<String> {
+pub fn emotions() -> Vec<String> {
     vec![
         "Anger".to_string(),
         "Disgust".to_string(),
