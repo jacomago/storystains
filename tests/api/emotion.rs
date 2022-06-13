@@ -1,10 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::{
-    helpers::{spawn_app, TestApp},
-    review::TestReview,
-};
+use crate::{helpers::TestApp, review::TestReview};
 
 impl TestApp {
     pub async fn get_emotions(&self) -> reqwest::Response {
@@ -38,7 +35,7 @@ impl TestApp {
 #[tokio::test]
 async fn get_emotions_returns_list() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.get_emotions().await;
@@ -57,12 +54,13 @@ async fn get_emotions_returns_list() {
         .iter()
         .map(|x| x.as_str())
         .any(|x| x == Some("Joy")));
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -79,12 +77,13 @@ async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn post_review_emotion_to_review_unauth_when_logged_out() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -105,12 +104,13 @@ async fn post_review_emotion_to_review_unauth_when_logged_out() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn post_review_emotion_returns_a_400_when_data_is_missing() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -146,12 +146,13 @@ async fn post_review_emotion_returns_a_400_when_data_is_missing() {
             error_message
         );
     }
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn post_review_emotion_persists_the_new_review() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -179,12 +180,13 @@ async fn post_review_emotion_persists_the_new_review() {
     assert_eq!(saved.emotion_id, 4);
     assert_eq!(saved.position, 100_i32);
     assert_eq!(saved.notes, Some("None".to_string()));
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -215,12 +217,13 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
             description
         );
     }
+    app.teardown().await;
 }
 
 #[tokio::test]
 async fn post_review_emotion_returns_json() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
@@ -244,4 +247,5 @@ async fn post_review_emotion_returns_json() {
     assert_eq!(json["review_emotion"]["emotion"], "Joy");
     assert_eq!(json["review_emotion"]["position"], 100_i32);
     assert_eq!(json["review_emotion"]["notes"], "None");
+    app.teardown().await;
 }

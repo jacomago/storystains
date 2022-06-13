@@ -45,7 +45,7 @@ async fn db_check_works() {
 #[tokio::test]
 async fn db_check_fails_if_emotion_data_doesnt_match() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let client = reqwest::Client::new();
 
     // Act
