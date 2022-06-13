@@ -238,7 +238,9 @@ async fn post_review_emotion_returns_json() {
     });
 
     // Act
-    let response = app.post_review(body.to_string(), &token).await;
+    let response = app
+        .post_emotion(&token, &review.slug(), body.to_string())
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
