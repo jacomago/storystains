@@ -4,7 +4,7 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::helpers::{TestApp, TestUser};
+use crate::{helpers::{TestApp, TestUser}, emotion::helpers::TestEmotionPart};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestReviewResponse {
@@ -18,6 +18,7 @@ pub struct TestReview {
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
+    emotions: Vec<TestEmotionPart>,
     user: TestUserProfile,
 }
 
@@ -41,6 +42,7 @@ impl TestReview {
             slug: title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
+            emotions: (1..4).map(|pos| TestEmotion::generate().part),
             user: TestUserProfile {
                 username: user.username.to_string(),
             },
