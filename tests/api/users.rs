@@ -175,7 +175,7 @@ async fn delete_user_deletes_user() {
     )
     .fetch_optional(&app.db_pool)
     .await
-    .expect("Failed to fetch saved subscription.");
+    .expect("Failed to fetch saved data.");
 
     // Assert
     assert!(saved.is_none());

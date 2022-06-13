@@ -53,7 +53,7 @@ async fn db_check_fails_if_emotion_data_doesnt_match() {
         sqlx::query!("INSERT INTO emotions(id, name, description) values (22, 'French', 'fab')")
             .execute(&app.db_pool)
             .await
-            .expect("Failed to fetch saved subscription.");
+            .expect("Failed to fetch saved data.");
     let response = client
         // Use the returned application address
         .get(&format!("{}/db_check", &app.address))

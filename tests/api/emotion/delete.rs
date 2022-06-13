@@ -3,7 +3,7 @@ use reqwest::StatusCode;
 use crate::{emotion::helpers::TestEmotion, helpers::TestApp, review::TestReview};
 
 impl TestApp {
-    pub async fn delete_review_emotion(
+    pub async fn delete_emotion(
         &self,
         slug: String,
         position: i32,
@@ -22,12 +22,12 @@ impl TestApp {
 }
 
 #[tokio::test]
-async fn delete_review_returns_unauth_when_not_logged_in() {
+async fn delete_review_emotion_returns_unauth_when_not_logged_in() {
     // Arrange
     let app = TestApp::spawn_app().await;
 
     // Act
-    let response = app.delete_review_emotion("dune".to_string(), 1, "").await;
+    let response = app.delete_emotion("dune".to_string(), 1, "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -36,7 +36,7 @@ async fn delete_review_returns_unauth_when_not_logged_in() {
 }
 
 #[tokio::test]
-async fn delete_review_returns_bad_request_for_invalid_position() {
+async fn delete_review_emotion_returns_bad_request_for_invalid_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
@@ -44,7 +44,7 @@ async fn delete_review_returns_bad_request_for_invalid_position() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let response = app.delete_review_emotion(review.slug(), 101, &token).await;
+    let response = app.delete_emotion(review.slug(), 101, &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
@@ -53,7 +53,7 @@ async fn delete_review_returns_bad_request_for_invalid_position() {
 }
 
 #[tokio::test]
-async fn delete_review_returns_a_200_for_valid_position() {
+async fn delete_review_emotion_returns_a_200_for_valid_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
@@ -64,7 +64,7 @@ async fn delete_review_returns_a_200_for_valid_position() {
     let emotion = TestEmotion::generate();
     emotion.store(&app, &token, review.slug()).await;
     let response = app
-        .delete_review_emotion(review.slug(), emotion.position, &token)
+        .delete_emotion(review.slug(), emotion.position, &token)
         .await;
 
     // Assert

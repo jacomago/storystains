@@ -167,7 +167,7 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
         ),
         (
             json!({"review_emotion": {"emotion": "Joy", "position":101_i32 }}),
-            "empty incorrect position numer format",
+            "empty incorrect position number format",
         ),
     ];
     for (body, description) in test_cases {

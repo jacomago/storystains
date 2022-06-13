@@ -32,6 +32,7 @@ async fn put_review_returns_unauth_when_not_logged_in() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -54,10 +55,11 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     let saved = sqlx::query!("SELECT title, body FROM reviews",)
         .fetch_one(&app.db_pool)
         .await
-        .expect("Failed to fetch saved subscription.");
+        .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.body, "3stars");
     assert_eq!(saved.title, review.title());
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -77,6 +79,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -92,6 +95,7 @@ async fn put_review_returns_bad_request_for_invalid_slug() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -127,6 +131,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
             description
         );
     }
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -150,6 +155,7 @@ async fn put_review_returns_json() {
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "3stars");
     assert_eq!(json["review"]["title"], "Dune2");
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -173,4 +179,5 @@ async fn put_review_only_allows_creator_to_modify() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::FORBIDDEN);
+    app.teardown().await;
 }
