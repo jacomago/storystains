@@ -59,6 +59,14 @@ impl TestReview {
         assert_eq!(response.status(), StatusCode::OK);
     }
 
+    pub async fn store_emotions(&self, app: &TestApp, token: &str) {
+        for e in self.emotions.as_ref().unwrap() {
+            let body = json!(e);
+            let response = app.post_emotion(token, &self.slug, body.to_string()).await;
+            assert_eq!(response.status(), StatusCode::OK);
+        }
+    }
+
     pub fn slug(&self) -> String {
         self.slug.to_string()
     }
@@ -75,5 +83,6 @@ impl PartialEq for TestReview {
             && 10 > (self.created_at - other.created_at).num_seconds()
             && 10 > (self.updated_at - other.updated_at).num_seconds()
             && self.user.username == other.user.username
+            && self.emotions == other.emotions
     }
 }

@@ -31,7 +31,7 @@ pub fn emotions() -> Vec<String> {
     ]
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct TestEmotionPart {
     emotion: String,
     position: i32,

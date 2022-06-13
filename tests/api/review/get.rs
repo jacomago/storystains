@@ -26,6 +26,7 @@ async fn get_review_logged_in_returns_json() {
 
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
+    review.store_emotions(&app, &token).await;
 
     let json_page = app.get_review_json(review.slug()).await;
     let response_review: TestReviewResponse = serde_json::from_str(&json_page).unwrap();
@@ -42,6 +43,7 @@ async fn get_review_logged_out_returns_json() {
 
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
+    review.store_emotions(&app, &token).await;
 
     app.test_user.logout().await;
 
