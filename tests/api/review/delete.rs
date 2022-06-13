@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 
 use crate::{
-    helpers::{spawn_app, TestApp},
+    helpers::{TestApp},
     review::helpers::TestReview,
 };
 
@@ -19,7 +19,7 @@ impl TestApp {
 #[tokio::test]
 async fn delete_review_returns_unauth_when_not_logged_in() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.delete_review("dune".to_string(), "").await;
@@ -33,7 +33,7 @@ async fn delete_review_returns_unauth_when_not_logged_in() {
 #[tokio::test]
 async fn delete_review_returns_bad_request_for_invalid_title() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
@@ -48,7 +48,7 @@ async fn delete_review_returns_bad_request_for_invalid_title() {
 #[tokio::test]
 async fn delete_review_returns_a_200_for_valid_slug() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act

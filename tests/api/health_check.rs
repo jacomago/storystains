@@ -1,9 +1,11 @@
-use crate::helpers::spawn_app;
+use crate::helpers::TestApp;
+
+
 
 #[tokio::test]
 async fn health_check_works() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let client = reqwest::Client::new();
 
     // Act
@@ -24,7 +26,7 @@ async fn health_check_works() {
 #[tokio::test]
 async fn db_check_works() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let client = reqwest::Client::new();
 
     // Act

@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{spawn_app, TestApp};
+use crate::helpers::TestApp;
 
 impl TestApp {
     pub async fn get_reviews(&self, limit: Option<i64>, offset: Option<i64>) -> reqwest::Response {
@@ -21,7 +21,7 @@ impl TestApp {
 #[tokio::test]
 async fn get_reviews_returns_empty_list() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.get_reviews(Some(10), Some(0)).await;
@@ -40,7 +40,7 @@ async fn get_reviews_returns_empty_list() {
 #[tokio::test]
 async fn get_reviews_returns_allows_empty_query() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let json_page = app.get_reviews_json(None, None).await;
@@ -56,7 +56,7 @@ async fn get_reviews_returns_allows_empty_query() {
 #[tokio::test]
 async fn get_reviews_returns_bad_request_for_invalid_query() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
 
     // Act
     let response = app.get_reviews(Some(-10), Some(-10)).await;
@@ -70,7 +70,7 @@ async fn get_reviews_returns_bad_request_for_invalid_query() {
 #[tokio::test]
 async fn get_reviews_returns_reviews() {
     // Arrange
-    let app = spawn_app().await;
+    let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
     // Act
