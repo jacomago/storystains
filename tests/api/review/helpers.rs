@@ -4,7 +4,10 @@ use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::{helpers::{TestApp, TestUser}, emotion::helpers::TestEmotionPart};
+use crate::{
+    emotion::helpers::{TestEmotion, TestEmotionPart},
+    helpers::{long_form, TestApp, TestUser},
+};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestReviewResponse {
@@ -36,13 +39,11 @@ impl TestReview {
         let title: String = faker::lorem::en::Word().fake();
         Self {
             title: title.to_string(),
-            body: faker::lorem::en::Paragraphs(1..3)
-                .fake::<Vec<String>>()
-                .join("\n"),
+            body: long_form(),
             slug: title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
-            emotions: (1..4).map(|pos| TestEmotion::generate().part),
+            emotions: (1..4).map(|_| TestEmotion::generate().part()).collect(),
             user: TestUserProfile {
                 username: user.username.to_string(),
             },

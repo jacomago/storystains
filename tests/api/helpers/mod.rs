@@ -2,6 +2,7 @@ mod db;
 mod test_app;
 mod test_user;
 
+use fake::{faker, Fake};
 use once_cell::sync::Lazy;
 use storystains::telemetry::{get_subscriber, init_subscriber};
 pub use test_app::TestApp;
@@ -23,3 +24,9 @@ static TRACING: Lazy<()> = Lazy::new(|| {
         init_subscriber(subscriber);
     };
 });
+
+pub fn long_form() -> String {
+    faker::lorem::en::Paragraphs(1..3)
+        .fake::<Vec<String>>()
+        .join("\n")
+}
