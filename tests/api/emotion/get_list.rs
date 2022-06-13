@@ -1,7 +1,7 @@
 use reqwest::StatusCode;
-use serde_json::{json, Value};
+use serde_json::Value;
 
-use crate::{helpers::TestApp, review::TestReview};
+use crate::helpers::TestApp;
 
 impl TestApp {
     pub async fn get_emotions(&self) -> reqwest::Response {
@@ -11,7 +11,6 @@ impl TestApp {
             .await
             .expect("Failed to execute request.")
     }
-
 }
 
 #[tokio::test]

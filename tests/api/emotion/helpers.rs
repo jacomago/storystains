@@ -36,7 +36,12 @@ pub struct TestEmotionPart {
     emotion: String,
     position: i32,
 }
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TestEmotionResponse {
+    pub review_emotion: TestEmotion,
+}
 
+#[derive(Debug, Serialize, Deserialize)]
 pub struct TestEmotion {
     pub emotion: String,
     pub position: i32,
@@ -77,5 +82,13 @@ impl TestEmotion {
 
         // Assert
         assert_eq!(response.status(), StatusCode::OK);
+    }
+}
+
+impl PartialEq for TestEmotion {
+    fn eq(&self, other: &Self) -> bool {
+        self.emotion == other.emotion
+            && self.position == other.position
+            && self.notes == other.notes
     }
 }
