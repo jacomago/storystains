@@ -16,7 +16,8 @@ use crate::api::{
 
 use super::{
     db::{
-        create_review_emotion, read_review_emotion, retreive_all_emotions, update_review_emotion,
+        create_review_emotion, delete_review_emotion, read_review_emotion, retreive_all_emotions,
+        update_review_emotion,
     },
     model::{
         Emotion, EmotionPosition, NewReviewEmotion, ReviewEmotionData, ReviewEmotionResponse,
@@ -242,15 +243,23 @@ pub async fn put_review_emotion(
     skip(pool),
     fields(
         slug = %slug,
+        position = %position
     )
 )]
 pub async fn delete_review_emotion_by_slug(
+    user_id: web::ReqData<UserId>,
     slug: web::Path<String>,
+    position: web::Path<i32>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
-    let slug =
-        ReviewEmotionSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
-    delete_review_emotion(&slug, &pool)
+    let user_id = user_id.into_inner();
+    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let position =
+        EmotionPosition::parse(*position).map_err(ReviewEmotionError::ValidationError)?;
+
+    block_non_creator(&slug, user_id, &pool.get_ref()).await?;
+
+    delete_review_emotion(&slug, position, &pool)
         .await
         .context("delete query failed")?;
     Ok(HttpResponse::Ok().finish())

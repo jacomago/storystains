@@ -4,8 +4,8 @@ use storystains::startup::get_connection_pool;
 use storystains::{configuration::get_configuration, startup::Application};
 use uuid::Uuid;
 
-use super::{TestUser, TRACING};
 use super::db::{configure_database, remove_database};
+use super::{TestUser, TRACING};
 pub struct TestApp {
     pub address: String,
     pub db_name: String,

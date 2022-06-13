@@ -10,9 +10,7 @@ use crate::api::{
 };
 
 use super::{
-    db::{
-        create_review, delete_review, read_review, read_review_user, read_reviews, update_review,
-    },
+    db::{create_review, delete_review, read_review, read_reviews, update_review},
     model::{
         NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewTitle, ReviewsResponse,
         UpdateReview,

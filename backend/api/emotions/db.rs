@@ -150,6 +150,41 @@ pub async fn update_review_emotion(
     Ok(updated_review)
 }
 
+#[tracing::instrument(
+    name = "Deleting review emotion details from the database",
+    skip(pool),
+    fields(
+        slug = %slug,
+        position = %position
+    )
+)]
+pub async fn delete_review_emotion(
+    slug: &ReviewSlug,
+    position: EmotionPosition,
+    pool: &PgPool,
+) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query!(
+        r#"
+            DELETE 
+              FROM  review_emotions
+             WHERE  review_id = (SELECT id
+                                FROM reviews
+                                WHERE slug = $1
+                               )
+                AND position = $2
+        "#,
+        slug.as_ref(),
+        position.as_ref()
+    )
+    .execute(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(())
+}
+
 #[tracing::instrument(name = "Saving all emotions into the db", skip(pool))]
 pub async fn store_emotions(emotions: Vec<Emotion>, pool: &PgPool) -> Result<(), sqlx::Error> {
     let mut builder = QueryBuilder::new(
