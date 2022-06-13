@@ -36,7 +36,13 @@ pub struct TestApp {
     pub test_user: TestUser,
 }
 
-async fn configure_database(config: &DatabaseSettings) -> PgPool {
+impl TestApp {
+    pub async fn teardown(&self) {
+        self.db_pool.close().await;
+    }
+}
+
+async fn configure_database(config: &DatabaseSettings) {
     // Create database
     let mut connection = PgConnection::connect_with(&config.without_db())
         .await
@@ -45,6 +51,7 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .execute(format!(r#"CREATE DATABASE "{}";"#, config.database_name).as_str())
         .await
         .expect("Failed to create database.");
+    connection.close();
     // Migrate database
     let connection_pool = PgPool::connect_with(config.with_db())
         .await
@@ -53,7 +60,7 @@ async fn configure_database(config: &DatabaseSettings) -> PgPool {
         .run(&connection_pool)
         .await
         .expect("Failed to migrate the database");
-    connection_pool
+    connection_pool.close().await;
 }
 
 pub async fn spawn_app() -> TestApp {

@@ -26,6 +26,8 @@ async fn delete_review_returns_unauth_when_not_logged_in() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -39,6 +41,8 @@ async fn delete_review_returns_bad_request_for_invalid_title() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -61,4 +65,6 @@ async fn delete_review_returns_a_200_for_valid_slug() {
         .expect("Query failed to execute.");
 
     assert!(saved.is_none());
+
+    app.teardown().await;
 }

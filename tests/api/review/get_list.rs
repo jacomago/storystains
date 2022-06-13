@@ -32,7 +32,9 @@ async fn get_reviews_returns_empty_list() {
     let json_page = response.text().await.unwrap();
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert!(json["reviews"].is_array());
-    assert!(json["reviews"].as_array().unwrap().is_empty())
+    assert!(json["reviews"].as_array().unwrap().is_empty());
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -46,7 +48,9 @@ async fn get_reviews_returns_allows_empty_query() {
     // Assert
     let json: Value = serde_json::from_str(&json_page).unwrap();
     assert!(json["reviews"].is_array());
-    assert!(json["reviews"].as_array().unwrap().is_empty())
+    assert!(json["reviews"].as_array().unwrap().is_empty());
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -59,6 +63,8 @@ async fn get_reviews_returns_bad_request_for_invalid_query() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -88,4 +94,6 @@ async fn get_reviews_returns_reviews() {
 
     assert_eq!(json["reviews"][1]["title"], "LoTR");
     assert_eq!(json["reviews"][1]["body"], "4 stars");
+
+    app.teardown().await;
 }

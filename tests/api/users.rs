@@ -52,6 +52,8 @@ async fn login_returns_bad_request_for_incorrect_credentials() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -71,6 +73,8 @@ async fn login_returns_bad_request_for_deleted_user() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -92,6 +96,8 @@ async fn login_returns_user_details_after_correct_request() {
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], app.test_user.username);
     assert!(json["user"]["token"].is_string());
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -120,6 +126,8 @@ async fn signup_returns_a_400_when_fields_are_present_but_invalid() {
             description
         );
     }
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -142,6 +150,8 @@ async fn signup_return_user_details_after_correct_request() {
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], username);
     assert!(json["user"]["token"].is_string());
+
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -169,4 +179,6 @@ async fn delete_user_deletes_user() {
 
     // Assert
     assert!(saved.is_none());
+
+    app.teardown().await;
 }
