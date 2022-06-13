@@ -21,7 +21,7 @@ pub struct TestReview {
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
-    emotions: Vec<TestEmotionPart>,
+    emotions: Option<Vec<TestEmotionPart>>,
     user: TestUserProfile,
 }
 
@@ -43,7 +43,7 @@ impl TestReview {
             slug: title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
-            emotions: (1..4).map(|_| TestEmotion::generate().part()).collect(),
+            emotions: Some((1..4).map(|_| TestEmotion::generate().part()).collect()),
             user: TestUserProfile {
                 username: user.username.to_string(),
             },
