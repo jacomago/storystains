@@ -158,7 +158,7 @@ pub async fn update_review_emotion(
         position = %position
     )
 )]
-pub async fn delete_review_emotion(
+pub async fn db_delete_review_emotion(
     slug: &ReviewSlug,
     position: EmotionPosition,
     pool: &PgPool,

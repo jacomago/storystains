@@ -188,7 +188,7 @@ pub async fn put_review(
     let user_id = user_id.into_inner();
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, &pool.get_ref()).await?;
+    block_non_creator(&slug, user_id, pool.get_ref()).await?;
     let updated_review = json
         .0
         .review

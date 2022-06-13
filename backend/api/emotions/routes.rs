@@ -1,7 +1,6 @@
 use std::str::FromStr;
 
 use actix_web::{web, HttpResponse, ResponseError};
-use actix_web_lab::__reexports::futures_util::TryFutureExt;
 use anyhow::Context;
 use reqwest::StatusCode;
 use sqlx::PgPool;
@@ -16,8 +15,8 @@ use crate::api::{
 
 use super::{
     db::{
-        create_review_emotion, delete_review_emotion, read_review_emotion, retreive_all_emotions,
-        update_review_emotion,
+        create_review_emotion, db_delete_review_emotion, read_review_emotion,
+        retreive_all_emotions, update_review_emotion,
     },
     model::{
         Emotion, EmotionPosition, NewReviewEmotion, ReviewEmotionData, ReviewEmotionResponse,
@@ -124,7 +123,7 @@ pub async fn post_review_emotion(
     let user_id = user_id.into_inner();
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, &pool.get_ref()).await?;
+    block_non_creator(&slug, user_id, pool.get_ref()).await?;
     let new_review_emotion = json
         .0
         .review_emotion
@@ -223,7 +222,7 @@ pub async fn put_review_emotion(
     let position =
         EmotionPosition::parse(*position).map_err(ReviewEmotionError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, &pool.get_ref()).await?;
+    block_non_creator(&slug, user_id, pool.get_ref()).await?;
     let updated_review_emotion = json
         .0
         .review_emotion
@@ -246,7 +245,7 @@ pub async fn put_review_emotion(
         position = %position
     )
 )]
-pub async fn delete_review_emotion_by_slug(
+pub async fn delete_review_emotion(
     user_id: web::ReqData<UserId>,
     slug: web::Path<String>,
     position: web::Path<i32>,
@@ -257,9 +256,9 @@ pub async fn delete_review_emotion_by_slug(
     let position =
         EmotionPosition::parse(*position).map_err(ReviewEmotionError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, &pool.get_ref()).await?;
+    block_non_creator(&slug, user_id, pool.get_ref()).await?;
 
-    delete_review_emotion(&slug, position, &pool)
+    db_delete_review_emotion(&slug, position, &pool)
         .await
         .context("delete query failed")?;
     Ok(HttpResponse::Ok().finish())

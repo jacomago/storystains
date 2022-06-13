@@ -40,7 +40,7 @@ pub async fn block_non_creator(
     user_id: UserId,
     pool: &PgPool,
 ) -> Result<(), BlockError> {
-    let review_user_id = read_review_user(&slug, &pool)
+    let review_user_id = read_review_user(slug, pool)
         .await
         .map_err(BlockError::NoDataError)?;
 
