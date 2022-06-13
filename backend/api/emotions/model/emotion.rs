@@ -1,6 +1,6 @@
 use serde::Serialize;
 use strum::{EnumProperty, IntoEnumIterator};
-use strum_macros::{Display, EnumCount, EnumIter, EnumProperty, EnumString, FromRepr};
+use strum_macros::{Display, EnumIter, EnumProperty, EnumString};
 
 //TODO refactor to be a combination of the first six emotions with different amounts
 #[derive(

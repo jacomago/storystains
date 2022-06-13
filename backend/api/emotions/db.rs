@@ -3,7 +3,7 @@ use strum::EnumProperty;
 
 use crate::api::reviews::ReviewSlug;
 
-use super::model::{Emotion, NewReviewEmotion, StoredReviewEmotion, StoredEmotion};
+use super::model::{Emotion, NewReviewEmotion, StoredEmotion, StoredReviewEmotion};
 
 #[tracing::instrument(
     name = "Saving new review emotion details in the database",

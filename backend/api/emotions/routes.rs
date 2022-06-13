@@ -5,7 +5,6 @@ use anyhow::Context;
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::api::emotions::model::check_emotions;
 use crate::api::{emotions::model::emotions, error_chain_fmt, reviews::ReviewSlug, LongFormText};
 
 use super::{
@@ -151,19 +150,4 @@ pub async fn get_all_emotions(pool: web::Data<PgPool>) -> Result<HttpResponse, E
         .map_err(EmotionError::NoDataError)?;
 
     Ok(HttpResponse::Ok().json(stored))
-}
-
-/// API for getting all of the emotions stored in the db
-#[tracing::instrument(name = "Getting all emotions", skip(pool), fields())]
-pub async fn emotions_check(pool: web::Data<PgPool>) -> Result<(), EmotionError> {
-    let stored = retreive_all_emotions(pool.get_ref())
-        .await
-        .map_err(EmotionError::NoDataError)?;
-    match check_emotions(stored) {
-        Ok(_) => Ok(()),
-        Err(e) => Err(EmotionError::UnexpectedError(anyhow::anyhow!(
-            "Error occured: {}",
-            e
-        ))),
-    }
 }
