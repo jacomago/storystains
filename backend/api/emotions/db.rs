@@ -3,7 +3,7 @@ use strum::EnumProperty;
 
 use crate::api::reviews::ReviewSlug;
 
-use super::model::{Emotion, NewReviewEmotion, StoredReviewEmotion};
+use super::model::{Emotion, NewReviewEmotion, StoredReviewEmotion, StoredEmotion};
 
 #[tracing::instrument(
     name = "Saving new review emotion details in the database",
@@ -74,4 +74,22 @@ pub async fn store_emotions(emotions: Vec<Emotion>, pool: &PgPool) -> Result<(),
         e
     })?;
     Ok(())
+}
+
+#[tracing::instrument(name = "Get all emotions from the db", skip(pool))]
+pub async fn retreive_all_emotions(pool: &PgPool) -> Result<Vec<StoredEmotion>, sqlx::Error> {
+    let stored = sqlx::query_as!(
+        StoredEmotion,
+        r#"
+            SELECT id, name, description
+              FROM emotions
+        "#
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(stored)
 }

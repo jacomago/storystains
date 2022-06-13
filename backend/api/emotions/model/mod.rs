@@ -4,5 +4,6 @@ mod review_emotion;
 
 pub use emotion::emotions;
 pub use emotion::Emotion;
+pub use emotion::StoredEmotion;
 pub use emotion_position::EmotionPosition;
 pub use review_emotion::*;

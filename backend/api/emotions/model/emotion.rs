@@ -82,9 +82,9 @@ pub fn emotions() -> Vec<Emotion> {
 }
 
 pub struct StoredEmotion {
-    id: i32,
-    name: String,
-    description: String,
+    pub id: i32,
+    pub name: String,
+    pub description: String,
 }
 
 pub fn stored_emotions() -> HashMap<Emotion, StoredEmotion> {
