@@ -1,8 +1,6 @@
-use std::collections::HashMap;
-
 use serde::Serialize;
 use strum::{EnumProperty, IntoEnumIterator};
-use strum_macros::{Display, EnumIter, EnumProperty, EnumString};
+use strum_macros::{Display, EnumCount, EnumIter, EnumProperty, EnumString, FromRepr};
 
 //TODO refactor to be a combination of the first six emotions with different amounts
 #[derive(
@@ -81,26 +79,32 @@ pub fn emotions() -> Vec<Emotion> {
     Emotion::iter().collect()
 }
 
+#[derive(Debug, Serialize, PartialEq)]
 pub struct StoredEmotion {
     pub id: i32,
     pub name: String,
     pub description: String,
 }
 
-pub fn stored_emotions() -> HashMap<Emotion, StoredEmotion> {
-    emotions()
-        .into_iter()
-        .map(|f| {
-            (
-                f,
-                StoredEmotion {
-                    id: f as i32,
-                    name: f.to_string(),
-                    description: f.get_str("description").unwrap().to_string(),
-                },
-            )
-        })
-        .collect()
+impl From<&Emotion> for StoredEmotion {
+    fn from(e: &Emotion) -> Self {
+        StoredEmotion {
+            id: *e as i32,
+            name: e.to_string(),
+            description: e.get_str("description").unwrap().to_string(),
+        }
+    }
+}
+
+pub fn check_emotions(stored_emotions: Vec<StoredEmotion>) -> Result<(), String> {
+    let mem_emotions = emotions()
+        .iter()
+        .map(StoredEmotion::from)
+        .collect::<Vec<StoredEmotion>>();
+    if stored_emotions != mem_emotions {
+        return Err("Stored doesnot match emotions.".to_string());
+    }
+    Ok(())
 }
 
 #[cfg(test)]

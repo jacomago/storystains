@@ -1,3 +1,4 @@
+use crate::api::emotions_check;
 use actix_web::{web, HttpResponse, ResponseError};
 use anyhow::Context;
 use reqwest::StatusCode;
@@ -35,18 +36,9 @@ impl ResponseError for CheckError {
 /// Returns OK if it can.
 #[tracing::instrument(name = "Check DB status", skip(pool))]
 pub async fn db_check(pool: web::Data<PgPool>) -> Result<HttpResponse, CheckError> {
-    let _ = sqlx::query!(
-        r#"
-        SELECT success
-        FROM _sqlx_migrations
-    "#
-    )
-    .fetch_one(pool.get_ref())
-    .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })
-    .context("Failed to connect to db.")?;
+    emotions_check(pool)
+        .await
+        .context("Check on emotions failed.")?;
+
     Ok(HttpResponse::Ok().finish())
 }
