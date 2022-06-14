@@ -79,8 +79,7 @@ pub struct PostReviewData {
 
 impl TryFrom<(PostReviewData, UserId)> for NewReview {
     type Error = String;
-    fn try_from(pair: (PostReviewData, UserId)) -> Result<Self, Self::Error> {
-        let (value, user_id) = pair;
+    fn try_from((value, user_id): (PostReviewData, UserId)) -> Result<Self, Self::Error> {
         let title = ReviewTitle::parse(value.title)?;
         let body = LongFormText::parse(value.body)?;
         let slug = ReviewSlug::parse(title.slugify())?;
@@ -159,18 +158,12 @@ pub struct PutReviewData {
 impl TryFrom<PutReviewData> for UpdateReview {
     type Error = String;
     fn try_from(value: PutReviewData) -> Result<Self, Self::Error> {
-        let title = match &value.title {
-            Some(t) => Some(ReviewTitle::parse(t.to_string())?),
-            None => None,
-        };
-        let body = match &value.body {
-            Some(t) => Some(LongFormText::parse(t.to_string())?),
-            None => None,
-        };
-        let slug = match &title {
-            Some(t) => Some(ReviewSlug::parse(t.slugify())?),
-            None => None,
-        };
+        let title = value.title.map(ReviewTitle::parse).transpose()?;
+        let body = value.body.map(LongFormText::parse).transpose()?;
+        let slug = title
+            .as_ref()
+            .map(|t| ReviewSlug::parse(t.slugify()))
+            .transpose()?;
         Ok(Self { title, body, slug })
     }
 }
