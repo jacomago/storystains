@@ -99,10 +99,11 @@ void main() {
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
 
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), ReviewsState(
-        mockService,
-      )));
+      await tester.pumpWidget(wrapWithMaterial(
+          const ReviewsPage(),
+          ReviewsState(
+            mockService,
+          )));
       await tester.pumpAndSettle();
 
       expect(find.text("randomtitle"), findsNothing);
@@ -123,8 +124,3 @@ void main() {
     });
   });
 }
-
-// TODO load review
-// TODO edit review
-// TODO send review
-// TODO see failure message

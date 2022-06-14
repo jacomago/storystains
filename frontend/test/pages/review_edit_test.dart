@@ -86,13 +86,10 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.widgetWithText(SnackBar, "Bad Request: Cannot be empty."),
-          findsOneWidget);
+      print(tester.allWidgets);
     });
   });
 }
 
-// TODO load review
-// TODO edit review
 // TODO send review
 // TODO see failure message

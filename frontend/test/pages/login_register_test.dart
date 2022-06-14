@@ -100,7 +100,6 @@ void main() {
   });
 }
 
-// TODO login
 // TODO see failure message
 // TODO register
 // TODO see failure message
