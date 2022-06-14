@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/login_register.dart';
-import 'package:storystains/routes/routes.dart';
 
 Widget wrapWithMaterial(Widget w, AuthState authState) =>
     ChangeNotifierProvider<AuthState>(
@@ -20,45 +19,37 @@ void main() {
     testWidgets('Log in values', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final mockService = AuthService();
-      final authState = AuthState(mockService);
       final widg = wrapWithMaterial(Builder(builder: (BuildContext context) {
         return LoginOrRegisterPage();
-      }), authState);
+      }), AuthState(AuthService()));
 
       await tester.pumpWidget(widg);
-      await tester.pumpAndSettle();
 
-      final passField = find.bySemanticsLabel('Password');
-      expect(passField, findsOneWidget);
-      final userField = find.bySemanticsLabel('Username');
-      expect(userField, findsOneWidget);
+      expect(find.bySemanticsLabel('Password'), findsOneWidget);
+      expect(find.bySemanticsLabel('Username'), findsOneWidget);
 
-      var swapButton =
-          find.widgetWithText(TextButton, "New User? Create Account");
-      expect(swapButton, findsOneWidget);
+      expect(find.widgetWithText(TextButton, "Register?"), findsOneWidget);
+      expect(find.widgetWithText(MaterialButton, "Login"), findsOneWidget);
     });
 
     testWidgets("Swap Login Register ", (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
-      final widg = wrapWithMaterial(Builder(builder: (BuildContext context) {
+      final page = wrapWithMaterial(Builder(builder: (BuildContext context) {
         return LoginOrRegisterPage();
       }), authState);
 
-      await tester.pumpWidget(widg);
+      await tester.pumpWidget(page);
 
-      var swapButton =
-          find.widgetWithText(TextButton, "New User? Create Account");
+      var swapButton = find.widgetWithText(TextButton, "Register?");
       expect(swapButton, findsOneWidget);
 
       await tester.ensureVisible(swapButton);
       await tester.tap(swapButton.first);
       await tester.pump();
 
-      swapButton =
-          find.widgetWithText(TextButton, "Have Account? To Login");
+      swapButton = find.widgetWithText(TextButton, "Login?");
       expect(swapButton, findsOneWidget);
     });
   });
