@@ -32,7 +32,7 @@ impl EmotionPosition {
 mod tests {
     use claim::{assert_err, assert_ok};
 
-    use crate::api::emotions::model::EmotionPosition;
+    use crate::api::review_emotion::model::EmotionPosition;
 
     #[test]
     fn a_number_between_0_and_100_is_valid() {

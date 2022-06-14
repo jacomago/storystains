@@ -1,6 +1,6 @@
-use crate::api::LongFormText;
+use crate::api::{emotions::Emotion, LongFormText};
 
-use super::{Emotion, EmotionPosition};
+use super::EmotionPosition;
 
 pub struct NewReviewEmotion {
     pub emotion: Emotion,
