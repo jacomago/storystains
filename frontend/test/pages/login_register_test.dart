@@ -52,6 +52,28 @@ void main() {
       swapButton = find.widgetWithText(TextButton, "Login?");
       expect(swapButton, findsOneWidget);
     });
+    testWidgets("Login Failure ", (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      final authState = AuthState(AuthService());
+      final page = wrapWithMaterial(Builder(builder: (BuildContext context) {
+        return LoginOrRegisterPage();
+      }), authState);
+
+      await tester.pumpWidget(page);
+
+      var loginButton = find.widgetWithText(MaterialButton, "Login");
+      expect(loginButton, findsOneWidget);
+
+      await tester.ensureVisible(loginButton);
+      await tester.tap(loginButton.first);
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.widgetWithText(SnackBar, "Wrong username or password."),
+          findsOneWidget);
+    });
   });
 }
 
