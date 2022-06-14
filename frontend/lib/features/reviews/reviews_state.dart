@@ -69,6 +69,8 @@ class ReviewsState extends ChangeNotifier {
       _offset = AppConfig.defaultLimit;
       _query = query ?? '';
       _items = [...items];
+      _isFailed = false;
+      _isEmpty = false;
     }
 
     notifyListeners();
