@@ -25,6 +25,7 @@ pub async fn read_review_emotions(
                    emotions
             WHERE  review_id = $1
                AND review_emotions.emotion_id = emotions.id
+          ORDER BY position ASC
         "#,
         review_id,
     )
