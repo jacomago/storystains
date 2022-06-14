@@ -2,7 +2,7 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 
 use crate::{
-    emotion::helpers::TestEmotion,
+    review_emotion::helpers::TestEmotion,
     helpers::{TestApp, TestUser},
     review::TestReview,
 };

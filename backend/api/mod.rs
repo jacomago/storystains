@@ -10,6 +10,7 @@ pub use review_emotion::routes::*;
 
 mod emotions;
 pub use emotions::routes::*;
+pub use emotions::emotions;
 
 mod users;
 pub use users::db::*;

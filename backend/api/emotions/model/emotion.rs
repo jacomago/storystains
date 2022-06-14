@@ -75,6 +75,7 @@ pub enum Emotion {
     Disappointment = 21,
 }
 
+/// Returns vector of all emotions available
 pub fn emotions() -> Vec<Emotion> {
     Emotion::iter().collect()
 }

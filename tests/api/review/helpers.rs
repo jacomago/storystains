@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::{
-    emotion::helpers::{TestEmotion, TestEmotionPart},
+    review_emotion::helpers::{TestEmotion, TestEmotionPart},
     helpers::{long_form, TestApp, TestUser},
 };
 

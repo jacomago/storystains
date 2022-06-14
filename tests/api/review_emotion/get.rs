@@ -1,6 +1,6 @@
 use reqwest::StatusCode;
 
-use crate::{emotion::helpers::TestEmotion, helpers::TestApp, review::TestReview};
+use crate::{review_emotion::helpers::TestEmotion, helpers::TestApp, review::TestReview};
 
 use super::helpers::TestEmotionResponse;
 

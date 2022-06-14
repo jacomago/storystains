@@ -1,7 +1,8 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
+use storystains::api::emotions;
 
-use crate::{emotion::helpers::emotions, helpers::TestApp, review::TestReview};
+use crate::{helpers::TestApp, review::TestReview};
 
 impl TestApp {
     pub async fn post_emotion(
