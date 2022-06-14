@@ -4,7 +4,6 @@ import 'package:storystains/data/network/rest_client.dart';
 import 'package:storystains/model/req/add_user.dart';
 import 'package:storystains/model/req/create_review.dart';
 
-import '../../common/constant/app_config.dart';
 import '../../model/req/login.dart';
 
 part 'api_exception.dart';
@@ -12,8 +11,7 @@ part 'api_exception.dart';
 class Api {
   static final DioManager dioManager = DioManager();
 
-  static final RestClient _restClient =
-      RestClient(dioManager.dio, baseUrl: AppConfig.baseUrl);
+  static final RestClient _restClient = RestClient(dioManager.dio);
 
   static Future register(AddUser addUser) async {
     return await _restClient.addUser(addUser);

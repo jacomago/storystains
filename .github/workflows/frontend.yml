@@ -50,10 +50,6 @@ jobs:
         working-directory: ./frontend
         run: flutter pub get
 
-      - name: analyze
-        working-directory: ./frontend
-        run: flutter analyze
-
       - name: test with coverage
         working-directory: ./frontend
         run: flutter test --coverage

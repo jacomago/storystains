@@ -13,7 +13,11 @@ class ReviewEditPage extends StatelessWidget {
       final msg = state.isCreate ? 'Created Review' : 'Updated Review';
       context.snackbar(msg);
     } else {
-      context.snackbar('Review creation failed, please try again.');
+      if (state.isFailed) {
+        context.snackbar(state.error);
+      } else {
+        context.snackbar('Review creation failed, please try again.');
+      }
     }
   }
 

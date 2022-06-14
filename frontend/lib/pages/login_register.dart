@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/utils/extensions.dart';
 import 'package:storystains/utils/snackbar.dart';
@@ -42,87 +43,68 @@ class LoginOrRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: const Text('Login/Register'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: IntrinsicHeight(
-            child: Consumer<AuthState>(
-              builder: (_, auth, __) => Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(
-                      48,
-                      144,
-                      48,
-                      96,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(200),
-                    ),
-                    child: Center(
-                      child: Image.asset(
-                        'assets/logo/logo.png',
-                        height: 110,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Username',
-                          hintText: 'Enter your Username'),
-                      controller: _usernameController,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: TextField(
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Password',
-                          hintText: 'Enter your secure password'),
-                      controller: _passwordController,
-                    ),
-                  ),
-                  const SizedBox(height: 96),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: MaterialButton(
-                      onPressed: () => _onLogin(context),
-                      height: 96,
-                      minWidth: 600,
-                      color: context.colors.primary,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(48)),
-                      child: Text(
-                        auth.isLogin ? 'Sign in' : 'Sign up',
-                        style: context.labelLarge,
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: auth.switchLoginRegister,
-                    child: Text(
-                      auth.isLogin
-                          ? 'New User? Create Account'
-                          : 'Have Account? To Login',
-                      style: context.labelMedium,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(
+            'Login/Register',
+            style: context.headlineMedium
+                ?.copyWith(color: context.colors.onPrimary),
           ),
+          toolbarHeight: 70,
         ),
-      ),
-    );
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(60),
+            child: Consumer<AuthState>(
+                builder: (_, auth, __) => Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: SvgPicture.asset(
+                              'assets/logo/logo.svg',
+                              height: 110,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Username',
+                                hintText: 'Enter your Username'),
+                            controller: _usernameController,
+                          ),
+                          const SizedBox(height: 20),
+                          TextField(
+                            obscureText: true,
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Password',
+                                hintText: 'Enter your secure password'),
+                            controller: _passwordController,
+                          ),
+                          const SizedBox(height: 24),
+                          MaterialButton(
+                            onPressed: () => _onLogin(context),
+                            height: 50,
+                            minWidth: 150,
+                            color: context.colors.primary,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Text(
+                              auth.isLogin ? 'Login' : 'Register',
+                              style: context.labelLarge!
+                                  .copyWith(color: context.colors.onPrimary),
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: auth.switchLoginRegister,
+                            child: Text(
+                              auth.isLogin ? 'Register?' : 'Login?',
+                              style: context.labelMedium,
+                            ),
+                          ),
+                        ])),
+          ),
+        ));
   }
 }

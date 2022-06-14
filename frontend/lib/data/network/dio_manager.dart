@@ -1,19 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:storystains/common/constant/app_config.dart';
 
 import 'interceptors.dart';
 
 class DioManager {
   late CancelToken defaultCancelToken = CancelToken();
-  late final Dio dio = Dio()..interceptors.addAll(interceptors);
+  late final Dio dio = Dio(BaseOptions(
+      connectTimeout: 2000,
+      receiveTimeout: 2000,
+      receiveDataWhenStatusError: true, baseUrl: AppConfig.baseUrl))
+    ..interceptors.addAll(interceptors);
   late final Set<CancelToken> _cancelTokens = Set.identity();
 
   DioManager();
-
-  Future<bool> setBaseUrl(String url) async {
-    cancelAll();
-    dio.options.baseUrl = url;
-    return true;
-  }
 
   void addToken(CancelToken token) {
     _cancelTokens.add(token);

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:storystains/utils/error.dart';
 import 'package:storystains/data/network/api.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 
@@ -79,9 +80,11 @@ class ReviewState extends ChangeNotifier {
         final e = StatusCodeException.exception(data);
         throw e;
       }
+    } on DioError catch (e) {
+      _status = ReviewStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = ReviewStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;
@@ -105,9 +108,11 @@ class ReviewState extends ChangeNotifier {
         final e = StatusCodeException.exception(data);
         throw e;
       }
+    } on DioError catch (e) {
+      _status = ReviewStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = ReviewStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;
@@ -131,9 +136,11 @@ class ReviewState extends ChangeNotifier {
         final e = StatusCodeException.exception(data);
         throw e;
       }
+    } on DioError catch (e) {
+      _status = ReviewStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = ReviewStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;
@@ -161,6 +168,9 @@ class ReviewState extends ChangeNotifier {
         final e = StatusCodeException.exception(data);
         throw e;
       }
+    } on DioError catch (e) {
+      _status = ReviewStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = ReviewStatus.failed;
       _error = e.toString();

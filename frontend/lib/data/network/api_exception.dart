@@ -24,6 +24,13 @@ class UnauthorisedException extends ApiException {
   UnauthorisedException([message]) : super(message, 'Unauthorised: ');
 }
 
+class ForbiddenException extends ApiException {
+  ForbiddenException([message]) : super(message, 'Forbidden: ');
+}
+class NotFoundException extends ApiException {
+  NotFoundException([message]) : super(message, 'Forbidden: ');
+}
+
 class InternalErrorException extends ApiException {
   InternalErrorException([message]) : super(message, 'Internal server error: ');
 }

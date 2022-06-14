@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../constant/app_theme.dart';
 
-class ErrorMessage extends StatelessWidget {
+class LoadMessage extends StatelessWidget {
   final String message;
   final void Function() onRefresh;
 
-  const ErrorMessage(
+  const LoadMessage(
     this.message, {
     Key? key,
     required this.onRefresh,
