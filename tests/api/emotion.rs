@@ -3,7 +3,6 @@ use serde_json::Value;
 
 use crate::helpers::TestApp;
 
-
 impl TestApp {
     pub async fn get_emotions(&self) -> reqwest::Response {
         self.api_client
