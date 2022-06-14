@@ -52,7 +52,7 @@ void main() {
       swapButton = find.widgetWithText(TextButton, "Login?");
       expect(swapButton, findsOneWidget);
     });
-    testWidgets("Login Failure ", (tester) async {
+    testWidgets("Login Failure empty user pass", (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
@@ -73,6 +73,29 @@ void main() {
 
       expect(find.widgetWithText(SnackBar, "Wrong username or password."),
           findsOneWidget);
+    });
+    testWidgets('Log in network fail', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      final widg = wrapWithMaterial(Builder(builder: (BuildContext context) {
+        return LoginOrRegisterPage();
+      }), AuthState(AuthService()));
+
+      await tester.pumpWidget(widg);
+
+      await tester.enterText(find.bySemanticsLabel('Password'), "password");
+      await tester.enterText(find.bySemanticsLabel('Username'), "username");
+
+      var loginButton = find.widgetWithText(MaterialButton, "Login");
+      expect(loginButton, findsOneWidget);
+
+      // await tester.ensureVisible(loginButton);
+      // await tester.tap(loginButton.first);
+      // await tester.pump();
+
+      // print(tester.allWidgets);
+      // expect(find.widgetWithText(SnackBar, "Sign in failed. Please try again."),
+      //     findsOneWidget);
     });
   });
 }
