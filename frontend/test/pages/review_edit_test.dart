@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/widget/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/user.dart';
+
+import 'review_edit_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
     ChangeNotifierProvider<ReviewState>(
@@ -17,6 +22,7 @@ Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
       ),
     );
 
+@GenerateMocks([ReviewService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
   group("Edit Review", () {
@@ -50,6 +56,38 @@ void main() {
       await tester.enterText(bodyField, "body1");
       await tester.pumpAndSettle();
       expect(find.text('body1'), findsOneWidget);
+    });
+    testWidgets('error message on bad info', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final time = DateTime.now();
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(
+          mockService,
+          Review(
+              body: "",
+              createdAt: time,
+              slug: "title",
+              title: "",
+              updatedAt: time,
+              user: UserProfile(username: "username")));
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+
+      when(mockService.create("", "")).thenAnswer((realInvocation) async =>
+          Response(
+              requestOptions: RequestOptions(path: ""),
+              statusCode: 400,
+              statusMessage: "Cannot be empty."));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.widgetWithText(SnackBar, "Bad Request: Cannot be empty."),
+          findsOneWidget);
     });
   });
 }

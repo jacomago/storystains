@@ -10,7 +10,7 @@ import '../../model/entity/review.dart';
 import 'package:storystains/utils/extensions.dart';
 
 import '../../routes/routes.dart';
-import 'error.dart';
+import 'load_message.dart';
 import 'loading_more.dart';
 
 class ReviewsPage extends StatelessWidget {
@@ -21,12 +21,12 @@ class ReviewsPage extends StatelessWidget {
     return Consumer<ReviewsState>(
       builder: (_, reviews, __) {
         if (reviews.isFailed) {
-          return ErrorMessage('Fetching data failed',
+          return LoadMessage('Fetching data failed',
               onRefresh: reviews.refresh);
         }
 
         if (reviews.isEmpty) {
-          return ErrorMessage('No data', onRefresh: reviews.refresh);
+          return LoadMessage('No data', onRefresh: reviews.refresh);
         }
 
         if (reviews.isLoadingFirst) {
