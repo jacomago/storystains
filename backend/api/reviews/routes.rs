@@ -1,8 +1,6 @@
-use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
+use std::iter::zip;
 
-use anyhow::Context;
-use futures::{stream, StreamExt};
-use sqlx::PgPool;
+use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 
 use crate::api::{
     error_chain_fmt,
@@ -10,6 +8,9 @@ use crate::api::{
     shared::put_block::{block_non_creator, BlockError},
     LongFormText, QueryLimits, UserId,
 };
+use anyhow::Context;
+use futures_lite::{stream, StreamExt};
+use sqlx::PgPool;
 
 use super::{
     db::{create_review, delete_review, read_review, read_reviews, update_review},
@@ -134,7 +135,7 @@ pub async fn get_review(
     let stored = read_review(&slug, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
-    let review_emotions = read_review_emotions(stored.id, pool.get_ref())
+    let review_emotions = read_review_emotions(&stored.id, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
@@ -201,7 +202,7 @@ pub async fn put_review(
     let stored = update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
-    let review_emotions = read_review_emotions(stored.id, pool.get_ref())
+    let review_emotions = read_review_emotions(&stored.id, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
@@ -238,11 +239,13 @@ pub async fn get_reviews(
     let stored = read_reviews(&limits, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
-    let stream_stored = stream::iter(stored)
-        .map(|r| read_review_emotions(r.id, pool.get_ref()))
-        .collect::<Result<Vec<StoredReviewEmotion>, sqlx::Error>>()
-        .await
-        .map_err(ReviewError::NoDataError)?;
+    let ids: Vec<&sqlx::types::Uuid> = stored.iter().map(|s| &s.id).collect();
+    let stream_stored: Result<Vec<Vec<_>>, sqlx::Error> = stream::iter(ids)
+        .then(|r| read_review_emotions(r, pool.get_ref()))
+        .try_collect()
+        .await;
+    let emotions = stream_stored.map_err(ReviewError::NoDataError)?;
 
-    Ok(HttpResponse::Ok().json(ReviewsResponse::from(stored_all)))
+    let all: Vec<(StoredReview, Vec<StoredReviewEmotion>)> = zip(stored, emotions).collect();
+    Ok(HttpResponse::Ok().json(ReviewsResponse::from(all)))
 }

@@ -62,16 +62,17 @@ pub struct ReviewResponseData {
 
 impl From<(StoredReview, Vec<StoredReviewEmotion>)> for ReviewResponseData {
     fn from((stored, stored_emotions): (StoredReview, Vec<StoredReviewEmotion>)) -> Self {
+        let emotions = stored_emotions
+            .into_iter()
+            .map(ReviewEmotionData::from)
+            .collect();
         Self {
             title: stored.title,
             slug: stored.slug,
             body: stored.body,
             created_at: ResponseTime(stored.created_at),
             updated_at: ResponseTime(stored.updated_at),
-            emotions: stored_emotions
-                .iter()
-                .map(|s| ReviewEmotionData::from(*s))
-                .collect(),
+            emotions,
             user: UserProfileData {
                 username: stored.username,
             },
