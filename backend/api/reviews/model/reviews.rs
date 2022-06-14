@@ -32,26 +32,6 @@ pub struct StoredReview {
     pub username: String,
 }
 
-impl From<(&NewReview, DateTime<Utc>, DateTime<Utc>, StoredUser)> for StoredReview {
-    fn from(
-        (review, created_at, updated_at, user): (
-            &NewReview,
-            DateTime<Utc>,
-            DateTime<Utc>,
-            StoredUser,
-        ),
-    ) -> Self {
-        Self {
-            title: review.title.as_ref().to_string(),
-            slug: review.slug.as_ref().to_string(),
-            body: review.body.as_ref().to_string(),
-            created_at,
-            updated_at,
-            username: user.username,
-        }
-    }
-}
-
 #[derive(Debug, PartialEq, serde::Deserialize)]
 pub struct ResponseTime(DateTime<Utc>);
 
