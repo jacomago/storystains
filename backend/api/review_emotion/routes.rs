@@ -87,6 +87,7 @@ impl TryFrom<PostReviewEmotionData> for NewReviewEmotion {
     type Error = String;
     fn try_from(value: PostReviewEmotionData) -> Result<Self, Self::Error> {
         let emotion: Emotion = Emotion::from_str(&value.emotion).map_err(|e| e.to_string())?;
+
         let notes = match &value.notes {
             Some(t) => Some(LongFormText::parse(t.to_string())?),
             None => None,

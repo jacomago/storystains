@@ -2,8 +2,9 @@ use chrono::{DateTime, Utc};
 use serde::{Serialize, Serializer};
 
 use crate::api::{
+    review_emotion::{ReviewEmotionData, StoredReviewEmotion},
     shared::long_form_text::LongFormText,
-    users::model::{StoredUser, UserProfileData},
+    users::model::UserProfileData,
     UserId,
 };
 
@@ -24,6 +25,7 @@ pub struct UpdateReview {
 
 #[derive(Debug)]
 pub struct StoredReview {
+    pub id: sqlx::types::Uuid,
     pub title: String,
     pub slug: String,
     pub body: String,
@@ -54,17 +56,22 @@ pub struct ReviewResponseData {
     body: String,
     created_at: ResponseTime,
     updated_at: ResponseTime,
+    emotions: Vec<ReviewEmotionData>,
     user: UserProfileData,
 }
 
-impl From<StoredReview> for ReviewResponseData {
-    fn from(stored: StoredReview) -> Self {
+impl From<(StoredReview, Vec<StoredReviewEmotion>)> for ReviewResponseData {
+    fn from((stored, stored_emotions): (StoredReview, Vec<StoredReviewEmotion>)) -> Self {
         Self {
             title: stored.title,
             slug: stored.slug,
             body: stored.body,
             created_at: ResponseTime(stored.created_at),
             updated_at: ResponseTime(stored.updated_at),
+            emotions: stored_emotions
+                .iter()
+                .map(|s| ReviewEmotionData::from(*s))
+                .collect(),
             user: UserProfileData {
                 username: stored.username,
             },
@@ -77,8 +84,8 @@ pub struct ReviewsResponse {
     reviews: Vec<ReviewResponseData>,
 }
 
-impl From<Vec<StoredReview>> for ReviewsResponse {
-    fn from(stored: Vec<StoredReview>) -> Self {
+impl From<Vec<(StoredReview, Vec<StoredReviewEmotion>)>> for ReviewsResponse {
+    fn from(stored: Vec<(StoredReview, Vec<StoredReviewEmotion>)>) -> Self {
         Self {
             reviews: stored.into_iter().map(ReviewResponseData::from).collect(),
         }

@@ -21,6 +21,7 @@ pub struct DBReview {
 impl From<(DBReview, StoredUser)> for StoredReview {
     fn from((review, user): (DBReview, StoredUser)) -> Self {
         Self {
+            id: review.id,
             title: review.title,
             slug: review.slug,
             body: review.body,
@@ -42,7 +43,8 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
     let review = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT title,
+            SELECT id,
+                   title,
                    slug, 
                    body, 
                    created_at, 
@@ -79,7 +81,8 @@ pub async fn read_reviews(
     let reviews = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT  title, 
+            SELECT  id,
+                    title, 
                     slug, 
                     body, 
                     created_at, 

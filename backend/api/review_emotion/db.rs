@@ -5,6 +5,39 @@ use crate::api::reviews::ReviewSlug;
 use super::model::{EmotionPosition, NewReviewEmotion, StoredReviewEmotion, UpdateReviewEmotion};
 
 #[tracing::instrument(
+    name = "Retreive review's emotion details from the database", 
+    skip( pool),
+    fields(
+        review_jid = %review_id,
+    )
+)]
+pub async fn read_review_emotions(
+    review_id: Uuid,
+    pool: &PgPool,
+) -> Result<Vec<StoredReviewEmotion>, sqlx::Error> {
+    let review_emotions = sqlx::query_as!(
+        StoredReviewEmotion,
+        r#"
+            SELECT name as emotion,
+                   position,
+                   notes
+              FROM review_emotions,
+                   emotions
+            WHERE  review_id = $1
+               AND review_emotions.emotion_id = emotions.id
+        "#,
+        review_id,
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(review_emotions)
+}
+
+#[tracing::instrument(
     name = "Retreive review emotion details from the database", 
     skip( pool),
     fields(
