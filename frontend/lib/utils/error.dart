@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../data/network/api.dart';
+import '../data/network/api.dart';
 
 String errorMessage(DioError error) {
   if (error.type == DioErrorType.connectTimeout) {
@@ -8,15 +8,15 @@ String errorMessage(DioError error) {
   } else if (error.type == DioErrorType.response) {
     switch (error.response?.statusCode) {
       case 400:
-        return BadRequestException(error.response!.statusMessage).toString();
+        return BadRequestException(error.response!.data).toString();
       case 401:
-        return UnauthorisedException(error.response!.statusMessage).toString();
+        return UnauthorisedException(error.response!.data).toString();
       case 403:
-        return ForbiddenException(error.response!.statusMessage).toString();
+        return ForbiddenException(error.response!.data).toString();
       case 404:
-        return NotFoundException(error.response!.statusMessage).toString();
+        return NotFoundException(error.response!.data).toString();
       case 500:
-        return InternalErrorException(error.response!.statusMessage).toString();
+        return InternalErrorException(error.response!.data).toString();
       default:
         return FetchDataException(
           'Error occured while connecting to server with StatusCode : ${error.response?.statusCode}',

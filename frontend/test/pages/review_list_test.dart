@@ -10,7 +10,6 @@ import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/user.dart';
-import 'package:storystains/model/resp/reviews_resp.dart';
 
 import 'review_list_test.mocks.dart';
 

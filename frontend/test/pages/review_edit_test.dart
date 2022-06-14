@@ -64,21 +64,23 @@ void main() {
       final reviewState = ReviewState(
           mockService,
           Review(
-              body: "",
+              body: "body",
               createdAt: time,
               slug: "title",
-              title: "",
+              title: "/",
               updatedAt: time,
               user: UserProfile(username: "username")));
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
-      when(mockService.create("", "")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.update("title", "/", "body")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 400,
-              statusMessage: "Cannot be empty."));
+              data: "Cannot be /.",
+              requestOptions: RequestOptions(path: ""))));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -86,10 +88,10 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      print(tester.allWidgets);
+      expect(find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+          findsOneWidget);
     });
   });
 }
 
 // TODO send review
-// TODO see failure message

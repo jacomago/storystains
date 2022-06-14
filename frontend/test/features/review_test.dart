@@ -50,11 +50,13 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create("", "")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.create("", "")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 400,
-              statusMessage: "Cannot be empty."));
+              data: "Cannot be empty.",
+              requestOptions: RequestOptions(path: ""))));
 
       await reviewState.create("", "");
 
@@ -70,11 +72,13 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create("", "")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.create("", "")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 401,
-              statusMessage: "User not logged in."));
+              data: "User not logged in.",
+              requestOptions: RequestOptions(path: ""))));
 
       await reviewState.create("", "");
 
@@ -129,11 +133,13 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete("")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.delete("")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 400,
-              statusMessage: "Cannot be empty."));
+              data: "Cannot be empty.",
+              requestOptions: RequestOptions(path: ""))));
 
       await reviewState.delete("");
 
@@ -153,16 +159,18 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
-          user: UserProfile(username: "username")));
+              user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete("")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.delete("")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 401,
-              statusMessage: "User not logged in."));
+              data: "User not logged in.",
+              requestOptions: RequestOptions(path: ""))));
 
       await reviewState.delete("");
 
@@ -212,16 +220,18 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
-          user: UserProfile(username: "username")));
+              user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update("", "", "")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.update("", "", "")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 400,
-              statusMessage: "Cannot be empty."));
+              data: "Cannot be empty.",
+              requestOptions: RequestOptions(path: ""))));
 
       await reviewState.update("", "");
 
@@ -241,16 +251,18 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
-          user: UserProfile(username: "username")));
+              user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update("", "", "")).thenAnswer((realInvocation) async =>
-          Response(
-              requestOptions: RequestOptions(path: ""),
+      when(mockService.update("", "", "")).thenThrow(DioError(
+          requestOptions: RequestOptions(path: ""),
+          type: DioErrorType.response,
+          response: Response(
               statusCode: 401,
-              statusMessage: "User not logged in."));
+              data: "User not logged in.",
+              requestOptions: RequestOptions(path: ""))));
 
       await reviewState.update("", "");
 
