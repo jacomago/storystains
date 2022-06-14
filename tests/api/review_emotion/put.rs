@@ -4,13 +4,13 @@ use serde_json::{json, Value};
 use crate::{
     helpers::{TestApp, TestUser},
     review::TestReview,
-    review_emotion::helpers::TestEmotion,
+    review_emotion::test_review_emotion::TestEmotion,
 };
 
 impl TestApp {
     pub async fn put_emotion(
         &self,
-        slug: String,
+        slug: &str,
         position: i32,
         body: String,
         token: &str,
@@ -36,9 +36,7 @@ async fn put_review_emotion_returns_unauth_when_not_logged_in() {
 
     // Act
     let body = json!({"review_emotion": {"emotion": "Joy", "position":1_i32 }});
-    let response = app
-        .put_emotion("dune".to_string(), 1, body.to_string(), "")
-        .await;
+    let response = app.put_emotion("dune", 1, body.to_string(), "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -54,7 +52,7 @@ async fn put_review_emotion_stores_new_data() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
     let body = json!({"review_emotion": {"emotion":"Anger" }});
     let response = app
@@ -89,7 +87,7 @@ async fn put_review_emotion_returns_not_found_for_non_existant_review() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     let body = json!({"review_emotion": {"emotion":"Anger" }});
     let response = app
         .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
@@ -127,7 +125,7 @@ async fn put_review_emotion_returns_a_400_when_fields_are_present_but_invalid() 
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     let test_cases = vec![
@@ -166,7 +164,7 @@ async fn put_review_emotion_returns_json() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     let body = json!({"review_emotion": {"emotion":"Anger" }});
@@ -194,7 +192,7 @@ async fn put_review_emotion_only_allows_creator_to_modify() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     let body = json!({"review_emotion": {"emotion":"Anger" }});

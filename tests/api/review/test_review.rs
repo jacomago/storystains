@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 
 use crate::{
     helpers::{long_form, TestApp, TestUser},
-    review_emotion::helpers::{TestEmotion, TestEmotionPart},
+    review_emotion::test_review_emotion::TestEmotion,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,7 +21,7 @@ pub struct TestReview {
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
-    emotions: Option<Vec<TestEmotionPart>>,
+    emotions: Option<Vec<TestEmotion>>,
     user: TestUserProfile,
 }
 
@@ -43,7 +43,11 @@ impl TestReview {
             slug: title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
-            emotions: Some((1..4).map(|_| TestEmotion::generate().part()).collect()),
+            emotions: Some(
+                (1..4)
+                    .map(|i| TestEmotion::generate(Some(i * 10)))
+                    .collect(),
+            ),
             user: TestUserProfile {
                 username: user.username.to_string(),
             },
@@ -61,14 +65,12 @@ impl TestReview {
 
     pub async fn store_emotions(&self, app: &TestApp, token: &str) {
         for e in self.emotions.as_ref().unwrap() {
-            let body = json!(e);
-            let response = app.post_emotion(token, &self.slug, body.to_string()).await;
-            assert_eq!(response.status(), StatusCode::OK);
+            e.store(app, token, &self.slug).await;
         }
     }
 
-    pub fn slug(&self) -> String {
-        self.slug.to_string()
+    pub fn slug(&self) -> &str {
+        &self.slug
     }
     pub fn title(&self) -> String {
         self.title.to_string()

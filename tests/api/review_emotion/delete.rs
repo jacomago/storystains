@@ -1,11 +1,13 @@
 use reqwest::StatusCode;
 
-use crate::{helpers::TestApp, review::TestReview, review_emotion::helpers::TestEmotion};
+use crate::{
+    helpers::TestApp, review::TestReview, review_emotion::test_review_emotion::TestEmotion,
+};
 
 impl TestApp {
     pub async fn delete_emotion(
         &self,
-        slug: String,
+        slug: &str,
         position: i32,
         token: &str,
     ) -> reqwest::Response {
@@ -27,7 +29,7 @@ async fn delete_review_emotion_returns_unauth_when_not_logged_in() {
     let app = TestApp::spawn_app().await;
 
     // Act
-    let response = app.delete_emotion("dune".to_string(), 1, "").await;
+    let response = app.delete_emotion("dune", 1, "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -61,7 +63,7 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
     let response = app
         .delete_emotion(review.slug(), emotion.position, &token)

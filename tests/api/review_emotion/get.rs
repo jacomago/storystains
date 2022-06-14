@@ -1,11 +1,13 @@
 use reqwest::StatusCode;
 
-use crate::{helpers::TestApp, review::TestReview, review_emotion::helpers::TestEmotion};
+use crate::{
+    helpers::TestApp, review::TestReview, review_emotion::test_review_emotion::TestEmotion,
+};
 
-use super::helpers::TestEmotionResponse;
+use super::test_review_emotion::TestEmotionResponse;
 
 impl TestApp {
-    pub async fn get_emotion(&self, slug: String, position: i32) -> reqwest::Response {
+    pub async fn get_emotion(&self, slug: &str, position: i32) -> reqwest::Response {
         self.api_client
             .get(&format!(
                 "{}/reviews/{}/emotions/{}",
@@ -16,7 +18,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_emotion_json(&self, slug: String, position: i32) -> String {
+    pub async fn get_emotion_json(&self, slug: &str, position: i32) -> String {
         self.get_emotion(slug, position).await.text().await.unwrap()
     }
 }
@@ -30,7 +32,7 @@ async fn get_review_logged_in_returns_json() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     let json_page = app.get_emotion_json(review.slug(), emotion.position).await;
@@ -49,7 +51,7 @@ async fn get_review_logged_out_returns_json() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate();
+    let emotion = TestEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     app.test_user.logout().await;

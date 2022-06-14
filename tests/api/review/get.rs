@@ -1,11 +1,11 @@
 use reqwest::StatusCode;
 
-use crate::{helpers::TestApp, review::helpers::TestReview};
+use crate::{helpers::TestApp, review::test_review::TestReview};
 
-use super::helpers::TestReviewResponse;
+use super::test_review::TestReviewResponse;
 
 impl TestApp {
-    pub async fn get_review(&self, slug: String) -> reqwest::Response {
+    pub async fn get_review(&self, slug: &str) -> reqwest::Response {
         self.api_client
             .get(&format!("{}/reviews/{}", &self.address, &slug))
             .send()
@@ -13,7 +13,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_review_json(&self, slug: String) -> String {
+    pub async fn get_review_json(&self, slug: &str) -> String {
         self.get_review(slug).await.text().await.unwrap()
     }
 }
@@ -60,7 +60,7 @@ async fn get_review_returns_not_found_for_non_existant_review() {
     let app = TestApp::spawn_app().await;
 
     // Act
-    let response = app.get_review("dune".to_string()).await;
+    let response = app.get_review("dune").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::NOT_FOUND);
@@ -74,7 +74,7 @@ async fn get_review_returns_bad_request_for_invalid_title() {
     let app = TestApp::spawn_app().await;
 
     // Act
-    let response = app.get_review("a".repeat(257).to_string()).await;
+    let response = app.get_review(&"a".repeat(257)).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);

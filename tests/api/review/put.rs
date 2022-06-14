@@ -3,11 +3,11 @@ use serde_json::{json, Value};
 
 use crate::{
     helpers::{TestApp, TestUser},
-    review::helpers::TestReview,
+    review::test_review::TestReview,
 };
 
 impl TestApp {
-    pub async fn put_review(&self, slug: String, body: String, token: &str) -> reqwest::Response {
+    pub async fn put_review(&self, slug: &str, body: String, token: &str) -> reqwest::Response {
         self.api_client
             .put(&format!("{}/reviews/{}", &self.address, &slug))
             .header("Content-Type", "application/json")
@@ -26,9 +26,7 @@ async fn put_review_returns_unauth_when_not_logged_in() {
 
     // Act
     let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    let response = app
-        .put_review("dune".to_string(), body.to_string(), "")
-        .await;
+    let response = app.put_review("dune", body.to_string(), "").await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -71,7 +69,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
     // Act
     let response = app
         .put_review(
-            "dune".to_string(),
+            "dune",
             json!({"review": {"title": "Dune", "body":"5stars" }}).to_string(),
             &token,
         )
@@ -90,7 +88,7 @@ async fn put_review_returns_bad_request_for_invalid_slug() {
 
     // Act
     let response = app
-        .put_review("a".repeat(257).to_string(), "".to_string(), &token)
+        .put_review(&"a".repeat(257), "".to_string(), &token)
         .await;
 
     // Assert

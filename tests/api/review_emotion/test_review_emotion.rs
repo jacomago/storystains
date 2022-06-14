@@ -6,11 +6,6 @@ use storystains::api::emotions;
 
 use crate::helpers::{long_form, TestApp};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub struct TestEmotionPart {
-    emotion: String,
-    position: i32,
-}
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestEmotionResponse {
     pub review_emotion: TestEmotion,
@@ -32,23 +27,16 @@ impl TestEmotion {
         }})
     }
 
-    pub fn generate() -> Self {
+    pub fn generate(position: Option<i32>) -> Self {
         let v = emotions();
         Self {
             emotion: v[rand::thread_rng().gen_range(0..v.len())].to_string(),
-            position: rand::thread_rng().gen_range(0..100),
+            position: position.unwrap_or(rand::thread_rng().gen_range(0..100)),
             notes: long_form(),
         }
     }
 
-    pub fn part(&self) -> TestEmotionPart {
-        TestEmotionPart {
-            emotion: self.emotion.to_string(),
-            position: self.position,
-        }
-    }
-
-    pub async fn store(&self, app: &TestApp, token: &str, review_slug: String) {
+    pub async fn store(&self, app: &TestApp, token: &str, review_slug: &str) {
         let body = self.create_json();
         // Act
         let response = app
