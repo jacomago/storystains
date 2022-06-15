@@ -6,12 +6,14 @@ import '../../model/req/login.dart';
 class AuthService {
   Future register(String username, String password) async {
     return await sl.get<RestClient>().addUser(
-        AddUser(user: NewUser(username: username, password: password)));
+          AddUser(user: NewUser(username: username, password: password)),
+        );
   }
 
   Future login(String username, String password) async {
     final resp = await sl.get<RestClient>().loginUser(
-        Login(user: LoginUser(username: username, password: password)));
+          Login(user: LoginUser(username: username, password: password)),
+        );
     return resp;
   }
 }

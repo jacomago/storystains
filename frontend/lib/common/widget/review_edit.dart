@@ -33,7 +33,7 @@ class ReviewEditPage extends StatelessWidget {
       return;
     } else if (body.isEmpty) {
       context.snackbar('Content can\'t be blank');
-      
+
       return;
     }
 

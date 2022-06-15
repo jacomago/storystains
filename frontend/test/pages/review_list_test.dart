@@ -101,10 +101,11 @@ void main() {
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
 
       await tester.pumpWidget(wrapWithMaterial(
-          const ReviewsPage(),
-          ReviewsState(
-            mockService,
-          ),));
+        const ReviewsPage(),
+        ReviewsState(
+          mockService,
+        ),
+      ));
       await tester.pumpAndSettle();
 
       expect(find.text("randomtitle"), findsNothing);

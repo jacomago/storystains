@@ -65,26 +65,30 @@ void main() {
       final time = DateTime.now();
       final mockService = MockReviewService();
       final reviewState = ReviewState(
-          mockService,
-          Review(
-              body: "body",
-              createdAt: time,
-              slug: "title",
-              title: "/",
-              updatedAt: time,
-              emotions: [],
-              user: UserProfile(username: "username")));
+        mockService,
+        Review(
+          body: "body",
+          createdAt: time,
+          slug: "title",
+          title: "/",
+          updatedAt: time,
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
       when(mockService.update("title", "/", "body")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Cannot be /.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 400,
-              data: "Cannot be /.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -92,8 +96,10 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
-          findsOneWidget);
+      expect(
+        find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        findsOneWidget,
+      );
     });
   });
 }

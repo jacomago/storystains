@@ -69,7 +69,9 @@ class AuthState extends ChangeNotifier {
       _token = token;
     }
 
-    _status = _user != null && _token != null ? AuthStatus.authenticated : AuthStatus.notauthenticated;
+    _status = _user != null && _token != null
+        ? AuthStatus.authenticated
+        : AuthStatus.notauthenticated;
 
     notifyListeners();
   }

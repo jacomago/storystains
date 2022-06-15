@@ -29,7 +29,7 @@ class MockReviewsService extends _i1.Mock implements _i2.ReviewsService {
   @override
   _i3.Future<List<_i4.Review>?> fetch({String? query = r'', int? offset = 0}) =>
       (super.noSuchMethod(
-              Invocation.method(#fetch, [], {#query: query, #offset: offset}),
-              returnValue: Future<List<_i4.Review>?>.value(),)
-          as _i3.Future<List<_i4.Review>?>);
+        Invocation.method(#fetch, [], {#query: query, #offset: offset}),
+        returnValue: Future<List<_i4.Review>?>.value(),
+      ) as _i3.Future<List<_i4.Review>?>);
 }
