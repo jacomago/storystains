@@ -12,6 +12,9 @@ Review _$ReviewFromJson(Map<String, dynamic> json) => Review(
       slug: json['slug'] as String,
       title: json['title'] as String,
       updatedAt: DateTime.parse(json['updated_at'] as String),
+      emotions: (json['emotions'] as List<dynamic>)
+          .map((e) => ReviewEmotion.fromJson(e as Map<String, dynamic>))
+          .toList(),
       user: UserProfile.fromJson(json['user'] as Map<String, dynamic>),
     );
 
@@ -21,5 +24,6 @@ Map<String, dynamic> _$ReviewToJson(Review instance) => <String, dynamic>{
       'slug': instance.slug,
       'title': instance.title,
       'updated_at': instance.updatedAt.toIso8601String(),
+      'emotions': instance.emotions,
       'user': instance.user,
     };

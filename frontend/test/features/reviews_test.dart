@@ -26,6 +26,7 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
       final reviewsResp = ReviewsResp(reviews: [review]);
 
@@ -61,6 +62,7 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
@@ -95,8 +97,9 @@ void main() {
                   body: body,
                   createdAt: DateTime.now(),
                   updatedAt: DateTime.now(),
+                  emotions: [],
                   slug: title + index.toString(),
-          user: UserProfile(username: "username"))));
+                  user: UserProfile(username: "username"))));
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
@@ -166,13 +169,14 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch(offset:  AppConfig.defaultLimit)).thenAnswer(
+      when(mockService.fetch(offset: AppConfig.defaultLimit)).thenAnswer(
           (realInvocation) async => reviewsResp.reviews
               .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
       when(mockService.fetch()).thenAnswer((realInvocation) async =>

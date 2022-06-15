@@ -26,6 +26,7 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
       final reviewResp = ReviewResp(review: review);
 
@@ -98,6 +99,7 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
 
       final mockService = MockReviewService();
@@ -128,6 +130,7 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
+          emotions: [],
               user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
@@ -159,6 +162,7 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
+          emotions: [],
               user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
@@ -190,6 +194,7 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
       final reviewResp = ReviewResp(review: review);
 
@@ -220,6 +225,7 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
+          emotions: [],
               user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
@@ -251,6 +257,7 @@ void main() {
               createdAt: DateTime.now(),
               updatedAt: DateTime.now(),
               slug: "",
+          emotions: [],
               user: UserProfile(username: "username")));
 
       expect(reviewState.isCreate, false);
@@ -283,6 +290,7 @@ void main() {
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
           slug: title,
+          emotions: [],
           user: UserProfile(username: "username"));
 
       final mockService = MockReviewService();

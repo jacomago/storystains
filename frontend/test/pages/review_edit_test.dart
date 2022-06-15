@@ -37,6 +37,7 @@ void main() {
               slug: "title",
               title: "title",
               updatedAt: time,
+          emotions: [],
               user: UserProfile(username: "username")));
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
@@ -69,6 +70,7 @@ void main() {
               slug: "title",
               title: "/",
               updatedAt: time,
+          emotions: [],
               user: UserProfile(username: "username")));
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));

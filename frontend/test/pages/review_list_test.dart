@@ -29,6 +29,7 @@ Review testReview(String title, String body) => Review(
     createdAt: DateTime.now(),
     updatedAt: DateTime.now(),
     slug: title,
+    emotions: [],
     user: UserProfile(username: "randomusername"));
 
 @GenerateMocks([ReviewsService])
