@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
-import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/snackbar.dart';
+import 'package:storystains/common/utils/extensions.dart';
+import 'package:storystains/common/utils/snackbar.dart';
 
 import '../features/review/review.dart';
 import '../model/entity/review.dart';

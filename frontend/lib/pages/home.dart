@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/routes/routes.dart';
-import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/navigation.dart';
-import 'package:storystains/utils/snackbar.dart';
+import 'package:storystains/common/utils/extensions.dart';
+import 'package:storystains/common/utils/navigation.dart';
+import 'package:storystains/common/utils/snackbar.dart';
 
 import '../common/widget/review_list.dart';
 import '../features/auth/auth_state.dart';

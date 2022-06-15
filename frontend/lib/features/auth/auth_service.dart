@@ -1,4 +1,4 @@
-import '../../data/network/api.dart';
+import 'package:storystains/common/data/network/api.dart';
 import '../../model/req/add_user.dart';
 import '../../model/req/login.dart';
 

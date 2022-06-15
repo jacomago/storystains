@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import '../../common/constant/app_config.dart';
-import '../../features/auth/auth_storage.dart';
+import 'package:storystains/common/constant/app_config.dart';
+import '../../../features/auth/auth_storage.dart';
 import 'api.dart';
 
 final interceptors = [

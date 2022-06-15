@@ -1,6 +1,6 @@
 import 'package:storystains/model/resp/reviews_resp.dart';
 
-import '../../data/network/api.dart';
+import 'package:storystains/common/data/network/api.dart';
 import '../../model/entity/review.dart';
 
 class ReviewsService {

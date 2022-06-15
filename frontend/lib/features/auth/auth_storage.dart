@@ -1,4 +1,4 @@
-import '../../utils/prefs.dart';
+import 'package:storystains/common/utils/prefs.dart';
 
 class AuthStorage {
   static logout() async {

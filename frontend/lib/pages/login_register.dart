@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/snackbar.dart';
+import 'package:storystains/common/utils/extensions.dart';
+import 'package:storystains/common/utils/snackbar.dart';
 
 import '../features/auth/auth_state.dart';
 

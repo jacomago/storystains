@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/utils.dart';
+import 'package:storystains/common/utils/extensions.dart';
+import 'package:storystains/common/utils/utils.dart';
 
 class ReviewEditPage extends StatelessWidget {
   const ReviewEditPage({Key? key}) : super(key: key);

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:storystains/model/resp/user_resp.dart';
 
 import '../../model/entity/user.dart';
-import '../../utils/prefs.dart';
+import 'package:storystains/common/utils/prefs.dart';
 import 'auth.dart';
 
 enum AuthEvent { register, login, logout }

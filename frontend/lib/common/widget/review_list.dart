@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:storystains/utils/navigation.dart';
+import 'package:storystains/common/utils/navigation.dart';
 
 import '../../features/review/review.dart';
 import '../../features/reviews/reviews_state.dart';
 import '../../model/entity/review.dart';
-import 'package:storystains/utils/extensions.dart';
+import 'package:storystains/common/utils/extensions.dart';
 
 import '../../routes/routes.dart';
 import 'load_message.dart';
