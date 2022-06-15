@@ -56,7 +56,7 @@ class _EmotionDialogState extends State<EmotionDialog> with RestorationMixin {
           return GridTile(
             footer: Text(e.name),
             child: GestureDetector(
-              child: SvgPicture.network(e.icon_url),
+              child: SvgPicture.network(e.iconUrl),
               onTap: () => {_chooseEmotion(e)},
             ),
           );

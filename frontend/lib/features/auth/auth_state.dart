@@ -45,11 +45,9 @@ class AuthState extends ChangeNotifier {
   }
 
   void switchLoginRegister() {
-    if (_loginRegister == LoginRegister.login) {
-      _loginRegister = LoginRegister.register;
-    } else {
-      _loginRegister = LoginRegister.login;
-    }
+    _loginRegister = _loginRegister == LoginRegister.login
+        ? LoginRegister.register
+        : LoginRegister.login;
     notifyListeners();
   }
 

@@ -63,7 +63,7 @@ class ReviewEmotionsList extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          SvgPicture.network(emotion.icon_url),
+          SvgPicture.network(emotion.iconUrl),
           Text(emotion.name),
         ]),
       ),

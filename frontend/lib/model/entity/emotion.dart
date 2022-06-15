@@ -7,12 +7,12 @@ part 'emotion.g.dart';
 @JsonSerializable()
 class Emotion {
   String name;
-  String icon_url;
+  String iconUrl;
   String description;
 
   Emotion({
     required this.name,
-    required this.icon_url,
+    required this.iconUrl,
     required this.description,
   });
 
