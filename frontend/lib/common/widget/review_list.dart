@@ -88,48 +88,15 @@ class ReviewsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4),
-                        Text(review.title,
-                            style: context.headlineSmall
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.ellipsis),
-                        const SizedBox(height: 4),
-                        Text(review.body,
-                            style: context.bodyMedium,
-                            overflow: TextOverflow.ellipsis),
-                      ],
-                    ),
+                    _buildTitle(context, review.title),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        SizedBox(
-                          height: 4.0,
-                        ),
-                      ],
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const SizedBox(height: 4),
-                        Text(review.user.username,
-                            style: context.bodySmall
-                                ?.copyWith(fontStyle: FontStyle.italic),
-                            overflow: TextOverflow.ellipsis),
-                        const SizedBox(height: 4),
-                        Text(DateFormat.yMMMMEEEEd().format(review.updatedAt),
-                            style: context.caption,
-                            overflow: TextOverflow.ellipsis),
-                      ],
-                    ),
+                    _buildUsername(context, review.user.username),
+                    _buildDate(context, review.updatedAt),
                   ],
                 ),
               ],
@@ -137,6 +104,47 @@ class ReviewsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTitle(BuildContext context, String title) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 4),
+        Text(
+          title,
+          style: context.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.ellipsis,
+        ),
+        const SizedBox(height: 4),
+      ],
+    );
+  }
+
+  Widget _buildUsername(BuildContext context, String username) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          username,
+          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDate(BuildContext context, DateTime date) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat.yMMMMEEEEd().format(date),
+          style: context.caption,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 }
