@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
-
-import '../data/network/api.dart';
+import 'package:storystains/common/data/network/api_exception.dart';
 
 String errorMessage(DioError error) {
   if (error.type == DioErrorType.connectTimeout) {

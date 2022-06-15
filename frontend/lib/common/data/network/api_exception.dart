@@ -1,4 +1,4 @@
-part of 'api.dart';
+import 'package:dio/dio.dart';
 
 class ApiException implements Exception {
   final String? _message;
@@ -27,6 +27,7 @@ class UnauthorisedException extends ApiException {
 class ForbiddenException extends ApiException {
   ForbiddenException([message]) : super(message, 'Forbidden: ');
 }
+
 class NotFoundException extends ApiException {
   NotFoundException([message]) : super(message, 'Forbidden: ');
 }
