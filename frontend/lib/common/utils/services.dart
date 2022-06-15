@@ -6,7 +6,7 @@ import 'package:storystains/common/data/network/rest_client.dart';
 final sl = GetIt.instance;
 
 class Services {
-  void setup() {
+  static void setup() {
     final dioManager = DioManager();
     sl.registerSingleton<DioManager>(dioManager);
     sl.registerLazySingleton<RestClient>(() => RestClient(dioManager.dio));
