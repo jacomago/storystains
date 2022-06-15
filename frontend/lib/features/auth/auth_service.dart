@@ -14,6 +14,7 @@ class AuthService {
     final resp = await sl.get<RestClient>().loginUser(
           Login(user: LoginUser(username: username, password: password)),
         );
+
     return resp;
   }
 }

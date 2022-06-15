@@ -32,6 +32,7 @@ class LoginOrRegisterPage extends StatelessWidget {
 
     if (empty) {
       context.snackbar('Wrong username or password.');
+
       return;
     }
 
