@@ -2,8 +2,9 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/common/data/network/dio_manager.dart';
 import '../../../features/auth/auth_storage.dart';
-import 'api.dart';
+import '../../utils/services.dart';
 
 final interceptors = [
   CancelInterceptors(),
@@ -21,8 +22,8 @@ final interceptors = [
 class CancelInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    Api.dioManager
-        .addToken(options.cancelToken ??= Api.dioManager.defaultCancelToken);
+    sl.get<DioManager>().addToken(
+        options.cancelToken ??= sl.get<DioManager>().defaultCancelToken);
     handler.next(options);
   }
 }

@@ -9,6 +9,7 @@ import 'features/auth/auth_state.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  
 
   runApp(ChangeNotifierProvider(
     create: (_) => AuthState(AuthService()),
