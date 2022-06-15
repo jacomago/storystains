@@ -18,14 +18,15 @@ class Review {
   List<ReviewEmotion> emotions;
   UserProfile user;
 
-  Review(
-      {required this.body,
-      required this.createdAt,
-      required this.slug,
-      required this.title,
-      required this.updatedAt,
-      required this.emotions,
-      required this.user});
+  Review({
+    required this.body,
+    required this.createdAt,
+    required this.slug,
+    required this.title,
+    required this.updatedAt,
+    required this.emotions,
+    required this.user,
+  });
 
   factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);
 

@@ -43,68 +43,72 @@ class LoginOrRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            'Login/Register',
-            style: context.headlineMedium
-                ?.copyWith(color: context.colors.onPrimary),
-          ),
-          toolbarHeight: 70,
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          'Login/Register',
+          style:
+              context.headlineMedium?.copyWith(color: context.colors.onPrimary),
         ),
-        body: Center(
-          child: Container(
-            padding: const EdgeInsets.all(60),
-            child: Consumer<AuthState>(
-                builder: (_, auth, __) => Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: SvgPicture.asset(
-                              'assets/logo/logo.svg',
-                              height: 110,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          TextField(
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Username',
-                                hintText: 'Enter your Username'),
-                            controller: _usernameController,
-                          ),
-                          const SizedBox(height: 20),
-                          TextField(
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Password',
-                                hintText: 'Enter your secure password'),
-                            controller: _passwordController,
-                          ),
-                          const SizedBox(height: 24),
-                          MaterialButton(
-                            onPressed: () => _onLogin(context),
-                            height: 50,
-                            minWidth: 150,
-                            color: context.colors.primary,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Text(
-                              auth.isLogin ? 'Login' : 'Register',
-                              style: context.labelLarge!
-                                  .copyWith(color: context.colors.onPrimary),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: auth.switchLoginRegister,
-                            child: Text(
-                              auth.isLogin ? 'Register?' : 'Login?',
-                              style: context.labelMedium,
-                            ),
-                          ),
-                        ])),
+        toolbarHeight: 70,
+      ),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.all(60),
+          child: Consumer<AuthState>(
+            builder: (_, auth, __) =>
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Center(
+                child: SvgPicture.asset(
+                  'assets/logo/logo.svg',
+                  height: 110,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Username',
+                  hintText: 'Enter your Username',
+                ),
+                controller: _usernameController,
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                obscureText: true,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                  hintText: 'Enter your secure password',
+                ),
+                controller: _passwordController,
+              ),
+              const SizedBox(height: 24),
+              MaterialButton(
+                onPressed: () => _onLogin(context),
+                height: 50,
+                minWidth: 150,
+                color: context.colors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  auth.isLogin ? 'Login' : 'Register',
+                  style: context.labelLarge!
+                      .copyWith(color: context.colors.onPrimary),
+                ),
+              ),
+              TextButton(
+                onPressed: auth.switchLoginRegister,
+                child: Text(
+                  auth.isLogin ? 'Register?' : 'Login?',
+                  style: context.labelMedium,
+                ),
+              ),
+            ]),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/model/req/add_user.dart';
 import 'package:storystains/model/req/create_review.dart';
 import 'package:storystains/model/req/login.dart';
+import 'package:storystains/model/resp/emotions_resp.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 import 'package:storystains/model/resp/reviews_resp.dart';
 import 'package:storystains/model/resp/user_resp.dart';
@@ -23,8 +24,10 @@ abstract class RestClient {
   Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
 
   @retrofit.PUT("/reviews/{slug}")
-  Future<ReviewResp> updateReview(@retrofit.Path() String slug,
-      @retrofit.Body() CreateReview updatedReview);
+  Future<ReviewResp> updateReview(
+    @retrofit.Path() String slug,
+    @retrofit.Body() CreateReview updatedReview,
+  );
 
   @retrofit.GET("/reviews/{slug}")
   Future<ReviewResp> readReview(
@@ -46,6 +49,10 @@ abstract class RestClient {
     @retrofit.Query("limit") int limit = 10,
     @retrofit.Query("offset") int offset = 0,
   });
+
+  // get emotions
+  @retrofit.GET("/emotions")
+  Future<EmotionsResp> getEmotions();
 
   //get current user
   @retrofit.GET("user")

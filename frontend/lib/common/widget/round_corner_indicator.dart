@@ -31,7 +31,7 @@ class _RoundPainter extends BoxPainter {
         offset.dx + padding,
         offset.dy + (cfg.size?.height ?? 0.0) - height,
         offset.dx + (cfg.size?.width ?? 0.0) - padding,
-        offset.dy + (cfg.size?.height ?? 0.0));
+        offset.dy + (cfg.size?.height ?? 0.0),);
     final rrect = radius.resolve(TextDirection.ltr).toRRect(rect);
     canvas.drawRRect(rrect, _paint);
   }

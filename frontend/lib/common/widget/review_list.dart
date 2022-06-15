@@ -59,7 +59,7 @@ class ReviewsPage extends StatelessWidget {
                     return Container();
                   },
                   itemCount: reviews.count,
-                )));
+                )),);
       },
     );
   }
@@ -132,6 +132,6 @@ class ReviewsPage extends StatelessWidget {
                           ],
                         )
                       ],
-                    )))));
+                    )))),);
   }
 }

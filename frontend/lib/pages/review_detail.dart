@@ -33,12 +33,14 @@ class ReviewDetailPage extends StatelessWidget {
       Navigator.of(context)
           .push(
             MaterialPageRoute<Review>(
-                settings: RouteSettings(
-                    name: Routes.reviewEdit,
-                    arguments: ReviewArguement(review.review!)),
-                builder: (BuildContext context) {
-                  return const EditReview();
-                }),
+              settings: RouteSettings(
+                name: Routes.reviewEdit,
+                arguments: ReviewArguement(review.review!),
+              ),
+              builder: (BuildContext context) {
+                return const EditReview();
+              },
+            ),
           )
           .then((value) async => await review.putReview(value!));
     } else {
@@ -74,7 +76,7 @@ class ReviewDetailPage extends StatelessWidget {
                             style: context.displayMedium,
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   Row(
@@ -86,7 +88,7 @@ class ReviewDetailPage extends StatelessWidget {
                         children: const [
                           SizedBox(
                             height: 4.0,
-                          )
+                          ),
                         ],
                       ),
                       Column(
@@ -100,16 +102,18 @@ class ReviewDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                              "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
-                              style: context.caption,
-                              overflow: TextOverflow.ellipsis),
+                            "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
+                            style: context.caption,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           const SizedBox(height: 4),
                           Text(
-                              "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
-                              style: context.caption,
-                              overflow: TextOverflow.ellipsis),
+                            "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
+                            style: context.caption,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),

@@ -9,13 +9,13 @@ part of 'review_emotion.dart';
 ReviewEmotion _$ReviewEmotionFromJson(Map<String, dynamic> json) =>
     ReviewEmotion(
       notes: json['notes'] as String,
-      name: json['name'] as String,
+      emotion: Emotion.fromJson(json['emotion'] as Map<String, dynamic>),
       position: json['position'] as int,
     );
 
 Map<String, dynamic> _$ReviewEmotionToJson(ReviewEmotion instance) =>
     <String, dynamic>{
       'notes': instance.notes,
-      'name': instance.name,
+      'emotion': instance.emotion,
       'position': instance.position,
     };

@@ -1,18 +1,19 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:storystains/model/entity/emotion.dart';
 
 part 'review_emotion.g.dart';
 
 @JsonSerializable()
 class ReviewEmotion {
   String notes;
-  String name;
+  Emotion emotion;
   int position;
 
   ReviewEmotion({
     required this.notes,
-    required this.name,
+    required this.emotion,
     required this.position,
   });
 

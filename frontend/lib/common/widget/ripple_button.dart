@@ -9,15 +9,15 @@ class RippleButton extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const RippleButton(
-      {Key? key,
-      this.width,
-      this.height,
-      this.decoration,
-      this.padding,
-      this.onTap,
-      this.child})
-      : super(key: key);
+  const RippleButton({
+    Key? key,
+    this.width,
+    this.height,
+    this.decoration,
+    this.padding,
+    this.onTap,
+    this.child,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
