@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storystains/common/widget/review_emotion_list.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
+import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 class ReviewEditPage extends StatelessWidget {
   const ReviewEditPage({Key? key}) : super(key: key);
@@ -77,6 +79,10 @@ class ReviewEditPage extends StatelessWidget {
                       style: context.headlineMedium,
                       controller: state.titleController,
                     ),
+                  ),
+                  ChangeNotifierProvider(
+                    create: (_) => ReviewEmotionsState(state.review!.emotions),
+                    child: const ReviewEmotionsList(),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(24),

@@ -52,12 +52,14 @@ class ReviewEmotionsList extends StatelessWidget {
     Emotion emotion,
   ) {
     return GestureDetector(
-      onTap: () => showDialog<Emotion>(
-        context: context,
-        builder: (context) {
-          return EmotionDialog(initialEmotion: emotion);
-        },
-      ),
+      onTap: () async => {
+        showDialog<Emotion>(
+          context: context,
+          builder: (context) {
+            return EmotionDialog(initialEmotion: emotion);
+          },
+        ).then((value) => emotion = value!),
+      },
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
