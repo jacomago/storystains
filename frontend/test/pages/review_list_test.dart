@@ -24,13 +24,14 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) =>
     );
 
 Review testReview(String title, String body) => Review(
-    title: title,
-    body: body,
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
-    slug: title,
-    emotions: [],
-    user: UserProfile(username: "randomusername"));
+      title: title,
+      body: body,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      slug: title,
+      emotions: [],
+      user: UserProfile(username: "randomusername"),
+    );
 
 @GenerateMocks([ReviewsService])
 void main() {
@@ -103,7 +104,7 @@ void main() {
           const ReviewsPage(),
           ReviewsState(
             mockService,
-          )));
+          ),));
       await tester.pumpAndSettle();
 
       expect(find.text("randomtitle"), findsNothing);

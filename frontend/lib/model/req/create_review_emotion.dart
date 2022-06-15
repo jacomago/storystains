@@ -20,8 +20,11 @@ class NewReviewEmotion {
   int position;
   String notes;
 
-  NewReviewEmotion(
-      {required this.name, required this.notes, required this.position});
+  NewReviewEmotion({
+    required this.name,
+    required this.notes,
+    required this.position,
+  });
 
   factory NewReviewEmotion.fromJson(Map<String, dynamic> json) =>
       _$NewReviewEmotionFromJson(json);

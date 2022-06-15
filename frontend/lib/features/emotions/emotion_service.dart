@@ -1,6 +1,5 @@
 import 'package:storystains/common/data/network/rest_client.dart';
 import 'package:storystains/common/utils/services.dart';
-import 'package:storystains/model/resp/emotions_resp.dart';
 
 import '../../model/entity/emotion.dart';
 
@@ -9,15 +8,9 @@ class EmotionsService {
     try {
       final res = await sl.get<RestClient>().getEmotions();
 
-      if (res is EmotionsResp) {
-        final data = res.emotions;
-
-        return data;
-      }
+      return res.emotions;
     } catch (e) {
       return null;
     }
-
-    return null;
   }
 }

@@ -52,6 +52,7 @@ class StatusCodeException {
           return InternalErrorException(response.statusMessage);
         }
     }
+
     return FetchDataException(response.statusMessage);
   }
 }

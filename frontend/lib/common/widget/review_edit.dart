@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/utils.dart';
 
 class ReviewEditPage extends StatelessWidget {
@@ -30,9 +29,11 @@ class ReviewEditPage extends StatelessWidget {
 
     if (title.isEmpty) {
       context.snackbar('Title can\'t be blank');
+
       return;
     } else if (body.isEmpty) {
       context.snackbar('Content can\'t be blank');
+      
       return;
     }
 

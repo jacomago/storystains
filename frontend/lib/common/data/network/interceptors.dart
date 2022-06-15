@@ -23,7 +23,8 @@ class CancelInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     sl.get<DioManager>().addToken(
-        options.cancelToken ??= sl.get<DioManager>().defaultCancelToken);
+          options.cancelToken ??= sl.get<DioManager>().defaultCancelToken,
+        );
     handler.next(options);
   }
 }
@@ -31,7 +32,9 @@ class CancelInterceptors extends Interceptor {
 class AuthInterceptors extends Interceptor {
   @override
   Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final uri = options.uri;
     final tokenExists = await AuthStorage.tokenExists();
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&

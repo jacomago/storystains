@@ -54,11 +54,7 @@ class ReviewState extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    if (_review != null) {
-      _status = ReviewStatus.read;
-    } else {
-      _status = ReviewStatus.notupdated;
-    }
+    _status = _review != null ? ReviewStatus.read : ReviewStatus.notupdated;
 
     notifyListeners();
   }

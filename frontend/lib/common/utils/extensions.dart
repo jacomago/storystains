@@ -102,6 +102,7 @@ extension HumanizedDuration on Duration {
     if (inHours > 0) {
       value = '$inHours:$minutes:$seconds';
     }
+    
     return value;
   }
 }

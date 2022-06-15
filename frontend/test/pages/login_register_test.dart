@@ -19,9 +19,12 @@ void main() {
     testWidgets('Log in values', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final widg = wrapWithMaterial(Builder(builder: (BuildContext context) {
-        return LoginOrRegisterPage();
-      }), AuthState(AuthService()));
+      final widg = wrapWithMaterial(
+        Builder(builder: (BuildContext context) {
+          return LoginOrRegisterPage();
+        }),
+        AuthState(AuthService()),
+      );
 
       await tester.pumpWidget(widg);
 
@@ -36,9 +39,12 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
-      final page = wrapWithMaterial(Builder(builder: (BuildContext context) {
-        return LoginOrRegisterPage();
-      }), authState);
+      final page = wrapWithMaterial(
+        Builder(builder: (BuildContext context) {
+          return LoginOrRegisterPage();
+        }),
+        authState,
+      );
 
       await tester.pumpWidget(page);
 
@@ -56,9 +62,12 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
-      final page = wrapWithMaterial(Builder(builder: (BuildContext context) {
-        return LoginOrRegisterPage();
-      }), authState);
+      final page = wrapWithMaterial(
+        Builder(builder: (BuildContext context) {
+          return LoginOrRegisterPage();
+        }),
+        authState,
+      );
 
       await tester.pumpWidget(page);
 
@@ -71,15 +80,22 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.widgetWithText(SnackBar, "Wrong username or password."),
-          findsOneWidget);
+      expect(
+        find.widgetWithText(SnackBar, "Wrong username or password."),
+        findsOneWidget,
+      );
     });
     testWidgets('Log in network fail', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final widg = wrapWithMaterial(Builder(builder: (BuildContext context) {
-        return LoginOrRegisterPage();
-      }), AuthState(AuthService()));
+      final widg = wrapWithMaterial(
+        Builder(builder: (BuildContext context) {
+          return LoginOrRegisterPage();
+        }),
+        AuthState(
+          AuthService(),
+        ),
+      );
 
       await tester.pumpWidget(widg);
 

@@ -30,15 +30,17 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final time = DateTime.now();
       final reviewState = ReviewState(
-          ReviewService(),
-          Review(
-              body: "body",
-              createdAt: time,
-              slug: "title",
-              title: "title",
-              updatedAt: time,
+        ReviewService(),
+        Review(
+          body: "body",
+          createdAt: time,
+          slug: "title",
+          title: "title",
+          updatedAt: time,
           emotions: [],
-              user: UserProfile(username: "username")));
+          user: UserProfile(username: "username"),
+        ),
+      );
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
 
@@ -70,7 +72,7 @@ void main() {
               slug: "title",
               title: "/",
               updatedAt: time,
-          emotions: [],
+              emotions: [],
               user: UserProfile(username: "username")));
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));

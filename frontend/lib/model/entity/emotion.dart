@@ -26,5 +26,7 @@ class Emotion {
     return json.encode(toJson());
   }
 
-  static fromName(String s) {}
+  static fromName(String s) {
+    
+  }
 }
