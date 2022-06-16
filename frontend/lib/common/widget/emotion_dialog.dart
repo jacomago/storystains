@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/features/emotions/emotion_state.dart';
+import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
 class RestorableEmotion extends RestorableValue<Emotion> {
@@ -48,19 +48,22 @@ class _EmotionDialogState extends State<EmotionDialog> with RestorationMixin {
       insetPadding:
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       clipBehavior: Clip.antiAlias,
-      child: GridView.count(
-        crossAxisCount: 3,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
-        children: Provider.of<EmotionsState>(context).items.map((e) {
-          return GridTile(
-            footer: Text(e.name),
-            child: GestureDetector(
-              child: SvgPicture.network(e.iconUrl),
+      child: ChangeNotifierProvider(
+        create: (_) => EmotionsState(EmotionsService()),
+        builder: (context, child) => GridView.count(
+          crossAxisCount: 3,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          children: Provider.of<EmotionsState>(context).items.map((e) {
+            return GestureDetector(
+              child: GridTile(
+                footer: Text(e.name),
+                child: SvgPicture.network(e.iconUrl),
+              ),
               onTap: () => {_chooseEmotion(e)},
-            ),
-          );
-        }).toList(),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -70,7 +73,7 @@ class _EmotionDialogState extends State<EmotionDialog> with RestorationMixin {
 
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_selectedEmotion, 'selected_date');
+    registerForRestoration(_selectedEmotion, 'selected_emotion');
   }
 
   void _chooseEmotion(Emotion e) {

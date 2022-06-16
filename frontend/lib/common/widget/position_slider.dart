@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:storystains/common/utils/utils.dart';
 
@@ -35,7 +34,7 @@ class PositionEdit extends StatelessWidget {
           ),
         ),
         Slider(
-          value: positionController.value as double,
+          value: positionController.value.toDouble(),
           min: 0,
           max: 100,
           divisions: 1,
