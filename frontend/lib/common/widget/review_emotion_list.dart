@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:provider/provider.dart';
+import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/emotion_dialog.dart';
 import 'package:storystains/common/widget/timeline.dart';
+import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
@@ -12,19 +14,79 @@ import '../../features/review_emotions/review_emotions_state.dart';
 class ReviewEmotionsList extends StatelessWidget {
   const ReviewEmotionsList({Key? key}) : super(key: key);
 
+  _updateEmotion(
+    BuildContext context,
+    ReviewEmotion reviewEmotion,
+    Emotion? value,
+  ) {}
+
+  void _addEmotion(BuildContext context, Emotion? value) async {
+    FocusScope.of(context).unfocus();
+
+    final state = context.read<ReviewEmotionsState>();
+
+    if (value == null) {
+      context.snackbar('Must choose an emotion.');
+
+      return;
+    }
+
+    await state.create(value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<ReviewEmotionsState>(
-      builder: (_, reviewEmotions, __) {
+    return Consumer2<ReviewEmotionsState, EmotionsState>(
+      builder: (_, reviewEmotions, emotions, __) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Timeline(
-            indicators: reviewEmotions.items
-                .map((e) => _buildEmotionItem(context, e.emotion))
-                .toList(),
-            children: reviewEmotions.items
-                .map((e) => _buildReviewEmotionItem(context, e))
-                .toList(),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Emotions",
+                        style: context.headlineMedium,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () async => {
+                          showDialog<Emotion>(
+                            context: context,
+                            builder: (context) {
+                              return EmotionDialog(
+                                initialEmotion: emotions.emotionDefault,
+                              );
+                            },
+                          ).then(
+                            (value) => _addEmotion(context, value),
+                          ),
+                        },
+                        child: Text(
+                          "Add",
+                          style: context.headlineMedium,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Timeline(
+                indicators: reviewEmotions.items
+                    .map((e) => _buildEmotionItem(context, e))
+                    .toList(),
+                children: reviewEmotions.items
+                    .map((e) => _buildReviewEmotionItem(context, e))
+                    .toList(),
+              ),
+            ],
           ),
         );
       },
@@ -49,22 +111,22 @@ class ReviewEmotionsList extends StatelessWidget {
 
   Widget _buildEmotionItem(
     BuildContext context,
-    Emotion emotion,
+    ReviewEmotion reviewEmotion,
   ) {
     return GestureDetector(
       onTap: () async => {
         showDialog<Emotion>(
           context: context,
           builder: (context) {
-            return EmotionDialog(initialEmotion: emotion);
+            return EmotionDialog(initialEmotion: reviewEmotion.emotion);
           },
-        ).then((value) => emotion = value!),
+        ).then((value) => _updateEmotion(context, reviewEmotion, value)),
       },
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          SvgPicture.network(emotion.iconUrl),
-          Text(emotion.name),
+          SvgPicture.network(reviewEmotion.emotion.iconUrl),
+          Text(reviewEmotion.emotion.name),
         ]),
       ),
     );

@@ -4,9 +4,10 @@ part 'create_review_emotion.g.dart';
 
 @JsonSerializable()
 class CreateReviewEmotion {
-  NewReviewEmotion review_emotion;
+  @JsonKey(name: 'review_emotion')
+  NewReviewEmotion reviewEmotion;
 
-  CreateReviewEmotion({required this.review_emotion});
+  CreateReviewEmotion({required this.reviewEmotion});
 
   factory CreateReviewEmotion.fromJson(Map<String, dynamic> json) =>
       _$CreateReviewEmotionFromJson(json);

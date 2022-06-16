@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
 class ReviewEmotionsState extends ChangeNotifier {
@@ -17,6 +18,7 @@ class ReviewEmotionsState extends ChangeNotifier {
     _items = items;
   }
 
+  Future create(Emotion emotion) async {}
   @override
   void dispose() {
     _items = [];

@@ -101,6 +101,73 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<ReviewEmotionResp> createReviewEmotion(slug, newReviewEmotion) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(newReviewEmotion.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewEmotionResp>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/reviews/${slug}/emotions',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewEmotionResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ReviewEmotionResp> updateReviewEmotion(
+      slug, position, updatedReviewEmotion) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(updatedReviewEmotion.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewEmotionResp>(
+            Options(method: 'PUT', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewEmotionResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ReviewEmotionResp> readReviewEmotion(slug, position) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewEmotionResp>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewEmotionResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ReviewEmotionResp> deleteReviewEmotion(slug, position) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewEmotionResp>(
+            Options(method: 'DELETE', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewEmotionResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<UserResp> loginUser(login) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

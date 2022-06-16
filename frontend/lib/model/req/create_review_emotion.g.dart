@@ -8,14 +8,14 @@ part of 'create_review_emotion.dart';
 
 CreateReviewEmotion _$CreateReviewEmotionFromJson(Map<String, dynamic> json) =>
     CreateReviewEmotion(
-      review_emotion: NewReviewEmotion.fromJson(
+      reviewEmotion: NewReviewEmotion.fromJson(
           json['review_emotion'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CreateReviewEmotionToJson(
         CreateReviewEmotion instance) =>
     <String, dynamic>{
-      'review_emotion': instance.review_emotion,
+      'review_emotion': instance.reviewEmotion,
     };
 
 NewReviewEmotion _$NewReviewEmotionFromJson(Map<String, dynamic> json) =>

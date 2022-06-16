@@ -3,8 +3,10 @@ import 'package:retrofit/retrofit.dart' as retrofit;
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/model/req/add_user.dart';
 import 'package:storystains/model/req/create_review.dart';
+import 'package:storystains/model/req/create_review_emotion.dart';
 import 'package:storystains/model/req/login.dart';
 import 'package:storystains/model/resp/emotions_resp.dart';
+import 'package:storystains/model/resp/review_emotion_resp.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 import 'package:storystains/model/resp/reviews_resp.dart';
 import 'package:storystains/model/resp/user_resp.dart';
@@ -37,6 +39,32 @@ abstract class RestClient {
   @retrofit.DELETE("/reviews/{slug}")
   Future<ReviewResp> deleteReview(
     @retrofit.Path() String slug,
+  );
+
+  // add new review in database
+  @retrofit.POST("/reviews/{slug}/emotions")
+  Future<ReviewEmotionResp> createReviewEmotion(
+    @retrofit.Path() String slug,
+    @retrofit.Body() CreateReviewEmotion newReviewEmotion,
+  );
+
+  @retrofit.PUT("/reviews/{slug}/emotions/{position}")
+  Future<ReviewEmotionResp> updateReviewEmotion(
+    @retrofit.Path() String slug,
+    @retrofit.Path() int position,
+    @retrofit.Body() CreateReviewEmotion updatedReviewEmotion,
+  );
+
+  @retrofit.GET("/reviews/{slug}/emotions/{position}")
+  Future<ReviewEmotionResp> readReviewEmotion(
+    @retrofit.Path() String slug,
+    @retrofit.Path() int position,
+  );
+
+  @retrofit.DELETE("/reviews/{slug}/emotions/{position}")
+  Future<ReviewEmotionResp> deleteReviewEmotion(
+    @retrofit.Path() String slug,
+    @retrofit.Path() int position,
   );
 
   // login user in database

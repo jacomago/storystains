@@ -21,6 +21,8 @@ class EmotionsState extends ChangeNotifier {
 
   Emotion item(int index) => _items[index];
 
+  Emotion get emotionDefault => _items[0];
+
   EmotionsState(this._service) {
     _init();
   }
