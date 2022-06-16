@@ -83,6 +83,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                   hintText: 'Enter your secure password',
                 ),
                 controller: _passwordController,
+                onSubmitted: (_) => _onLogin(context),
               ),
               const SizedBox(height: 24),
               MaterialButton(
