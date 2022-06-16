@@ -1,6 +1,6 @@
 application:
   host: 0.0.0.0
+  static_files: "./static/root/"
 database:
   require_ssl: true
   max_connections: 32
-static_files: "./static/root/"

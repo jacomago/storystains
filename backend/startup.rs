@@ -52,7 +52,8 @@ impl Application {
             configuration.application.base_url,
             configuration.application.hmac_secret,
             configuration.frontend_origin,
-            configuration.static_files,
+            configuration.application.static_files,
+            configuration.application.image_files,
             configuration.application.exp_token_seconds,
         )
         .await?;
@@ -89,6 +90,7 @@ async fn run(
     hmac_secret: Secret<String>,
     frontend_origin: String,
     static_files: String,
+    image_files: String,
     exp_token_seconds: u64,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
@@ -103,6 +105,10 @@ async fn run(
             .wrap(metrics.clone())
             .wrap(cors(&frontend_origin))
             .configure(routes)
+            .service(
+                Files::new("/emotions/", format!("{}/emotions", &image_files))
+                    .index_file("index.html"),
+            )
             .service(Files::new("/", &static_files).index_file("index.html"))
             .app_data(db_pool.clone())
             .app_data(base_url.clone())

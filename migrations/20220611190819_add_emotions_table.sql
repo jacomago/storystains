@@ -1,7 +1,8 @@
 CREATE TABLE emotions(
     id INTEGER NOT NULL PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
-    description TEXT NOT NULL UNIQUE
+    description TEXT NOT NULL UNIQUE,
+    icon_url TEXT NOT NULL UNIQUE
 );
 CREATE TABLE review_emotions(
     id uuid PRIMARY KEY,

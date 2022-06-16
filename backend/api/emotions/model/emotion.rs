@@ -1,4 +1,5 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use slug::slugify;
 use strum::{EnumProperty, IntoEnumIterator};
 use strum_macros::{Display, EnumIter, EnumProperty, EnumString};
 
@@ -85,6 +86,14 @@ pub struct StoredEmotion {
     pub id: i32,
     pub name: String,
     pub description: String,
+    pub icon_url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct EmotionData {
+    pub name: String,
+    pub description: String,
+    pub icon_url: String,
 }
 
 impl From<&Emotion> for StoredEmotion {
@@ -93,6 +102,7 @@ impl From<&Emotion> for StoredEmotion {
             id: *e as i32,
             name: e.to_string(),
             description: e.get_str("description").unwrap().to_string(),
+            icon_url: format!("/emotions/{}.svg", slugify(e.to_string())),
         }
     }
 }

@@ -10,7 +10,8 @@ pub async fn store_emotions(emotions: Vec<Emotion>, pool: &PgPool) -> Result<(),
             INSERT INTO emotions(
                 id,
                 name,
-                description
+                description,
+                icon_url
             )
         "#,
     );
@@ -32,8 +33,8 @@ pub async fn retreive_all_emotions(pool: &PgPool) -> Result<Vec<StoredEmotion>, 
     let stored = sqlx::query_as!(
         StoredEmotion,
         r#"
-            SELECT id, name, description
-              FROM emotions
+            SELECT id, name, description, icon_url
+            FROM emotions
         "#
     )
     .fetch_all(pool)
