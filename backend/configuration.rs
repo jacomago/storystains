@@ -36,6 +36,13 @@ pub struct ApplicationSettings {
     pub image_files: String,
 }
 
+impl ApplicationSettings {
+    /// Return constructed address from host and port
+    pub fn address(&self) -> String {
+        format!("{}:{}", self.host, self.port)
+    }
+}
+
 /// Database settings
 #[derive(serde::Deserialize, Clone)]
 pub struct DatabaseSettings {

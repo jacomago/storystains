@@ -5,7 +5,7 @@ use crate::api::{
 };
 
 use crate::auth::bearer_auth;
-use crate::configuration::Settings;
+use crate::configuration::{ApplicationSettings, Settings};
 use crate::cors::cors;
 use crate::telemetry::get_metrics;
 use actix_files::Files;
@@ -40,21 +40,13 @@ impl Application {
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
         update_db(&connection_pool).await?;
-        let address = format!(
-            "{}:{}",
-            configuration.application.host, configuration.application.port
-        );
-        let listener = TcpListener::bind(&address)?;
+        let listener = TcpListener::bind(&configuration.application.address())?;
         let port = listener.local_addr().unwrap().port();
         let server = run(
             listener,
             connection_pool,
-            configuration.application.base_url,
-            configuration.application.hmac_secret,
             configuration.frontend_origin,
-            configuration.application.static_files,
-            configuration.application.image_files,
-            configuration.application.exp_token_seconds,
+            configuration.application,
         )
         .await?;
         Ok(Self { port, server })
@@ -86,16 +78,12 @@ pub struct ExpTokenSeconds(pub u64);
 async fn run(
     listener: TcpListener,
     db_pool: PgPool,
-    base_url: String,
-    hmac_secret: Secret<String>,
     frontend_origin: String,
-    static_files: String,
-    image_files: String,
-    exp_token_seconds: u64,
+    settings: ApplicationSettings,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
 
-    let base_url = Data::new(ApplicationBaseUrl(base_url));
+    let base_url = Data::new(ApplicationBaseUrl(settings.base_url));
     let metrics_route =
         |req: &dev::ServiceRequest| req.path() == "/metrics" && req.method() == http::Method::GET;
     let metrics = get_metrics(metrics_route);
@@ -106,14 +94,14 @@ async fn run(
             .wrap(cors(&frontend_origin))
             .configure(routes)
             .service(
-                Files::new("/emotions/", format!("{}/emotions", &image_files))
+                Files::new("/emotions/", format!("{}/emotions", &settings.image_files))
                     .index_file("index.html"),
             )
-            .service(Files::new("/", &static_files).index_file("index.html"))
+            .service(Files::new("/", &settings.static_files).index_file("index.html"))
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
-            .app_data(Data::new(HmacSecret(hmac_secret.clone())))
-            .app_data(Data::new(ExpTokenSeconds(exp_token_seconds)))
+            .app_data(Data::new(HmacSecret(settings.hmac_secret.clone())))
+            .app_data(Data::new(ExpTokenSeconds(settings.exp_token_seconds)))
     })
     .listen(listener)?
     .run();
