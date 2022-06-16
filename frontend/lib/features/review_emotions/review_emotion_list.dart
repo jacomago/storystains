@@ -88,7 +88,10 @@ class ReviewEmotionsList extends StatelessWidget {
                             ReviewEmotionService(),
                             emotion: reviewEmotions.newEmotion,
                           ),
-                          child: const ReviewEmotionEdit(),
+                          child: ReviewEmotionEdit(
+                            cancelHandler: reviewEmotions.cancelCreate,
+                            okHandler: reviewEmotions.confirmCreation,
+                          ),
                         )
                       : Column(),
                 ],

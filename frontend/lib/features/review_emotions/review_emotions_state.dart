@@ -26,12 +26,27 @@ class ReviewEmotionsState extends ChangeNotifier {
   Future create(Emotion emotion) async {
     _isNewItem = true;
     _newEmotion = emotion;
+    notifyListeners();
+  }
+
+  Future cancelCreate() async {
+    _isNewItem = false;
+    _newEmotion = null;
+    notifyListeners();
+  }
+
+  Future confirmCreation(ReviewEmotion reviewEmotion) async {
+    _items.add(reviewEmotion);
+    _items.sort(((a, b) => a.position.compareTo(b.position)));
+    await cancelCreate();
   }
 
   @override
   void dispose() {
     _items = [];
     _isEmpty = false;
+    _isNewItem = false;
+    _newEmotion = null;
     super.dispose();
   }
 }

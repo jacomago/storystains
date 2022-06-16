@@ -9,21 +9,34 @@ import 'package:storystains/model/entity/review_emotion.dart';
 import '../../common/widget/widget.dart';
 
 class ReviewEmotionEdit extends StatelessWidget {
-  const ReviewEmotionEdit({Key? key}) : super(key: key);
+  const ReviewEmotionEdit({
+    Key? key,
+    required this.cancelHandler,
+    required this.okHandler,
+  }) : super(key: key);
+
+  final Function cancelHandler;
+  final Function(ReviewEmotion) okHandler;
 
   void afterSend(BuildContext context, ReviewEmotionState state) {
     if (state.isUpdated) {
-      context.pop(state.reviewEmotion);
       final msg =
           state.isCreate ? 'Created ReviewEmotion' : 'Updated ReviewEmotion';
       context.snackbar(msg);
+      okHandler(state.reviewEmotion!);
     } else {
       if (state.isFailed) {
+        cancelHandler();
         context.snackbar(state.error);
       } else {
-        context.snackbar('ReviewEmotion creation failed, please try again.');
+        cancelHandler();
+        context.snackbar('Review Emotion creation failed.');
       }
     }
+  }
+
+  void cancelCreation(BuildContext context) async {
+    cancelHandler();
   }
 
   void editReviewEmotion(BuildContext context) async {
@@ -87,8 +100,18 @@ class ReviewEmotionEdit extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(onPressed: onPressed, child: const Text("OK")),
-                TextButton(onPressed: onPressed, child: const Text("Cancel")),
+                TextButton(
+                  onPressed: () {
+                    editReviewEmotion(context);
+                  },
+                  child: const Text("OK"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    cancelCreation(context);
+                  },
+                  child: const Text("Cancel"),
+                ),
               ],
             ),
           ],
