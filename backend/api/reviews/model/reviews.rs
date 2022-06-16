@@ -2,10 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Serialize, Serializer};
 
 use crate::api::{
-    review_emotion::{ReviewEmotionData, StoredReviewEmotion},
-    shared::long_form_text::LongFormText,
-    users::model::UserProfileData,
-    UserId,
+    review_emotion::ReviewEmotionData, shared::long_form_text::LongFormText,
+    users::model::UserProfileData, UserId,
 };
 
 use super::{ReviewSlug, ReviewTitle};
