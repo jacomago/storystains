@@ -79,8 +79,12 @@ class ReviewEmotionEdit extends StatelessWidget {
     return Consumer2<ReviewEmotionState, ReviewState>(
       builder: (context, state, review, _) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              
               children: [
                 EmotionEdit(
                   emotion: state.emotionController.value,
@@ -89,8 +93,8 @@ class ReviewEmotionEdit extends StatelessWidget {
                 PositionEdit(
                   positionController: state.positionController,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(24),
+                const SizedBox(width: 10),
+                Expanded(
                   child: MarkdownEdit(
                     bodyController: state.notesController,
                   ),

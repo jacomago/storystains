@@ -40,72 +40,58 @@ class ReviewEmotionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<ReviewEmotionsState, EmotionsState>(
       builder: (_, reviewEmotions, emotions, __) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Emotions",
-                        style: context.headlineMedium,
-                      ),
-                    ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Emotions",
+                  style: context.headlineMedium,
+                ),
+                TextButton(
+                  onPressed: () async => {
+                    showDialog<Emotion>(
+                      context: context,
+                      builder: (context) {
+                        return EmotionDialog(
+                          initialEmotion: emotions.emotionDefault,
+                        );
+                      },
+                    ).then(
+                      (value) => _addEmotion(context, value),
+                    ),
+                  },
+                  child: Text(
+                    "Add",
+                    style: context.headlineMedium,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () async => {
-                          showDialog<Emotion>(
-                            context: context,
-                            builder: (context) {
-                              return EmotionDialog(
-                                initialEmotion: emotions.emotionDefault,
-                              );
-                            },
-                          ).then(
-                            (value) => _addEmotion(context, value),
-                          ),
-                        },
-                        child: Text(
-                          "Add",
-                          style: context.headlineMedium,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  reviewEmotions.newItem
-                      ? ChangeNotifierProvider(
-                          create: (_) => ReviewEmotionState(
-                            ReviewEmotionService(),
-                            emotion: reviewEmotions.newEmotion,
-                          ),
-                          child: ReviewEmotionEdit(
-                            cancelHandler: reviewEmotions.cancelCreate,
-                            okHandler: reviewEmotions.confirmCreation,
-                          ),
-                        )
-                      : Column(),
-                ],
-              ),
-              Timeline(
-                indicators: reviewEmotions.items
-                    .map((e) => _buildEmotionItem(context, e))
-                    .toList(),
-                children: reviewEmotions.items
-                    .map((e) => _buildReviewEmotionItem(context, e))
-                    .toList(),
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            reviewEmotions.newItem
+                ? ChangeNotifierProvider(
+                    create: (_) => ReviewEmotionState(
+                      ReviewEmotionService(),
+                      emotion: reviewEmotions.newEmotion,
+                    ),
+                    child: ReviewEmotionEdit(
+                      cancelHandler: reviewEmotions.cancelCreate,
+                      okHandler: reviewEmotions.confirmCreation,
+                    ),
+                  )
+                : Row(),
+            Timeline(
+              indicators: reviewEmotions.items
+                  .map((e) => _buildEmotionItem(context, e))
+                  .toList(),
+              children: reviewEmotions.items
+                  .map((e) => _buildReviewEmotionItem(context, e))
+                  .toList(),
+            ),
+          ],
         );
       },
     );

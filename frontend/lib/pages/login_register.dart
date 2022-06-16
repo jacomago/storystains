@@ -73,6 +73,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                   hintText: 'Enter your Username',
                 ),
                 controller: _usernameController,
+                textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 20),
               TextField(
@@ -83,6 +84,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                   hintText: 'Enter your secure password',
                 ),
                 controller: _passwordController,
+                textInputAction: TextInputAction.done,
                 onSubmitted: (_) => _onLogin(context),
               ),
               const SizedBox(height: 24),

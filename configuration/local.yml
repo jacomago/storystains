@@ -3,5 +3,5 @@ application:
 database:
   host: localhost
   require_ssl: false
-frontend_origin: "http://localhost:50547"
+frontend_origin: "http://localhost:8080"
 static_files: "./frontend/build/web/"

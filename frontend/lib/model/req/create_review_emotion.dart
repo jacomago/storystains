@@ -17,12 +17,12 @@ class CreateReviewEmotion {
 
 @JsonSerializable()
 class NewReviewEmotion {
-  String name;
+  String emotion;
   int position;
   String notes;
 
   NewReviewEmotion({
-    required this.name,
+    required this.emotion,
     required this.notes,
     required this.position,
   });

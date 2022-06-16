@@ -20,14 +20,14 @@ Map<String, dynamic> _$CreateReviewEmotionToJson(
 
 NewReviewEmotion _$NewReviewEmotionFromJson(Map<String, dynamic> json) =>
     NewReviewEmotion(
-      name: json['name'] as String,
+      emotion: json['emotion'] as String,
       notes: json['notes'] as String,
       position: json['position'] as int,
     );
 
 Map<String, dynamic> _$NewReviewEmotionToJson(NewReviewEmotion instance) =>
     <String, dynamic>{
-      'name': instance.name,
+      'emotion': instance.emotion,
       'position': instance.position,
       'notes': instance.notes,
     };

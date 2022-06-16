@@ -10,27 +10,27 @@ class PositionEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(24),
+        SizedBox(
+          height: 48,
+          width: 64,
           child: TextField(
+            textAlign: TextAlign.center,
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Position',
-              hintText: 'ReviewEmotion position',
-            ),
             style: context.headlineMedium,
             controller: TextEditingController(
               text: positionController.value.toStringAsFixed(0),
             ),
             onSubmitted: (value) {
-              final newValue = double.tryParse(value);
+              final newValue = int.tryParse(value);
               if (newValue != null && newValue != positionController.value) {
-                positionController.value = newValue.clamp(0, 100) as int;
+                positionController.value = newValue.clamp(0, 100);
               }
             },
+            maxLength: 2,
           ),
         ),
         Slider(
@@ -39,7 +39,7 @@ class PositionEdit extends StatelessWidget {
           max: 100,
           divisions: 1,
           onChanged: (value) {
-            positionController.value = value as int;
+            positionController.value = value.floor();
           },
         ),
       ],

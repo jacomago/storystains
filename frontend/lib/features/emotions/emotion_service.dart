@@ -8,7 +8,7 @@ class EmotionsService {
   Future<List<Emotion>?> fetch() async {
     try {
       //final res = await sl.get<RestClient>().getEmotions();
-      final fullUrl = "$AppConfig.baseUrl/assets/amaze.svg";
+      final fullUrl = "http://localhost:8080/assets/amaze.svg";
       return [
         Emotion(name: "Joy", iconUrl: fullUrl, description: "stuff"),
         Emotion(name: "Anger", iconUrl: fullUrl, description: "stuff"),
