@@ -82,18 +82,20 @@ class ReviewEditPage extends StatelessWidget {
                       controller: state.titleController,
                     ),
                   ),
-                  MultiProvider(
-                    providers: [
-                      ChangeNotifierProvider(
-                        create: (_) =>
-                            ReviewEmotionsState(state.review!.emotions),
-                      ),
-                      ChangeNotifierProvider(
-                        create: (_) => EmotionsState(EmotionsService()),
-                      ),
-                    ],
-                    child: const ReviewEmotionsList(),
-                  ),
+                  state.isCreate
+                      ? Row()
+                      : MultiProvider(
+                          providers: [
+                            ChangeNotifierProvider(
+                              create: (_) =>
+                                  ReviewEmotionsState(state.review!.emotions),
+                            ),
+                            ChangeNotifierProvider(
+                              create: (_) => EmotionsState(EmotionsService()),
+                            ),
+                          ],
+                          child: const ReviewEmotionsList(),
+                        ),
                   Padding(
                     padding: const EdgeInsets.all(24),
                     child: MarkdownEdit(
