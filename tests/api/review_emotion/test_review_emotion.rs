@@ -31,7 +31,7 @@ impl TestEmotion {
         let v = emotions();
         Self {
             emotion: v[rand::thread_rng().gen_range(0..v.len())].to_string(),
-            position: position.unwrap_or(rand::thread_rng().gen_range(0..100)),
+            position: position.unwrap_or_else(|| rand::thread_rng().gen_range(0..100)),
             notes: long_form(),
         }
     }
@@ -40,7 +40,7 @@ impl TestEmotion {
         let body = self.create_json();
         // Act
         let response = app
-            .post_emotion(token, &review_slug, body.to_string())
+            .post_emotion(token, review_slug, body.to_string())
             .await;
 
         // Assert

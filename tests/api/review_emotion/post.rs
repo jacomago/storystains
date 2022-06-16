@@ -41,7 +41,7 @@ async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
             "notes": "None"
         }
     });
-    let response = app.post_emotion("", &review.slug(), json.to_string()).await;
+    let response = app.post_emotion("", review.slug(), json.to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
@@ -67,7 +67,7 @@ async fn post_review_emotion_to_review_unauth_when_logged_out() {
     app.test_user.logout().await;
 
     let response = app
-        .post_emotion(&token, &review.slug(), json.to_string())
+        .post_emotion(&token, review.slug(), json.to_string())
         .await;
 
     // Assert
@@ -102,7 +102,7 @@ async fn post_review_emotion_returns_a_400_when_data_is_missing() {
     for (invalid_body, error_message) in test_cases {
         // Act
         let response = app
-            .post_emotion(&token, &review.slug(), invalid_body.to_string())
+            .post_emotion(&token, review.slug(), invalid_body.to_string())
             .await;
 
         // Assert
@@ -134,7 +134,7 @@ async fn post_review_emotion_persists_the_new_review() {
         }
     });
     let response = app
-        .post_emotion(&token, &review.slug(), body.to_string())
+        .post_emotion(&token, review.slug(), body.to_string())
         .await;
 
     // Assert
@@ -174,7 +174,7 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
     for (body, description) in test_cases {
         // Act
         let response = app
-            .post_emotion(&token, &review.slug(), body.to_string())
+            .post_emotion(&token, review.slug(), body.to_string())
             .await;
 
         // Assert
@@ -207,7 +207,7 @@ async fn post_review_emotion_returns_json() {
 
     // Act
     let response = app
-        .post_emotion(&token, &review.slug(), body.to_string())
+        .post_emotion(&token, review.slug(), body.to_string())
         .await;
 
     // Assert
@@ -247,7 +247,7 @@ async fn post_every_emotion_succeds() {
     for body in test_cases {
         // Act
         let response = app
-            .post_emotion(&token, &review.slug(), body.to_string())
+            .post_emotion(&token, review.slug(), body.to_string())
             .await;
 
         // Assert
