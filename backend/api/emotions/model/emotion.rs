@@ -89,11 +89,25 @@ pub struct StoredEmotion {
     pub icon_url: String,
 }
 
+/// Representation of structure of an emotion in the api
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct EmotionData {
+    /// Name of the emotion
     pub name: String,
+    /// Description of the emotion
     pub description: String,
+    /// Relative url of where the url is being served from
     pub icon_url: String,
+}
+
+impl From<StoredEmotion> for EmotionData {
+    fn from(e: StoredEmotion) -> Self {
+        Self {
+            name: e.name,
+            description: e.description,
+            icon_url: e.icon_url,
+        }
+    }
 }
 
 impl From<&Emotion> for StoredEmotion {
@@ -106,13 +120,9 @@ impl From<&Emotion> for StoredEmotion {
         }
     }
 }
-impl From<StoredEmotion> for EmotionData {
-    fn from(e: StoredEmotion) -> Self {
-        Self {
-            name: e.name,
-            description: e.description,
-            icon_url: e.icon_url,
-        }
+impl From<Emotion> for EmotionData {
+    fn from(e: Emotion) -> Self {
+        EmotionData::from(StoredEmotion::from(&e))
     }
 }
 

@@ -1,10 +1,10 @@
 use reqwest::StatusCode;
 
 use crate::{
-    helpers::TestApp, review::TestReview, review_emotion::test_review_emotion::TestEmotion,
+    helpers::TestApp, review::TestReview, review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
-use super::test_review_emotion::TestEmotionResponse;
+use super::test_review_emotion::TestReviewEmotionResponse;
 
 impl TestApp {
     pub async fn get_emotion(&self, slug: &str, position: i32) -> reqwest::Response {
@@ -32,11 +32,11 @@ async fn get_review_logged_in_returns_json() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate(None);
+    let emotion = TestReviewEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     let json_page = app.get_emotion_json(review.slug(), emotion.position).await;
-    let response_emotion: TestEmotionResponse = serde_json::from_str(&json_page).unwrap();
+    let response_emotion: TestReviewEmotionResponse = serde_json::from_str(&json_page).unwrap();
     assert_eq!(emotion, response_emotion.review_emotion);
 
     app.teardown().await;
@@ -51,13 +51,13 @@ async fn get_review_logged_out_returns_json() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let emotion = TestEmotion::generate(None);
+    let emotion = TestReviewEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
 
     app.test_user.logout().await;
 
     let json_page = app.get_emotion_json(review.slug(), emotion.position).await;
-    let response_emotion: TestEmotionResponse = serde_json::from_str(&json_page).unwrap();
+    let response_emotion: TestReviewEmotionResponse = serde_json::from_str(&json_page).unwrap();
     assert_eq!(emotion, response_emotion.review_emotion);
 
     app.teardown().await;

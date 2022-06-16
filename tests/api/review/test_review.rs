@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 
 use crate::{
     helpers::{long_form, TestApp, TestUser},
-    review_emotion::test_review_emotion::TestEmotion,
+    review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,7 +21,7 @@ pub struct TestReview {
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
-    emotions: Option<Vec<TestEmotion>>,
+    emotions: Option<Vec<TestReviewEmotion>>,
     user: TestUserProfile,
 }
 
@@ -45,7 +45,7 @@ impl TestReview {
             updated_at: Utc::now(),
             emotions: Some(
                 (1..4)
-                    .map(|i| TestEmotion::generate(Some(i * 10)))
+                    .map(|i| TestReviewEmotion::generate(Some(i * 10)))
                     .collect(),
             ),
             user: TestUserProfile {

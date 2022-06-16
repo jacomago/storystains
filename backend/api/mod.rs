@@ -11,6 +11,7 @@ pub use review_emotion::routes::*;
 mod emotions;
 pub use emotions::emotions;
 pub use emotions::routes::*;
+pub use emotions::EmotionData;
 
 mod users;
 pub use users::db::*;

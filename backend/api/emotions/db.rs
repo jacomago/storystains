@@ -1,27 +1,30 @@
-use sqlx::{PgPool, Postgres, QueryBuilder, Transaction};
-use strum::EnumProperty;
+use sqlx::{PgPool, Postgres, Transaction};
 
-use super::model::{Emotion, StoredEmotion};
+use super::model::StoredEmotion;
 
 #[tracing::instrument(name = "Saving all emotions into the db", skip(pool))]
-pub async fn store_emotions(emotions: Vec<Emotion>, pool: &PgPool) -> Result<(), sqlx::Error> {
-    let mut builder = QueryBuilder::new(
-        r#" 
-            INSERT INTO emotions(
-                id,
-                name,
-                description,
-                icon_url
-            )
-        "#,
-    );
-    builder.push_values(&emotions, |mut b, e| {
-        b.push_bind(*e as i32)
-            .push_bind(e.to_string())
-            .push_bind(e.get_str("description").unwrap());
-    });
-    let query = builder.build();
-    query.execute(pool).await.map_err(|e| {
+pub async fn store_emotions(
+    emotions: Vec<StoredEmotion>,
+    pool: &PgPool,
+) -> Result<(), sqlx::Error> {
+    let ids: Vec<i32> = emotions.iter().map(|e| e.id).collect();
+    let names: Vec<String> = emotions.iter().map(|e| e.name.to_string()).collect();
+    let descriptions: Vec<String> = emotions.iter().map(|e| e.description.to_string()).collect();
+    let icon_urls: Vec<String> = emotions.iter().map(|e| e.icon_url.to_string()).collect();
+
+    sqlx::query!(
+        "
+        INSERT INTO emotions(id, name, description, icon_url) 
+        SELECT * FROM UNNEST($1::integer[], $2::text[], $3::text[], $4::text[])
+        ",
+        &ids,
+        &names,
+        &descriptions,
+        &icon_urls
+    )
+    .execute(pool)
+    .await
+    .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;

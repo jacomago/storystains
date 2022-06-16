@@ -4,7 +4,7 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 
 use crate::api::{
     error_chain_fmt,
-    review_emotion::{read_review_emotions,  ReviewEmotionData},
+    review_emotion::{read_review_emotions, ReviewEmotionData},
     shared::put_block::{block_non_creator, BlockError},
     LongFormText, QueryLimits, UserId,
 };

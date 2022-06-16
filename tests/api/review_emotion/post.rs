@@ -214,7 +214,7 @@ async fn post_review_emotion_returns_json() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let json: Value = response.json().await.expect("expected json response");
-    assert_eq!(json["review_emotion"]["emotion"], "Joy");
+    assert_eq!(json["review_emotion"]["emotion"]["name"], "Joy");
     assert_eq!(json["review_emotion"]["position"], 100_i32);
     assert_eq!(json["review_emotion"]["notes"], "None");
     app.teardown().await;

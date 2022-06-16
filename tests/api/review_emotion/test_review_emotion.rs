@@ -1,27 +1,26 @@
+use crate::helpers::{long_form, TestApp};
 use rand::Rng;
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use storystains::api::emotions;
-
-use crate::helpers::{long_form, TestApp};
+use storystains::api::{emotions, EmotionData};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TestEmotionResponse {
-    pub review_emotion: TestEmotion,
+pub struct TestReviewEmotionResponse {
+    pub review_emotion: TestReviewEmotion,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct TestEmotion {
-    pub emotion: String,
+pub struct TestReviewEmotion {
+    pub emotion: EmotionData,
     pub position: i32,
     pub notes: String,
 }
 
-impl TestEmotion {
+impl TestReviewEmotion {
     fn create_json(&self) -> Value {
         json!({"review_emotion": {
-            "emotion": self.emotion.to_string(),
+            "emotion": json!(self.emotion),
             "position":self.position,
             "notes": self.notes.to_string()
         }})
@@ -30,7 +29,7 @@ impl TestEmotion {
     pub fn generate(position: Option<i32>) -> Self {
         let v = emotions();
         Self {
-            emotion: v[rand::thread_rng().gen_range(0..v.len())].to_string(),
+            emotion: v[rand::thread_rng().gen_range(0..v.len())].into(),
             position: position.unwrap_or_else(|| rand::thread_rng().gen_range(0..100)),
             notes: long_form(),
         }
@@ -46,7 +45,7 @@ impl TestEmotion {
     }
 }
 
-impl PartialEq for TestEmotion {
+impl PartialEq for TestReviewEmotion {
     fn eq(&self, other: &Self) -> bool {
         self.emotion == other.emotion
             && self.position == other.position
