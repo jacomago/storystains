@@ -20,7 +20,7 @@ pub struct TestReviewEmotion {
 impl TestReviewEmotion {
     fn create_json(&self) -> Value {
         json!({"review_emotion": {
-            "emotion": json!(self.emotion),
+            "emotion": self.emotion.name,
             "position":self.position,
             "notes": self.notes.to_string()
         }})

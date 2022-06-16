@@ -255,7 +255,7 @@ async fn post_every_emotion_succeds() {
 
         let json: Value = response.json().await.expect("expected json response");
         assert_eq!(
-            json["review_emotion"]["emotion"],
+            json["review_emotion"]["emotion"]["name"],
             body["review_emotion"]["emotion"]
         );
         assert_eq!(
