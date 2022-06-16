@@ -7,7 +7,7 @@ import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/navigation.dart';
 import 'package:storystains/common/utils/snackbar.dart';
 
-import '../common/widget/review_list.dart';
+import '../features/reviews/review_list.dart';
 import '../features/auth/auth_state.dart';
 import '../features/reviews/reviews_state.dart';
 

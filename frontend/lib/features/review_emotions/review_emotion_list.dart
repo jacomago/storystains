@@ -5,11 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/emotion_dialog.dart';
 import 'package:storystains/common/widget/timeline.dart';
+import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
-import '../../features/review_emotions/review_emotions_state.dart';
+import 'review_emotions_state.dart';
 
 class ReviewEmotionsList extends StatelessWidget {
   const ReviewEmotionsList({Key? key}) : super(key: key);
@@ -18,7 +19,9 @@ class ReviewEmotionsList extends StatelessWidget {
     BuildContext context,
     ReviewEmotion reviewEmotion,
     Emotion? value,
-  ) {}
+  ) {
+    UnimplementedError("not done");
+  }
 
   void _addEmotion(BuildContext context, Emotion? value) async {
     FocusScope.of(context).unfocus();
@@ -98,7 +101,9 @@ class ReviewEmotionsList extends StatelessWidget {
     ReviewEmotion reviewEmotion,
   ) {
     return GestureDetector(
-      onTap: () => {},
+      onTap: () => {
+        UnimplementedError("not done"),
+      },
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
@@ -113,22 +118,9 @@ class ReviewEmotionsList extends StatelessWidget {
     BuildContext context,
     ReviewEmotion reviewEmotion,
   ) {
-    return GestureDetector(
-      onTap: () async => {
-        showDialog<Emotion>(
-          context: context,
-          builder: (context) {
-            return EmotionDialog(initialEmotion: reviewEmotion.emotion);
-          },
-        ).then((value) => _updateEmotion(context, reviewEmotion, value)),
-      },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(children: [
-          SvgPicture.network(reviewEmotion.emotion.iconUrl),
-          Text(reviewEmotion.emotion.name),
-        ]),
-      ),
+    return EmotionEdit(
+      emotion: reviewEmotion.emotion,
+      handler: (value) => _updateEmotion(context, reviewEmotion, value),
     );
   }
 }

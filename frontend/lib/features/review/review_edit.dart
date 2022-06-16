@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/widget/review_emotion_list.dart';
+import 'package:storystains/common/widget/markdown_edit.dart';
+import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
@@ -95,21 +96,9 @@ class ReviewEditPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(24),
-                    child: TextField(
-                      textInputAction: TextInputAction.newline,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Body',
-                        alignLabelWithHint: true,
-                        hintText: 'Write your review (in markdown)',
-                      ),
-                      style: context.bodySmall,
-                      controller: state.bodyController,
-                      minLines: 5,
-                      maxLines: 50,
-                      textAlign: TextAlign.start,
-                      textAlignVertical: TextAlignVertical.top,
-                      keyboardType: TextInputType.multiline,
+                    child: MarkdownEdit(
+                      bodyController: state.bodyController,
+                      title: 'Body',
                     ),
                   ),
                 ],

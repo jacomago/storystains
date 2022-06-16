@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/common/widget/review_list.dart';
+import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 import 'package:storystains/model/entity/review.dart';

@@ -4,14 +4,14 @@ import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/common/utils/navigation.dart';
 
-import '../../features/review/review.dart';
-import '../../features/reviews/reviews_state.dart';
+import '../review/review.dart';
+import 'reviews_state.dart';
 import '../../model/entity/review.dart';
 import 'package:storystains/common/utils/extensions.dart';
 
 import '../../routes/routes.dart';
-import 'load_message.dart';
-import 'loading_more.dart';
+import '../../common/widget/load_message.dart';
+import '../../common/widget/loading_more.dart';
 
 class ReviewsPage extends StatelessWidget {
   const ReviewsPage({Key? key}) : super(key: key);
