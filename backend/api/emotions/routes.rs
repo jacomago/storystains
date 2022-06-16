@@ -2,14 +2,18 @@ use actix_web::{web, HttpResponse, ResponseError};
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::api::{emotions::model::emotions, error_chain_fmt};
+use crate::api::{emotions::model::emotions, error_chain_fmt, EmotionData};
 
 use super::db::retreive_all_emotions;
 
 /// API for getting a list of all emotions
 #[tracing::instrument(name = "Getting emotions", skip(), fields())]
 pub async fn get_emotions() -> Result<HttpResponse, actix_web::Error> {
-    Ok(HttpResponse::Ok().json(serde_json::json!({ "emotions": emotions() })))
+    let emotions_data = emotions()
+        .into_iter()
+        .map(EmotionData::from)
+        .collect::<Vec<EmotionData>>();
+    Ok(HttpResponse::Ok().json(serde_json::json!({ "emotions": emotions_data })))
 }
 
 /// Emotion Error expresses problems that can happen during the evaluation of the emotions api.

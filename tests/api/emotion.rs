@@ -13,7 +13,7 @@ impl TestApp {
     }
     pub async fn get_image(&self, icon_url: &str) -> reqwest::Response {
         self.api_client
-            .get(&format!("{}/emotions/{}", &self.address, icon_url))
+            .get(&format!("{}{}", &self.address.strip_suffix("/api").unwrap(), icon_url))
             .send()
             .await
             .expect("Failed to execute request.")
@@ -66,7 +66,7 @@ async fn get_emotion_image_returns_svg() {
         let response = app.get_image(emotion["icon_url"].as_str().unwrap()).await;
         assert_eq!(response.status(), StatusCode::OK);
         let content_type: &str = response.headers()["Content-Type"].to_str().unwrap();
-        assert_eq!(content_type, "SVG");
+        assert_eq!(content_type, "image/svg+xml");
     }
     app.teardown().await;
 }
