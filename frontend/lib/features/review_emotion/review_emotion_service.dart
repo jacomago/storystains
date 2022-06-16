@@ -9,7 +9,7 @@ class ReviewEmotionService {
           slug,
           CreateReviewEmotion(
             reviewEmotion: NewReviewEmotion(
-              emotion: reviewEmotion.emotion.name,
+              emotion: reviewEmotion.emotion,
               position: reviewEmotion.position,
               notes: reviewEmotion.notes,
             ),
@@ -23,7 +23,7 @@ class ReviewEmotionService {
           position,
           CreateReviewEmotion(
             reviewEmotion: NewReviewEmotion(
-              emotion: reviewEmotion.emotion.name,
+              emotion: reviewEmotion.emotion,
               position: reviewEmotion.position,
               notes: reviewEmotion.notes,
             ),
