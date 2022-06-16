@@ -39,9 +39,7 @@ impl TestEmotion {
     pub async fn store(&self, app: &TestApp, token: &str, review_slug: &str) {
         let body = self.create_json();
         // Act
-        let response = app
-            .post_emotion(token, review_slug, body.to_string())
-            .await;
+        let response = app.post_emotion(token, review_slug, body.to_string()).await;
 
         // Assert
         assert_eq!(response.status(), StatusCode::OK);
