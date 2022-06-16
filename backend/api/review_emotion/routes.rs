@@ -8,7 +8,7 @@ use serde::Deserialize;
 use sqlx::PgPool;
 
 use crate::api::{
-    emotions::Emotion,
+    emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, Emotion, StoredEmotion},
     error_chain_fmt,
     reviews::ReviewSlug,
     shared::put_block::{block_non_creator, BlockError},
@@ -125,11 +125,25 @@ pub async fn post_review_emotion(
         .review_emotion
         .try_into()
         .map_err(ReviewEmotionError::ValidationError)?;
-    let stored = create_review_emotion(&slug, &new_review_emotion, pool.get_ref())
+
+    let mut transaction = pool
+        .begin()
+        .await
+        .context("Failed to acquire a Postgres connection from the pool")?;
+    let stored = create_review_emotion(&slug, &new_review_emotion, &mut transaction)
         .await
         .context("Failed to store new review.")?;
+    let stored_emotion = read_emotion_by_id_trans(stored.emotion_id, &mut transaction)
+        .await
+        .context("Failed to retrieve emotion details from db")?;
+
+    transaction
+        .commit()
+        .await
+        .context("Failed to commit SQL transaction to store a new review emotion.")?;
+
     Ok(HttpResponse::Ok().json(ReviewEmotionResponse {
-        review_emotion: ReviewEmotionData::from(stored),
+        review_emotion: ReviewEmotionData::from((stored, stored_emotion)),
     }))
 }
 
@@ -161,8 +175,11 @@ pub async fn get_review_emotion(
         .await
         .map_err(ReviewEmotionError::NoDataError)?;
 
+    let stored_emotion = read_emotion_by_id_pool(stored.emotion_id, pool.get_ref())
+        .await
+        .context("Failed to retrieve emotion details from db")?;
     Ok(HttpResponse::Ok().json(ReviewEmotionResponse {
-        review_emotion: ReviewEmotionData::from(stored),
+        review_emotion: ReviewEmotionData::from((stored, stored_emotion)),
     }))
 }
 
@@ -221,16 +238,29 @@ pub async fn put_review_emotion(
         EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
 
     block_non_creator(&slug, user_id, pool.get_ref()).await?;
+    let mut transaction = pool
+        .begin()
+        .await
+        .context("Failed to acquire a Postgres connection from the pool")?;
     let updated_review_emotion = json
         .0
         .review_emotion
         .try_into()
         .map_err(ReviewEmotionError::ValidationError)?;
-    let stored = update_review_emotion(&slug, &updated_review_emotion, position, &pool)
+    let stored = update_review_emotion(&slug, &updated_review_emotion, position, &mut transaction)
         .await
         .map_err(ReviewEmotionError::NoDataError)?;
+    let stored_emotion = read_emotion_by_id_trans(stored.emotion_id, &mut transaction)
+        .await
+        .context("Failed to retrieve emotion details from db")?;
+
+    transaction
+        .commit()
+        .await
+        .context("Failed to commit SQL transaction to store a new review emotion.")?;
+
     Ok(HttpResponse::Ok().json(ReviewEmotionResponse {
-        review_emotion: ReviewEmotionData::from(stored),
+        review_emotion: ReviewEmotionData::from((stored, stored_emotion)),
     }))
 }
 

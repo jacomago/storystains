@@ -18,7 +18,7 @@ class CreateReviewEmotion {
 
 @JsonSerializable()
 class NewReviewEmotion {
-  Emotion emotion;
+  String emotion;
   int position;
   String notes;
 

@@ -1,4 +1,7 @@
-use crate::api::{emotions::Emotion, LongFormText};
+use crate::api::{
+    emotions::{Emotion, EmotionData, StoredEmotion},
+    LongFormText,
+};
 
 use super::EmotionPosition;
 
@@ -16,7 +19,7 @@ pub struct UpdateReviewEmotion {
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct ReviewEmotionData {
-    pub emotion: String,
+    pub emotion: EmotionData,
     pub position: i32,
     pub notes: Option<String>,
 }
@@ -27,15 +30,15 @@ pub struct ReviewEmotionResponse {
 }
 
 pub struct StoredReviewEmotion {
-    pub emotion: String,
+    pub emotion_id: i32,
     pub position: i32,
     pub notes: Option<String>,
 }
 
-impl From<StoredReviewEmotion> for ReviewEmotionData {
-    fn from(stored: StoredReviewEmotion) -> Self {
+impl From<(StoredReviewEmotion, StoredEmotion)> for ReviewEmotionData {
+    fn from((stored, emotion): (StoredReviewEmotion, StoredEmotion)) -> Self {
         Self {
-            emotion: stored.emotion,
+            emotion: emotion.into(),
             position: stored.position,
             notes: stored.notes,
         }

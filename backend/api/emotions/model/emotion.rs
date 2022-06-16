@@ -81,7 +81,7 @@ pub fn emotions() -> Vec<Emotion> {
     Emotion::iter().collect()
 }
 
-#[derive(Debug, Serialize, PartialEq)]
+#[derive(Clone, Debug, Serialize, PartialEq)]
 pub struct StoredEmotion {
     pub id: i32,
     pub name: String,
@@ -103,6 +103,15 @@ impl From<&Emotion> for StoredEmotion {
             name: e.to_string(),
             description: e.get_str("description").unwrap().to_string(),
             icon_url: format!("/emotions/{}.svg", slugify(e.to_string())),
+        }
+    }
+}
+impl From<StoredEmotion> for EmotionData {
+    fn from(e: StoredEmotion) -> Self {
+        Self {
+            name: e.name,
+            description: e.description,
+            icon_url: e.icon_url,
         }
     }
 }

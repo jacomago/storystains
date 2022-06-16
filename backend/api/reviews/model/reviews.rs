@@ -60,12 +60,8 @@ pub struct ReviewResponseData {
     user: UserProfileData,
 }
 
-impl From<(StoredReview, Vec<StoredReviewEmotion>)> for ReviewResponseData {
-    fn from((stored, stored_emotions): (StoredReview, Vec<StoredReviewEmotion>)) -> Self {
-        let emotions = stored_emotions
-            .into_iter()
-            .map(ReviewEmotionData::from)
-            .collect();
+impl From<(StoredReview, Vec<ReviewEmotionData>)> for ReviewResponseData {
+    fn from((stored, emotions): (StoredReview, Vec<ReviewEmotionData>)) -> Self {
         Self {
             title: stored.title,
             slug: stored.slug,
@@ -85,8 +81,8 @@ pub struct ReviewsResponse {
     reviews: Vec<ReviewResponseData>,
 }
 
-impl From<Vec<(StoredReview, Vec<StoredReviewEmotion>)>> for ReviewsResponse {
-    fn from(stored: Vec<(StoredReview, Vec<StoredReviewEmotion>)>) -> Self {
+impl From<Vec<(StoredReview, Vec<ReviewEmotionData>)>> for ReviewsResponse {
+    fn from(stored: Vec<(StoredReview, Vec<ReviewEmotionData>)>) -> Self {
         Self {
             reviews: stored.into_iter().map(ReviewResponseData::from).collect(),
         }

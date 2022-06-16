@@ -1,4 +1,4 @@
-use sqlx::{types::Uuid, PgPool};
+use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
 use crate::api::reviews::ReviewSlug;
 
@@ -18,13 +18,11 @@ pub async fn read_review_emotions(
     let review_emotions = sqlx::query_as!(
         StoredReviewEmotion,
         r#"
-            SELECT name as emotion,
+            SELECT emotion_id,
                    position,
                    notes
-              FROM review_emotions,
-                   emotions
+              FROM review_emotions
             WHERE  review_id = $1
-               AND review_emotions.emotion_id = emotions.id
           ORDER BY position ASC
         "#,
         review_id,
@@ -54,7 +52,7 @@ pub async fn read_review_emotion(
     let review_emotion = sqlx::query_as!(
         StoredReviewEmotion,
         r#"
-            SELECT name as emotion,
+            SELECT emotion_id,
                    position,
                    notes
               FROM reviews,
@@ -62,7 +60,6 @@ pub async fn read_review_emotion(
                    emotions
             WHERE  reviews.slug   = $1
               AND  review_emotions.position = $2
-              AND  review_emotions.emotion_id = emotions.id
         "#,
         slug.as_ref(),
         position.as_ref()
@@ -79,15 +76,16 @@ pub async fn read_review_emotion(
 // TODO update the updated_at date on the review
 #[tracing::instrument(
     name = "Saving new review emotion details in the database",
-    skip(review_emotion, pool)
+    skip(review_emotion, transaction)
 )]
 pub async fn create_review_emotion(
     review_slug: &ReviewSlug,
     review_emotion: &NewReviewEmotion,
-    pool: &PgPool,
+    transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredReviewEmotion, sqlx::Error> {
     let id = Uuid::new_v4();
-    let row = sqlx::query!(
+    let stored = sqlx::query_as!(
+        StoredReviewEmotion,
         r#" 
             INSERT INTO review_emotions(
                 id,
@@ -108,7 +106,7 @@ pub async fn create_review_emotion(
                 $4,
                 $5 
             )
-            RETURNING (SELECT name FROM emotions WHERE id = $3 LIMIT 1) as emotion, position, notes
+            RETURNING emotion_id, position, notes
         "#,
         id,
         review_slug.as_ref(),
@@ -116,23 +114,19 @@ pub async fn create_review_emotion(
         review_emotion.position.as_ref(),
         review_emotion.notes.as_ref().map(|n| n.as_ref()),
     )
-    .fetch_one(pool)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
 
-    Ok(StoredReviewEmotion {
-        emotion: row.emotion.unwrap(),
-        position: row.position,
-        notes: row.notes,
-    })
+    Ok(stored)
 }
 
 #[tracing::instrument(
     name = "Saving updated review emotion details in the database",
-    skip(review_emotion, pool),
+    skip(review_emotion, transaction),
     fields(
         slug = %slug,
         position = %position
@@ -142,12 +136,13 @@ pub async fn update_review_emotion(
     slug: &ReviewSlug,
     review_emotion: &UpdateReviewEmotion,
     position: EmotionPosition,
-    pool: &PgPool,
+    transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredReviewEmotion, sqlx::Error> {
     let emotion = review_emotion.emotion.as_ref().map(|t| *t as i32);
     let update_position = review_emotion.position.as_ref().map(|t| t.as_ref());
     let notes = review_emotion.notes.as_ref().map(|t| t.as_ref());
-    let row = sqlx::query!(
+    let stored = sqlx::query_as!(
+        StoredReviewEmotion,
         r#"
             UPDATE review_emotions
             SET emotion_id  = COALESCE($1, emotion_id),
@@ -158,12 +153,9 @@ pub async fn update_review_emotion(
                                 WHERE slug = $4
                                )
                AND position = $5
-            RETURNING (SELECT name 
-                         FROM emotions
-                        WHERE id = COALESCE($1, emotion_id)
-                      ),
-                        position, 
-                        notes
+            RETURNING emotion_id,
+                      position, 
+                      notes
         "#,
         emotion,
         update_position,
@@ -171,19 +163,14 @@ pub async fn update_review_emotion(
         slug.as_ref(),
         position.as_ref()
     )
-    .fetch_one(pool)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
 
-    let updated_review = StoredReviewEmotion {
-        emotion: row.name.unwrap(),
-        position: row.position,
-        notes: row.notes,
-    };
-    Ok(updated_review)
+    Ok(stored)
 }
 
 #[tracing::instrument(
