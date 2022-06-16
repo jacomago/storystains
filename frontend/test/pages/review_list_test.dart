@@ -87,7 +87,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text("randomtitle"), findsOneWidget);
-      expect(find.text("randombody"), findsOneWidget);
       expect(find.text("randomusername"), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
@@ -121,7 +120,6 @@ void main() {
       verify(mockService.fetch());
 
       expect(find.text("randomtitle"), findsOneWidget);
-      expect(find.text("randombody"), findsOneWidget);
       expect(find.text("randomusername"), findsOneWidget);
     });
   });
