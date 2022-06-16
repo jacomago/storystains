@@ -13,7 +13,11 @@ impl TestApp {
     }
     pub async fn get_image(&self, icon_url: &str) -> reqwest::Response {
         self.api_client
-            .get(&format!("{}{}", &self.address.strip_suffix("/api").unwrap(), icon_url))
+            .get(&format!(
+                "{}{}",
+                &self.address.strip_suffix("/api").unwrap(),
+                icon_url
+            ))
             .send()
             .await
             .expect("Failed to execute request.")
