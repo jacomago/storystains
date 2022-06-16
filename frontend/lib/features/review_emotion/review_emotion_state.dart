@@ -39,7 +39,11 @@ class ReviewEmotionState extends ChangeNotifier {
   late ValueNotifier<int> positionController;
   late ValueNotifier<Emotion> emotionController;
 
-  ReviewEmotionState(this._service, [ReviewEmotion? reviewEmotion]) {
+  ReviewEmotionState(
+    this._service, {
+    ReviewEmotion? reviewEmotion,
+    Emotion? emotion,
+  }) {
     _event = null;
     _status = ReviewEmotionStatus.initial;
     _isLoading = false;
@@ -48,14 +52,9 @@ class ReviewEmotionState extends ChangeNotifier {
     _reviewEmotion = reviewEmotion;
 
     notesController = TextEditingController(text: reviewEmotion?.notes);
-    positionController = ValueNotifier(0);
-    emotionController = ValueNotifier(reviewEmotion != null
-        ? reviewEmotion.emotion
-        : Emotion(
-            name: "",
-            iconUrl: "",
-            description: "",
-          ));
+    positionController = ValueNotifier(_isCreate ? 0 : reviewEmotion!.position);
+    emotionController =
+        ValueNotifier(_isCreate ? emotion! : reviewEmotion!.emotion);
   }
 
   Future putReviewEmotion(ReviewEmotion reviewEmotion) async {

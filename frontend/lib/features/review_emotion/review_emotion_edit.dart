@@ -65,25 +65,33 @@ class ReviewEmotionEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<ReviewEmotionState, ReviewState>(
       builder: (context, state, review, _) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              EmotionEdit(
-                emotion: state.emotionController.value,
-                handler: (value) => {state.emotionController.value = value!},
-              ),
-              PositionEdit(
-                positionController: state.positionController,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: MarkdownEdit(
-                  bodyController: state.notesController,
+        return Column(
+          children: [
+            Row(
+              children: [
+                EmotionEdit(
+                  emotion: state.emotionController.value,
+                  handler: (value) => {state.emotionController.value = value!},
                 ),
-              ),
-            ],
-          ),
+                PositionEdit(
+                  positionController: state.positionController,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: MarkdownEdit(
+                    bodyController: state.notesController,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(onPressed: onPressed, child: const Text("OK")),
+                TextButton(onPressed: onPressed, child: const Text("Cancel")),
+              ],
+            ),
+          ],
         );
       },
     );

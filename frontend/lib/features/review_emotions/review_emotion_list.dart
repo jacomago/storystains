@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/emotion_dialog.dart';
-import 'package:storystains/common/widget/timeline.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
+import 'package:storystains/features/review_emotion/review_emotion.dart';
+import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
@@ -79,6 +78,19 @@ class ReviewEmotionsList extends StatelessWidget {
                       ),
                     ],
                   ),
+                ],
+              ),
+              Row(
+                children: [
+                  reviewEmotions.newItem
+                      ? ChangeNotifierProvider(
+                          create: (_) => ReviewEmotionState(
+                            ReviewEmotionService(),
+                            emotion: reviewEmotions.newEmotion,
+                          ),
+                          child: const ReviewEmotionEdit(),
+                        )
+                      : Column(),
                 ],
               ),
               Timeline(
