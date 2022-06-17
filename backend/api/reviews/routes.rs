@@ -175,6 +175,8 @@ impl TryFrom<PutReviewData> for UpdateReview {
     skip(pool, json),
     fields(
         slug = %slug,
+        reviews_title = %format!("{:?}",json.review.title),
+        reviews_review = %format!("{:?}",json.review.body)
     )
 )]
 pub async fn put_review(

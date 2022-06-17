@@ -222,7 +222,9 @@ impl TryFrom<PutReviewEmotionData> for UpdateReviewEmotion {
     skip(pool, path, json),
     fields(
         slug = %path.slug,
-        position = %path.position
+        position = %path.position,
+        new_emotion = %format!("{:?}", json.review_emotion.emotion),
+        new_position = %format!("{:?}", json.review_emotion.position),
     )
 )]
 pub async fn put_review_emotion(
