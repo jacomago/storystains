@@ -1,29 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:storystains/common/widget/emotion_image.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/model/entity/emotion.dart';
-
-class RestorableEmotion extends RestorableValue<Emotion> {
-  RestorableEmotion(Emotion defaultValue) : _defaultValue = defaultValue;
-
-  final Emotion _defaultValue;
-  @override
-  Emotion createDefaultValue() => _defaultValue;
-
-  @override
-  void didUpdateValue(Emotion? oldValue) {
-    assert(debugIsSerializableForRestoration(value.name));
-    notifyListeners();
-  }
-
-  @override
-  Emotion fromPrimitives(Object? data) => Emotion.fromName(data! as String);
-
-  @override
-  Object? toPrimitives() => value.name;
-}
 
 class EmotionDialog extends StatefulWidget {
   const EmotionDialog({
@@ -38,9 +17,9 @@ class EmotionDialog extends StatefulWidget {
   State<StatefulWidget> createState() => _EmotionDialogState();
 }
 
-class _EmotionDialogState extends State<EmotionDialog> with RestorationMixin {
-  late final RestorableEmotion _selectedEmotion =
-      RestorableEmotion(widget.initialEmotion);
+class _EmotionDialogState extends State<EmotionDialog> {
+  late final ValueNotifier _selectedEmotion =
+      ValueNotifier(widget.initialEmotion);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +37,7 @@ class _EmotionDialogState extends State<EmotionDialog> with RestorationMixin {
             return GestureDetector(
               child: GridTile(
                 footer: Text(e.name),
-                child: SvgPicture.network(e.iconUrl),
+                child: EmotionImage(emotion: e),
               ),
               onTap: () => {_chooseEmotion(e)},
             );
@@ -66,14 +45,6 @@ class _EmotionDialogState extends State<EmotionDialog> with RestorationMixin {
         ),
       ),
     );
-  }
-
-  @override
-  String? get restorationId => widget.restorationId;
-
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_selectedEmotion, 'selected_emotion');
   }
 
   void _chooseEmotion(Emotion e) {

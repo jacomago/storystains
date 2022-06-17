@@ -32,8 +32,6 @@ class Emotion {
     return other is Emotion && name == other.name;
   }
 
-  static fromName(String s) {}
-
   @override
   int get hashCode => name.hashCode;
 }

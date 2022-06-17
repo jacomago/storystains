@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/common/widget/emotion_dialog.dart';
+import 'package:storystains/common/widget/emotion_picker.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
