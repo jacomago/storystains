@@ -11,23 +11,27 @@ class PositionEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          textAlign: TextAlign.center,
-          textInputAction: TextInputAction.next,
-          keyboardType: TextInputType.number,
-          style: context.headlineMedium,
-          controller: TextEditingController(
-            text: positionController.value.toStringAsFixed(0),
+        SizedBox(
+          width: 30,
+          height: 30,
+          child: TextField(
+            textAlign: TextAlign.center,
+            textInputAction: TextInputAction.next,
+            keyboardType: TextInputType.number,
+            style: context.bodyLarge,
+            controller: TextEditingController(
+              text: positionController.value.toStringAsFixed(0),
+            ),
+            onSubmitted: (value) {
+              final newValue = int.tryParse(value);
+              if (newValue != null && newValue != positionController.value) {
+                positionController.value = newValue.clamp(0, 100);
+              }
+            },
+            maxLength: 2,
           ),
-          onSubmitted: (value) {
-            final newValue = int.tryParse(value);
-            if (newValue != null && newValue != positionController.value) {
-              positionController.value = newValue.clamp(0, 100);
-            }
-          },
-          maxLength: 2,
         ),
         Expanded(
           child: Slider(

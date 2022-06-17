@@ -8,9 +8,15 @@ class EmotionEdit extends StatelessWidget {
   final Emotion emotion;
   final Function(Emotion?) handler;
 
-  const EmotionEdit({Key? key, required this.emotion, required this.handler})
-      : super(key: key);
-
+  const EmotionEdit({
+    Key? key,
+    required this.emotion,
+    required this.handler,
+    this.height,
+    this.width,
+  }) : super(key: key);
+  final double? height;
+  final double? width;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -22,17 +28,28 @@ class EmotionEdit extends StatelessWidget {
           },
         ).then(handler),
       },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            EmotionImage(
-              emotion: emotion,
-              height: 150,
-            ),
-            Text(emotion.name),
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: EmotionImage(
+                  emotion: emotion,
+                  width: width,
+                  height: height,
+                ),
+              ),
+              Text(
+                emotion.name,
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

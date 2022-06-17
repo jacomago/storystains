@@ -78,65 +78,82 @@ class ReviewEmotionEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<ReviewEmotionState, ReviewState>(
       builder: (context, state, review, _) {
-        return Container(
-          padding: const EdgeInsets.all(10),
+        return SizedBox(
+          height: 220,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: EmotionEdit(
-                      emotion: state.emotionController.value,
-                      handler: (value) =>
-                          {state.emotionController.value = value!},
+              SizedBox(
+                height: 190,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: EmotionEdit(
+                        emotion: state.emotionController.value,
+                        height: 180,
+                        handler: (value) =>
+                            {state.emotionController.value = value!},
+                      ),
                     ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        PositionEdit(
-                          positionController: state.positionController,
-                        ),
-                        Expanded(
-                          child: MarkdownEdit(
-                            bodyController: state.notesController,
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            child: PositionEdit(
+                              positionController: state.positionController,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: MarkdownEdit(
+                              bodyController: state.notesController,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      editReviewEmotion(context);
-                    },
-                    child: Text(
-                      "OK",
-                      style: context.labelMedium,
+              const SizedBox(
+                width: 10,
+              ),
+              SizedBox(
+                height: 30,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        editReviewEmotion(context);
+                      },
+                      child: Text(
+                        "OK",
+                        style: context.labelMedium,
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      cancelCreation(context);
-                    },
-                    child: Text(
-                      "Cancel",
-                      style: context.labelMedium,
+                    TextButton(
+                      onPressed: () {
+                        cancelCreation(context);
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: context.labelMedium,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
