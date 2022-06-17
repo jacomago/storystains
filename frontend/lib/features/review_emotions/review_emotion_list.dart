@@ -76,7 +76,7 @@ class ReviewEmotionsList extends StatelessWidget {
                 ? ChangeNotifierProvider(
                     create: (_) => ReviewEmotionState(
                       ReviewEmotionService(),
-                      emotion: reviewEmotions.newEmotion,
+                      emotion: reviewEmotions.currentEmotion,
                     ),
                     child: ReviewEmotionEdit(
                       cancelHandler: reviewEmotions.cancelCreate,
@@ -110,15 +110,30 @@ class ReviewEmotionsList extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        child: Column(children: [
-          Row(
-            children: [
-              Text("Position: ${reviewEmotion.position}"),
-              const Text("Notes"),
-            ],
-          ),
-          Text(reviewEmotion.notes),
-        ]),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Position: ${reviewEmotion.position}"),
+                const SizedBox(
+                  width: 10,
+                ),
+                const Text("Notes"),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Divider(),
+            Text(
+              reviewEmotion.notes,
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -129,6 +144,8 @@ class ReviewEmotionsList extends StatelessWidget {
   ) {
     return EmotionEdit(
       emotion: reviewEmotion.emotion,
+      width: 200,
+      height: 200,
       handler: (value) => _updateEmotion(context, reviewEmotion, value),
     );
   }

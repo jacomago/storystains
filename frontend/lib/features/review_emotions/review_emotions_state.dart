@@ -7,7 +7,9 @@ class ReviewEmotionsState extends ChangeNotifier {
 
   bool _isEmpty = false;
   bool _isNewItem = false;
-  Emotion? _newEmotion;
+  bool _isEditItem = false;
+  Emotion? _currentEmotion;
+  int? _currentIndex;
 
   int get count => _items.length;
   List<ReviewEmotion> get items => _items;
@@ -15,7 +17,7 @@ class ReviewEmotionsState extends ChangeNotifier {
   bool get newItem => _isNewItem;
   bool get isEmpty => _isEmpty;
 
-  get newEmotion => _newEmotion;
+  get currentEmotion => _currentEmotion;
 
   ReviewEmotion item(int index) => _items[index];
 
@@ -25,13 +27,22 @@ class ReviewEmotionsState extends ChangeNotifier {
 
   Future create(Emotion emotion) async {
     _isNewItem = true;
-    _newEmotion = emotion;
+    _currentEmotion = emotion;
+    notifyListeners();
+  }
+
+  Future edit(int index, Emotion emotion) async {
+    _isEditItem = true;
+    _currentEmotion = emotion;
+    _currentIndex = index;
     notifyListeners();
   }
 
   Future cancelCreate() async {
     _isNewItem = false;
-    _newEmotion = null;
+    _isEditItem = false;
+    _currentIndex = null;
+    _currentEmotion = null;
     notifyListeners();
   }
 
@@ -41,12 +52,18 @@ class ReviewEmotionsState extends ChangeNotifier {
     await cancelCreate();
   }
 
+  Future confirmEdit(int index, ReviewEmotion reviewEmotion) async {
+    _items[index] = reviewEmotion;
+    _items.sort(((a, b) => a.position.compareTo(b.position)));
+    await cancelCreate();
+  }
+
   @override
   void dispose() {
     _items = [];
     _isEmpty = false;
     _isNewItem = false;
-    _newEmotion = null;
+    _currentEmotion = null;
     super.dispose();
   }
 }
