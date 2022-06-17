@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/common/utils/navigation.dart';
+import 'package:storystains/common/widget/card_review_emotions.dart';
+import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 import '../review/review.dart';
 import 'reviews_state.dart';
@@ -79,7 +81,7 @@ class ReviewsPage extends StatelessWidget {
           elevation: 8.0,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            height: 125,
+            height: 175,
             width: 350,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,6 +89,10 @@ class ReviewsPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.topLeft,
                   child: _buildTitle(context, review.title),
+                ),
+                ChangeNotifierProvider(
+                  create: (_) => ReviewEmotionsState(review.emotions),
+                  child: const CardReviewEmotionsList(),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -111,8 +117,8 @@ class ReviewsPage extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           title,
-          style: context.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
-          overflow: TextOverflow.ellipsis,
+          style: context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          overflow: TextOverflow.fade,
         ),
         const SizedBox(height: 4),
       ],
@@ -126,7 +132,7 @@ class ReviewsPage extends StatelessWidget {
         Text(
           username,
           style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-          overflow: TextOverflow.ellipsis,
+          overflow: TextOverflow.fade,
         ),
       ],
     );

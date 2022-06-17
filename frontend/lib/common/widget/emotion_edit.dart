@@ -47,6 +47,8 @@ class EmotionEdit extends StatelessWidget {
               Text(
                 emotion.name,
                 textAlign: TextAlign.center,
+                overflow: TextOverflow.fade,
+                maxLines: 1,
               ),
             ],
           ),
