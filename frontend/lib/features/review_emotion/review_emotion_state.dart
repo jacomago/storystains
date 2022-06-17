@@ -53,8 +53,7 @@ class ReviewEmotionState extends ChangeNotifier {
 
     notesController = TextEditingController(text: reviewEmotion?.notes);
     positionController = ValueNotifier(_isCreate ? 0 : reviewEmotion!.position);
-    emotionController =
-        ValueNotifier(_isCreate ? emotion! : reviewEmotion!.emotion);
+    emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
   Future putReviewEmotion(ReviewEmotion reviewEmotion) async {

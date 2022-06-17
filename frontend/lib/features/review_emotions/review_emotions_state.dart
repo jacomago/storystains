@@ -15,6 +15,9 @@ class ReviewEmotionsState extends ChangeNotifier {
   List<ReviewEmotion> get items => _items;
 
   bool get newItem => _isNewItem;
+  bool get editItem => _isEditItem;
+  ReviewEmotion? get currentReviewEmotion =>
+      _isEditItem ? _items[_currentIndex!] : null;
   bool get isEmpty => _isEmpty;
 
   get currentEmotion => _currentEmotion;
@@ -47,13 +50,16 @@ class ReviewEmotionsState extends ChangeNotifier {
   }
 
   Future confirmCreation(ReviewEmotion reviewEmotion) async {
-    _items.add(reviewEmotion);
+    if (_isNewItem) {
+      _items.add(reviewEmotion);
+    } else {
+      _items[_currentIndex!] = reviewEmotion;
+    }
     _items.sort(((a, b) => a.position.compareTo(b.position)));
     await cancelCreate();
   }
 
-  Future confirmEdit(int index, ReviewEmotion reviewEmotion) async {
-    _items[index] = reviewEmotion;
+  Future confirmEdit(ReviewEmotion reviewEmotion) async {
     _items.sort(((a, b) => a.position.compareTo(b.position)));
     await cancelCreate();
   }

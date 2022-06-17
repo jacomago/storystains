@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
@@ -14,12 +15,23 @@ import 'review_emotions_state.dart';
 class ReviewEmotionsList extends StatelessWidget {
   const ReviewEmotionsList({Key? key}) : super(key: key);
 
-  _updateEmotion(
+  void _updateEmotion(
     BuildContext context,
     ReviewEmotion reviewEmotion,
+    int index,
     Emotion? value,
-  ) {
-    UnimplementedError("not done");
+  ) async {
+    FocusScope.of(context).unfocus();
+
+    final state = context.read<ReviewEmotionsState>();
+
+    if (value == null) {
+      context.snackbar('Must choose an emotion.');
+
+      return;
+    }
+
+    await state.edit(index, value);
   }
 
   void _addEmotion(BuildContext context, Emotion? value) async {
@@ -72,11 +84,12 @@ class ReviewEmotionsList extends StatelessWidget {
                 ),
               ],
             ),
-            reviewEmotions.newItem
+            (reviewEmotions.newItem || reviewEmotions.editItem)
                 ? ChangeNotifierProvider(
                     create: (_) => ReviewEmotionState(
                       ReviewEmotionService(),
                       emotion: reviewEmotions.currentEmotion,
+                      reviewEmotion: reviewEmotions.currentReviewEmotion,
                     ),
                     child: ReviewEmotionEdit(
                       cancelHandler: reviewEmotions.cancelCreate,
@@ -88,7 +101,7 @@ class ReviewEmotionsList extends StatelessWidget {
               gutterSpacing: 10,
               indicatorSize: 200,
               indicators: reviewEmotions.items
-                  .map((e) => _buildEmotionItem(context, e))
+                  .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
                   .toList(),
               children: reviewEmotions.items
                   .map((e) => _buildReviewEmotionItem(context, e))
@@ -141,12 +154,13 @@ class ReviewEmotionsList extends StatelessWidget {
   Widget _buildEmotionItem(
     BuildContext context,
     ReviewEmotion reviewEmotion,
+    int index,
   ) {
     return EmotionEdit(
       emotion: reviewEmotion.emotion,
       width: 200,
       height: 200,
-      handler: (value) => _updateEmotion(context, reviewEmotion, value),
+      handler: (value) => _updateEmotion(context, reviewEmotion, index, value),
     );
   }
 }
