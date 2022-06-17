@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
+import '../../common/constant/app_config.dart';
 import 'emotion_service.dart';
 
 class EmotionsState extends ChangeNotifier {
@@ -42,8 +45,25 @@ class EmotionsState extends ChangeNotifier {
       _items = [...items];
     }
 
+    await _precache();
+
     notifyListeners();
     _stopLoading();
+  }
+
+  static String iconFullUrl(Emotion emotion) =>
+      '${AppConfig.imagesBaseUrl}${emotion.iconUrl}';
+
+  Future<void> _precache() async {
+    for (Emotion e in _items) {
+      await precachePicture(
+        ExactAssetPicture(
+          SvgPicture.svgStringDecoderBuilder,
+          iconFullUrl(e),
+        ),
+        null,
+      );
+    }
   }
 
   void _startLoading() {
