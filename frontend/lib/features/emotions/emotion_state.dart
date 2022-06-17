@@ -21,7 +21,9 @@ class EmotionsState extends ChangeNotifier {
 
   Emotion item(int index) => _items[index];
 
-  Emotion get emotionDefault => _items[0];
+  Emotion get emotionDefault => _items.isEmpty
+      ? Emotion(description: '', name: "Default", iconUrl: "")
+      : _items[0];
 
   EmotionsState(this._service) {
     _init();
@@ -42,44 +44,6 @@ class EmotionsState extends ChangeNotifier {
 
     notifyListeners();
     _stopLoading();
-  }
-
-  Future<void> refresh([String? query]) async {
-    _startLoading();
-
-    final items = await _service.fetch();
-
-    if (items != null && items.isNotEmpty) {
-      _items = [...items];
-      _isFailed = false;
-      _isEmpty = false;
-    }
-
-    notifyListeners();
-    _stopLoading();
-  }
-
-  Future<void> fetch() async {
-    if (!_isLoading) {
-      _startLoading();
-
-      final items = await _service.fetch();
-
-      if (items != null) {
-        if (items.isEmpty) {
-          _isEmpty = false;
-          _isFailed = false;
-        } else {
-          _items = [..._items, ...items];
-
-          _isEmpty = false;
-          _isFailed = false;
-        }
-      }
-
-      notifyListeners();
-      _stopLoading();
-    }
   }
 
   void _startLoading() {

@@ -7,6 +7,7 @@ part 'emotion.g.dart';
 @JsonSerializable()
 class Emotion {
   String name;
+  @JsonKey(name: 'icon_url')
   String iconUrl;
   String description;
 

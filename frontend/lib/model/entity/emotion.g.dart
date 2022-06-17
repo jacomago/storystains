@@ -8,12 +8,12 @@ part of 'emotion.dart';
 
 Emotion _$EmotionFromJson(Map<String, dynamic> json) => Emotion(
       name: json['name'] as String,
-      iconUrl: json['iconUrl'] as String,
+      iconUrl: json['icon_url'] as String,
       description: json['description'] as String,
     );
 
 Map<String, dynamic> _$EmotionToJson(Emotion instance) => <String, dynamic>{
       'name': instance.name,
-      'iconUrl': instance.iconUrl,
+      'icon_url': instance.iconUrl,
       'description': instance.description,
     };
