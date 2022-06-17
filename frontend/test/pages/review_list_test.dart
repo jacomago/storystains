@@ -5,6 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
@@ -14,8 +15,15 @@ import 'package:storystains/model/entity/user.dart';
 import 'review_list_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) =>
-    ChangeNotifierProvider<ReviewsState>(
-      create: (_) => reviewsState,
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ReviewsState>(
+          create: (_) => reviewsState,
+        ),
+        ChangeNotifierProvider<EmotionsState>(
+          create: (_) => EmotionsState(EmotionsService()),
+        ),
+      ],
       child: MaterialApp(
         home: Scaffold(
           body: w,
