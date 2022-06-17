@@ -33,9 +33,18 @@ class _EmotionDialogState extends State<EmotionDialog> {
         crossAxisSpacing: 8,
         children: Provider.of<EmotionsState>(context).items.map((e) {
           return GestureDetector(
-            child: GridTile(
-              footer: Text(e.name),
-              child: EmotionImage(emotion: e),
+            child: Container(
+              foregroundDecoration: _selectedEmotion.value == e
+                  ? BoxDecoration(color: Colors.black.withAlpha(50))
+                  : const BoxDecoration(),
+              child: GridTile(
+                footer: Text(e.name),
+                child: EmotionImage(
+                  emotion: e,
+                  width: 100,
+                  height: 100,
+                ),
+              ),
             ),
             onTap: () => {_chooseEmotion(e)},
           );
@@ -45,6 +54,6 @@ class _EmotionDialogState extends State<EmotionDialog> {
   }
 
   void _chooseEmotion(Emotion e) {
-    Navigator.pop(context, _selectedEmotion.value);
+    Navigator.pop(context, e);
   }
 }
