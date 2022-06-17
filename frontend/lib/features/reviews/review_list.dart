@@ -84,12 +84,9 @@ class ReviewsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildTitle(context, review.title),
-                  ],
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: _buildTitle(context, review.title),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
