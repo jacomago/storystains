@@ -84,6 +84,8 @@ class ReviewEmotionsList extends StatelessWidget {
                   )
                 : Row(),
             Timeline(
+              gutterSpacing: 10,
+              indicatorSize: 200,
               indicators: reviewEmotions.items
                   .map((e) => _buildEmotionItem(context, e))
                   .toList(),
@@ -108,7 +110,12 @@ class ReviewEmotionsList extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          Text("Position: $reviewEmotion.position"),
+          Row(
+            children: [
+              Text("Position: ${reviewEmotion.position}"),
+              const Text("Notes"),
+            ],
+          ),
           Text(reviewEmotion.notes),
         ]),
       ),
