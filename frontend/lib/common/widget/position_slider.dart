@@ -9,41 +9,46 @@ class PositionEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 30,
-          height: 30,
-          child: TextField(
-            textAlign: TextAlign.center,
-            textInputAction: TextInputAction.next,
-            keyboardType: TextInputType.number,
-            style: context.bodyLarge,
-            controller: TextEditingController(
-              text: positionController.value.toStringAsFixed(0),
+    return ValueListenableBuilder<int>(
+      builder: (context, value, _) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 30,
+              child: TextField(
+                textAlign: TextAlign.center,
+                textInputAction: TextInputAction.next,
+                keyboardType: TextInputType.number,
+                style: context.labelLarge,
+                controller: TextEditingController(
+                  text: value.toStringAsFixed(0),
+                ),
+                onSubmitted: (newNewValue) {
+                  final newValue = int.tryParse(newNewValue);
+                  if (newValue != null && newValue != value) {
+                    positionController.value = newValue.clamp(0, 100);
+                  }
+                },
+                maxLength: 2,
+              ),
             ),
-            onSubmitted: (value) {
-              final newValue = int.tryParse(value);
-              if (newValue != null && newValue != positionController.value) {
-                positionController.value = newValue.clamp(0, 100);
-              }
-            },
-            maxLength: 2,
-          ),
-        ),
-        Expanded(
-          child: Slider(
-            value: positionController.value.toDouble(),
-            min: 0.0,
-            max: 100.0,
-            onChanged: (value) {
-              positionController.value = value.floor();
-            },
-          ),
-        ),
-      ],
+            Expanded(
+              child: Slider(
+                value: value.toDouble(),
+                min: 0.0,
+                max: 100.0,
+                label: '${value.round()}',
+                onChanged: (newValue) {
+                  positionController.value = newValue.floor();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+      valueListenable: positionController,
     );
   }
 }

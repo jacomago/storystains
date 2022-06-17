@@ -105,11 +105,8 @@ class ReviewEmotionEdit extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SizedBox(
-                            width: 50,
-                            child: PositionEdit(
-                              positionController: state.positionController,
-                            ),
+                          PositionEdit(
+                            positionController: state.positionController,
                           ),
                           const SizedBox(
                             width: 10,
