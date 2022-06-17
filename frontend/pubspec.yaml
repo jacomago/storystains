@@ -25,6 +25,7 @@ dependencies:
   intl: ^0.17.0
   flutter_svg: ^1.1.0
   collection: ^1.16.0
+  bottom_drawer: ^0.0.5
 
 
 dev_dependencies:
