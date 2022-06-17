@@ -82,22 +82,24 @@ class ReviewEmotionEdit extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
-              
               children: [
                 EmotionEdit(
                   emotion: state.emotionController.value,
                   handler: (value) => {state.emotionController.value = value!},
                 ),
-                PositionEdit(
-                  positionController: state.positionController,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: MarkdownEdit(
-                    bodyController: state.notesController,
-                  ),
+                Column(
+                  children: [
+                    PositionEdit(
+                      positionController: state.positionController,
+                    ),
+                    Expanded(
+                      child: MarkdownEdit(
+                        bodyController: state.notesController,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -108,13 +110,19 @@ class ReviewEmotionEdit extends StatelessWidget {
                   onPressed: () {
                     editReviewEmotion(context);
                   },
-                  child: const Text("OK"),
+                  child: Text(
+                    "OK",
+                    style: context.labelMedium,
+                  ),
                 ),
                 TextButton(
                   onPressed: () {
                     cancelCreation(context);
                   },
-                  child: const Text("Cancel"),
+                  child: Text(
+                    "Cancel",
+                    style: context.labelMedium,
+                  ),
                 ),
               ],
             ),

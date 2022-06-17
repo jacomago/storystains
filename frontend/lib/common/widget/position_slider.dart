@@ -9,13 +9,13 @@ class PositionEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          height: 48,
-          width: 64,
+          height: 30,
+          width: 30,
           child: TextField(
             textAlign: TextAlign.center,
             textInputAction: TextInputAction.next,
@@ -35,9 +35,8 @@ class PositionEdit extends StatelessWidget {
         ),
         Slider(
           value: positionController.value.toDouble(),
-          min: 0,
-          max: 100,
-          divisions: 1,
+          min: 0.0,
+          max: 100.0,
           onChanged: (value) {
             positionController.value = value.floor();
           },
