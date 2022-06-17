@@ -5,6 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
@@ -12,9 +13,15 @@ import 'package:storystains/model/entity/user.dart';
 
 import 'review_edit_test.mocks.dart';
 
-Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
-    ChangeNotifierProvider<ReviewState>(
-      create: (_) => reviewState,
+Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ReviewState>(
+          create: (_) => reviewState,
+        ),
+        ChangeNotifierProvider<EmotionsState>(
+          create: (_) => EmotionsState(EmotionsService()),
+        ),
+      ],
       child: MaterialApp(
         home: Scaffold(
           body: w,
@@ -26,7 +33,7 @@ Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
   group("Edit Review", () {
-    testWidgets('Edit', (tester) async {
+    testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final time = DateTime.now();
       final reviewState = ReviewState(
