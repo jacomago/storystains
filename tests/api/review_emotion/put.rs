@@ -115,6 +115,90 @@ async fn put_review_emotion_stores_new_position() {
 }
 
 #[tokio::test]
+async fn put_review_emotion_stores_new_data() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    // Act
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+    let emotion = TestReviewEmotion::generate(None);
+    emotion.store(&app, &token, review.slug()).await;
+    let new_position = if emotion.position == 57 { 56 } else { 57 };
+    let body = json!({"review_emotion": {"emotion":"Anger" , "position": new_position}});
+    let response = app
+        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!(
+        r#"
+            SELECT name, position, notes 
+              FROM review_emotions, emotions 
+             WHERE review_emotions.emotion_id = emotions.id
+        "#,
+    )
+    .fetch_one(&app.db_pool)
+    .await
+    .expect("Failed to fetch saved review emotions.");
+
+    assert_eq!(saved.position, Some(new_position));
+    assert_eq!(saved.name, Some("Anger".to_string()));
+    assert_eq!(saved.notes, Some(emotion.notes.to_string()));
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn put_review_emotion_stores_new_data_with_many_emotions() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    // Act
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+
+    let emotion = TestReviewEmotion::generate(None);
+    emotion.store(&app, &token, review.slug()).await;
+    let emotion = TestReviewEmotion::generate(None);
+    emotion.store(&app, &token, review.slug()).await;
+    let emotion = TestReviewEmotion::generate(None);
+    emotion.store(&app, &token, review.slug()).await;
+
+    let new_position = if emotion.position == 57 { 56 } else { 57 };
+
+    let body = json!({"review_emotion": {"emotion":"Anger" , "position": new_position}});
+
+    let response = app
+        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!(
+        r#"
+            SELECT name, position, notes 
+              FROM review_emotions, emotions 
+             WHERE review_emotions.emotion_id = emotions.id
+               AND position = $1
+        "#,
+        new_position,
+    )
+    .fetch_one(&app.db_pool)
+    .await
+    .expect("Failed to fetch saved review emotions.");
+
+    assert_eq!(saved.position, new_position);
+    assert_eq!(saved.name, "Anger".to_string());
+    assert_eq!(saved.notes, Some(emotion.notes.to_string()));
+    app.teardown().await;
+}
+
+#[tokio::test]
 async fn put_review_emotion_returns_not_found_for_non_existant_review() {
     // Arrange
     let app = TestApp::spawn_app().await;
