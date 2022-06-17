@@ -1,17 +1,22 @@
+use std::iter::zip;
+
 use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 
+use crate::api::{
+    error_chain_fmt,
+    review_emotion::{read_review_emotions, ReviewEmotionData},
+    shared::put_block::{block_non_creator, BlockError},
+    LongFormText, QueryLimits, UserId,
+};
 use anyhow::Context;
+use futures_lite::{stream, StreamExt};
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, QueryLimits, UserId};
-
 use super::{
-    db::{
-        create_review, delete_review, read_review, read_review_user, read_reviews, update_review,
-    },
+    db::{create_review, delete_review, read_review, read_reviews, update_review},
     model::{
-        NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewText, ReviewTitle,
-        ReviewsResponse, UpdateReview,
+        NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewTitle, ReviewsResponse,
+        StoredReview, UpdateReview,
     },
 };
 
@@ -51,6 +56,14 @@ impl ResponseError for ReviewError {
     }
 }
 
+impl From<BlockError> for ReviewError {
+    fn from(e: BlockError) -> Self {
+        match e {
+            BlockError::NoDataError(d) => ReviewError::NoDataError(d),
+            BlockError::NotAllowedError(d) => ReviewError::NotAllowedError(d),
+        }
+    }
+}
 /// Review input on Post
 #[derive(serde::Deserialize)]
 pub struct PostReview {
@@ -66,10 +79,9 @@ pub struct PostReviewData {
 
 impl TryFrom<(PostReviewData, UserId)> for NewReview {
     type Error = String;
-    fn try_from(pair: (PostReviewData, UserId)) -> Result<Self, Self::Error> {
-        let (value, user_id) = pair;
+    fn try_from((value, user_id): (PostReviewData, UserId)) -> Result<Self, Self::Error> {
         let title = ReviewTitle::parse(value.title)?;
-        let body = ReviewText::parse(value.body)?;
+        let body = LongFormText::parse(value.body)?;
         let slug = ReviewSlug::parse(title.slugify())?;
         Ok(Self {
             title,
@@ -102,7 +114,7 @@ pub async fn post_review(
         .await
         .context("Failed to store new review.")?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
-        review: ReviewResponseData::from(stored),
+        review: ReviewResponseData::from((stored, vec![])),
     }))
 }
 
@@ -122,9 +134,11 @@ pub async fn get_review(
     let stored = read_review(&slug, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
-
+    let review_emotions = read_review_emotions(&stored.id, pool.get_ref())
+        .await
+        .map_err(ReviewError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
-        review: ReviewResponseData::from(stored),
+        review: ReviewResponseData::from((stored, review_emotions)),
     }))
 }
 
@@ -144,18 +158,12 @@ pub struct PutReviewData {
 impl TryFrom<PutReviewData> for UpdateReview {
     type Error = String;
     fn try_from(value: PutReviewData) -> Result<Self, Self::Error> {
-        let title = match &value.title {
-            Some(t) => Some(ReviewTitle::parse(t.to_string())?),
-            None => None,
-        };
-        let body = match &value.body {
-            Some(t) => Some(ReviewText::parse(t.to_string())?),
-            None => None,
-        };
-        let slug = match &title {
-            Some(t) => Some(ReviewSlug::parse(t.slugify())?),
-            None => None,
-        };
+        let title = value.title.map(ReviewTitle::parse).transpose()?;
+        let body = value.body.map(LongFormText::parse).transpose()?;
+        let slug = title
+            .as_ref()
+            .map(|t| ReviewSlug::parse(t.slugify()))
+            .transpose()?;
         Ok(Self { title, body, slug })
     }
 }
@@ -167,6 +175,8 @@ impl TryFrom<PutReviewData> for UpdateReview {
     skip(pool, json),
     fields(
         slug = %slug,
+        reviews_title = %format!("{:?}",json.review.title),
+        reviews_review = %format!("{:?}",json.review.body)
     )
 )]
 pub async fn put_review(
@@ -178,16 +188,7 @@ pub async fn put_review(
     let user_id = user_id.into_inner();
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
 
-    let review_user_id = read_review_user(&slug, &pool)
-        .await
-        .map_err(ReviewError::NoDataError)?;
-
-    if user_id != review_user_id {
-        return Err(ReviewError::NotAllowedError(
-            "Must be the creator of the review.".to_string(),
-        ));
-    }
-
+    block_non_creator(&slug, user_id, pool.get_ref()).await?;
     let updated_review = json
         .0
         .review
@@ -196,8 +197,11 @@ pub async fn put_review(
     let stored = update_review(&slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
+    let review_emotions = read_review_emotions(&stored.id, pool.get_ref())
+        .await
+        .map_err(ReviewError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
-        review: ReviewResponseData::from(stored),
+        review: ReviewResponseData::from((stored, review_emotions)),
     }))
 }
 
@@ -230,6 +234,13 @@ pub async fn get_reviews(
     let stored = read_reviews(&limits, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
+    let ids: Vec<&sqlx::types::Uuid> = stored.iter().map(|s| &s.id).collect();
+    let stream_stored: Result<Vec<Vec<_>>, sqlx::Error> = stream::iter(ids)
+        .then(|r| read_review_emotions(r, pool.get_ref()))
+        .try_collect()
+        .await;
+    let emotions = stream_stored.map_err(ReviewError::NoDataError)?;
 
-    Ok(HttpResponse::Ok().json(ReviewsResponse::from(stored)))
+    let all: Vec<(StoredReview, Vec<ReviewEmotionData>)> = zip(stored, emotions).collect();
+    Ok(HttpResponse::Ok().json(ReviewsResponse::from(all)))
 }

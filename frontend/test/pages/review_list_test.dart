@@ -5,7 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/common/widget/review_list.dart';
+import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 import 'package:storystains/model/entity/review.dart';
@@ -24,12 +24,14 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) =>
     );
 
 Review testReview(String title, String body) => Review(
-    title: title,
-    body: body,
-    createdAt: DateTime.now(),
-    updatedAt: DateTime.now(),
-    slug: title,
-    user: UserProfile(username: "randomusername"));
+      title: title,
+      body: body,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      slug: title,
+      emotions: [],
+      user: UserProfile(username: "randomusername"),
+    );
 
 @GenerateMocks([ReviewsService])
 void main() {
@@ -85,7 +87,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text("randomtitle"), findsOneWidget);
-      expect(find.text("randombody"), findsOneWidget);
       expect(find.text("randomusername"), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
@@ -99,10 +100,11 @@ void main() {
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
 
       await tester.pumpWidget(wrapWithMaterial(
-          const ReviewsPage(),
-          ReviewsState(
-            mockService,
-          )));
+        const ReviewsPage(),
+        ReviewsState(
+          mockService,
+        ),
+      ));
       await tester.pumpAndSettle();
 
       expect(find.text("randomtitle"), findsNothing);
@@ -118,7 +120,6 @@ void main() {
       verify(mockService.fetch());
 
       expect(find.text("randomtitle"), findsOneWidget);
-      expect(find.text("randombody"), findsOneWidget);
       expect(find.text("randomusername"), findsOneWidget);
     });
   });

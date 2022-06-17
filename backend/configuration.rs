@@ -14,8 +14,6 @@ pub struct Settings {
     pub application: ApplicationSettings,
     /// The possible input origin for Cross Origin requests
     pub frontend_origin: String,
-    /// Folder whre static files are stored
-    pub static_files: String,
 }
 
 /// Settings for the application
@@ -32,6 +30,17 @@ pub struct ApplicationSettings {
     pub hmac_secret: Secret<String>,
     /// Length of expiry in seconds of token
     pub exp_token_seconds: u64,
+    /// Folder where static files are stored
+    pub static_files: String,
+    /// Folder where static images are stored
+    pub image_files: String,
+}
+
+impl ApplicationSettings {
+    /// Return constructed address from host and port
+    pub fn address(&self) -> String {
+        format!("{}:{}", self.host, self.port)
+    }
 }
 
 /// Database settings

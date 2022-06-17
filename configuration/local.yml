@@ -1,7 +1,8 @@
 application:
   host: 127.0.0.1
+  static_files: "./frontend/build/web/"
+  image_files: "./assets/images/"
 database:
   host: localhost
   require_ssl: false
 frontend_origin: "http://localhost:50547"
-static_files: "./frontend/build/web/"

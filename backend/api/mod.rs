@@ -1,5 +1,17 @@
+mod shared;
+pub use shared::consistancy::*;
+pub use shared::long_form_text::*;
+
 mod reviews;
 pub use reviews::routes::*;
+
+mod review_emotion;
+pub use review_emotion::routes::*;
+
+mod emotions;
+pub use emotions::emotions;
+pub use emotions::routes::*;
+pub use emotions::EmotionData;
 
 mod users;
 pub use users::db::*;

@@ -21,12 +21,14 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
       final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
@@ -51,12 +53,14 @@ void main() {
       expect(reviewState.isCreate, true);
 
       when(mockService.create("", "")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Cannot be empty.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 400,
-              data: "Cannot be empty.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       await reviewState.create("", "");
 
@@ -73,12 +77,14 @@ void main() {
       expect(reviewState.isCreate, true);
 
       when(mockService.create("", "")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 401,
+          data: "User not logged in.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 401,
-              data: "User not logged in.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       await reviewState.create("", "");
 
@@ -93,12 +99,14 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
 
       final mockService = MockReviewService();
 
@@ -121,25 +129,30 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(
-          mockService,
-          Review(
-              title: "",
-              body: "",
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              slug: "",
-              user: UserProfile(username: "username")));
+        mockService,
+        Review(
+          title: "",
+          body: "",
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          slug: "",
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
       when(mockService.delete("")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Cannot be empty.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 400,
-              data: "Cannot be empty.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       await reviewState.delete("");
 
@@ -152,25 +165,30 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(
-          mockService,
-          Review(
-              title: "",
-              body: "",
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              slug: "",
-              user: UserProfile(username: "username")));
+        mockService,
+        Review(
+          title: "",
+          body: "",
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          slug: "",
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
       when(mockService.delete("")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 401,
+          data: "User not logged in.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 401,
-              data: "User not logged in.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       await reviewState.delete("");
 
@@ -185,12 +203,14 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
       final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
@@ -213,25 +233,30 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(
-          mockService,
-          Review(
-              title: "",
-              body: "",
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              slug: "",
-              user: UserProfile(username: "username")));
+        mockService,
+        Review(
+          title: "",
+          body: "",
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          slug: "",
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
       when(mockService.update("", "", "")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Cannot be empty.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 400,
-              data: "Cannot be empty.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       await reviewState.update("", "");
 
@@ -244,25 +269,30 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(
-          mockService,
-          Review(
-              title: "",
-              body: "",
-              createdAt: DateTime.now(),
-              updatedAt: DateTime.now(),
-              slug: "",
-              user: UserProfile(username: "username")));
+        mockService,
+        Review(
+          title: "",
+          body: "",
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          slug: "",
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
       when(mockService.update("", "", "")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 401,
+          data: "User not logged in.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 401,
-              data: "User not logged in.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       await reviewState.update("", "");
 
@@ -278,12 +308,14 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
 
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService, review);

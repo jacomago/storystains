@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/utils/error.dart';
-import 'package:storystains/data/network/api.dart';
+import 'package:storystains/common/data/network/api_exception.dart';
+import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 
 import '../../model/entity/review.dart';
@@ -54,11 +54,7 @@ class ReviewState extends ChangeNotifier {
   }
 
   Future<void> init() async {
-    if (_review != null) {
-      _status = ReviewStatus.read;
-    } else {
-      _status = ReviewStatus.notupdated;
-    }
+    _status = _review != null ? ReviewStatus.read : ReviewStatus.notupdated;
 
     notifyListeners();
   }

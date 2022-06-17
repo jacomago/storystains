@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:storystains/model/resp/user_resp.dart';
 
 import '../../model/entity/user.dart';
-import '../../utils/prefs.dart';
+import 'package:storystains/common/utils/prefs.dart';
 import 'auth.dart';
 
 enum AuthEvent { register, login, logout }
@@ -45,11 +45,9 @@ class AuthState extends ChangeNotifier {
   }
 
   void switchLoginRegister() {
-    if (_loginRegister == LoginRegister.login) {
-      _loginRegister = LoginRegister.register;
-    } else {
-      _loginRegister = LoginRegister.login;
-    }
+    _loginRegister = _loginRegister == LoginRegister.login
+        ? LoginRegister.register
+        : LoginRegister.login;
     notifyListeners();
   }
 
@@ -69,11 +67,9 @@ class AuthState extends ChangeNotifier {
       _token = token;
     }
 
-    if (_user != null && _token != null) {
-      _status = AuthStatus.authenticated;
-    } else {
-      _status = AuthStatus.notauthenticated;
-    }
+    _status = _user != null && _token != null
+        ? AuthStatus.authenticated
+        : AuthStatus.notauthenticated;
 
     notifyListeners();
   }

@@ -27,6 +27,7 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -42,6 +43,7 @@ async fn post_review_returns_unauth_when_logged_out() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -62,6 +64,7 @@ async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
 
     // Assert
     assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -80,10 +83,11 @@ async fn post_review_persists_the_new_review() {
     let saved = sqlx::query!("SELECT title, body FROM reviews",)
         .fetch_one(&app.db_pool)
         .await
-        .expect("Failed to fetch saved subscription.");
+        .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.body, "5stars");
     assert_eq!(saved.title, "Dune");
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -111,6 +115,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
             error_message
         );
     }
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -141,6 +146,7 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
             description
         );
     }
+    app.teardown().await;
 }
 
 #[tokio::test]
@@ -160,4 +166,5 @@ async fn post_review_returns_json() {
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "5stars");
     assert_eq!(json["review"]["title"], "Dune");
+    app.teardown().await;
 }

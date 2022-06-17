@@ -3,10 +3,12 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/auth/auth.dart';
+import 'package:storystains/features/review_emotions/review_emotion_list.dart';
+import 'package:storystains/features/review_emotions/review_emotions_state.dart';
 import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
-import 'package:storystains/utils/extensions.dart';
-import 'package:storystains/utils/snackbar.dart';
+import 'package:storystains/common/utils/extensions.dart';
+import 'package:storystains/common/utils/snackbar.dart';
 
 import '../features/review/review.dart';
 import '../model/entity/review.dart';
@@ -33,12 +35,14 @@ class ReviewDetailPage extends StatelessWidget {
       Navigator.of(context)
           .push(
             MaterialPageRoute<Review>(
-                settings: RouteSettings(
-                    name: Routes.reviewEdit,
-                    arguments: ReviewArguement(review.review!)),
-                builder: (BuildContext context) {
-                  return const EditReview();
-                }),
+              settings: RouteSettings(
+                name: Routes.reviewEdit,
+                arguments: ReviewArguement(review.review!),
+              ),
+              builder: (BuildContext context) {
+                return const EditReview();
+              },
+            ),
           )
           .then((value) async => await review.putReview(value!));
     } else {
@@ -74,7 +78,7 @@ class ReviewDetailPage extends StatelessWidget {
                             style: context.displayMedium,
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   Row(
@@ -86,7 +90,7 @@ class ReviewDetailPage extends StatelessWidget {
                         children: const [
                           SizedBox(
                             height: 4.0,
-                          )
+                          ),
                         ],
                       ),
                       Column(
@@ -100,19 +104,25 @@ class ReviewDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                              "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
-                              style: context.caption,
-                              overflow: TextOverflow.ellipsis),
+                            "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
+                            style: context.caption,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           const SizedBox(height: 4),
                           Text(
-                              "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
-                              style: context.caption,
-                              overflow: TextOverflow.ellipsis),
+                            "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
+                            style: context.caption,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 24),
+                  ChangeNotifierProvider(
+                    create: (_) => ReviewEmotionsState(review.review!.emotions),
+                    child: const ReviewEmotionsList(),
+                  ),
                   Markdown(
                     physics: const NeverScrollableScrollPhysics(),
                     data: review.review?.body ?? '',

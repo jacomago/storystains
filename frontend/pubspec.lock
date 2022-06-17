@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  bottom_drawer:
+    dependency: "direct main"
+    description:
+      name: bottom_drawer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   build:
     dependency: transitive
     description:
@@ -163,7 +170,7 @@ packages:
     source: hosted
     version: "4.1.0"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       url: "https://pub.dartlang.org"

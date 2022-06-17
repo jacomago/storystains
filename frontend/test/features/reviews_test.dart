@@ -21,12 +21,14 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
       final reviewsResp = ReviewsResp(reviews: [review]);
 
       final mockService = MockReviewsService();
@@ -56,20 +58,23 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
       when(mockService.fetch(offset: 2 * AppConfig.defaultLimit)).thenAnswer(
-          (realInvocation) async => reviewsResp.reviews
-              .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
+        (realInvocation) async => reviewsResp.reviews
+            .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit),
+      );
 
       final reviewState = ReviewsState(mockService);
 
@@ -88,15 +93,19 @@ void main() {
       const title = "title";
       const body = "body";
       final reviewsResp = ReviewsResp(
-          reviews: List.generate(
-              45,
-              (int index) => Review(
-                  title: title + index.toString(),
-                  body: body,
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
-                  slug: title + index.toString(),
-          user: UserProfile(username: "username"))));
+        reviews: List.generate(
+          45,
+          (int index) => Review(
+            title: title + index.toString(),
+            body: body,
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+            emotions: [],
+            slug: title + index.toString(),
+            user: UserProfile(username: "username"),
+          ),
+        ),
+      );
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
@@ -161,20 +170,23 @@ void main() {
       const title = "title";
       const body = "body";
       final review = Review(
-          title: title,
-          body: body,
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: title,
-          user: UserProfile(username: "username"));
+        title: title,
+        body: body,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        slug: title,
+        emotions: [],
+        user: UserProfile(username: "username"),
+      );
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch(offset:  AppConfig.defaultLimit)).thenAnswer(
-          (realInvocation) async => reviewsResp.reviews
-              .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
+      when(mockService.fetch(offset: AppConfig.defaultLimit)).thenAnswer(
+        (realInvocation) async => reviewsResp.reviews
+            .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit),
+      );
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
 

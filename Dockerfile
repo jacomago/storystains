@@ -38,6 +38,7 @@ RUN apt-get update -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/target/release/storystains storystains
+COPY --from=builder /app/assets/images static/images
 COPY --from=frontbuild /app/build/web static/root
 COPY configuration configuration
 ENV APP_ENVIRONMENT production

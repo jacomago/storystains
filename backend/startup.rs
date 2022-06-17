@@ -1,10 +1,11 @@
 use crate::api::{
-    db_check, delete_review_by_slug, delete_user, get_review, get_reviews, health_check, login,
-    post_review, put_review, signup,
+    db_check, delete_review_by_slug, delete_review_emotion, delete_user, get_emotions, get_review,
+    get_review_emotion, get_reviews, health_check, login, post_review, post_review_emotion,
+    put_review, put_review_emotion, signup, update_db,
 };
 
 use crate::auth::bearer_auth;
-use crate::configuration::Settings;
+use crate::configuration::{ApplicationSettings, Settings};
 use crate::cors::cors;
 use crate::telemetry::get_metrics;
 use actix_files::Files;
@@ -38,21 +39,14 @@ impl Application {
     /// Build the application from configuration
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
-
-        let address = format!(
-            "{}:{}",
-            configuration.application.host, configuration.application.port
-        );
-        let listener = TcpListener::bind(&address)?;
+        update_db(&connection_pool).await?;
+        let listener = TcpListener::bind(&configuration.application.address())?;
         let port = listener.local_addr().unwrap().port();
         let server = run(
             listener,
             connection_pool,
-            configuration.application.base_url,
-            configuration.application.hmac_secret,
             configuration.frontend_origin,
-            configuration.static_files,
-            configuration.application.exp_token_seconds,
+            configuration.application,
         )
         .await?;
         Ok(Self { port, server })
@@ -84,15 +78,12 @@ pub struct ExpTokenSeconds(pub u64);
 async fn run(
     listener: TcpListener,
     db_pool: PgPool,
-    base_url: String,
-    hmac_secret: Secret<String>,
     frontend_origin: String,
-    static_files: String,
-    exp_token_seconds: u64,
+    settings: ApplicationSettings,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
 
-    let base_url = Data::new(ApplicationBaseUrl(base_url));
+    let base_url = Data::new(ApplicationBaseUrl(settings.base_url));
     let metrics_route =
         |req: &dev::ServiceRequest| req.path() == "/metrics" && req.method() == http::Method::GET;
     let metrics = get_metrics(metrics_route);
@@ -102,11 +93,15 @@ async fn run(
             .wrap(metrics.clone())
             .wrap(cors(&frontend_origin))
             .configure(routes)
-            .service(Files::new("/", &static_files).index_file("index.html"))
+            .service(
+                Files::new("/emotions/", format!("{}/emotions", &settings.image_files))
+                    .index_file("index.html"),
+            )
+            .service(Files::new("/", &settings.static_files).index_file("index.html"))
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
-            .app_data(Data::new(HmacSecret(hmac_secret.clone())))
-            .app_data(Data::new(ExpTokenSeconds(exp_token_seconds)))
+            .app_data(Data::new(HmacSecret(settings.hmac_secret.clone())))
+            .app_data(Data::new(ExpTokenSeconds(settings.exp_token_seconds)))
     })
     .listen(listener)?
     .run();
@@ -126,14 +121,28 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/db_check", web::get().to(db_check))
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
+            .route("/emotions", web::get().to(get_emotions))
             .route("/reviews", web::get().to(get_reviews))
             .route("/reviews/{slug}", web::get().to(get_review))
+            .route(
+                "/reviews/{slug}/emotions/{position}",
+                web::get().to(get_review_emotion),
+            )
             .service(
                 web::scope("/reviews")
                     .wrap(auth_reviews)
                     .route("", web::post().to(post_review))
                     .route("/{slug}", web::put().to(put_review))
-                    .route("/{slug}", web::delete().to(delete_review_by_slug)),
+                    .route("/{slug}", web::delete().to(delete_review_by_slug))
+                    .route("/{slug}/emotions", web::post().to(post_review_emotion))
+                    .route(
+                        "/{slug}/emotions/{position}",
+                        web::put().to(put_review_emotion),
+                    )
+                    .route(
+                        "/{slug}/emotions/{position}",
+                        web::delete().to(delete_review_emotion),
+                    ),
             )
             .service(
                 web::scope("/users")

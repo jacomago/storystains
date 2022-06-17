@@ -15,3 +15,5 @@ Cargo.lock
 /target
 .env
 /static/
+
+sql_scratch.sql

@@ -1,7 +1,7 @@
 //! Story Stains is a story review site using the actix web framework for the backend
 //! api. The objects are split up into different modules in the api module.
 
-#![deny(missing_docs, rust_2018_idioms, rust_2021_compatibility)]
+#![deny(missing_docs, rust_2018_idioms)]
 
 /// Api is where all the individual feature modules exist
 /// Can intermingle, especially with user part

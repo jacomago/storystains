@@ -5,16 +5,23 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:storystains/common/widget/review_edit.dart';
+import 'package:storystains/features/emotions/emotion.dart';
+import 'package:storystains/features/review/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/user.dart';
 
 import 'review_edit_test.mocks.dart';
 
-Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
-    ChangeNotifierProvider<ReviewState>(
-      create: (_) => reviewState,
+Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ReviewState>(
+          create: (_) => reviewState,
+        ),
+        ChangeNotifierProvider<EmotionsState>(
+          create: (_) => EmotionsState(EmotionsService()),
+        ),
+      ],
       child: MaterialApp(
         home: Scaffold(
           body: w,
@@ -26,18 +33,21 @@ Widget wrapWithMaterial(Widget w, ReviewState reviewState) =>
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
   group("Edit Review", () {
-    testWidgets('Edit', (tester) async {
+    testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final time = DateTime.now();
       final reviewState = ReviewState(
-          ReviewService(),
-          Review(
-              body: "body",
-              createdAt: time,
-              slug: "title",
-              title: "title",
-              updatedAt: time,
-              user: UserProfile(username: "username")));
+        ReviewService(),
+        Review(
+          body: "body",
+          createdAt: time,
+          slug: "title",
+          title: "title",
+          updatedAt: time,
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
 
@@ -62,25 +72,30 @@ void main() {
       final time = DateTime.now();
       final mockService = MockReviewService();
       final reviewState = ReviewState(
-          mockService,
-          Review(
-              body: "body",
-              createdAt: time,
-              slug: "title",
-              title: "/",
-              updatedAt: time,
-              user: UserProfile(username: "username")));
+        mockService,
+        Review(
+          body: "body",
+          createdAt: time,
+          slug: "title",
+          title: "/",
+          updatedAt: time,
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
       when(mockService.update("title", "/", "body")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Cannot be /.",
           requestOptions: RequestOptions(path: ""),
-          type: DioErrorType.response,
-          response: Response(
-              statusCode: 400,
-              data: "Cannot be /.",
-              requestOptions: RequestOptions(path: ""))));
+        ),
+      ));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -88,8 +103,10 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
-          findsOneWidget);
+      expect(
+        find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        findsOneWidget,
+      );
     });
   });
 }
