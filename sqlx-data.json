@@ -1,5 +1,103 @@
 {
   "db": "PostgreSQL",
+  "01c8c00d585a67871c0d5d26063389a6344a585c2fb286d5dedf0863a038dedb": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "description",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon_url",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n            WHERE id = $1\n        "
+  },
+  "0f92a84ee2939b828c8e668f60ab5f9f162fa64de113aaf40f95834c8d033d17": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            UPDATE reviews\n            SET title      = COALESCE($1, title),\n                slug       = COALESCE($2, slug),\n                body       = COALESCE($3, body),\n                updated_at = $4\n            WHERE     slug = $5\n            RETURNING id, title, slug, body, created_at, updated_at, user_id\n        "
+  },
   "1a66539537c71a52ffacfe03719f39c0e6b174a6cecccbfba7750371af8cd19d": {
     "describe": {
       "columns": [
@@ -25,54 +123,6 @@
       }
     },
     "query": "\n        SELECT user_id, password_hash FROM users\n        WHERE username = $1\n        "
-  },
-  "27927c424586f720b157e0e55c7c4c2e37145f6f6a0b031095fc4ff3e810c347": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 4,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            UPDATE reviews\n            SET title      = COALESCE($1, title),\n                slug       = COALESCE($2, slug),\n                body       = COALESCE($3, body),\n                updated_at = $4\n            WHERE     slug = $5\n            RETURNING title, slug, body, created_at, user_id\n        "
   },
   "2c46d9b3160ef9ad68700bb4c6aad60da9de1c0011e9c484acd438f4c18cf32f": {
     "describe": {
@@ -120,6 +170,57 @@
     },
     "query": "\n            SELECT user_id\n            FROM reviews \n            WHERE slug = $1\n        "
   },
+  "3f6b86bc5fd6cbbc74917a1e2475522f1d323a79bb2968df23d73072c06c3cf7": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "description",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon_url",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n        "
+  },
+  "62adc88d3c113617a956d1a41e3742489021d690b4a95157ba79acf156eb1e56": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Int4Array",
+          "TextArray",
+          "TextArray",
+          "TextArray"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO emotions(id, name, description, icon_url) \n        SELECT * FROM UNNEST($1::integer[], $2::text[], $3::text[], $4::text[])\n        "
+  },
   "670dfcff9385a45e93291925c6208bc300c1d3d1af9412646480bea77a3328a3": {
     "describe": {
       "columns": [],
@@ -131,56 +232,6 @@
       }
     },
     "query": "\n            DELETE FROM reviews\n            WHERE       user_id = $1\n        "
-  },
-  "78a6b5b7af569f2622526af28fbd170e36b265f7b29bcfb71629166681ff3b93": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 3,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "username",
-          "ordinal": 5,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            SELECT title,\n                   slug, \n                   body, \n                   created_at, \n                   updated_at, \n                   username\n              FROM reviews,\n                   users\n            WHERE  slug          = $1\n              AND  users.user_id = reviews.user_id\n        "
   },
   "8219707831f28b7fb24d2dc85cdc894c2eb4e7138306a660c536a0b0caa5b1da": {
     "describe": {
@@ -210,23 +261,38 @@
     },
     "query": "\n            INSERT INTO users (user_id, username, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING user_id, username\n        "
   },
-  "89d8bd39a355aef1d7592d28c7a63701d0811f608405f062a3a8e97f79744365": {
+  "8819309c7a7233e08343d3511f557141cd14dfd51e993e3ed707e65cda937253": {
     "describe": {
       "columns": [
         {
-          "name": "success",
+          "name": "emotion_id",
           "ordinal": 0,
-          "type_info": "Bool"
+          "type_info": "Int4"
+        },
+        {
+          "name": "position",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "notes",
+          "ordinal": 2,
+          "type_info": "Text"
         }
       ],
       "nullable": [
-        false
+        false,
+        false,
+        true
       ],
       "parameters": {
-        "Left": []
+        "Left": [
+          "Text",
+          "Int4"
+        ]
       }
     },
-    "query": "\n        SELECT success\n        FROM _sqlx_migrations\n    "
+    "query": "\n            SELECT emotion_id,\n                   position,\n                   notes\n              FROM reviews,\n                   review_emotions,\n                   emotions\n            WHERE  reviews.slug   = $1\n              AND  review_emotions.position = $2\n        "
   },
   "93f5c539d6cbae65038e5dd0425c72b437810360d59bb5990c440e8bb0f6dc0a": {
     "describe": {
@@ -240,41 +306,60 @@
     },
     "query": "\n            DELETE FROM reviews\n            WHERE     slug = $1\n        "
   },
-  "b5bcaf49c6fd37f7963d4feeca94d476246457461819dcc2bc799e98c87f2652": {
+  "a6cc3433e5712aa14808e4c863748e327482227c1b209fb16375f1ad2444ea92": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = (SELECT id\n                                FROM reviews\n                                WHERE slug = $1\n                               )\n                AND position = $2\n        "
+  },
+  "afeadc6ca50f5aea9b880b15d3114690d219d921964617949a07fad8053c19f0": {
     "describe": {
       "columns": [
         {
-          "name": "title",
+          "name": "id",
           "ordinal": 0,
-          "type_info": "Text"
+          "type_info": "Uuid"
         },
         {
-          "name": "slug",
+          "name": "title",
           "ordinal": 1,
           "type_info": "Text"
         },
         {
-          "name": "body",
+          "name": "slug",
           "ordinal": 2,
           "type_info": "Text"
         },
         {
-          "name": "created_at",
+          "name": "body",
           "ordinal": 3,
-          "type_info": "Timestamptz"
+          "type_info": "Text"
         },
         {
-          "name": "updated_at",
+          "name": "created_at",
           "ordinal": 4,
           "type_info": "Timestamptz"
         },
         {
-          "name": "username",
+          "name": "updated_at",
           "ordinal": 5,
-          "type_info": "Text"
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
         }
       ],
       "nullable": [
+        false,
         false,
         false,
         false,
@@ -284,12 +369,17 @@
       ],
       "parameters": {
         "Left": [
-          "Int8",
-          "Int8"
+          "Uuid",
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz",
+          "Timestamptz",
+          "Uuid"
         ]
       }
     },
-    "query": "\n            SELECT  title, \n                    slug, \n                    body, \n                    created_at, \n                    updated_at, \n                    username\n              FROM  reviews, \n                    users\n            WHERE   users.user_id = reviews.user_id\n            ORDER BY updated_at\n            LIMIT $1\n            OFFSET $2\n        "
+    "query": "\n            INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)\n            VALUES ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING id, title, slug, body, created_at, updated_at, user_id\n        "
   },
   "c99d9e22fcc337ad063d3c6165b47ad0fcd61fb4d319685fc5b4f3c92d4a2a47": {
     "describe": {
@@ -323,22 +413,221 @@
     },
     "query": "\n            DELETE FROM users\n            WHERE       user_id = $1\n        "
   },
-  "ee03d31895f480706d6eb4847ae23167d57a4f8c375300be2d1e1d0a2c7a7ea9": {
+  "e429b5a844ef756cbe0001de7954bc89690ac874c9a8f5558f240220269dab19": {
     "describe": {
-      "columns": [],
-      "nullable": [],
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "username",
+          "ordinal": 6,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
       "parameters": {
         "Left": [
-          "Uuid",
-          "Text",
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Timestamptz",
+          "Int8",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n            SELECT  id,\n                    title, \n                    slug, \n                    body, \n                    created_at, \n                    updated_at, \n                    username\n              FROM  reviews, \n                    users\n            WHERE   users.user_id = reviews.user_id\n            ORDER BY updated_at\n            LIMIT $1\n            OFFSET $2\n        "
+  },
+  "e6d5647507c955bee700916f621707b4bab0563fc7173fd60ebc44941c64cb64": {
+    "describe": {
+      "columns": [
+        {
+          "name": "emotion_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "position",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "notes",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
           "Uuid"
         ]
       }
     },
-    "query": " \n            INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)\n            VALUES ($1, $2, $3, $4, $5, $6, $7)\n        "
+    "query": "\n            SELECT emotion_id,\n                   position,\n                   notes\n              FROM review_emotions\n            WHERE  review_id = $1\n          ORDER BY position ASC\n        "
+  },
+  "e6f7451655ff6d0de8b25c11e0a27ed84c44c2e25f748b9d89b72d2dd90477ff": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "username",
+          "ordinal": 6,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            SELECT id,\n                   title,\n                   slug, \n                   body, \n                   created_at, \n                   updated_at, \n                   username\n              FROM reviews,\n                   users\n            WHERE  slug          = $1\n              AND  users.user_id = reviews.user_id\n        "
+  },
+  "ee4e254b722701b7b57f8a484dab7df8da3d711cad21104ec32c36fdecbe5265": {
+    "describe": {
+      "columns": [
+        {
+          "name": "emotion_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "position",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "notes",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Int4",
+          "Text",
+          "Text",
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n            UPDATE review_emotions\n            SET emotion_id  = COALESCE($1, emotion_id),\n                position    = COALESCE($2, position),\n                notes       = COALESCE($3, notes)\n            WHERE review_id = (SELECT id\n                                 FROM reviews\n                                WHERE slug = $4\n                               )\n               AND position = $5\n            RETURNING emotion_id,\n                      position, \n                      notes\n        "
+  },
+  "fac5ad9b4a8ecdd79989d9067cbcd105c8f7084614245d73b1606cde379ae009": {
+    "describe": {
+      "columns": [
+        {
+          "name": "emotion_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "position",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "notes",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Int4",
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": " \n            INSERT INTO review_emotions(\n                id,\n                review_id,\n                emotion_id,\n                position,\n                notes\n            )\n            VALUES (\n                $1,\n                (\n                    SELECT id\n                    FROM reviews\n                    WHERE slug = $2\n                    LIMIT 1\n                ), \n                $3, \n                $4,\n                $5 \n            )\n            RETURNING emotion_id, position, notes\n        "
   }
 }
