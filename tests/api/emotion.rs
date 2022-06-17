@@ -42,10 +42,7 @@ async fn get_emotions_returns_list() {
 
     let emotions = json["emotions"].as_array().unwrap();
     assert_eq!(emotions.len(), 21);
-    assert!(emotions
-        .iter()
-        .map(|x| x.as_str())
-        .any(|x| x == Some("Joy")));
+    assert!(emotions.iter().any(|x| x["name"] == "Joy"));
     app.teardown().await;
 }
 
