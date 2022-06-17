@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "flutter Launch Chrome",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "deviceId": "chrome",
+            "args": [
+                "--web-port",
+                "50547"
+            ]
+        },
+        {
             "name": "frontend",
             "cwd": "frontend",
             "request": "launch",
