@@ -27,22 +27,19 @@ class _EmotionDialogState extends State<EmotionDialog> {
       insetPadding:
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       clipBehavior: Clip.antiAlias,
-      child: ChangeNotifierProvider(
-        create: (_) => EmotionsState(EmotionsService()),
-        builder: (context, child) => GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          children: Provider.of<EmotionsState>(context).items.map((e) {
-            return GestureDetector(
-              child: GridTile(
-                footer: Text(e.name),
-                child: EmotionImage(emotion: e),
-              ),
-              onTap: () => {_chooseEmotion(e)},
-            );
-          }).toList(),
-        ),
+      child: GridView.count(
+        crossAxisCount: 3,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        children: Provider.of<EmotionsState>(context).items.map((e) {
+          return GestureDetector(
+            child: GridTile(
+              footer: Text(e.name),
+              child: EmotionImage(emotion: e),
+            ),
+            onTap: () => {_chooseEmotion(e)},
+          );
+        }).toList(),
       ),
     );
   }
