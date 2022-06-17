@@ -56,8 +56,8 @@ class EmotionsState extends ChangeNotifier {
   Future<void> _precache() async {
     for (Emotion e in _items) {
       await precachePicture(
-        ExactAssetPicture(
-          SvgPicture.svgStringDecoderBuilder,
+        NetworkPicture(
+          SvgPicture.svgByteDecoderBuilder,
           iconFullUrl(e),
         ),
         null,
