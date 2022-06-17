@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:storystains/common/widget/emotion_image.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
 import 'emotion_picker.dart';
@@ -25,7 +26,7 @@ class EmotionEdit extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Column(children: [
-          SvgPicture.network(emotion.iconUrl),
+          EmotionImage(emotion: emotion),
           Text(emotion.name),
         ]),
       ),
