@@ -14,8 +14,7 @@ import 'package:storystains/model/entity/user.dart';
 
 import 'review_list_test.mocks.dart';
 
-Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) =>
-    MultiProvider(
+Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
       providers: [
         ChangeNotifierProvider<ReviewsState>(
           create: (_) => reviewsState,
