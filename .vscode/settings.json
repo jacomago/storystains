@@ -13,8 +13,4 @@
       "password": "password"
     }
   ],
-  "flutter-coverage.coverageFilePaths": [
-    "frontend/coverage"
-  ],
-  "markiscodecoverage.searchCriteria": "frontend/coverage/lcov*.info"
 }

@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:storystains/model/entity/emotion.dart';
 
 part 'create_review_emotion.g.dart';
 

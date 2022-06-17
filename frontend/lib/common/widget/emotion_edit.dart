@@ -24,14 +24,16 @@ class EmotionEdit extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(10),
-        child: Column(children: [
-          EmotionImage(
-            emotion: emotion,
-            width: 150,
-            height: 150,
-          ),
-          Text(emotion.name),
-        ]),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            EmotionImage(
+              emotion: emotion,
+              height: 150,
+            ),
+            Text(emotion.name),
+          ],
+        ),
       ),
     );
   }
