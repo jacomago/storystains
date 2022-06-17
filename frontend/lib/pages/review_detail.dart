@@ -3,6 +3,8 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/auth/auth.dart';
+import 'package:storystains/features/review_emotions/review_emotion_list.dart';
+import 'package:storystains/features/review_emotions/review_emotions_state.dart';
 import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/common/utils/extensions.dart';
@@ -117,6 +119,10 @@ class ReviewDetailPage extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
+                  ChangeNotifierProvider(
+                    create: (_) => ReviewEmotionsState(review.review!.emotions),
+                    child: const ReviewEmotionsList(),
+                  ),
                   Markdown(
                     physics: const NeverScrollableScrollPhysics(),
                     data: review.review?.body ?? '',
