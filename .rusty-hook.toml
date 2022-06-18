@@ -1,0 +1,6 @@
+[hooks]
+pre-commit = ["cargo fmt", "cargo sqlx prepare -- --lib"]
+pre-push = ["cargo test"]
+
+[logging]
+verbose = true
