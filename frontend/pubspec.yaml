@@ -38,6 +38,7 @@ dev_dependencies:
   dependency_validator: ^3.0.0
   mockito: ^5.2.0
   dart_code_metrics: ^4.15.2
+  http: ^0.13.4
 
 flutter:
   uses-material-design: true

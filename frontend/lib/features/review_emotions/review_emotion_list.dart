@@ -54,7 +54,6 @@ class ReviewEmotionsList extends StatelessWidget {
       builder: (_, reviewEmotions, emotions, __) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
