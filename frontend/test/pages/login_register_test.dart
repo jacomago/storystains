@@ -105,13 +105,14 @@ void main() {
       var loginButton = find.widgetWithText(MaterialButton, "Login");
       expect(loginButton, findsOneWidget);
 
-      // await tester.ensureVisible(loginButton);
-      // await tester.tap(loginButton.first);
-      // await tester.pump();
+      await tester.ensureVisible(loginButton);
+      await tester.tap(loginButton.first);
+      await tester.pump();
 
-      // print(tester.allWidgets);
-      // expect(find.widgetWithText(SnackBar, "Sign in failed. Please try again."),
-      //     findsOneWidget);
+      expect(
+        find.widgetWithText(SnackBar, "Sign in failed. Please try again."),
+        findsOneWidget,
+      );
     });
   });
 }
