@@ -1,10 +1,7 @@
-use actix_web::{web, HttpResponse, ResponseError};
+use actix_web::{HttpResponse, ResponseError};
 use reqwest::StatusCode;
-use sqlx::PgPool;
 
 use crate::api::{emotions::model::emotions, error_chain_fmt, EmotionData};
-
-use super::db::retreive_all_emotions;
 
 /// API for getting a list of all emotions
 #[tracing::instrument(name = "Getting emotions", skip(), fields())]
@@ -42,14 +39,4 @@ impl ResponseError for EmotionError {
             EmotionError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
-}
-
-/// API for getting all of the emotions stored in the db
-#[tracing::instrument(name = "Getting all emotions", skip(pool), fields())]
-pub async fn get_all_emotions(pool: web::Data<PgPool>) -> Result<HttpResponse, EmotionError> {
-    let stored = retreive_all_emotions(pool.get_ref())
-        .await
-        .map_err(EmotionError::NoDataError)?;
-
-    Ok(HttpResponse::Ok().json(stored))
 }

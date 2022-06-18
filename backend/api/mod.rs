@@ -1,5 +1,4 @@
 mod shared;
-pub use shared::consistancy::*;
 pub use shared::long_form_text::*;
 
 mod reviews;

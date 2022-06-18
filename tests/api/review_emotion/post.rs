@@ -221,7 +221,7 @@ async fn post_review_emotion_returns_json() {
 }
 
 #[tokio::test]
-async fn post_every_emotion_succeds() {
+async fn post_every_emotion_succeeds() {
     // Arrange
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;

@@ -1,7 +1,7 @@
 use crate::api::{
     db_check, delete_review_by_slug, delete_review_emotion, delete_user, get_emotions, get_review,
     get_review_emotion, get_reviews, health_check, login, post_review, post_review_emotion,
-    put_review, put_review_emotion, signup, update_db,
+    put_review, put_review_emotion, signup,
 };
 
 use crate::auth::bearer_auth;
@@ -39,7 +39,6 @@ impl Application {
     /// Build the application from configuration
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
-        update_db(&connection_pool).await?;
         let listener = TcpListener::bind(&configuration.application.address())?;
         let port = listener.local_addr().unwrap().port();
         let server = run(

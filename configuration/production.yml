@@ -4,4 +4,4 @@ application:
   image_files: "./static/images/"
 database:
   require_ssl: true
-  max_connections: 32
+  max_connections: 100
