@@ -81,3 +81,28 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
 
     app.teardown().await;
 }
+
+#[tokio::test]
+async fn delete_review_returns_deletes_emotions() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    // Act
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+    review.store_emotions(&app, &token).await;
+    let response = app.delete_review(review.slug(), &token).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!("SELECT emotion_id, position FROM review_emotions",)
+        .fetch_optional(&app.db_pool)
+        .await
+        .expect("Query failed to execute.");
+
+    assert!(saved.is_none());
+
+    app.teardown().await;
+}
