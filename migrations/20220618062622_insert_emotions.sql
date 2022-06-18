@@ -120,4 +120,9 @@ VALUES (
         'Disappointment',
         'Combination of Sadness and Surprise.',
         '/emotions/disappointment.svg'
-    );
+    )
+    ON CONFLICT (id) DO UPDATE 
+    SET name        = excluded.name, 
+        description = excluded.description,
+        icon_url    = excluded.icon_url;
+    ;
