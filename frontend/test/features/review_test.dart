@@ -39,7 +39,7 @@ void main() {
       when(mockService.create(title, body))
           .thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.create(title, body);
+      await reviewState.update(title, body);
 
       verify(mockService.create(title, body));
       expect(reviewState.isUpdated, true);
@@ -62,7 +62,7 @@ void main() {
         ),
       ));
 
-      await reviewState.create("", "");
+      await reviewState.update("", "");
 
       verify(mockService.create("", ""));
       expect(reviewState.isUpdated, false);
@@ -86,7 +86,7 @@ void main() {
         ),
       ));
 
-      await reviewState.create("", "");
+      await reviewState.update("", "");
 
       verify(mockService.create("", ""));
       expect(reviewState.isUpdated, false);

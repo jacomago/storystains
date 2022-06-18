@@ -7,7 +7,7 @@ import 'package:storystains/model/resp/review_resp.dart';
 import '../../model/entity/review.dart';
 import 'review_service.dart';
 
-enum ReviewEvent { create, read, update, delete }
+enum ReviewEvent { read, update, delete }
 
 enum ReviewStatus { initial, read, updated, notupdated, failed }
 
@@ -87,33 +87,6 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future create(String title, String body) async {
-    _event = ReviewEvent.create;
-    _isLoading = true;
-
-    notifyListeners();
-
-    try {
-      final data = await _service.create(title, body);
-
-      if (data is ReviewResp) {
-        _review = data.review;
-
-        _status = ReviewStatus.updated;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
-    } on DioError catch (e) {
-      _status = ReviewStatus.failed;
-      _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewStatus.failed;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
 
   Future update(String title, String body) async {
     _event = ReviewEvent.update;
@@ -122,7 +95,9 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await _service.update(_review!.slug, title, body);
+      final data = _isCreate
+          ? await _service.create(title, body)
+          : await _service.update(_review!.slug, title, body);
 
       if (data is ReviewResp) {
         _review = data.review;

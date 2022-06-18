@@ -40,18 +40,7 @@ class ReviewEditPage extends StatelessWidget {
       return;
     }
 
-    if (state.isCreate) {
-      await state
-          .create(
-            title,
-            body,
-          )
-          .then((value) => afterSend(context, state));
-    } else {
-      await state
-          .update(title, body)
-          .then((value) => afterSend(context, state));
-    }
+    await state.update(title, body).then((value) => afterSend(context, state));
   }
 
   @override

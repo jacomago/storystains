@@ -67,7 +67,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('body1'), findsOneWidget);
     });
-    testWidgets('error message on bad info', (tester) async {
+    testWidgets('error message editing on bad info', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final time = DateTime.now();
       final mockService = MockReviewService();
@@ -88,6 +88,43 @@ void main() {
       await tester.pumpAndSettle();
 
       when(mockService.update("title", "/", "body")).thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Cannot be /.",
+          requestOptions: RequestOptions(path: ""),
+        ),
+      ));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        findsOneWidget,
+      );
+    });
+    testWidgets('error message creating on bad info', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(mockService);
+
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+
+      final titleField = find.bySemanticsLabel('Title');
+      await tester.enterText(titleField, "/");
+
+      final bodyField = find.bySemanticsLabel('Body');
+      await tester.enterText(bodyField, "body");
+      await tester.pumpAndSettle();
+
+      when(mockService.create("/", "body")).thenThrow(DioError(
         requestOptions: RequestOptions(path: ""),
         type: DioErrorType.response,
         response: Response(
