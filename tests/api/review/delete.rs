@@ -1,6 +1,9 @@
 use reqwest::StatusCode;
 
-use crate::{helpers::{TestApp, TestUser}, review::test_review::TestReview};
+use crate::{
+    helpers::{TestApp, TestUser},
+    review::test_review::TestReview,
+};
 
 impl TestApp {
     pub async fn delete_review(&self, slug: &str, token: &str) -> reqwest::Response {

@@ -215,8 +215,10 @@ pub async fn db_delete_review_emotion(
         review_id = %review_id,
     )
 )]
-pub async fn db_delete_review_emotions_by_review(review_id: &Uuid, 
-    transaction: &mut Transaction<'_, Postgres>,) -> Result<(), sqlx::Error> {
+pub async fn db_delete_review_emotions_by_review(
+    review_id: &Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
         r#"
             DELETE 
@@ -237,11 +239,12 @@ pub async fn db_delete_review_emotions_by_review(review_id: &Uuid,
 #[tracing::instrument(
     name = "Deleting review emotion details by user id from db",
     skip(transaction, user_id),
-    fields(
-    )
+    fields()
 )]
-pub async fn db_delete_review_emotions_by_user_id(user_id: &Uuid, 
-    transaction: &mut Transaction<'_, Postgres>,) -> Result<(), sqlx::Error> {
+pub async fn db_delete_review_emotions_by_user_id(
+    user_id: &Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
         r#"
             DELETE 
