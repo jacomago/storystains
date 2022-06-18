@@ -212,20 +212,23 @@ pub async fn update_review(
 
 #[tracing::instrument(
     name = "Deleting review details from the database",
-    skip(pool),
+    skip(transaction),
     fields(
-        slug = %slug
+        id = %id
     )
 )]
-pub async fn delete_review(slug: &ReviewSlug, pool: &PgPool) -> Result<(), sqlx::Error> {
+pub async fn delete_review(
+    id: &Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
     let _ = sqlx::query!(
         r#"
             DELETE FROM reviews
-            WHERE     slug = $1
+            WHERE     id = $1
         "#,
-        slug.as_ref()
+        id
     )
-    .execute(pool)
+    .execute(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);

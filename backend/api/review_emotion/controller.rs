@@ -1,10 +1,13 @@
 use futures_lite::{stream, StreamExt};
-use sqlx::{types::Uuid, PgPool};
+use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 use std::iter::zip;
 
 use crate::api::emotions::read_emotion_by_id_pool;
 
-use super::{db, ReviewEmotionData};
+use super::{
+    db::{self, db_delete_review_emotions_by_review},
+    ReviewEmotionData,
+};
 
 #[tracing::instrument(
     name = "Retreive review's emotion details from the database", 
@@ -28,4 +31,19 @@ pub async fn read_review_emotions(
     let emotions = stream_stored?;
 
     Ok(zip(stored, emotions).map(ReviewEmotionData::from).collect())
+}
+
+#[tracing::instrument(
+    name = "Deleting review emotion details by review id",
+    skip(transaction),
+    fields(
+        review_id = %review_id,
+    )
+)]
+pub async fn delete_review_emotions_by_review(
+    review_id: &Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
+    db_delete_review_emotions_by_review(review_id, transaction).await?;
+    Ok(())
 }

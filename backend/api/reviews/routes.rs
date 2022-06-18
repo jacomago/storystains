@@ -4,7 +4,7 @@ use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
 
 use crate::api::{
     error_chain_fmt,
-    review_emotion::{read_review_emotions, ReviewEmotionData},
+    review_emotion::{read_review_emotions, ReviewEmotionData, delete_review_emotions_by_review},
     shared::put_block::{block_non_creator, BlockError},
     LongFormText, QueryLimits, UserId,
 };
@@ -218,9 +218,25 @@ pub async fn delete_review_by_slug(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
     let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
-    delete_review(&slug, &pool)
+    let review_id = read_review(&slug, pool.get_ref())
         .await
-        .context("delete query failed")?;
+        .map_err(ReviewError::NoDataError)?
+        .id;
+
+    let mut transaction = pool
+        .begin()
+        .await
+        .context("Failed to acquire a Postgres connection from the pool")?;
+    delete_review_emotions_by_review(&review_id, &mut transaction)
+        .await
+        .context("delete review emotions query failed")?;
+    delete_review(&review_id, &mut transaction)
+        .await
+        .context("delete review query failed")?;
+    transaction
+        .commit()
+        .await
+        .context("Failed to commit SQL transaction to delete user and data.")?;
     Ok(HttpResponse::Ok().finish())
 }
 

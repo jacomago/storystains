@@ -83,7 +83,7 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
 }
 
 #[tokio::test]
-async fn delete_review_returns_deletes_emotions() {
+async fn delete_review_deletes_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
