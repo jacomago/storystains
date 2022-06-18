@@ -65,3 +65,27 @@ async fn delete_review_returns_a_200_for_valid_slug() {
 
     app.teardown().await;
 }
+
+#[tokio::test]
+async fn delete_user_deletes_reviews() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    // Act
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+    let response = app.delete_user(&token).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!("SELECT title, body FROM reviews",)
+        .fetch_optional(&app.db_pool)
+        .await
+        .expect("Query failed to execute.");
+
+    assert!(saved.is_none());
+
+    app.teardown().await;
+}

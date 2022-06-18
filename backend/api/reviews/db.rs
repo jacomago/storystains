@@ -232,7 +232,7 @@ pub async fn delete_review(slug: &ReviewSlug, pool: &PgPool) -> Result<(), sqlx:
 }
 
 #[tracing::instrument(
-    name = "Deleting reviews from the database",
+    name = "Deleting reviews from the database by user id",
     skip(transaction),
     fields(
         user_id = %user_id
