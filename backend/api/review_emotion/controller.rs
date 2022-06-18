@@ -5,7 +5,7 @@ use std::iter::zip;
 use crate::api::emotions::read_emotion_by_id_pool;
 
 use super::{
-    db::{self, db_delete_review_emotions_by_review},
+    db::{self, db_delete_review_emotions_by_review, db_delete_review_emotions_by_user_id},
     ReviewEmotionData,
 };
 
@@ -45,5 +45,18 @@ pub async fn delete_review_emotions_by_review(
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<(), sqlx::Error> {
     db_delete_review_emotions_by_review(review_id, transaction).await?;
+    Ok(())
+}
+
+#[tracing::instrument(
+    name = "Deleting review emotion details by user id",
+    skip(transaction, user_id),
+    fields()
+)]
+pub async fn delete_review_emotions_by_user_id(
+    user_id: &Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<(), sqlx::Error> {
+    db_delete_review_emotions_by_user_id(user_id, transaction).await?;
     Ok(())
 }

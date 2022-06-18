@@ -244,17 +244,16 @@ pub async fn delete_review(
         user_id = %user_id
     )
 )]
-pub async fn delete_reviews_by_user_id(
-    user_id: &UserId,
+pub async fn db_delete_reviews_by_user_id(
+    user_id: &Uuid,
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<(), sqlx::Error> {
-    let id = Uuid::from(*user_id);
     let _ = sqlx::query!(
         r#"
             DELETE FROM reviews
             WHERE       user_id = $1
         "#,
-        id
+        user_id
     )
     .execute(transaction)
     .await

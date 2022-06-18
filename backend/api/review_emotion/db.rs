@@ -233,3 +233,33 @@ pub async fn db_delete_review_emotions_by_review(review_id: &Uuid,
     })?;
     Ok(())
 }
+
+#[tracing::instrument(
+    name = "Deleting review emotion details by user id from db",
+    skip(transaction, user_id),
+    fields(
+    )
+)]
+pub async fn db_delete_review_emotions_by_user_id(user_id: &Uuid, 
+    transaction: &mut Transaction<'_, Postgres>,) -> Result<(), sqlx::Error> {
+    let _ = sqlx::query!(
+        r#"
+            DELETE 
+              FROM  review_emotions re
+             WHERE  EXISTS (
+                SELECT 1
+                  FROM reviews
+                 WHERE reviews.id      = re.review_id
+                   AND reviews.user_id = $1
+             )
+        "#,
+        user_id,
+    )
+    .execute(transaction)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(())
+}

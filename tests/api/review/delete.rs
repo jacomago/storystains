@@ -1,6 +1,6 @@
 use reqwest::StatusCode;
 
-use crate::{helpers::TestApp, review::test_review::TestReview};
+use crate::{helpers::{TestApp, TestUser}, review::test_review::TestReview};
 
 impl TestApp {
     pub async fn delete_review(&self, slug: &str, token: &str) -> reqwest::Response {
@@ -86,6 +86,44 @@ async fn delete_user_deletes_reviews() {
         .expect("Query failed to execute.");
 
     assert!(saved.is_none());
+
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn delete_user_doesnt_delete_others_reviews() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+
+    let other_user = TestUser::generate();
+    let other_token = other_user.store(&app).await;
+    let other_review = TestReview::generate(&other_user);
+    other_review.store(&app, &other_token).await;
+
+    // Act
+    let response = app.delete_user(&token).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!(
+        r#"
+            SELECT id 
+              FROM reviews,
+                   users
+             WHERE reviews.user_id = users.user_id
+               AND users.username  = $1
+        "#,
+        other_user.username
+    )
+    .fetch_optional(&app.db_pool)
+    .await
+    .expect("Query failed to execute.");
+
+    assert!(saved.is_some());
 
     app.teardown().await;
 }

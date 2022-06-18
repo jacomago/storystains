@@ -193,7 +193,7 @@ pub async fn delete_user(
         .context("Failed to acquire a Postgres connection from the pool")?;
     delete_reviews_by_user_id(&user_id, &mut transaction)
         .await
-        .context("Failed to delete new reviews fromthe database.")?;
+        .context("Failed to delete new reviews from the database.")?;
     delete_user_by_id(&user_id, &mut transaction)
         .await
         .context("Failed to delete user from the database")?;

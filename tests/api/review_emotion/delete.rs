@@ -1,7 +1,9 @@
 use reqwest::StatusCode;
 
 use crate::{
-    helpers::TestApp, review::TestReview, review_emotion::test_review_emotion::TestReviewEmotion,
+    helpers::{TestApp, TestUser},
+    review::TestReview,
+    review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
 impl TestApp {
@@ -128,6 +130,48 @@ async fn delete_user_deletes_review_emotions() {
         .expect("Query failed to execute.");
 
     assert!(saved.is_none());
+
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn delete_user_doesnt_delete_others_emotions() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app, &token).await;
+    review.store_emotions(&app, &token).await;
+
+    let other_user = TestUser::generate();
+    let other_token = other_user.store(&app).await;
+    let other_review = TestReview::generate(&other_user);
+    other_review.store(&app, &other_token).await;
+    other_review.store_emotions(&app, &other_token).await;
+
+    // Act
+    let response = app.delete_user(&token).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!(
+        r#"
+            SELECT emotion_id, position 
+              FROM review_emotions,
+                   reviews,
+                   users
+             WHERE review_id       = reviews.id
+               AND reviews.user_id = users.user_id
+               AND users.username  = $1
+        "#,
+        other_user.username
+    )
+    .fetch_optional(&app.db_pool)
+    .await
+    .expect("Query failed to execute.");
+
+    assert!(saved.is_some());
 
     app.teardown().await;
 }
