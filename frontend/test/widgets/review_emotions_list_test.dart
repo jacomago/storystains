@@ -64,7 +64,7 @@ void main() {
             iconUrl: "/url2",
             description: "description2",
           ),
-          position: 0,
+          position: 1,
         ),
         ReviewEmotion(
           notes: "notes2",
@@ -73,10 +73,11 @@ void main() {
             iconUrl: "/url3",
             description: "description3",
           ),
-          position: 1,
+          position: 2,
         ),
       ];
       final reviewEmotionsState = ReviewEmotionsState(list);
+      // in a scroll for the scolling list part
       await tester.pumpWidget(
         wrapWithMaterial(
           const SingleChildScrollView(child: ReviewEmotionsList()),
@@ -85,7 +86,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      
+      for (ReviewEmotion re in list) {
+        expect(find.text(re.notes), findsOneWidget);
+        expect(find.text(re.emotion.name), findsOneWidget);
+        expect(find.text("Position: ${re.position}"), findsOneWidget);
+      }
     });
     testWidgets('add', (tester) async {
       UnimplementedError();
