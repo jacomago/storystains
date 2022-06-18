@@ -48,7 +48,7 @@ pub struct QueryLimits {
 /// Query limits without being optional for database level
 #[derive(Debug)]
 pub struct Limits {
-    limit: i64,
+    limit: Option<i64>,
     offset: i64,
 }
 
@@ -57,7 +57,7 @@ impl From<QueryLimits> for Limits {
         let limit = query.limit.unwrap_or(DEFAULT_LIMIT);
         let offset = query.offset.unwrap_or(0);
         Self {
-            limit: limit as i64,
+            limit: Some(limit as i64),
             offset: offset as i64,
         }
     }

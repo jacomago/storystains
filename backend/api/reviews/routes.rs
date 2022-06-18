@@ -15,8 +15,8 @@ use sqlx::PgPool;
 use super::{
     db::{create_review, delete_review, read_review, read_reviews, update_review},
     model::{
-        NewReview, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewTitle, ReviewsResponse,
-        StoredReview, UpdateReview,
+        NewReview, ReviewQueryOptions, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewTitle,
+        ReviewsResponse, StoredReview, UpdateReview,
     },
 };
 
@@ -231,9 +231,13 @@ pub async fn get_reviews(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
     let limits = query.0.into();
-    let stored = read_reviews(&limits, pool.get_ref())
-        .await
-        .map_err(ReviewError::NoDataError)?;
+    let stored = read_reviews(
+        &ReviewQueryOptions { user_id: None },
+        &limits,
+        pool.get_ref(),
+    )
+    .await
+    .map_err(ReviewError::NoDataError)?;
     let ids: Vec<&sqlx::types::Uuid> = stored.iter().map(|s| &s.id).collect();
     let stream_stored: Result<Vec<Vec<_>>, sqlx::Error> = stream::iter(ids)
         .then(|r| read_review_emotions(r, pool.get_ref()))

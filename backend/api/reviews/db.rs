@@ -5,7 +5,7 @@ use crate::api::{
     read_user_by_id, reviews::model::StoredReview, users::model::StoredUser, Limits, UserId,
 };
 
-use super::model::{NewReview, ReviewSlug, UpdateReview};
+use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
 
 #[derive(Debug)]
 pub struct DBReview {
@@ -68,16 +68,18 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
 
 #[tracing::instrument(
     name = "Retreive review details from the database", 
-    skip( pool),
+    skip(pool, query_options),
     fields(
-        limit = %limits.limit,
+        limit = %format!("{:?}", limits.limit),
         offset = %limits.offset
     )
 )]
 pub async fn read_reviews(
+    query_options: &ReviewQueryOptions,
     limits: &Limits,
     pool: &PgPool,
 ) -> Result<Vec<StoredReview>, sqlx::Error> {
+    let user_id: Option<Uuid> = query_options.user_id.map(|u| u.try_into().unwrap());
     let reviews = sqlx::query_as!(
         StoredReview,
         r#"
@@ -90,13 +92,14 @@ pub async fn read_reviews(
                     username
               FROM  reviews, 
                     users
-            WHERE   users.user_id = reviews.user_id
+            WHERE   reviews.user_id = COALESCE($3, reviews.user_id)
             ORDER BY updated_at
             LIMIT $1
             OFFSET $2
         "#,
         limits.limit,
-        limits.offset
+        limits.offset,
+        user_id
     )
     .fetch_all(pool)
     .await
@@ -111,7 +114,7 @@ pub async fn read_reviews(
 pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
     let id = Uuid::new_v4();
     let time = Utc::now();
-    let user_id: sqlx::types::Uuid = review.user_id.try_into().unwrap();
+    let user_id: Uuid = review.user_id.try_into().unwrap();
     let created_review = sqlx::query_as!(
         DBReview,
         r#"
