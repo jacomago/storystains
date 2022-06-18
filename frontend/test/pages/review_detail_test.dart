@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
-import 'package:mockito/annotations.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,8 +10,6 @@ import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/pages/review_detail.dart';
-
-import 'review_detail_test.mocks.dart';
 
 Widget wrapWithMaterial(
   Widget w,
@@ -38,7 +35,6 @@ Widget wrapWithMaterial(
       ),
     );
 
-@GenerateMocks([ReviewService, AuthService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
   group("Read Review", () {
