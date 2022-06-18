@@ -76,6 +76,7 @@ class ReviewDetailPage extends StatelessWidget {
                           Text(
                             review.review?.title ?? '',
                             style: context.displayMedium,
+                            semanticsLabel: 'Title',
                           ),
                         ],
                       ),
@@ -98,21 +99,24 @@ class ReviewDetailPage extends StatelessWidget {
                         children: [
                           const SizedBox(height: 4),
                           Text(
-                            "by ${review.review?.user.username ?? ''}",
+                            "@${review.review?.user.username ?? ''}",
                             style: context.titleMedium
                                 ?.copyWith(fontStyle: FontStyle.italic),
+                            semanticsLabel: 'Username',
                           ),
                           const SizedBox(height: 4),
                           Text(
                             "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
                             style: context.caption,
                             overflow: TextOverflow.ellipsis,
+                            semanticsLabel: 'Creation Date',
                           ),
                           const SizedBox(height: 4),
                           Text(
                             "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
                             style: context.caption,
                             overflow: TextOverflow.ellipsis,
+                            semanticsLabel: 'Modified Date',
                           ),
                         ],
                       ),
