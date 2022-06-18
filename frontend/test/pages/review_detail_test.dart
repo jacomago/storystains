@@ -79,7 +79,37 @@ void main() {
         findsOneWidget,
       );
     });
+    testWidgets('block edit', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final time = DateTime.now();
+      final reviewState = ReviewState(
+        ReviewService(),
+        Review(
+          body: "body",
+          createdAt: time,
+          slug: "title",
+          title: "title",
+          updatedAt: time,
+          emotions: [],
+          user: UserProfile(username: "username"),
+        ),
+      );
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewDetailPage(),
+        reviewState,
+        AuthState(AuthService()),
+      ));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Must be logged in as creator to edit."),
+        findsOneWidget,
+      );
+    });
   });
 }
-
-// TODO send review
