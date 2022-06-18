@@ -114,9 +114,39 @@ void main() {
         findsOneWidget,
       );
     });
+    testWidgets("Register network fail", (tester) async {
+      SharedPreferences.setMockInitialValues({});
+
+      final authState = AuthState(AuthService());
+      final page = wrapWithMaterial(
+        Builder(builder: (BuildContext context) {
+          return LoginOrRegisterPage();
+        }),
+        authState,
+      );
+
+      await tester.pumpWidget(page);
+
+      var swapButton = find.widgetWithText(TextButton, "Register?");
+
+      await tester.ensureVisible(swapButton);
+      await tester.tap(swapButton.first);
+      await tester.pump();
+
+      await tester.enterText(find.bySemanticsLabel('Password'), "password");
+      await tester.enterText(find.bySemanticsLabel('Username'), "username");
+
+      var loginButton = find.widgetWithText(MaterialButton, "Register");
+      expect(loginButton, findsOneWidget);
+
+      await tester.ensureVisible(loginButton);
+      await tester.tap(loginButton.first);
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Sign in failed. Please try again."),
+        findsOneWidget,
+      );
+    });
   });
 }
-
-// TODO see failure message
-// TODO register
-// TODO see failure message
