@@ -62,7 +62,7 @@ class AccountPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  'Delete user',
+                  'Delete User',
                   style: context.labelLarge!
                       .copyWith(color: context.colors.onError),
                 ),
