@@ -71,6 +71,10 @@ abstract class RestClient {
   @retrofit.POST("/login")
   Future<UserResp> loginUser(@retrofit.Body() Login login);
 
+  // login user in database
+  @retrofit.DELETE("/users")
+  Future<void> deleteUser();
+
   // get reviews
   @retrofit.GET("/reviews")
   Future<ReviewsResp> getReviews({

@@ -181,6 +181,20 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<void> deleteUser() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'DELETE', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/users',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
+  }
+
+  @override
   Future<ReviewsResp> getReviews({limit = 10, offset = 0}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{

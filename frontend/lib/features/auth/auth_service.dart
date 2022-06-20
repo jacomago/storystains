@@ -17,4 +17,10 @@ class AuthService {
 
     return resp;
   }
+  Future delete() async {
+    final resp = await sl.get<RestClient>().deleteUser(
+        );
+
+    return resp;
+  }
 }

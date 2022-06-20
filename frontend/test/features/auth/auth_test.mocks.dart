@@ -33,4 +33,8 @@ class MockAuthService extends _i1.Mock implements _i2.AuthService {
   _i3.Future<dynamic> login(String? username, String? password) =>
       (super.noSuchMethod(Invocation.method(#login, [username, password]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> delete() =>
+      (super.noSuchMethod(Invocation.method(#delete, []),
+          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
 }

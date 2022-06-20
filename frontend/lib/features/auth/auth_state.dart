@@ -7,9 +7,9 @@ import '../../model/entity/user.dart';
 import 'package:storystains/common/utils/prefs.dart';
 import 'auth.dart';
 
-enum AuthEvent { register, login, logout }
+enum AuthEvent { register, login, logout, delete }
 
-enum AuthStatus { initial, authenticated, notauthenticated, failed }
+enum AuthStatus { initial, authenticated, notauthenticated, deleted, failed }
 
 enum LoginRegister { login, register }
 
@@ -97,6 +97,31 @@ class AuthState extends ChangeNotifier {
       } else {
         _status = AuthStatus.notauthenticated;
       }
+    } catch (e) {
+      _status = AuthStatus.failed;
+      _error = e.toString();
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  Future delete() async {
+    _event = AuthEvent.delete;
+    _isLoading = true;
+
+    notifyListeners();
+
+    try {
+      await _service.delete();
+      AuthStorage.logout();
+
+      _status = AuthStatus.deleted;
+      _error = '';
+      _event = null;
+      _user = null;
+      _token = null;
+      _isLoading = false;
     } catch (e) {
       _status = AuthStatus.failed;
       _error = e.toString();
