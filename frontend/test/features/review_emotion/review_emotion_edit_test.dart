@@ -137,8 +137,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final reviewEmotion =
-          testReviewEmotion(position: 10, notes: "Random Notes", emotion: emotion);
+      final reviewEmotion = testReviewEmotion(
+        position: 10,
+        notes: "Random Notes",
+        emotion: emotion,
+      );
 
       const sliderIncSize = 4.5;
       final posChanger = find.byType(Slider);
@@ -174,11 +177,89 @@ void main() {
       expect(ok, true);
       expect(cancel, false);
     });
+    testWidgets('test update', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      bool ok = false;
+      bool cancel = false;
+      okHandler(_) {
+        ok = true;
+      }
+
+      cancelHandler() {
+        cancel = true;
+      }
+
+      final review = testReview();
+      final reviewState = ReviewState(ReviewService(), review);
+      final emotion = testEmotion(name: "randomemotion");
+      final service = MockReviewEmotionService();
+      final reviewEmotion = testReviewEmotion();
+
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          ReviewEmotionEdit(
+            cancelHandler: cancelHandler,
+            okHandler: okHandler,
+          ),
+          reviewState: reviewState,
+          reviewEmotionState: ReviewEmotionState(
+            service,
+            emotion: emotion,
+            reviewEmotion: reviewEmotion,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final newReviewEmotion = testReviewEmotion(
+        position: 10,
+        notes: "Random Notes",
+        emotion: emotion,
+      );
+
+      const sliderIncSize = 4.5;
+      final posChanger = find.byType(Slider);
+      expect(posChanger, findsOneWidget);
+      await tester.drag(
+        posChanger.first,
+        Offset(sliderIncSize * (newReviewEmotion.position - 50), 0),
+      );
+      await tester.pumpAndSettle();
+
+      final notes = find.bySemanticsLabel("Notes");
+      await tester.enterText(notes.first, newReviewEmotion.notes);
+
+      when(service.update(
+        review.slug,
+        reviewEmotion.position,
+        newReviewEmotion,
+      )).thenAnswer(
+        (realInvocation) async => ReviewEmotionResp(
+          reviewEmotion: newReviewEmotion,
+        ),
+      );
+
+      await tester.pump();
+      final okButton = find.widgetWithText(TextButton, "OK");
+      expect(okButton, findsOneWidget);
+
+      await tester.tap(okButton.first);
+      await tester.pump();
+
+      verify(service.update(
+        review.slug,
+        reviewEmotion.position,
+        newReviewEmotion,
+      ));
+      expect(
+        find.widgetWithText(SnackBar, "Updated ReviewEmotion"),
+        findsOneWidget,
+      );
+
+      expect(ok, true);
+      expect(cancel, false);
+    });
   });
 }
 
-// TODO create
-// TODO update
-// TODO ok
-// TODO cancel
 // TODO fail
