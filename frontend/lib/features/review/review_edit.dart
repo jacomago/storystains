@@ -14,6 +14,10 @@ class ReviewEditPage extends StatelessWidget {
       context.pop(state.review);
       final msg = state.isCreate ? 'Created Review' : 'Updated Review';
       context.snackbar(msg);
+    } else if (state.isDeleted) {
+      context.pop();
+      const msg = "Deleted Review";
+      context.snackbar(msg);
     } else {
       if (state.isFailed) {
         context.snackbar(state.error);
@@ -43,6 +47,14 @@ class ReviewEditPage extends StatelessWidget {
     await state.update(title, body).then((value) => afterSend(context, state));
   }
 
+  void deleteReview(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+
+    final state = context.read<ReviewState>();
+
+    await state.delete().then((value) => afterSend(context, state));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ReviewState>(
@@ -51,6 +63,22 @@ class ReviewEditPage extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: const Text('Review'),
+            actions: [
+              PopupMenuButton<Text>(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      child: Text(
+                        "Delete",
+                        style: context.labelSmall!
+                            .copyWith(color: context.colors.error),
+                      ),
+                      onTap: () => deleteReview(context),
+                    ),
+                  ];
+                },
+              ),
+            ],
           ),
           body: Padding(
             padding: const EdgeInsets.all(16),

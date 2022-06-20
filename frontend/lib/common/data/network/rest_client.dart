@@ -37,7 +37,7 @@ abstract class RestClient {
   );
 
   @retrofit.DELETE("/reviews/{slug}")
-  Future<ReviewResp> deleteReview(
+  Future<void> deleteReview(
     @retrofit.Path() String slug,
   );
 
@@ -62,7 +62,7 @@ abstract class RestClient {
   );
 
   @retrofit.DELETE("/reviews/{slug}/emotions/{position}")
-  Future<ReviewEmotionResp> deleteReviewEmotion(
+  Future<void> deleteReviewEmotion(
     @retrofit.Path() String slug,
     @retrofit.Path() int position,
   );

@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/review_emotions/review_emotions_state.dart';
 import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
-import 'package:storystains/common/utils/extensions.dart';
-import 'package:storystains/common/utils/snackbar.dart';
 
 import '../features/review/review.dart';
 import '../model/entity/review.dart';
@@ -44,7 +43,10 @@ class ReviewDetailPage extends StatelessWidget {
               },
             ),
           )
-          .then((value) async => await review.putReview(value!));
+          .then(
+            (value) async =>
+                {value != null ? await review.putReview(value) : context.pop()},
+          );
     } else {
       context.snackbar("Must be logged in as creator to edit.");
     }

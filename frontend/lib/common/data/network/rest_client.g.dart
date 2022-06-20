@@ -85,19 +85,17 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ReviewResp> deleteReview(slug) async {
+  Future<void> deleteReview(slug) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ReviewResp>(
-            Options(method: 'DELETE', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ReviewResp.fromJson(_result.data!);
-    return value;
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'DELETE', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/reviews/${slug}',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
   }
 
   @override
@@ -152,19 +150,17 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ReviewEmotionResp> deleteReviewEmotion(slug, position) async {
+  Future<void> deleteReviewEmotion(slug, position) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ReviewEmotionResp>(
-            Options(method: 'DELETE', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ReviewEmotionResp.fromJson(_result.data!);
-    return value;
+    await _dio.fetch<void>(_setStreamType<void>(
+        Options(method: 'DELETE', headers: _headers, extra: _extra)
+            .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
   }
 
   @override
