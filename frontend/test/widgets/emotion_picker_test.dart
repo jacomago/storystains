@@ -10,6 +10,7 @@ import 'package:storystains/model/entity/emotion.dart';
 
 import 'dart:io' as io;
 import '../common/image_mock_http.dart';
+import '../model/emotion.dart';
 import 'emotion_picker_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, EmotionsState? emotionsState) =>
@@ -42,11 +43,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithMaterial(
           EmotionDialog(
-            initialEmotion: Emotion(
-              description: "",
-              iconUrl: "/img",
-              name: "Anger",
-            ),
+            initialEmotion: testEmotion(),
           ),
           null,
         ),
@@ -56,24 +53,20 @@ void main() {
     testWidgets('Input emotions', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
+      final initEmotion = testEmotion();
       final list = [
-        Emotion(name: "Anger", iconUrl: "/img", description: "description"),
-        Emotion(name: "name", iconUrl: "/iconUrl", description: "description"),
+        initEmotion,
+        testEmotion(name: "2"),
       ];
 
       final emotionService = MockEmotionsService();
       when(emotionService.fetch()).thenAnswer((realInvocation) async => list);
 
       final emotionsState = EmotionsState(emotionService);
-
       await tester.pumpWidget(
         wrapWithMaterial(
           EmotionDialog(
-            initialEmotion: Emotion(
-              description: "",
-              iconUrl: "/img",
-              name: "Anger",
-            ),
+            initialEmotion: initEmotion,
           ),
           emotionsState,
         ),
@@ -83,9 +76,10 @@ void main() {
     testWidgets('Input emotions are visible', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
+      final initEmotion = testEmotion();
       final list = [
-        Emotion(name: "Anger", iconUrl: "/img", description: "description"),
-        Emotion(name: "name", iconUrl: "/iconUrl", description: "description"),
+        initEmotion,
+        testEmotion(name: "2"),
       ];
 
       final emotionService = MockEmotionsService();
@@ -96,11 +90,7 @@ void main() {
       await tester.pumpWidget(
         wrapWithMaterial(
           EmotionDialog(
-            initialEmotion: Emotion(
-              description: "",
-              iconUrl: "/img",
-              name: "Anger",
-            ),
+            initialEmotion: initEmotion,
           ),
           emotionsState,
         ),
