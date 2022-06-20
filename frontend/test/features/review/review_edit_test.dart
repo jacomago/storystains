@@ -11,6 +11,8 @@ import 'package:storystains/features/review/review.dart';
 import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/user.dart';
 
+import '../../model/review.dart';
+import '../reviews/review_list_test.dart';
 import 'review_edit_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
@@ -35,29 +37,19 @@ void main() {
   group("Edit Review", () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final time = DateTime.now();
-      final reviewState = ReviewState(
-        ReviewService(),
-        Review(
-          body: "body",
-          createdAt: time,
-          slug: "title",
-          title: "title",
-          updatedAt: time,
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
-      );
+      final review = testReview();
+
+      final reviewState = ReviewState(ReviewService(), review);
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
 
       final titleField = find.bySemanticsLabel('Title');
       expect(titleField, findsOneWidget);
-      expect(find.text('title'), findsOneWidget);
+      expect(find.text(review.title), findsOneWidget);
 
       final bodyField = find.bySemanticsLabel('Body');
       expect(bodyField, findsOneWidget);
-      expect(find.text('body'), findsOneWidget);
+      expect(find.text(review.body), findsOneWidget);
 
       await tester.enterText(titleField, "title1");
       await tester.pumpAndSettle();
@@ -69,25 +61,15 @@ void main() {
     });
     testWidgets('error message editing on bad info', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final time = DateTime.now();
       final mockService = MockReviewService();
-      final reviewState = ReviewState(
-        mockService,
-        Review(
-          body: "body",
-          createdAt: time,
-          slug: "title",
-          title: "/",
-          updatedAt: time,
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
-      );
+      final review = testReview(slug: "/");
+      final reviewState = ReviewState(mockService, review);
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
-      when(mockService.update("title", "/", "body")).thenThrow(DioError(
+      when(mockService.update(review.title, review.slug, review.body))
+          .thenThrow(DioError(
         requestOptions: RequestOptions(path: ""),
         type: DioErrorType.response,
         response: Response(

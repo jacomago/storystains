@@ -10,6 +10,7 @@ import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 import 'package:mockito/annotations.dart';
 
+import '../../model/review.dart';
 import 'review_test.mocks.dart';
 
 @GenerateMocks([ReviewService])
@@ -18,17 +19,7 @@ void main() {
   group("create", () {
     test('After create in isUpdated', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview();
       final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
@@ -36,12 +27,12 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create(title, body))
+      when(mockService.create(review.title, review.body))
           .thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(title, body);
+      await reviewState.update(review.title, review.body);
 
-      verify(mockService.create(title, body));
+      verify(mockService.create(review.title, review.body));
       expect(reviewState.isUpdated, true);
     });
 
@@ -96,17 +87,7 @@ void main() {
   group("delete", () {
     test('After delete in initial', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview();
 
       final mockService = MockReviewService();
 
@@ -115,31 +96,23 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete(title)).thenAnswer((realInvocation) async =>
-          Response(requestOptions: RequestOptions(path: ""), statusCode: 200));
+      when(mockService.delete(review.title)).thenAnswer(
+        (realInvocation) async =>
+            Response(requestOptions: RequestOptions(path: ""), statusCode: 200),
+      );
 
-      await reviewState.delete(title);
+      await reviewState.delete(review.title);
 
-      verify(mockService.delete(title));
+      verify(mockService.delete(review.title));
       expect(reviewState.isUpdated, false);
       expect(reviewState.status, ReviewStatus.initial);
     });
 
     test('error message on bad info', () async {
       SharedPreferences.setMockInitialValues({});
+      final review = testReview(slug: "");
       final mockService = MockReviewService();
-      final reviewState = ReviewState(
-        mockService,
-        Review(
-          title: "",
-          body: "",
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: "",
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
-      );
+      final reviewState = ReviewState(mockService, review);
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -163,18 +136,11 @@ void main() {
 
     test('error message on unauthorised info', () async {
       SharedPreferences.setMockInitialValues({});
+      final review = testReview();
       final mockService = MockReviewService();
       final reviewState = ReviewState(
         mockService,
-        Review(
-          title: "",
-          body: "",
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: "",
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
+        review,
       );
 
       expect(reviewState.isCreate, false);
@@ -200,17 +166,7 @@ void main() {
   group("update", () {
     test('After update in isUpdated', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview();
       final reviewResp = ReviewResp(review: review);
 
       final mockService = MockReviewService();
@@ -220,29 +176,31 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update(title, title, body))
-          .thenAnswer((realInvocation) async => reviewResp);
+      when(mockService.update(
+        review.title,
+        review.title,
+        review.body,
+      )).thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(title, body);
+      await reviewState.update(review.title, review.body);
 
-      verify(mockService.update(title, title, body));
+      verify(mockService.update(
+        review.title,
+        review.title,
+        review.body,
+      ));
       expect(reviewState.isUpdated, true);
     });
 
     test('error message on bad info', () async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
+      final review = testReview(
+        slug: "",
+      );
       final reviewState = ReviewState(
         mockService,
-        Review(
-          title: "",
-          body: "",
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: "",
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
+        review,
       );
 
       expect(reviewState.isCreate, false);
@@ -268,17 +226,12 @@ void main() {
     test('error message on unauthorised info', () async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
+      final review = testReview(
+        slug: "",
+      );
       final reviewState = ReviewState(
         mockService,
-        Review(
-          title: "",
-          body: "",
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-          slug: "",
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
+        review,
       );
 
       expect(reviewState.isCreate, false);
@@ -305,17 +258,7 @@ void main() {
   group("get", () {
     test('After get is there', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview();
 
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService, review);
