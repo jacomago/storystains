@@ -137,14 +137,20 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final reviewEmotion = testReviewEmotion(position: 3);
+      final reviewEmotion =
+          testReviewEmotion(position: 10, notes: "Random Notes", emotion: emotion);
 
-      await tester.enterText(
-        find.widgetWithText(TextField, "0"),
-        reviewEmotion.position.toString(),
+      const sliderIncSize = 4.5;
+      final posChanger = find.byType(Slider);
+      expect(posChanger, findsOneWidget);
+      await tester.drag(
+        posChanger.first,
+        Offset(sliderIncSize * (reviewEmotion.position - 50), 0),
       );
+      await tester.pumpAndSettle();
+
       final notes = find.bySemanticsLabel("Notes");
-      await tester.enterText(notes.first, "Random Notes");
+      await tester.enterText(notes.first, reviewEmotion.notes);
 
       when(service.create(review.slug, reviewEmotion)).thenAnswer(
         (realInvocation) async => ReviewEmotionResp(
@@ -152,6 +158,7 @@ void main() {
         ),
       );
 
+      await tester.pump();
       final okButton = find.widgetWithText(TextButton, "OK");
       expect(okButton, findsOneWidget);
 
