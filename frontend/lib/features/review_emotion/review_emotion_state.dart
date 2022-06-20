@@ -56,7 +56,6 @@ class ReviewEmotionState extends ChangeNotifier {
     emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
-
   Future update(
     String slug,
   ) async {

@@ -151,7 +151,8 @@ void main() {
         testEmotion(name: "2"),
       ];
       final emotionService = MockEmotionsService();
-      when(emotionService.fetch()).thenAnswer((realInvocation) async => emotionList);
+      when(emotionService.fetch())
+          .thenAnswer((realInvocation) async => emotionList);
 
       final emotionsState = EmotionsState(emotionService);
 
