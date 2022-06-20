@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -258,6 +259,74 @@ void main() {
 
       expect(ok, true);
       expect(cancel, false);
+    });
+    testWidgets('test error message', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      bool ok = false;
+      bool cancel = false;
+      okHandler(_) {
+        ok = true;
+      }
+
+      cancelHandler() {
+        cancel = true;
+      }
+
+      final review = testReview();
+      final reviewState = ReviewState(ReviewService(), review);
+      final emotion = testEmotion();
+      final service = MockReviewEmotionService();
+
+      final reviewEmotion = testReviewEmotion(
+        position: 10,
+        notes: "Random Notes",
+        emotion: emotion,
+      );
+
+      final reviewEmotionState = ReviewEmotionState(
+        service,
+        emotion: emotion,
+        reviewEmotion: reviewEmotion,
+      );
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          ReviewEmotionEdit(
+            cancelHandler: cancelHandler,
+            okHandler: okHandler,
+          ),
+          reviewState: reviewState,
+          reviewEmotionState: reviewEmotionState,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      when(service.update(review.slug, reviewEmotion.position, reviewEmotion))
+          .thenThrow(DioError(
+        requestOptions: RequestOptions(path: ""),
+        type: DioErrorType.response,
+        response: Response(
+          statusCode: 400,
+          data: "Error message.",
+          requestOptions: RequestOptions(path: ""),
+        ),
+      ));
+
+      await tester.pump();
+      final okButton = find.widgetWithText(TextButton, "OK");
+      expect(okButton, findsOneWidget);
+
+      await tester.tap(okButton.first);
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Bad Request: Error message."),
+        findsOneWidget,
+      );
+
+      expect(ok, false);
+      expect(cancel, true);
     });
   });
 }
