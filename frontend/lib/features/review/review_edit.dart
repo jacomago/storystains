@@ -65,6 +65,7 @@ class ReviewEditPage extends StatelessWidget {
             title: const Text('Review'),
             actions: [
               PopupMenuButton<Text>(
+                icon: Icon(Icons.adaptive.more),
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem(

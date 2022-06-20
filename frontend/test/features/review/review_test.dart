@@ -94,16 +94,16 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete(review.title)).thenAnswer(
+      when(mockService.delete(review.slug)).thenAnswer(
         (realInvocation) async =>
             Response(requestOptions: RequestOptions(path: ""), statusCode: 200),
       );
 
-      await reviewState.delete(review.title);
+      await reviewState.delete();
 
       verify(mockService.delete(review.title));
       expect(reviewState.isUpdated, false);
-      expect(reviewState.status, ReviewStatus.initial);
+      expect(reviewState.status, ReviewStatus.deleted);
     });
 
     test('error message on bad info', () async {
@@ -125,7 +125,7 @@ void main() {
         ),
       ));
 
-      await reviewState.delete("");
+      await reviewState.delete();
 
       verify(mockService.delete(""));
       expect(reviewState.isUpdated, false);
@@ -144,7 +144,7 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete("")).thenThrow(DioError(
+      when(mockService.delete(review.slug)).thenThrow(DioError(
         requestOptions: RequestOptions(path: ""),
         type: DioErrorType.response,
         response: Response(
@@ -154,9 +154,9 @@ void main() {
         ),
       ));
 
-      await reviewState.delete("");
+      await reviewState.delete();
 
-      verify(mockService.delete(""));
+      verify(mockService.delete(review.slug));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });

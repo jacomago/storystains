@@ -23,9 +23,7 @@ Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
         ),
       ],
       child: MaterialApp(
-        home: Scaffold(
-          body: w,
-        ),
+        home: w,
       ),
     );
 
@@ -178,6 +176,35 @@ void main() {
 
       expect(
         find.widgetWithText(SnackBar, "Updated Review"),
+        findsOneWidget,
+      );
+    });
+    testWidgets('delete', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final review = testReview();
+      final reviewState = ReviewState(mockService, review);
+
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+
+      when(mockService.delete(review.slug))
+          .thenAnswer((realInvocation) async => {});
+
+      final menuButton = find.byIcon(Icons.adaptive.more);
+      expect(menuButton, findsOneWidget);
+      await tester.tap(menuButton.first);
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+      await tester.tap(find.text("Delete"));
+      await tester.pump();
+      await tester.pump();
+      await tester.pumpAndSettle();
+
+      expect(
+        find.widgetWithText(SnackBar, "Deleted Review"),
         findsOneWidget,
       );
     });
