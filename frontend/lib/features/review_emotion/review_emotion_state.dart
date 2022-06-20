@@ -56,46 +56,6 @@ class ReviewEmotionState extends ChangeNotifier {
     emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
-  Future putReviewEmotion(ReviewEmotion reviewEmotion) async {
-    _reviewEmotion = reviewEmotion;
-    notifyListeners();
-  }
-
-  Future<void> init() async {
-    _status = _reviewEmotion != null
-        ? ReviewEmotionStatus.read
-        : ReviewEmotionStatus.notupdated;
-
-    notifyListeners();
-  }
-
-  Future read(String slug, int position) async {
-    _event = ReviewEmotionEvent.read;
-    _isLoading = true;
-
-    notifyListeners();
-
-    try {
-      final data = await _service.read(slug, position);
-
-      if (data is ReviewEmotionResp) {
-        _reviewEmotion = data.reviewEmotion;
-
-        _status = ReviewEmotionStatus.read;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
-    } on DioError catch (e) {
-      _status = ReviewEmotionStatus.failed;
-      _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewEmotionStatus.failed;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
 
   Future update(
     String slug,

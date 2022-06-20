@@ -53,40 +53,6 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> init() async {
-    _status = _review != null ? ReviewStatus.read : ReviewStatus.notupdated;
-
-    notifyListeners();
-  }
-
-  Future read(String slug) async {
-    _event = ReviewEvent.read;
-    _isLoading = true;
-
-    notifyListeners();
-
-    try {
-      final data = await _service.read(slug);
-
-      if (data is ReviewResp) {
-        _review = data.review;
-
-        _status = ReviewStatus.read;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
-    } on DioError catch (e) {
-      _status = ReviewStatus.failed;
-      _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewStatus.failed;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
   Future update(String title, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
