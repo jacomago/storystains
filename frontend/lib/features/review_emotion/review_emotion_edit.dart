@@ -30,7 +30,7 @@ class ReviewEmotionEdit extends StatelessWidget {
         context.snackbar(state.error);
       } else {
         cancelHandler();
-        context.snackbar('Review Emotion creation cancelled.');
+        context.snackbar('Review Emotion creation failed.');
       }
     }
   }

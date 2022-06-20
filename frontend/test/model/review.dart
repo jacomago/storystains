@@ -13,5 +13,5 @@ Review testReview({
       title: slug ?? "title",
       updatedAt: DateTime.now(),
       emotions: [],
-      user: testUserProfile(username),
+      user: testUserProfile(username: username),
     );

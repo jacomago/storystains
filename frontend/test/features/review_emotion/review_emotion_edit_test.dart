@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
 import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
+import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import 'dart:io' as io;
 import '../../common/image_mock_http.dart';
 import '../../model/emotion.dart';
 import '../../model/review.dart';
+import '../../model/review_emotion.dart';
+import 'review_emotion_edit_test.mocks.dart';
 
 Widget wrapWithMaterial(
   Widget w, {
@@ -100,6 +104,68 @@ void main() {
 
       expect(ok, false);
       expect(cancel, true);
+    });
+    testWidgets('test create', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      bool ok = false;
+      bool cancel = false;
+      okHandler(_) {
+        ok = true;
+      }
+
+      cancelHandler() {
+        cancel = true;
+      }
+
+      final review = testReview();
+      final reviewState = ReviewState(ReviewService(), review);
+      final emotion = testEmotion();
+      final service = MockReviewEmotionService();
+
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          ReviewEmotionEdit(
+            cancelHandler: cancelHandler,
+            okHandler: okHandler,
+          ),
+          reviewState: reviewState,
+          reviewEmotionState: ReviewEmotionState(
+            service,
+            emotion: emotion,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final reviewEmotion = testReviewEmotion(position: 3);
+
+      await tester.enterText(
+        find.widgetWithText(TextField, "0"),
+        reviewEmotion.position.toString(),
+      );
+      final notes = find.bySemanticsLabel("Notes");
+      await tester.enterText(notes.first, "Random Notes");
+
+      when(service.create(review.slug, reviewEmotion)).thenAnswer(
+        (realInvocation) async => ReviewEmotionResp(
+          reviewEmotion: reviewEmotion,
+        ),
+      );
+
+      final okButton = find.widgetWithText(TextButton, "OK");
+      expect(okButton, findsOneWidget);
+
+      await tester.tap(okButton.first);
+      await tester.pump();
+
+      verify(service.create(review.slug, reviewEmotion));
+      expect(
+        find.widgetWithText(SnackBar, "Created ReviewEmotion"),
+        findsOneWidget,
+      );
+
+      expect(ok, true);
+      expect(cancel, false);
     });
   });
 }

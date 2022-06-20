@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/auth/auth.dart';
-import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/user_resp.dart';
 import 'package:mockito/annotations.dart';
 
