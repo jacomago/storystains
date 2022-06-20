@@ -9,7 +9,7 @@ import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
 import 'dart:io' as io;
-import '../image_mock_http.dart';
+import '../common/image_mock_http.dart';
 import 'emotion_picker_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, EmotionsState? emotionsState) =>
@@ -65,7 +65,7 @@ void main() {
       when(emotionService.fetch()).thenAnswer((realInvocation) async => list);
 
       final emotionsState = EmotionsState(emotionService);
-      
+
       await tester.pumpWidget(
         wrapWithMaterial(
           EmotionDialog(
@@ -92,7 +92,7 @@ void main() {
       when(emotionService.fetch()).thenAnswer((realInvocation) async => list);
 
       final emotionsState = EmotionsState(emotionService);
-      
+
       await tester.pumpWidget(
         wrapWithMaterial(
           EmotionDialog(
@@ -106,7 +106,6 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
 
       for (Emotion e in list) {
         expect(find.text(e.name), findsOneWidget);

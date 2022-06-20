@@ -8,11 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
 
 import '../../model/review.dart';
-import '../reviews/review_list_test.dart';
 import 'review_edit_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(

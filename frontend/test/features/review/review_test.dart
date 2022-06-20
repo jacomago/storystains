@@ -5,8 +5,6 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/review/review_service.dart';
 import 'package:storystains/features/review/review_state.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 import 'package:mockito/annotations.dart';
 

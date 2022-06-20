@@ -7,12 +7,11 @@ import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
 import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
-import 'package:storystains/model/entity/emotion.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
 
 import 'dart:io' as io;
-import '../../image_mock_http.dart';
+import '../../common/image_mock_http.dart';
+import '../../model/emotion.dart';
+import '../../model/review.dart';
 
 Widget wrapWithMaterial(
   Widget w,
@@ -30,11 +29,7 @@ Widget wrapWithMaterial(
               reviewEmotionState ??
               ReviewEmotionState(
                 ReviewEmotionService(),
-                emotion: Emotion(
-                  description: "d",
-                  iconUrl: "/i",
-                  name: "n",
-                ),
+                emotion: testEmotion(),
               ),
         ),
         ChangeNotifierProvider<ReviewState>(
@@ -42,15 +37,7 @@ Widget wrapWithMaterial(
               reviewState ??
               ReviewState(
                 ReviewService(),
-                Review(
-                  body: "body",
-                  createdAt: DateTime.now(),
-                  slug: "slug",
-                  title: "title",
-                  updatedAt: DateTime.now(),
-                  emotions: [],
-                  user: UserProfile(username: "username"),
-                ),
+                testReview(),
               ),
         ),
       ],
@@ -91,3 +78,9 @@ void main() {
     });
   });
 }
+
+// TODO create
+// TODO update
+// TODO ok
+// TODO cancel
+// TODO fail
