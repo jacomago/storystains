@@ -8,9 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
+import 'package:storystains/model/resp/review_resp.dart';
 
+import '../../model/review.dart';
 import 'review_edit_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
@@ -35,29 +35,19 @@ void main() {
   group("Edit Review", () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final time = DateTime.now();
-      final reviewState = ReviewState(
-        ReviewService(),
-        Review(
-          body: "body",
-          createdAt: time,
-          slug: "title",
-          title: "title",
-          updatedAt: time,
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
-      );
+      final review = testReview();
+
+      final reviewState = ReviewState(ReviewService(), review);
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
 
       final titleField = find.bySemanticsLabel('Title');
       expect(titleField, findsOneWidget);
-      expect(find.text('title'), findsOneWidget);
+      expect(find.text(review.title), findsOneWidget);
 
       final bodyField = find.bySemanticsLabel('Body');
       expect(bodyField, findsOneWidget);
-      expect(find.text('body'), findsOneWidget);
+      expect(find.text(review.body), findsOneWidget);
 
       await tester.enterText(titleField, "title1");
       await tester.pumpAndSettle();
@@ -69,25 +59,15 @@ void main() {
     });
     testWidgets('error message editing on bad info', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final time = DateTime.now();
       final mockService = MockReviewService();
-      final reviewState = ReviewState(
-        mockService,
-        Review(
-          body: "body",
-          createdAt: time,
-          slug: "title",
-          title: "/",
-          updatedAt: time,
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
-      );
+      final review = testReview(slug: "/");
+      final reviewState = ReviewState(mockService, review);
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
-      when(mockService.update("title", "/", "body")).thenThrow(DioError(
+      when(mockService.update(review.title, review.slug, review.body))
+          .thenThrow(DioError(
         requestOptions: RequestOptions(path: ""),
         type: DioErrorType.response,
         response: Response(
@@ -142,6 +122,62 @@ void main() {
 
       expect(
         find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        findsOneWidget,
+      );
+    });
+    testWidgets('create', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(mockService);
+      final review = testReview();
+
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+
+      final titleField = find.bySemanticsLabel('Title');
+      await tester.enterText(titleField, review.title);
+
+      final bodyField = find.bySemanticsLabel('Body');
+      await tester.enterText(bodyField, review.body);
+      await tester.pumpAndSettle();
+
+      when(mockService.create(review.title, review.body))
+          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Created Review"),
+        findsOneWidget,
+      );
+    });
+    testWidgets('update', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final review = testReview();
+      final reviewState = ReviewState(mockService, review);
+
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+
+      when(mockService.update(review.slug, review.title, review.body))
+          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Updated Review"),
         findsOneWidget,
       );
     });

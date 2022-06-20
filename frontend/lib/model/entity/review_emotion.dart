@@ -26,4 +26,15 @@ class ReviewEmotion {
   String toString() {
     return json.encode(toJson());
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ReviewEmotion &&
+        notes == other.notes &&
+        emotion == other.emotion &&
+        position == other.position;
+  }
+
+  @override
+  int get hashCode => notes.hashCode + emotion.hashCode + position.hashCode;
 }

@@ -34,7 +34,7 @@ impl ResponseError for BlockError {
         }
     }
 }
-
+// TODO convert to middleware and/or don't read from db
 pub async fn block_non_creator(
     slug: &ReviewSlug,
     user_id: UserId,

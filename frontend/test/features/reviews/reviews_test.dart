@@ -5,11 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
-import 'package:storystains/model/entity/review.dart';
 import 'package:mockito/annotations.dart';
-import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/reviews_resp.dart';
 
+import '../../model/review.dart';
 import 'reviews_test.mocks.dart';
 
 @GenerateMocks([ReviewsService])
@@ -18,17 +17,7 @@ void main() {
   group("get", () {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview(slug: "randomtitle");
       final reviewsResp = ReviewsResp(reviews: [review]);
 
       final mockService = MockReviewsService();
@@ -55,17 +44,7 @@ void main() {
     });
     test('fetch test', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview(slug: "randomtitle");
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
@@ -90,20 +69,10 @@ void main() {
     });
     test('fetch twice test', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
       final reviewsResp = ReviewsResp(
         reviews: List.generate(
           45,
-          (int index) => Review(
-            title: title + index.toString(),
-            body: body,
-            createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
-            emotions: [],
-            slug: title + index.toString(),
-            user: UserProfile(username: "username"),
-          ),
+          (int index) => testReview(slug: "title$index"),
         ),
       );
 
@@ -167,17 +136,7 @@ void main() {
 
     test('refresh test', () async {
       SharedPreferences.setMockInitialValues({});
-      const title = "title";
-      const body = "body";
-      final review = Review(
-        title: title,
-        body: body,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
-        slug: title,
-        emotions: [],
-        user: UserProfile(username: "username"),
-      );
+      final review = testReview(slug: "randomtitle");
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();

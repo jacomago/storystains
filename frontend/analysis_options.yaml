@@ -32,6 +32,7 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.mocks.dart"
     - "**/*.freezed.dart"
+    - "test/common/*"
   plugins:
     - dart_code_metrics
 # Additional information about this file can be found at

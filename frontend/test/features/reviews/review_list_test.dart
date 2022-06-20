@@ -9,9 +9,8 @@ import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
 
+import '../../model/review.dart';
 import 'review_list_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
@@ -28,16 +27,6 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
           body: w,
         ),
       ),
-    );
-
-Review testReview(String title, String body) => Review(
-      title: title,
-      body: body,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      slug: title,
-      emotions: [],
-      user: UserProfile(username: "randomusername"),
     );
 
 @GenerateMocks([ReviewsService])
@@ -75,10 +64,8 @@ void main() {
     });
     testWidgets('some data', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      const title = "randomtitle";
-      const body = "randombody";
 
-      final review = testReview(title, body);
+      final review = testReview(slug: "randomtitle");
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async => [review]);
@@ -93,15 +80,13 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
       await tester.pumpAndSettle();
 
-      expect(find.text("randomtitle"), findsOneWidget);
-      expect(find.text("randomusername"), findsOneWidget);
+      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.user.username), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      const title = "randomtitle";
-      const body = "randombody";
-
-      final review = testReview(title, body);
+      final review =
+          testReview(slug: "randomtitle", username: "randomusername");
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
@@ -114,7 +99,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text("randomtitle"), findsNothing);
+      expect(find.text(review.title), findsNothing);
 
       when(mockService.fetch()).thenAnswer((realInvocation) async => [review]);
       when(mockService.fetch(offset: AppConfig.defaultLimit))
@@ -126,8 +111,8 @@ void main() {
 
       verify(mockService.fetch());
 
-      expect(find.text("randomtitle"), findsOneWidget);
-      expect(find.text("randomusername"), findsOneWidget);
+      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.user.username), findsOneWidget);
     });
   });
 }
