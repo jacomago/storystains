@@ -66,18 +66,18 @@ class ReviewEditPage extends StatelessWidget {
             actions: [
               PopupMenuButton<Text>(
                 icon: Icon(Icons.adaptive.more),
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      child: Text(
-                        "Delete",
-                        style: context.labelSmall!
-                            .copyWith(color: context.colors.error),
-                      ),
-                      onTap: () => deleteReview(context),
+                itemBuilder: (BuildContext context) => <PopupMenuItem<Text>>[
+                  PopupMenuItem(
+                    child: Text(
+                      "Delete",
+                      style: context.labelSmall!
+                          .copyWith(color: context.colors.error),
                     ),
-                  ];
-                },
+                    onTap: () {
+                      deleteReview(context);
+                    },
+                  ),
+                ],
               ),
             ],
           ),

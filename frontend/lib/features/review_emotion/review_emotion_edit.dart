@@ -24,6 +24,10 @@ class ReviewEmotionEdit extends StatelessWidget {
           state.isCreate ? 'Created ReviewEmotion' : 'Updated ReviewEmotion';
       context.snackbar(msg);
       okHandler(state.reviewEmotion!);
+    } else if (state.isDeleted) {
+      cancelHandler();
+      const msg = "Deleted ReviewEmotion";
+      context.snackbar(msg);
     } else {
       if (state.isFailed) {
         cancelHandler();
@@ -45,6 +49,14 @@ class ReviewEmotionEdit extends StatelessWidget {
     final state = context.read<ReviewEmotionState>();
     final slug = context.read<ReviewState>().review!.slug;
     await state.update(slug).then((value) => afterSend(context, state));
+  }
+
+  void deleteReviewEmotion(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+
+    final state = context.read<ReviewEmotionState>();
+    final slug = context.read<ReviewState>().review!.slug;
+    await state.delete(slug).then((value) => afterSend(context, state));
   }
 
   @override

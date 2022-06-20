@@ -190,17 +190,14 @@ void main() {
       await tester.pumpAndSettle();
 
       when(mockService.delete(review.slug))
-          .thenAnswer((realInvocation) async => {});
+          .thenAnswer((realInvocation) async => null);
 
       final menuButton = find.byIcon(Icons.adaptive.more);
       expect(menuButton, findsOneWidget);
       await tester.tap(menuButton.first);
       await tester.pump();
-      await tester.pump();
-      await tester.pump();
-      await tester.tap(find.text("Delete"));
-      await tester.pump();
-      await tester.pump();
+      expect(find.text('Delete'), findsOneWidget);
+      await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
       expect(

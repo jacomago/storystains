@@ -131,11 +131,11 @@ void main() {
             Response(requestOptions: RequestOptions(path: ""), statusCode: 200),
       );
 
-      await reviewEmotionState.delete(slug, reviewEmotion.position);
+      await reviewEmotionState.delete(slug);
 
       verify(mockService.delete(slug, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.status, ReviewEmotionStatus.initial);
+      expect(reviewEmotionState.status, ReviewEmotionStatus.deleted);
     });
 
     test('error message on bad info', () async {
@@ -159,7 +159,7 @@ void main() {
         ),
       ));
 
-      await reviewEmotionState.delete(slug, reviewEmotion.position);
+      await reviewEmotionState.delete(slug);
 
       verify(mockService.delete(slug, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
@@ -189,7 +189,7 @@ void main() {
         ),
       ));
 
-      await reviewEmotionState.delete(slug, reviewEmotion.position);
+      await reviewEmotionState.delete(slug);
 
       verify(mockService.delete(slug, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
