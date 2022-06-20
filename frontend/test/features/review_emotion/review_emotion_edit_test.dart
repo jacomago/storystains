@@ -14,11 +14,11 @@ import '../../model/emotion.dart';
 import '../../model/review.dart';
 
 Widget wrapWithMaterial(
-  Widget w,
+  Widget w, {
   EmotionsState? emotionsState,
   ReviewEmotionState? reviewEmotionState,
   ReviewState? reviewState,
-) =>
+}) =>
     MultiProvider(
       providers: [
         ChangeNotifierProvider<EmotionsState>(
@@ -69,12 +69,37 @@ void main() {
             // ignore: no-empty-block
             okHandler: (_) {},
           ),
-          null,
-          null,
-          null,
         ),
       );
       await tester.pumpAndSettle();
+    });
+    testWidgets('test cancel button', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      bool ok = false;
+      bool cancel = false;
+      okHandler(_) {
+        ok = true;
+      }
+
+      cancelHandler() {
+        cancel = true;
+      }
+
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          ReviewEmotionEdit(
+            cancelHandler: cancelHandler,
+            okHandler: okHandler,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.widgetWithText(TextButton, "Cancel"));
+      await tester.pump();
+
+      expect(ok, false);
+      expect(cancel, true);
     });
   });
 }
