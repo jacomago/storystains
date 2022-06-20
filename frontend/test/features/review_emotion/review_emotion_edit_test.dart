@@ -73,6 +73,8 @@ void main() {
             cancelHandler: () {},
             // ignore: no-empty-block
             okHandler: (_) {},
+            // ignore: no-empty-block
+            deleteHandler: () {},
           ),
         ),
       );
@@ -90,11 +92,17 @@ void main() {
         cancel = true;
       }
 
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
       await tester.pumpWidget(
         wrapWithMaterial(
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
         ),
       );
@@ -118,6 +126,11 @@ void main() {
         cancel = true;
       }
 
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review);
       final emotion = testEmotion();
@@ -128,6 +141,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
           reviewState: reviewState,
           reviewEmotionState: ReviewEmotionState(
@@ -190,6 +204,11 @@ void main() {
         cancel = true;
       }
 
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review);
       final emotion = testEmotion(name: "randomemotion");
@@ -201,6 +220,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
           reviewState: reviewState,
           reviewEmotionState: ReviewEmotionState(
@@ -272,6 +292,11 @@ void main() {
         cancel = true;
       }
 
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review);
       final emotion = testEmotion();
@@ -293,6 +318,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
           reviewState: reviewState,
           reviewEmotionState: reviewEmotionState,
@@ -328,7 +354,71 @@ void main() {
       expect(ok, false);
       expect(cancel, true);
     });
+    testWidgets('test delete', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      bool ok = false;
+      bool cancel = false;
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
+      okHandler(_) {
+        ok = true;
+      }
+
+      cancelHandler() {
+        cancel = true;
+      }
+
+      final review = testReview();
+      final reviewState = ReviewState(ReviewService(), review);
+      final emotion = testEmotion(name: "randomemotion");
+      final service = MockReviewEmotionService();
+      final reviewEmotion = testReviewEmotion();
+
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          ReviewEmotionEdit(
+            cancelHandler: cancelHandler,
+            okHandler: okHandler,
+            deleteHandler: deleteHandler,
+          ),
+          reviewState: reviewState,
+          reviewEmotionState: ReviewEmotionState(
+            service,
+            emotion: emotion,
+            reviewEmotion: reviewEmotion,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      when(service.delete(
+        review.slug,
+        reviewEmotion.position,
+      )).thenAnswer(
+        (realInvocation) async => null,
+      );
+
+      await tester.pump();
+      final deleteButton = find.widgetWithText(TextButton, "Delete");
+      expect(deleteButton, findsOneWidget);
+
+      await tester.tap(deleteButton.first);
+      await tester.pump();
+
+      verify(service.delete(
+        review.slug,
+        reviewEmotion.position,
+      ));
+      expect(
+        find.widgetWithText(SnackBar, "Deleted ReviewEmotion"),
+        findsOneWidget,
+      );
+
+      expect(ok, false);
+      expect(cancel, false);
+      expect(delete, true);
+    });
   });
 }
-
-// TODO fail

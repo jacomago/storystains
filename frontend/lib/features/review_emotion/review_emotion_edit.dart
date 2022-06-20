@@ -13,10 +13,12 @@ class ReviewEmotionEdit extends StatelessWidget {
     Key? key,
     required this.cancelHandler,
     required this.okHandler,
+    required this.deleteHandler,
   }) : super(key: key);
 
   final Function cancelHandler;
   final Function(ReviewEmotion) okHandler;
+  final Function deleteHandler;
 
   void afterSend(BuildContext context, ReviewEmotionState state) {
     if (state.isUpdated) {
@@ -25,7 +27,7 @@ class ReviewEmotionEdit extends StatelessWidget {
       context.snackbar(msg);
       okHandler(state.reviewEmotion!);
     } else if (state.isDeleted) {
-      cancelHandler();
+      deleteHandler();
       const msg = "Deleted ReviewEmotion";
       context.snackbar(msg);
     } else {
@@ -131,6 +133,15 @@ class ReviewEmotionEdit extends StatelessWidget {
                       },
                       child: Text(
                         "Cancel",
+                        style: context.labelMedium,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        deleteReviewEmotion(context);
+                      },
+                      child: Text(
+                        "Delete",
                         style: context.labelMedium,
                       ),
                     ),

@@ -93,6 +93,7 @@ class ReviewEmotionsList extends StatelessWidget {
                     child: ReviewEmotionEdit(
                       cancelHandler: reviewEmotions.cancelCreate,
                       okHandler: reviewEmotions.confirmCreation,
+                      deleteHandler: reviewEmotions.confirmDelete,
                     ),
                   )
                 : Row(),
