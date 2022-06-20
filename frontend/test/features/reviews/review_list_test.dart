@@ -81,7 +81,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(review.title), findsOneWidget);
-      expect(find.text(review.body), findsOneWidget);
+      expect(find.text(review.user.username), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
       SharedPreferences.setMockInitialValues({});
