@@ -87,7 +87,6 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-
   Future update(String title, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
