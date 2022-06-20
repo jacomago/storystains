@@ -44,34 +44,7 @@ class ReviewEmotionEdit extends StatelessWidget {
 
     final state = context.read<ReviewEmotionState>();
     final slug = context.read<ReviewState>().review!.slug;
-    final notes = state.notesController.value.text;
-    final position = state.positionController.value;
-    final emotion = state.emotionController.value;
-
-    if (state.isCreate) {
-      await state
-          .create(
-            ReviewEmotion(
-              position: position,
-              emotion: emotion,
-              notes: notes,
-            ),
-            slug,
-          )
-          .then((value) => afterSend(context, state));
-    } else {
-      await state
-          .update(
-            slug,
-            state.reviewEmotion!.position,
-            ReviewEmotion(
-              position: position,
-              emotion: emotion,
-              notes: notes,
-            ),
-          )
-          .then((value) => afterSend(context, state));
-    }
+    await state.update(slug).then((value) => afterSend(context, state));
   }
 
   @override

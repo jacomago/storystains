@@ -97,38 +97,8 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future create(ReviewEmotion reviewEmotion, String slug) async {
-    _event = ReviewEmotionEvent.create;
-    _isLoading = true;
-
-    notifyListeners();
-
-    try {
-      final data = await _service.create(slug, reviewEmotion);
-
-      if (data is ReviewEmotionResp) {
-        _reviewEmotion = data.reviewEmotion;
-
-        _status = ReviewEmotionStatus.updated;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
-    } on DioError catch (e) {
-      _status = ReviewEmotionStatus.failed;
-      _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewEmotionStatus.failed;
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
   Future update(
     String slug,
-    int position,
-    ReviewEmotion reviewEmotion,
   ) async {
     _event = ReviewEmotionEvent.update;
     _isLoading = true;
@@ -136,7 +106,25 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await _service.update(slug, position, reviewEmotion);
+      final notes = notesController.value.text;
+      final position = positionController.value;
+      final emotion = emotionController.value;
+
+      final updateReviewEmotion = ReviewEmotion(
+        emotion: emotion,
+        position: position,
+        notes: notes,
+      );
+      final data = _isCreate
+          ? await _service.create(
+              slug,
+              updateReviewEmotion,
+            )
+          : await _service.update(
+              slug,
+              _reviewEmotion!.position,
+              updateReviewEmotion,
+            );
 
       if (data is ReviewEmotionResp) {
         _reviewEmotion = data.reviewEmotion;
