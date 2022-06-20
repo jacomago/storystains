@@ -9,7 +9,7 @@ import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
 import 'dart:io' as io;
-import '../image_mock_http.dart';
+import '../../image_mock_http.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewEmotionsState reviewEmotionsState) =>
     MultiProvider(

@@ -12,7 +12,7 @@ import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/user.dart';
 
 import 'dart:io' as io;
-import '../image_mock_http.dart';
+import '../../image_mock_http.dart';
 
 Widget wrapWithMaterial(
   Widget w,
