@@ -4,6 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:mockito/annotations.dart';
+import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/resp/emotions_resp.dart';
 
 import 'dart:io' as io;
@@ -13,7 +14,12 @@ import 'emotions_test.mocks.dart';
 
 @GenerateMocks([EmotionsService])
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Only needs to be done once since the HttpClient generated
+    // by this override is cached as a static singleton.
+    io.HttpOverrides.global = TestHttpOverrides();
+  });
   group("emotions state tests", () {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
@@ -42,13 +48,15 @@ void main() {
     });
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
-      io.HttpOverrides.global = TestHttpOverrides();
-      final emotion = testEmotion();
-      final emotionsResp = EmotionsResp(emotions: List.filled(45, emotion));
+
+      final List<Emotion> emotions = List.generate(
+        2,
+        (index) => testEmotion(name: "name$index"),
+      );
 
       final mockService = MockEmotionsService();
-      when(mockService.fetch())
-          .thenAnswer((realInvocation) async => emotionsResp.emotions);
+      when(mockService.fetch()).thenAnswer((realInvocation) async => emotions);
+      when(mockService.fetch()).thenAnswer((realInvocation) async => emotions);
 
       final emotionState = EmotionsState(mockService);
 
@@ -57,7 +65,7 @@ void main() {
 
       // assert init finished
       await emotionState.initDone;
-      expect(emotionState.count, 45);
+      expect(emotionState.count, 2);
     });
   });
 }

@@ -6,24 +6,6 @@ import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/features/review_emotions/review_emotions_state.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
-class EmotionClipper extends CustomClipper<Rect> {
-  @override
-  getClip(Size size) {
-    var path = Rect.fromCenter(
-      center: size.center(Offset(-0.2 * size.width, 0)),
-      width: size.width * 0.8,
-      height: size.height,
-    );
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper oldClipper) {
-    return true;
-  }
-}
-
 class CardReviewEmotionsList extends StatelessWidget {
   const CardReviewEmotionsList({Key? key}) : super(key: key);
 
