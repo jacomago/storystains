@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review_edit.dart';
 import 'package:storystains/features/review/review.dart';
+import 'package:storystains/model/resp/review_resp.dart';
 
 import '../../model/review.dart';
 import 'review_edit_test.mocks.dart';
@@ -121,6 +122,62 @@ void main() {
 
       expect(
         find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        findsOneWidget,
+      );
+    });
+    testWidgets('create', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(mockService);
+      final review = testReview();
+
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+
+      final titleField = find.bySemanticsLabel('Title');
+      await tester.enterText(titleField, review.title);
+
+      final bodyField = find.bySemanticsLabel('Body');
+      await tester.enterText(bodyField, review.body);
+      await tester.pumpAndSettle();
+
+      when(mockService.create(review.title, review.body))
+          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Created Review"),
+        findsOneWidget,
+      );
+    });
+    testWidgets('update', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final review = testReview();
+      final reviewState = ReviewState(mockService, review);
+
+      await tester
+          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpAndSettle();
+      await tester.pumpAndSettle();
+
+      when(mockService.update(review.slug, review.title, review.body))
+          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Updated Review"),
         findsOneWidget,
       );
     });
