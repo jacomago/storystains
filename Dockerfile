@@ -1,5 +1,31 @@
 #Stage 1 - Install dependencies and build the app
-FROM cirrusci/flutter:stable AS frontflutterget
+FROM ubuntu:22.04 AS frontflutterget
+WORKDIR /root
+
+# Setup apt packages
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y \
+    apt-utils \
+    git \
+    gnupg \
+    curl \
+    file \
+    unzip \
+    wget \
+    xz-utils \
+    zip
+
+# # Setup flutter
+RUN cd /opt && \
+    git clone https://github.com/flutter/flutter.git -b stable 
+
+ENV PATH=$PATH:/opt/flutter/bin
+
+RUN flutter precache
+RUN flutter doctor
+RUN apt-get clean
+RUN apt-get autoremove
 
 FROM frontflutterget as frontbuild
 # Copy files to container and build
