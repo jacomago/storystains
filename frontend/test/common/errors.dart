@@ -4,7 +4,7 @@ DioError testApiError(int code, String msg) => DioError(
     requestOptions: RequestOptions(path: ""),
     type: DioErrorType.response,
     response: Response(
-      statusCode: 400,
-      data: "Cannot be empty.",
+      statusCode: code,
+      data: msg,
       requestOptions: RequestOptions(path: ""),
     ));

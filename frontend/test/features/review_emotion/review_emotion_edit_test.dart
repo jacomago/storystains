@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -12,6 +11,7 @@ import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import 'dart:io' as io;
+import '../../common/errors.dart';
 import '../../common/image_mock_http.dart';
 import '../../model/emotion.dart';
 import '../../model/review.dart';
@@ -83,11 +83,11 @@ void main() {
     testWidgets('test cancel button', (tester) async {
       SharedPreferences.setMockInitialValues({});
       bool ok = false;
-      bool cancel = false;
       okHandler(_) {
         ok = true;
       }
 
+      bool cancel = false;
       cancelHandler() {
         cancel = true;
       }
@@ -113,15 +113,16 @@ void main() {
 
       expect(ok, false);
       expect(cancel, true);
+      expect(delete, false);
     });
     testWidgets('test create', (tester) async {
       SharedPreferences.setMockInitialValues({});
       bool ok = false;
-      bool cancel = false;
       okHandler(_) {
         ok = true;
       }
 
+      bool cancel = false;
       cancelHandler() {
         cancel = true;
       }
@@ -191,6 +192,7 @@ void main() {
 
       expect(ok, true);
       expect(cancel, false);
+      expect(delete, false);
     });
     testWidgets('test update', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -327,15 +329,7 @@ void main() {
       await tester.pumpAndSettle();
 
       when(service.update(review.slug, reviewEmotion.position, reviewEmotion))
-          .thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Error message.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+          .thenThrow(testApiError(400, 'Error message.'));
 
       await tester.pump();
       final okButton = find.widgetWithText(TextButton, "OK");
@@ -353,6 +347,7 @@ void main() {
 
       expect(ok, false);
       expect(cancel, true);
+      expect(delete, false);
     });
     testWidgets('test delete', (tester) async {
       SharedPreferences.setMockInitialValues({});

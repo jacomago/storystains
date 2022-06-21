@@ -196,15 +196,17 @@ void main() {
       expect(menuButton, findsOneWidget);
       await tester.tap(menuButton.first);
       await tester.pump();
+
       expect(find.text('Delete'), findsOneWidget);
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
-// TODO fix
-      // expect(
-      //   find.widgetWithText(SnackBar, "Deleted Review"),
-      //   findsOneWidget,
-      // );
+      verify(mockService.delete(review.slug));
+      // TODO fix
+      expect(
+        find.widgetWithText(SnackBar, "Deleted Review"),
+        findsOneWidget,
+      );
     });
   });
 }
