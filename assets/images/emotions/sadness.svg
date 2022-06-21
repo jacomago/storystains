@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="249.59604em"
-   height="165.28131em"
-   viewBox="0 0 249.59604 165.28131"
+   width="268.67789em"
+   height="268.67789em"
+   viewBox="0 0 268.67789 268.67789"
    version="1.1"
    id="svg5"
    xml:space="preserve"
@@ -12,10 +12,10 @@
    xmlns:svg="http://www.w3.org/2000/svg"><defs
      id="defs2" /><g
      id="layer1"
-     transform="translate(-60.667047,-743.17058)"><g
+     transform="translate(379.00222,-630.18022)"><g
        id="g3562"
-       style="display:inline;stroke:#000000;stroke-width:5.74016;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(0.92186807,0,0,0.92186807,297.36698,169.82441)"><path
+       style="display:inline;stroke-width:5.74016;stroke-dasharray:none"
+       transform="matrix(0.92186807,0,0,0.92186807,-132.68003,105.8426)"><path
          style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:5.74016;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
          d="m -256.66227,681.11967 c 0,0 16.95492,-0.58465 29.23261,-17.53955 12.27769,-16.95492 33.90982,-42.09497 69.5736,-25.72469 0,0 9.35443,-2.92326 9.93908,-15.7856"
          id="path3429" /><path
@@ -33,4 +33,11 @@
          id="path3437" /><path
          style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:5.74016;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
          d="m -25.724692,779.34123 c 0,0 -114.007158,-10.52375 -143.824408,19.87817"
-         id="path3439" /></g></g></svg>
+         id="path3439" /><rect
+         style="display:inline;fill:none;stroke:none;stroke-width:5.29167;stroke-dasharray:none;stroke-opacity:1"
+         id="rect5038"
+         width="268.67789"
+         height="268.67789"
+         x="51.044781"
+         y="694.16205"
+         transform="matrix(1.0847539,0,0,1.0847539,-322.56999,-184.2177)" /></g></g></svg>

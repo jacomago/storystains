@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="212.89909em"
-   height="244.78569em"
-   viewBox="0 0 212.89909 244.78569"
+   width="268.67789em"
+   height="268.67789em"
+   viewBox="0 0 268.67789 268.67789"
    version="1.1"
    id="svg5"
    xml:space="preserve"
@@ -12,10 +12,10 @@
    xmlns:svg="http://www.w3.org/2000/svg"><defs
      id="defs2" /><g
      id="layer1"
-     transform="translate(-368.06582,-413.19816)"><g
+     transform="translate(89.014763,-335.51561)"><g
        id="g4544"
-       transform="matrix(0.66900979,0,0,0.66900979,-114.00246,433.85018)"
-       style="stroke:#000000;stroke-width:7.9097;stroke-dasharray:none;stroke-opacity:1"><path
+       transform="matrix(0.66900979,0,0,0.66900979,-544.04947,369.86837)"
+       style="stroke-width:7.9097;stroke-dasharray:none"><path
          style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:7.9097;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
          d="m 723.79929,35.079125 c 0,0 47.94147,-67.819643 112.25318,-53.787992"
          id="path4529" /><path
@@ -30,4 +30,11 @@
          id="path4535" /><path
          style="font-variation-settings:normal;opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:7.9097;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;stop-color:#000000;stop-opacity:1"
          d="m 833.71387,327.40518 100.56016,3.50789 c 0,0 -5.84651,-59.6345 -54.95729,-73.66615 -49.11077,-14.03165 -45.60287,70.15826 -45.60287,70.15826 z"
-         id="path4537" /></g></g></svg>
+         id="path4537" /><rect
+         style="display:inline;fill:none;stroke:none;stroke-width:5.29167;stroke-dasharray:none;stroke-opacity:1"
+         id="rect4657"
+         width="268.67789"
+         height="268.67789"
+         x="341.03223"
+         y="399.49741"
+         transform="matrix(1.4947465,0,0,1.4947465,170.40478,-648.49601)" /></g></g></svg>
