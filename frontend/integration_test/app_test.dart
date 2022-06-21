@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -24,7 +26,7 @@ void main() {
         await tester.tap(swapButton.first);
         await tester.pump();
 
-        const username1 = "randomusername1";
+        final username1 = "randomusername1${Random().nextInt(100)}";
         await tester.enterText(
           find.bySemanticsLabel('Username'),
           username1,
@@ -40,8 +42,7 @@ void main() {
 
         await tester.ensureVisible(loginButton);
         await tester.tap(loginButton.first);
-        await tester.pump();
-        await tester.pump(const Duration(seconds: 1));
+        await tester.pumpAndSettle();
 
         expect(
           find.widgetWithText(SnackBar, "Signed in as $username1"),
