@@ -93,6 +93,7 @@ pub async fn read_reviews(
               FROM  reviews, 
                     users
             WHERE   reviews.user_id = COALESCE($3, reviews.user_id)
+                AND reviews.user_id = users.user_id
             ORDER BY updated_at
             LIMIT $1
             OFFSET $2
