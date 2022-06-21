@@ -64,6 +64,14 @@ class ReviewEmotionsState extends ChangeNotifier {
     await cancelCreate();
   }
 
+  Future confirmDelete() async {
+    if (!_isNewItem) {
+      _items.removeAt(_currentIndex!);
+    }
+    _items.sort(((a, b) => a.position.compareTo(b.position)));
+    await cancelCreate();
+  }
+
   @override
   void dispose() {
     _items = [];

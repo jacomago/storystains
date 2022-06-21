@@ -18,6 +18,11 @@ import '../../common/widget/loading_more.dart';
 class ReviewsPage extends StatelessWidget {
   const ReviewsPage({Key? key}) : super(key: key);
 
+  void _afterPush(BuildContext context) {
+    final state = context.read<ReviewsState>();
+    state.refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ReviewsState>(
@@ -72,8 +77,9 @@ class ReviewsPage extends StatelessWidget {
 
   Widget _buildReviewItem(BuildContext context, Review review) {
     return GestureDetector(
-      onTap: () =>
-          context.push(Routes.reviewDetail, arguments: ReviewArguement(review)),
+      onTap: () => context
+          .push(Routes.reviewDetail, arguments: ReviewArguement(review))
+          .then((value) => _afterPush(context)),
       child: Container(
         padding: const EdgeInsets.all(10),
         child: Card(

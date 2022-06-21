@@ -37,7 +37,7 @@ abstract class RestClient {
   );
 
   @retrofit.DELETE("/reviews/{slug}")
-  Future<ReviewResp> deleteReview(
+  Future<void> deleteReview(
     @retrofit.Path() String slug,
   );
 
@@ -62,7 +62,7 @@ abstract class RestClient {
   );
 
   @retrofit.DELETE("/reviews/{slug}/emotions/{position}")
-  Future<ReviewEmotionResp> deleteReviewEmotion(
+  Future<void> deleteReviewEmotion(
     @retrofit.Path() String slug,
     @retrofit.Path() int position,
   );
@@ -70,6 +70,10 @@ abstract class RestClient {
   // login user in database
   @retrofit.POST("/login")
   Future<UserResp> loginUser(@retrofit.Body() Login login);
+
+  // login user in database
+  @retrofit.DELETE("/users")
+  Future<void> deleteUser();
 
   // get reviews
   @retrofit.GET("/reviews")

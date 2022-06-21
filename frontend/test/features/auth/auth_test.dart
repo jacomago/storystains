@@ -112,4 +112,29 @@ void main() {
       expect(authState.isAuthenticated, false);
     });
   });
+  group("delete", () {
+    test('After logout not isAuthenticated', () async {
+      SharedPreferences.setMockInitialValues({});
+      const password = "password";
+      final user = testUser();
+      final userResp = UserResp(user: user);
+
+      final mockService = MockAuthService();
+      final authState = AuthState(mockService);
+
+      expect(authState.isAuthenticated, false);
+
+      when(mockService.register(user.username, password))
+          .thenAnswer((realInvocation) async => userResp);
+      authState.switchLoginRegister();
+
+      await authState.loginRegister(user.username, password);
+
+      when(mockService.delete()).thenAnswer((realInvocation) async => null);
+
+      await authState.delete();
+      verify(mockService.delete());
+      expect(authState.isAuthenticated, false);
+    });
+  });
 }

@@ -9,7 +9,7 @@ import 'review_service.dart';
 
 enum ReviewEvent { read, update, delete }
 
-enum ReviewStatus { initial, read, updated, notupdated, failed }
+enum ReviewStatus { initial, read, updated, deleted, failed }
 
 class ReviewState extends ChangeNotifier {
   final ReviewService _service;
@@ -31,7 +31,7 @@ class ReviewState extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
   bool get isUpdated => _status == ReviewStatus.updated;
-  bool get notUpdated => _status == ReviewStatus.notupdated;
+  bool get isDeleted => _status == ReviewStatus.deleted;
   bool get isFailed => _status == ReviewStatus.failed;
 
   late TextEditingController titleController;
@@ -83,27 +83,22 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete(slug) async {
+  Future delete() async {
     _event = ReviewEvent.delete;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      final data = await _service.delete(slug);
+      await _service.delete(_review!.slug);
 
-      if (data is Response && data.statusCode == 200) {
-        _review = null;
+      _review = null;
 
-        _status = ReviewStatus.initial;
-        _error = '';
-        _event = null;
-        _review = null;
-        _token = null;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = ReviewStatus.deleted;
+      _error = '';
+      _event = null;
+      _review = null;
+      _token = null;
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);

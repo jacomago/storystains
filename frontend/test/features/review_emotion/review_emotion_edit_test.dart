@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -12,6 +11,7 @@ import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import 'dart:io' as io;
+import '../../common/errors.dart';
 import '../../common/image_mock_http.dart';
 import '../../model/emotion.dart';
 import '../../model/review.dart';
@@ -73,6 +73,8 @@ void main() {
             cancelHandler: () {},
             // ignore: no-empty-block
             okHandler: (_) {},
+            // ignore: no-empty-block
+            deleteHandler: () {},
           ),
         ),
       );
@@ -81,13 +83,18 @@ void main() {
     testWidgets('test cancel button', (tester) async {
       SharedPreferences.setMockInitialValues({});
       bool ok = false;
-      bool cancel = false;
       okHandler(_) {
         ok = true;
       }
 
+      bool cancel = false;
       cancelHandler() {
         cancel = true;
+      }
+
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
       }
 
       await tester.pumpWidget(
@@ -95,6 +102,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
         ),
       );
@@ -105,17 +113,23 @@ void main() {
 
       expect(ok, false);
       expect(cancel, true);
+      expect(delete, false);
     });
     testWidgets('test create', (tester) async {
       SharedPreferences.setMockInitialValues({});
       bool ok = false;
-      bool cancel = false;
       okHandler(_) {
         ok = true;
       }
 
+      bool cancel = false;
       cancelHandler() {
         cancel = true;
+      }
+
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
       }
 
       final review = testReview();
@@ -128,6 +142,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
           reviewState: reviewState,
           reviewEmotionState: ReviewEmotionState(
@@ -177,6 +192,7 @@ void main() {
 
       expect(ok, true);
       expect(cancel, false);
+      expect(delete, false);
     });
     testWidgets('test update', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -190,6 +206,11 @@ void main() {
         cancel = true;
       }
 
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review);
       final emotion = testEmotion(name: "randomemotion");
@@ -201,6 +222,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
           reviewState: reviewState,
           reviewEmotionState: ReviewEmotionState(
@@ -272,6 +294,11 @@ void main() {
         cancel = true;
       }
 
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review);
       final emotion = testEmotion();
@@ -293,6 +320,7 @@ void main() {
           ReviewEmotionEdit(
             cancelHandler: cancelHandler,
             okHandler: okHandler,
+            deleteHandler: deleteHandler,
           ),
           reviewState: reviewState,
           reviewEmotionState: reviewEmotionState,
@@ -301,15 +329,7 @@ void main() {
       await tester.pumpAndSettle();
 
       when(service.update(review.slug, reviewEmotion.position, reviewEmotion))
-          .thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Error message.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+          .thenThrow(testApiError(400, 'Error message.'));
 
       await tester.pump();
       final okButton = find.widgetWithText(TextButton, "OK");
@@ -327,8 +347,73 @@ void main() {
 
       expect(ok, false);
       expect(cancel, true);
+      expect(delete, false);
+    });
+    testWidgets('test delete', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      bool ok = false;
+      bool cancel = false;
+      bool delete = false;
+      deleteHandler() {
+        delete = true;
+      }
+
+      okHandler(_) {
+        ok = true;
+      }
+
+      cancelHandler() {
+        cancel = true;
+      }
+
+      final review = testReview();
+      final reviewState = ReviewState(ReviewService(), review);
+      final emotion = testEmotion(name: "randomemotion");
+      final service = MockReviewEmotionService();
+      final reviewEmotion = testReviewEmotion();
+
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          ReviewEmotionEdit(
+            cancelHandler: cancelHandler,
+            okHandler: okHandler,
+            deleteHandler: deleteHandler,
+          ),
+          reviewState: reviewState,
+          reviewEmotionState: ReviewEmotionState(
+            service,
+            emotion: emotion,
+            reviewEmotion: reviewEmotion,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      when(service.delete(
+        review.slug,
+        reviewEmotion.position,
+      )).thenAnswer(
+        (realInvocation) async => null,
+      );
+
+      await tester.pump();
+      final deleteButton = find.widgetWithText(TextButton, "Delete");
+      expect(deleteButton, findsOneWidget);
+
+      await tester.tap(deleteButton.first);
+      await tester.pump();
+
+      verify(service.delete(
+        review.slug,
+        reviewEmotion.position,
+      ));
+      expect(
+        find.widgetWithText(SnackBar, "Deleted ReviewEmotion"),
+        findsOneWidget,
+      );
+
+      expect(ok, false);
+      expect(cancel, false);
+      expect(delete, true);
     });
   });
 }
-
-// TODO fail

@@ -54,9 +54,7 @@ class HomePage extends StatelessWidget {
               if (auth.isAuthenticated)
                 IconButton(
                   icon: const Icon(Icons.person_rounded),
-                  onPressed: () => context.snackbar(
-                    'Hello ${auth.user?.username}',
-                  ),
+                  onPressed: () => context.push(Routes.account),
                 )
               else
                 IconButton(

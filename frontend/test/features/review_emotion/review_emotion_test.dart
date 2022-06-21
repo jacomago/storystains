@@ -8,6 +8,7 @@ import 'package:storystains/features/review_emotion/review_emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
+import '../../common/errors.dart';
 import '../../model/review_emotion.dart';
 import 'review_emotion_test.mocks.dart';
 
@@ -60,15 +61,7 @@ void main() {
       when(mockService.create(
         "",
         reviewEmotion,
-      )).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be empty.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      )).thenThrow(testApiError(400, "Cannot be empty."));
 
       updateControllers(reviewEmotionState, reviewEmotion);
       await reviewEmotionState.update("");
@@ -92,15 +85,7 @@ void main() {
       when(mockService.create(
         "",
         reviewEmotion,
-      )).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 401,
-          data: "User not logged in.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      )).thenThrow(testApiError(401, "User not logged in."));
 
       updateControllers(reviewEmotionState, reviewEmotion);
       await reviewEmotionState.update(
@@ -131,11 +116,11 @@ void main() {
             Response(requestOptions: RequestOptions(path: ""), statusCode: 200),
       );
 
-      await reviewEmotionState.delete(slug, reviewEmotion.position);
+      await reviewEmotionState.delete(slug);
 
       verify(mockService.delete(slug, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.status, ReviewEmotionStatus.initial);
+      expect(reviewEmotionState.status, ReviewEmotionStatus.deleted);
     });
 
     test('error message on bad info', () async {
@@ -149,17 +134,10 @@ void main() {
       expect(reviewEmotionState.isUpdated, false);
 
       const slug = "slug";
-      when(mockService.delete(slug, reviewEmotion.position)).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be empty.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.delete(slug, reviewEmotion.position))
+          .thenThrow(testApiError(400, "Cannot be empty."));
 
-      await reviewEmotionState.delete(slug, reviewEmotion.position);
+      await reviewEmotionState.delete(slug);
 
       verify(mockService.delete(slug, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
@@ -179,17 +157,10 @@ void main() {
       expect(reviewEmotionState.isUpdated, false);
 
       const slug = "slug";
-      when(mockService.delete(slug, reviewEmotion.position)).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 401,
-          data: "User not logged in.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.delete(slug, reviewEmotion.position))
+          .thenThrow(testApiError(401, "User not logged in."));
 
-      await reviewEmotionState.delete(slug, reviewEmotion.position);
+      await reviewEmotionState.delete(slug);
 
       verify(mockService.delete(slug, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
@@ -234,15 +205,7 @@ void main() {
 
       const slug = "slug";
       when(mockService.update(slug, reviewEmotion.position, reviewEmotion))
-          .thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be empty.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+          .thenThrow(testApiError(400, "Cannot be empty."));
 
       await reviewEmotionState.update(slug);
 
@@ -265,15 +228,7 @@ void main() {
 
       const slug = "slug";
       when(mockService.update(slug, reviewEmotion.position, reviewEmotion))
-          .thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 401,
-          data: "User not logged in.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+          .thenThrow(testApiError(401, "User not logged in."));
 
       await reviewEmotionState.update(slug);
 

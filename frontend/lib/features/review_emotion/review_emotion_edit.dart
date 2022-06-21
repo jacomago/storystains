@@ -13,10 +13,12 @@ class ReviewEmotionEdit extends StatelessWidget {
     Key? key,
     required this.cancelHandler,
     required this.okHandler,
+    required this.deleteHandler,
   }) : super(key: key);
 
   final Function cancelHandler;
   final Function(ReviewEmotion) okHandler;
+  final Function deleteHandler;
 
   void afterSend(BuildContext context, ReviewEmotionState state) {
     if (state.isUpdated) {
@@ -24,6 +26,10 @@ class ReviewEmotionEdit extends StatelessWidget {
           state.isCreate ? 'Created ReviewEmotion' : 'Updated ReviewEmotion';
       context.snackbar(msg);
       okHandler(state.reviewEmotion!);
+    } else if (state.isDeleted) {
+      deleteHandler();
+      const msg = "Deleted ReviewEmotion";
+      context.snackbar(msg);
     } else {
       if (state.isFailed) {
         cancelHandler();
@@ -45,6 +51,14 @@ class ReviewEmotionEdit extends StatelessWidget {
     final state = context.read<ReviewEmotionState>();
     final slug = context.read<ReviewState>().review!.slug;
     await state.update(slug).then((value) => afterSend(context, state));
+  }
+
+  void deleteReviewEmotion(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+
+    final state = context.read<ReviewEmotionState>();
+    final slug = context.read<ReviewState>().review!.slug;
+    await state.delete(slug).then((value) => afterSend(context, state));
   }
 
   @override
@@ -119,6 +133,15 @@ class ReviewEmotionEdit extends StatelessWidget {
                       },
                       child: Text(
                         "Cancel",
+                        style: context.labelMedium,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        deleteReviewEmotion(context);
+                      },
+                      child: Text(
+                        "Delete",
                         style: context.labelMedium,
                       ),
                     ),

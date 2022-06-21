@@ -10,7 +10,7 @@ import 'review_emotion_service.dart';
 
 enum ReviewEmotionEvent { create, read, update, delete }
 
-enum ReviewEmotionStatus { initial, read, updated, notupdated, failed }
+enum ReviewEmotionStatus { initial, read, updated, deleted, failed }
 
 class ReviewEmotionState extends ChangeNotifier {
   final ReviewEmotionService _service;
@@ -19,20 +19,18 @@ class ReviewEmotionState extends ChangeNotifier {
   ReviewEmotionEvent? _event;
   ReviewEmotionStatus _status = ReviewEmotionStatus.initial;
   bool _isLoading = false;
-  String? _token;
   String _error = '';
   bool _isCreate = true;
 
   ReviewEmotion? get reviewEmotion => _reviewEmotion;
   ReviewEmotionEvent? get event => _event;
   ReviewEmotionStatus get status => _status;
-  String? get token => _token;
   String get error => _error;
   bool get isCreate => _isCreate;
 
   bool get isLoading => _isLoading;
   bool get isUpdated => _status == ReviewEmotionStatus.updated;
-  bool get notUpdated => _status == ReviewEmotionStatus.notupdated;
+  bool get isDeleted => _status == ReviewEmotionStatus.deleted;
   bool get isFailed => _status == ReviewEmotionStatus.failed;
 
   late TextEditingController notesController;
@@ -104,27 +102,21 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete(String slug, int position) async {
+  Future delete(String slug) async {
     _event = ReviewEmotionEvent.delete;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      final data = await _service.delete(slug, position);
+      await _service.delete(slug, _reviewEmotion!.position);
 
-      if (data is Response && data.statusCode == 200) {
-        _reviewEmotion = null;
+      _reviewEmotion = null;
 
-        _status = ReviewEmotionStatus.initial;
-        _error = '';
-        _event = null;
-        _reviewEmotion = null;
-        _token = null;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = ReviewEmotionStatus.deleted;
+      _error = '';
+      _event = null;
+      _reviewEmotion = null;
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
