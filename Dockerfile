@@ -1,5 +1,5 @@
 #Stage 1 - Install dependencies and build the app
-FROM ubuntu:22.04 AS frontflutterget
+FROM debian:stable AS frontflutterget
 WORKDIR /root
 
 # Setup apt packages
