@@ -8,6 +8,7 @@ import 'package:storystains/features/review/review_state.dart';
 import 'package:storystains/model/resp/review_resp.dart';
 import 'package:mockito/annotations.dart';
 
+import '../../common/errors.dart';
 import '../../model/review.dart';
 import 'review_test.mocks.dart';
 
@@ -41,15 +42,8 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create("", "")).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be empty.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.create("", ""))
+          .thenThrow(testApiError(400, "Cannot be empty."));
 
       await reviewState.update("", "");
 
@@ -65,15 +59,8 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create("", "")).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 401,
-          data: "User not logged in.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.create("", ""))
+          .thenThrow(testApiError(401, "User not logged in."));
 
       await reviewState.update("", "");
 
@@ -115,15 +102,8 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete("")).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be empty.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.delete(""))
+          .thenThrow(testApiError(400, "Cannot be empty."));
 
       await reviewState.delete();
 
@@ -204,15 +184,8 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update("", "", "")).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be empty.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.update("", "", ""))
+          .thenThrow(testApiError(400, "Cannot be empty."));
 
       await reviewState.update("", "");
 
@@ -235,15 +208,8 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update("", "", "")).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 401,
-          data: "User not logged in.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.update("", "", ""))
+          .thenThrow(testApiError(401, "User not logged in."));
 
       await reviewState.update("", "");
 
