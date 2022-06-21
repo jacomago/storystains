@@ -281,6 +281,7 @@ void main() {
 
       expect(ok, true);
       expect(cancel, false);
+      expect(delete, false);
     });
     testWidgets('test error message', (tester) async {
       SharedPreferences.setMockInitialValues({});

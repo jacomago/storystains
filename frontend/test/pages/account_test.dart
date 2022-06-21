@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/account.dart';
-import 'package:storystains/pages/login_register.dart';
 
 Widget wrapWithMaterial(Widget w, AuthState authState) =>
     ChangeNotifierProvider<AuthState>(
