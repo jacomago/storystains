@@ -1,4 +1,6 @@
-import '../../model/entity/review.dart';
+
+
+import 'package:storystains/model/entity/review.dart';
 
 export 'review_service.dart';
 

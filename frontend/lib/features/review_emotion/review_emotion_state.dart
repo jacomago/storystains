@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/model/entity/emotion.dart';
+import 'package:storystains/model/entity/review_emotion.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
-import '../../model/entity/review_emotion.dart';
 import 'review_emotion_service.dart';
 
 enum ReviewEmotionEvent { create, read, update, delete }

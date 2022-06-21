@@ -1,4 +1,6 @@
-import '../../model/entity/review_emotion.dart';
+
+
+import 'package:storystains/model/entity/review_emotion.dart';
 
 export 'review_emotion_service.dart';
 
