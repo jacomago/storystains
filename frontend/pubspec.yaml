@@ -31,6 +31,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
   retrofit_generator: ^4.0.1
   build_runner: ^2.1.11
   json_serializable: '>4.4.0'
