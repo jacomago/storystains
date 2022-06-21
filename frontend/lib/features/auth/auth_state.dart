@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/model/resp/user_resp.dart';
 
-import '../../model/entity/user.dart';
 import 'package:storystains/common/utils/prefs.dart';
 import 'auth.dart';
 

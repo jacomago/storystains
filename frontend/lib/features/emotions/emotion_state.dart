@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
-import '../../common/constant/app_config.dart';
 import 'emotion_service.dart';
 
 class EmotionsState extends ChangeNotifier {
