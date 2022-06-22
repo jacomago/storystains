@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:storystains/common/widget/emotion_image_text.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
-import 'emotion_picker.dart';
+import '../../features/emotions/emotion_picker.dart';
 
 class EmotionEdit extends StatelessWidget {
   final Emotion emotion;

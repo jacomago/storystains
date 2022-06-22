@@ -7,5 +7,5 @@ export 'title.dart';
 export 'app_bar.dart';
 export 'card_review_emotions.dart';
 export 'emotion_image.dart';
-export 'emotion_picker.dart';
+export '../../features/emotions/emotion_picker.dart';
 export 'markdown_edit.dart';
