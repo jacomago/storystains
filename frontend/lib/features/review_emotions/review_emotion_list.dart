@@ -56,13 +56,13 @@ class ReviewEmotionsList extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Emotions",
-                  style: context.headlineMedium,
+                  "Emotions:",
+                  style: context.titleMedium,
                 ),
-                TextButton(
+                OutlinedButton(
                   onPressed: () async => {
                     showDialog<Emotion>(
                       context: context,
@@ -76,8 +76,8 @@ class ReviewEmotionsList extends StatelessWidget {
                     ),
                   },
                   child: Text(
-                    "Add",
-                    style: context.headlineMedium,
+                    "ADD",
+                    style: context.titleSmall,
                   ),
                 ),
               ],

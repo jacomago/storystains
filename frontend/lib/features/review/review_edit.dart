@@ -84,22 +84,19 @@ class ReviewEditPage extends StatelessWidget {
             ],
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Title',
-                        hintText: 'Review title',
-                      ),
-                      style: context.titleMedium,
-                      controller: state.titleController,
+                  TextField(
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Title',
+                      hintText: 'Review title',
                     ),
+                    style: context.titleMedium,
+                    controller: state.titleController,
                   ),
                   state.isCreate
                       ? Row()

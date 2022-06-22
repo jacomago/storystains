@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_theme.dart';
 import 'package:storystains/common/utils/services.dart';
@@ -36,7 +37,10 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppConfig.appTitle,
-      theme: ThemeData(colorScheme: lightColorScheme),
+      theme: ThemeData(
+        colorScheme: lightColorScheme,
+        textTheme: GoogleFonts.libreBaskervilleTextTheme(),
+      ),
       onGenerateRoute: routes,
     );
   }

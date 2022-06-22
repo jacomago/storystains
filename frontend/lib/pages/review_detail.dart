@@ -64,7 +64,7 @@ class ReviewDetailPage extends StatelessWidget {
             title: AppBarTitle('Review'),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,12 +112,16 @@ class ReviewDetailPage extends StatelessWidget {
                     create: (_) => ReviewEmotionsState(review.review!.emotions),
                     child: const ReviewEmotionsList(),
                   ),
+                  Divider(
+                    color: context.colors.secondary,
+                  ),
                   Markdown(
                     physics: const NeverScrollableScrollPhysics(),
                     data: review.review?.body ?? '',
                     selectable: true,
                     shrinkWrap: true,
-                    padding: EdgeInsets.zero,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   ),
                 ],
               ),
