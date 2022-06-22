@@ -32,7 +32,7 @@ class CardReviewEmotionsList extends StatelessWidget {
   ) {
     return EmotionImageText(
       emotion: reviewEmotion.emotion,
-      width: 50,
+      width: 60,
       height: 60,
     );
   }
