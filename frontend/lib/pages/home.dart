@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/common/widget/app_bar.dart';
@@ -40,13 +41,10 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    return Text(
-      AppConfig.appName,
-      style: TextStyle(
-        fontFamily: 'TT2020E',
-        color: context.colors.onSurface,
-        fontSize: 40,
-      ),
+    return SvgPicture.asset(
+      "assets/images/titletext.svg",
+      color: context.colors.onSurface,
+      height: 35,
     );
   }
 
