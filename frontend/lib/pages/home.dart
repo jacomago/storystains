@@ -42,7 +42,11 @@ class HomePage extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     return Text(
       AppConfig.appName,
-      style: context.displaySmall,
+      style: TextStyle(
+        fontFamily: 'TT2020E',
+        color: context.colors.onSurface,
+        fontSize: 40,
+      ),
     );
   }
 

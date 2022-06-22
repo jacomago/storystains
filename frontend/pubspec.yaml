@@ -46,6 +46,7 @@ flutter:
   assets:
     - assets/logo/
     - assets/lottie/
+    - assets/fonts/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
@@ -66,3 +67,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: TT2020Base
+      fonts: 
+        - asset: assets/fonts/TT2020Base-Regular.ttf
+        - asset: assets/fonts/TT2020Base-Italic.ttf
+          style: italic
+    - family: TT2020D
+      fonts: 
+        - asset: assets/fonts/TT2020StyleD-Regular.ttf
+        - asset: assets/fonts/TT2020StyleD-Italic.ttf
+          style: italic
+    - family: TT2020E
+      fonts: 
+        - asset: assets/fonts/TT2020StyleE-Regular.ttf
+        - asset: assets/fonts/TT2020StyleE-Italic.ttf
+          style: italic
