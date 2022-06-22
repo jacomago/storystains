@@ -21,11 +21,11 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       elevation: 0,
       toolbarHeight: 70,
-      backgroundColor: context.colors.background,
+      backgroundColor: const Color.fromARGB(70, 222, 210, 201),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Divider(
-          color: context.colors.primary,
+          color: context.colors.secondary,
           height: 1.0,
         ),
       ),
@@ -33,6 +33,7 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
         ...moreActions,
         _buildAuthAction(context),
       ],
+      iconTheme: IconThemeData(color: context.colors.onSurface),
     );
   }
 

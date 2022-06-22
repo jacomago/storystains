@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/emotion_image.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
@@ -16,7 +17,7 @@ class EmotionImageText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(10),
       child: SizedBox(
         width: width,
         height: height,
@@ -33,6 +34,7 @@ class EmotionImageText extends StatelessWidget {
             ),
             Text(
               emotion.name,
+              style: context.bodySmall,
               textAlign: TextAlign.center,
               overflow: TextOverflow.fade,
               maxLines: 1,

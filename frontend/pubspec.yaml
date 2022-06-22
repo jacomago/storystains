@@ -83,3 +83,6 @@ flutter:
         - asset: assets/fonts/TT2020StyleE-Regular.ttf
         - asset: assets/fonts/TT2020StyleE-Italic.ttf
           style: italic
+    - family: Domitian
+      fonts:
+        - asset: assets/fonts/Domitan-Roman.ttf
