@@ -98,7 +98,7 @@ class ReviewEmotionsList extends StatelessWidget {
                 : Row(),
             Timeline(
               gutterSpacing: 10,
-              indicatorSize: 200,
+              indicatorSize: 100,
               indicators: reviewEmotions.items
                   .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
                   .toList(),
@@ -129,20 +129,24 @@ class ReviewEmotionsList extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Position: ${reviewEmotion.position}"),
+                Text(
+                  "Notes",
+                  style: context.labelLarge,
+                ),
                 const SizedBox(
                   width: 10,
                 ),
-                const Text("Notes"),
+                Text(
+                  "Position: ${reviewEmotion.position}",
+                  style: context.labelMedium,
+                ),
               ],
-            ),
-            const SizedBox(
-              height: 10,
             ),
             const Divider(),
             Text(
               reviewEmotion.notes,
               textAlign: TextAlign.left,
+              style: context.bodySmall,
             ),
           ],
         ),
@@ -157,8 +161,8 @@ class ReviewEmotionsList extends StatelessWidget {
   ) {
     return EmotionEdit(
       emotion: reviewEmotion.emotion,
-      width: 200,
-      height: 200,
+      width: 100,
+      height: 100,
       handler: (value) => _updateEmotion(context, reviewEmotion, index, value),
     );
   }
