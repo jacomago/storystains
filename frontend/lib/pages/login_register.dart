@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/snackbar.dart';
 import 'package:storystains/common/widget/app_bar.dart';
+import 'package:storystains/common/widget/widget.dart';
 
 import '../features/auth/auth_state.dart';
 
@@ -47,7 +48,7 @@ class LoginOrRegisterPage extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const StainsAppBar(
-        title: Text('Login/Register'),
+        title: AppBarTitle('Login/Register'),
       ),
       body: Center(
         child: Container(

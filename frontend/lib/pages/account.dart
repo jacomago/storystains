@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/snackbar.dart';
 import 'package:storystains/common/widget/app_bar.dart';
+import 'package:storystains/common/widget/title.dart';
 
 import '../features/auth/auth_state.dart';
 
@@ -33,11 +34,9 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: StainsAppBar(
-        title: Text(
+      appBar: const StainsAppBar(
+        title: AppBarTitle(
           'User Account',
-          style:
-              context.headlineMedium?.copyWith(color: context.colors.onPrimary),
         ),
       ),
       body: Center(

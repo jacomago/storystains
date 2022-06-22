@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/common/widget/app_bar.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/routes/routes.dart';

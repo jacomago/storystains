@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/common/utils/navigation.dart';
-import 'package:storystains/common/widget/card_review_emotions.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/model/entity/review.dart';

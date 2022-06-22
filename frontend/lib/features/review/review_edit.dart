@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/app_bar.dart';
 import 'package:storystains/common/widget/markdown_edit.dart';
+import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
@@ -63,7 +64,7 @@ class ReviewEditPage extends StatelessWidget {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
-            title: const Text('Review'),
+            title: const AppBarTitle('Review'),
             moreActions: [
               PopupMenuButton<Text>(
                 icon: Icon(Icons.adaptive.more),
