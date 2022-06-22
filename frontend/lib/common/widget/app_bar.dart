@@ -19,8 +19,17 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: title,
+      elevation: 0,
       toolbarHeight: 70,
-      backgroundColor: context.colors.surfaceVariant,
+      backgroundColor: context.colors.background,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(0.0),
+        child: Divider(
+          color: context.colors.primary,
+          height: 1.0,
+        ),
+      ),
+      shadowColor: Colors.white,
       actions: [
         ...moreActions,
         _buildAuthAction(context),

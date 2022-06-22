@@ -13,7 +13,6 @@ import '../review/review.dart';
 import 'reviews_state.dart';
 import 'package:storystains/common/utils/extensions.dart';
 
-
 class ReviewsPage extends StatelessWidget {
   const ReviewsPage({Key? key}) : super(key: key);
 
@@ -43,31 +42,29 @@ class ReviewsPage extends StatelessWidget {
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          child: RefreshIndicator(
-            onRefresh: reviews.refresh,
-            child: ScrollablePositionedList.builder(
-              itemScrollController: reviews.itemScrollController,
-              itemPositionsListener: reviews.itemPositionsListener,
-              itemBuilder: (context, index) {
-                bool isItem = index < reviews.count;
-                bool isLastIndex = index == reviews.count;
-                bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
+        return RefreshIndicator(
+          onRefresh: reviews.refresh,
+          child: ScrollablePositionedList.builder(
+            itemScrollController: reviews.itemScrollController,
+            itemPositionsListener: reviews.itemPositionsListener,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              bool isItem = index < reviews.count;
+              bool isLastIndex = index == reviews.count;
+              bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
 
-                // Review Item
-                if (isItem) {
-                  return _buildReviewItem(context, reviews.item(index));
-                }
+              // Review Item
+              if (isItem) {
+                return _buildReviewItem(context, reviews.item(index));
+              }
 
-                // Show loading more at the bottom
-                if (isLoadingMore) return const LoadingMore();
+              // Show loading more at the bottom
+              if (isLoadingMore) return const LoadingMore();
 
-                // Default empty content
-                return Container();
-              },
-              itemCount: reviews.count,
-            ),
+              // Default empty content
+              return Container();
+            },
+            itemCount: reviews.count,
           ),
         );
       },
@@ -80,36 +77,30 @@ class ReviewsPage extends StatelessWidget {
           .push(Routes.reviewDetail, arguments: ReviewArguement(review))
           .then((value) => _afterPush(context)),
       child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Card(
-          color: context.colors.primaryContainer,
-          elevation: 8.0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            height: 175,
-            width: 350,
-            child: Column(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: _buildTitle(context, review.title),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => ReviewEmotionsState(review.emotions),
+              child: const CardReviewEmotionsList(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: _buildTitle(context, review.title),
-                ),
-                ChangeNotifierProvider(
-                  create: (_) => ReviewEmotionsState(review.emotions),
-                  child: const CardReviewEmotionsList(),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildUsername(context, review.user.username),
-                    _buildDate(context, review.updatedAt),
-                  ],
-                ),
+                _buildUsername(context, review.user.username),
+                _buildDate(context, review.updatedAt),
               ],
             ),
-          ),
+            Divider(
+              color: context.colors.secondary,
+            ),
+          ],
         ),
       ),
     );
@@ -135,7 +126,7 @@ class ReviewsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          username,
+          "@$username",
           style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
           overflow: TextOverflow.fade,
         ),

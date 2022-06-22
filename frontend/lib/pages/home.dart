@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
   Widget _buildTitle(BuildContext context) {
     return Text(
       AppConfig.appName,
-      style: context.displayMedium,
+      style: context.displaySmall,
     );
   }
 
