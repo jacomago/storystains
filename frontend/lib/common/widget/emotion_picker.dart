@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/emotion_image.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/model/entity/emotion.dart';
@@ -28,7 +29,7 @@ class _EmotionDialogState extends State<EmotionDialog> {
           const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       clipBehavior: Clip.antiAlias,
       child: GridView.count(
-        crossAxisCount: 3,
+        crossAxisCount: 4,
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
         children: Provider.of<EmotionsState>(context).items.map((e) {
@@ -38,13 +39,18 @@ class _EmotionDialogState extends State<EmotionDialog> {
                   ? BoxDecoration(color: Colors.black.withAlpha(50))
                   : const BoxDecoration(),
               child: GridTile(
-                footer: Text(e.name),
+                footer: Text(
+                  e.name,
+                  textAlign: TextAlign.center,
+                  style: context.caption,
+                  
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: EmotionImage(
                     emotion: e,
-                    width: 100,
-                    height: 100,
+                    width: 50,
+                    height: 50,
                   ),
                 ),
               ),
