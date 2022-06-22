@@ -52,18 +52,21 @@ class AccountPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              MaterialButton(
-                onPressed: () => _onDelete(context),
-                height: 50,
-                minWidth: 150,
-                color: context.colors.error,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              ElevatedButton(
+                onPressed: () => auth.logout(),
+                child: Text(
+                  'Log out',
+                  style: context.labelLarge!
+                      .copyWith(color: context.colors.onPrimary),
                 ),
+              ),
+              const SizedBox(height: 10),
+              OutlinedButton(
+                onPressed: () => _onDelete(context),
                 child: Text(
                   'Delete User',
                   style: context.labelLarge!
-                      .copyWith(color: context.colors.onError),
+                      .copyWith(color: context.colors.onErrorContainer),
                 ),
               ),
             ]),
