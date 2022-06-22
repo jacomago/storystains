@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/snackbar.dart';
+import 'package:storystains/common/widget/app_bar.dart';
 
 import '../features/auth/auth_state.dart';
 
@@ -32,13 +33,12 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+      appBar: StainsAppBar(
         title: Text(
           'User Account',
           style:
               context.headlineMedium?.copyWith(color: context.colors.onPrimary),
         ),
-        toolbarHeight: 70,
       ),
       body: Center(
         child: Container(

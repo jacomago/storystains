@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/common/widget/app_bar.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/common/utils/extensions.dart';
@@ -38,30 +39,20 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  Widget _buildTitle(BuildContext context) {
+    return Text(
+      AppConfig.appName,
+      style: context.displayMedium,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ReviewsState, AuthState>(
       builder: (context, reviews, auth, _) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              AppConfig.appName,
-              style: context.displaySmall
-                  ?.copyWith(color: context.colors.onPrimary),
-            ),
-            toolbarHeight: 70,
-            actions: [
-              if (auth.isAuthenticated)
-                IconButton(
-                  icon: const Icon(Icons.person_rounded),
-                  onPressed: () => context.push(Routes.account),
-                )
-              else
-                IconButton(
-                  onPressed: () => context.push(Routes.login),
-                  icon: const Icon(Icons.login),
-                ),
-            ],
+          appBar: StainsAppBar(
+            title: _buildTitle(context),
           ),
           body: const ReviewsPage(),
           floatingActionButton: FloatingActionButton(

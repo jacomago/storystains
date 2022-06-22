@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
+import 'package:storystains/common/widget/app_bar.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/review_emotions/review_emotions_state.dart';
@@ -58,8 +59,8 @@ class ReviewDetailPage extends StatelessWidget {
       builder: (context, review, authState, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text("Review"),
+          appBar: const StainsAppBar(
+            title: Text('Review'),
           ),
           body: Padding(
             padding: const EdgeInsets.all(24),

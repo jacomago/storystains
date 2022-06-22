@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/snackbar.dart';
+import 'package:storystains/common/widget/app_bar.dart';
 
 import '../features/auth/auth_state.dart';
 
@@ -45,13 +46,8 @@ class LoginOrRegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          'Login/Register',
-          style:
-              context.headlineMedium?.copyWith(color: context.colors.onPrimary),
-        ),
-        toolbarHeight: 70,
+      appBar: const StainsAppBar(
+        title: Text('Login/Register'),
       ),
       body: Center(
         child: Container(
