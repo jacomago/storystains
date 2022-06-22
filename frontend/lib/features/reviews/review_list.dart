@@ -138,6 +138,7 @@ class ReviewsPage extends StatelessWidget {
           "@$username",
           style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
           overflow: TextOverflow.fade,
+          semanticsLabel: 'Username',
         ),
       ],
     );
@@ -151,6 +152,7 @@ class ReviewsPage extends StatelessWidget {
           DateFormat.yMMMMEEEEd().format(date),
           style: context.caption,
           overflow: TextOverflow.ellipsis,
+          semanticsLabel: 'Modified Date',
         ),
       ],
     );

@@ -97,7 +97,7 @@ class ReviewEditPage extends StatelessWidget {
                         labelText: 'Title',
                         hintText: 'Review title',
                       ),
-                      style: context.headlineMedium,
+                      style: context.titleMedium,
                       controller: state.titleController,
                     ),
                   ),

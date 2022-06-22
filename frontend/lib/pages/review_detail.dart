@@ -79,54 +79,35 @@ class ReviewDetailPage extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             review.review?.title ?? '',
-                            style: context.displayMedium,
+                            style: context.headlineSmall,
                             semanticsLabel: 'Title',
                           ),
                         ],
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 4,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                        ],
+                      _buildUsername(
+                        context,
+                        review.review!.user.username,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const SizedBox(height: 4),
-                          Text(
-                            "@${review.review?.user.username ?? ''}",
-                            style: context.titleMedium
-                                ?.copyWith(fontStyle: FontStyle.italic),
-                            semanticsLabel: 'Username',
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
-                            style: context.caption,
-                            overflow: TextOverflow.ellipsis,
-                            semanticsLabel: 'Creation Date',
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
-                            style: context.caption,
-                            overflow: TextOverflow.ellipsis,
-                            semanticsLabel: 'Modified Date',
-                          ),
-                        ],
+                      _buildDate(
+                        context,
+                        review.review!.updatedAt,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 10),
+                  Divider(
+                    color: context.colors.secondary,
+                  ),
+                  const SizedBox(height: 10),
                   ChangeNotifierProvider(
                     create: (_) => ReviewEmotionsState(review.review!.emotions),
                     child: const ReviewEmotionsList(),
@@ -138,7 +119,6 @@ class ReviewDetailPage extends StatelessWidget {
                     shrinkWrap: true,
                     padding: EdgeInsets.zero,
                   ),
-                  const Divider(height: 48),
                 ],
               ),
             ),
@@ -153,6 +133,34 @@ class ReviewDetailPage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildUsername(BuildContext context, String username) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "@$username",
+          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+          overflow: TextOverflow.fade,
+          semanticsLabel: 'Username',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDate(BuildContext context, DateTime date) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat.yMMMMEEEEd().format(date),
+          style: context.caption,
+          overflow: TextOverflow.ellipsis,
+          semanticsLabel: 'Modified Date',
+        ),
+      ],
     );
   }
 }
