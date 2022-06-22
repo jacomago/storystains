@@ -126,13 +126,9 @@ class ReviewDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: CustomFloatingButton(
             onPressed: () async => _goEdit(context, review, authState),
-            backgroundColor: context.colors.primary,
-            child: Icon(
-              Icons.edit,
-              color: context.colors.onBackground,
-            ),
+            icon: Icons.edit_note,
           ),
         );
       },

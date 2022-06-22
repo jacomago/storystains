@@ -4,7 +4,7 @@ const seed = Color(0xFF6750A4);
 
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
-  primary: Color(0xFF9F4200),
+  primary: ExtraColors.paper,
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFFFDBCB),
   onPrimaryContainer: Color(0xFF341100),
@@ -80,6 +80,7 @@ class ExtraColors {
   static const sunsetRed = Color(0xfff56979);
   static const sunsetOrange = Color(0xfff79966);
   static const coffeeOnPaper = Color(0xff5c3e2a);
+  
 }
 
 ButtonStyle homeButtonStyle = OutlinedButton.styleFrom(

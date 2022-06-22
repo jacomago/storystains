@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
@@ -114,13 +113,9 @@ class ReviewEditPage extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: CustomFloatingButton(
             onPressed: () => editReview(context),
-            backgroundColor: context.colors.primary,
-            child: Icon(
-              Icons.send_rounded,
-              color: context.colors.onBackground,
-            ),
+            icon: Icons.send_rounded,
           ),
         );
       },

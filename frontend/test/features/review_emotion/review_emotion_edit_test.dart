@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import 'dart:io' as io;

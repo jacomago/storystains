@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:storystains/common/constant/app_theme.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/auth/auth_state.dart';
 import 'package:storystains/routes/routes.dart';
@@ -21,7 +22,7 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       elevation: 0,
       toolbarHeight: 70,
-      backgroundColor: const Color.fromARGB(70, 222, 210, 201),
+      backgroundColor: ExtraColors.paper,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(0.0),
         child: Divider(
@@ -33,7 +34,7 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
         ...moreActions,
         _buildAuthAction(context),
       ],
-      iconTheme: IconThemeData(color: context.colors.onSurface),
+      iconTheme: IconThemeData(color: context.colors.surface),
     );
   }
 
@@ -42,7 +43,7 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return authState.isAuthenticated
         ? IconButton(
-            icon: const Icon(Icons.person_rounded),
+            icon: const Icon(Icons.person_pin_sharp),
             onPressed: () => context.push(Routes.account),
           )
         : IconButton(
