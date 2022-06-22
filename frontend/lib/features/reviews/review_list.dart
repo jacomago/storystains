@@ -72,37 +72,47 @@ class ReviewsPage extends StatelessWidget {
   }
 
   Widget _buildReviewItem(BuildContext context, Review review) {
-    return GestureDetector(
-      onTap: () => context
-          .push(Routes.reviewDetail, arguments: ReviewArguement(review))
-          .then((value) => _afterPush(context)),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: _buildTitle(context, review.title),
-            ),
-            ChangeNotifierProvider(
-              create: (_) => ReviewEmotionsState(review.emotions),
-              child: const CardReviewEmotionsList(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () => context
+              .push(Routes.reviewDetail, arguments: ReviewArguement(review))
+              .then((value) => _afterPush(context)),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildUsername(context, review.user.username),
-                _buildDate(context, review.updatedAt),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: _buildTitle(context, review.title),
+                ),
+                ChangeNotifierProvider(
+                  create: (_) => ReviewEmotionsState(review.emotions),
+                  child: const CardReviewEmotionsList(),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildUsername(context, review.user.username),
+                    _buildDate(context, review.updatedAt),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 0),
+                  child: Divider(
+                    color: context.colors.secondary,
+                  ),
+                ),
               ],
             ),
-            Divider(
-              color: context.colors.secondary,
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 

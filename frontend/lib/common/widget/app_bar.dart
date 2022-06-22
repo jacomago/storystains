@@ -29,7 +29,6 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
           height: 1.0,
         ),
       ),
-      shadowColor: Colors.white,
       actions: [
         ...moreActions,
         _buildAuthAction(context),
