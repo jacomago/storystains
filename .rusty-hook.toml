@@ -1,6 +1,6 @@
 [hooks]
 pre-commit = "cargo fmt && cargo sqlx prepare -- --lib"
-pre-push = "cargo test && cd frontend && flutter test"
+pre-push = "RUST_LOG=warn cargo test && cd frontend && flutter test"
 
 [logging]
 verbose = true
