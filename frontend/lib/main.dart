@@ -40,6 +40,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         colorScheme: lightColorScheme,
         textTheme: GoogleFonts.libreBaskervilleTextTheme(),
+        
       ),
       onGenerateRoute: routes,
     );

@@ -31,7 +31,6 @@ class PositionEdit extends StatelessWidget {
                     positionController.value = newValue.clamp(0, 100);
                   }
                 },
-                maxLength: 3,
               ),
             ),
             Expanded(

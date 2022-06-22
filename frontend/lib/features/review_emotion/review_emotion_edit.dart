@@ -6,7 +6,6 @@ import 'package:storystains/features/review_emotion/review_emotion.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
-
 class ReviewEmotionEdit extends StatelessWidget {
   const ReviewEmotionEdit({
     Key? key,
@@ -65,83 +64,80 @@ class ReviewEmotionEdit extends StatelessWidget {
     return Consumer2<ReviewEmotionState, ReviewState>(
       builder: (context, state, review, _) {
         return SizedBox(
-          height: 220,
-          child: Column(
+          height: 190,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 190,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: EmotionEdit(
-                        emotion: state.emotionController.value,
-                        height: 180,
-                        handler: (value) =>
-                            {state.emotionController.value = value!},
-                      ),
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          PositionEdit(
-                            positionController: state.positionController,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: MarkdownEdit(
-                              bodyController: state.notesController,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+              Flexible(
+                flex: 1,
+                child: EmotionEdit(
+                  emotion: state.emotionController.value,
+                  height: 100,
+                  width: 100,
+                  handler: (value) => {state.emotionController.value = value!},
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              SizedBox(
-                height: 30,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+              Flexible(
+                flex: 2,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                      onPressed: () {
-                        editReviewEmotion(context);
-                      },
-                      child: Text(
-                        "OK",
-                        style: context.labelMedium,
+                    PositionEdit(
+                      positionController: state.positionController,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Expanded(
+                      child: MarkdownEdit(
+                        bodyController: state.notesController,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        cancelCreation(context);
-                      },
-                      child: Text(
-                        "Cancel",
-                        style: context.labelMedium,
-                      ),
+                    const SizedBox(
+                      height: 5,
                     ),
-                    TextButton(
-                      onPressed: () {
-                        deleteReviewEmotion(context);
-                      },
-                      child: Text(
-                        "Delete",
-                        style: context.labelMedium,
+                    SizedBox(
+                      height: 30,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              deleteReviewEmotion(context);
+                            },
+                            child: Text(
+                              "Delete",
+                              style: context.labelMedium,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  editReviewEmotion(context);
+                                },
+                                child: Text(
+                                  "OK",
+                                  style: context.labelMedium!.copyWith(
+                                    color: context.colors.onPrimary,
+                                  ),
+                                ),
+                              ),
+                              OutlinedButton(
+                                onPressed: () {
+                                  cancelCreation(context);
+                                },
+                                child: Text(
+                                  "Cancel",
+                                  style: context.labelMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ],
