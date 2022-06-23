@@ -1,8 +1,8 @@
-use reqwest::StatusCode;
+use reqwest::{StatusCode, Method};
 use serde_json::{json, Value};
 use storystains::api::emotions;
 
-use crate::{helpers::TestApp, review::TestReview};
+use crate::{auth::route_returns_unauth_when_not_logged_in, helpers::TestApp, review::TestReview};
 
 use super::test_review_emotion::review_emotion_relative_url_prefix;
 
@@ -30,25 +30,11 @@ impl TestApp {
 
 #[tokio::test]
 async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
-    // Arrange
-    let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
-
-    // Act
-    let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    let json: Value = json!({
-        "review_emotion": {
-            "emotion": "Joy",
-            "position": 100_i32,
-            "notes": "None"
-        }
-    });
-    let response = app.post_emotion("", review.slug(), json.to_string()).await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
-    app.teardown().await;
+    route_returns_unauth_when_not_logged_in(
+        &review_emotion_relative_url_prefix("slug"),
+        Method::POST,
+    )
+    .await;
 }
 
 #[tokio::test]

@@ -1,7 +1,8 @@
-use reqwest::StatusCode;
+use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 
 use crate::{
+    auth::route_returns_unauth_when_not_logged_in,
     helpers::{TestApp, TestUser},
     review::TestReview,
     review_emotion::test_review_emotion::TestReviewEmotion,
@@ -34,16 +35,8 @@ impl TestApp {
 
 #[tokio::test]
 async fn put_review_emotion_returns_unauth_when_not_logged_in() {
-    // Arrange
-    let app = TestApp::spawn_app().await;
-
-    // Act
-    let body = json!({"review_emotion": {"emotion": "Joy", "position":1_i32 }});
-    let response = app.put_emotion("dune", 1, body.to_string(), "").await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
-    app.teardown().await;
+    route_returns_unauth_when_not_logged_in(&review_emotion_relative_url("slug", &1), Method::PUT)
+        .await;
 }
 
 #[tokio::test]
