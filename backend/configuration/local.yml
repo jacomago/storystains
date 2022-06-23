@@ -1,6 +1,6 @@
 application:
   host: 127.0.0.1
-  static_files: "./frontend/build/web/"
+  static_files: "../frontend/build/web/"
   image_files: "./assets/images/"
 database:
   host: localhost
