@@ -33,3 +33,23 @@ pub async fn route_returns_unauth_when_not_logged_in(route: &str, method: Method
 
     app.teardown().await;
 }
+
+pub async fn route_returns_unauth_when_logged_out(
+    route: &str,
+    method: Method,
+    body: serde_json::Value,
+) {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+    app.test_user.logout().await;
+
+    // Act
+    let response = app
+        .method_route(route, method, body.to_string(), &token)
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
+}

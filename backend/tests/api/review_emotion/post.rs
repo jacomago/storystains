@@ -2,7 +2,11 @@ use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 use storystains::api::emotions;
 
-use crate::{auth::route_returns_unauth_when_not_logged_in, helpers::TestApp, review::TestReview};
+use crate::{
+    auth::{route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in},
+    helpers::TestApp,
+    review::TestReview,
+};
 
 use super::test_review_emotion::review_emotion_relative_url_prefix;
 
@@ -39,29 +43,19 @@ async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
 
 #[tokio::test]
 async fn post_review_emotion_to_review_unauth_when_logged_out() {
-    // Arrange
-    let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
-
-    // Act
-    let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    let json: Value = json!({
+    let body: Value = json!({
         "review_emotion": {
             "emotion": "Joy",
             "position": 100_i32,
             "notes": "None"
         }
     });
-    app.test_user.logout().await;
-
-    let response = app
-        .post_emotion(&token, review.slug(), json.to_string())
-        .await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
-    app.teardown().await;
+    route_returns_unauth_when_logged_out(
+        &review_emotion_relative_url_prefix("slug"),
+        Method::POST,
+        body,
+    )
+    .await;
 }
 
 #[tokio::test]
