@@ -81,7 +81,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(review.title), findsOneWidget);
-      expect(find.text(review.user.username), findsOneWidget);
+      expect(find.text("@${review.user.username}"), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -112,7 +112,7 @@ void main() {
       verify(mockService.fetch());
 
       expect(find.text(review.title), findsOneWidget);
-      expect(find.text(review.user.username), findsOneWidget);
+      expect(find.text("@${review.user.username}"), findsOneWidget);
     });
   });
 }

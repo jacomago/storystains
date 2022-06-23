@@ -107,7 +107,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(TextButton, "Cancel"));
+      await tester.tap(find.widgetWithText(OutlinedButton, "Cancel"));
       await tester.pump();
 
       expect(ok, false);
@@ -177,7 +177,7 @@ void main() {
       );
 
       await tester.pump();
-      final okButton = find.widgetWithText(TextButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, "OK");
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -262,7 +262,7 @@ void main() {
       );
 
       await tester.pump();
-      final okButton = find.widgetWithText(TextButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, "OK");
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -332,7 +332,7 @@ void main() {
           .thenThrow(testApiError(400, 'Error message.'));
 
       await tester.pump();
-      final okButton = find.widgetWithText(TextButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, "OK");
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -396,7 +396,7 @@ void main() {
       );
 
       await tester.pump();
-      final deleteButton = find.widgetWithText(TextButton, "Delete");
+      final deleteButton = find.widgetWithText(OutlinedButton, "Delete");
       expect(deleteButton, findsOneWidget);
 
       await tester.tap(deleteButton.first);

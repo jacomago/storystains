@@ -29,7 +29,7 @@ void main() {
       await tester.pumpWidget(widg);
 
       expect(
-        find.widgetWithText(MaterialButton, 'Delete User'),
+        find.widgetWithText(OutlinedButton, 'Delete User'),
         findsOneWidget,
       );
     });
@@ -45,7 +45,7 @@ void main() {
 
       await tester.pumpWidget(widg);
 
-      var button = find.widgetWithText(MaterialButton, "Delete User");
+      var button = find.widgetWithText(OutlinedButton, 'Delete User');
       expect(button, findsOneWidget);
 
       await tester.ensureVisible(button);

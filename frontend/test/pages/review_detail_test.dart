@@ -67,11 +67,7 @@ void main() {
 
       expect(find.text("@username"), findsOneWidget);
       expect(
-        find.text("Created At: ${DateFormat.yMMMMEEEEd().format(time)}"),
-        findsOneWidget,
-      );
-      expect(
-        find.text("Updated At: ${DateFormat.yMMMMEEEEd().format(time)}"),
+        find.text(DateFormat.yMMMMEEEEd().format(time)),
         findsOneWidget,
       );
     });
