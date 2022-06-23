@@ -114,7 +114,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                             },
                             child: Text(
                               "Delete",
-                              style: context.labelMedium!.copyWith(
+                              style: context.button!.copyWith(
                                 color: context.colors.onErrorContainer,
                               ),
                             ),
@@ -131,7 +131,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                 },
                                 child: Text(
                                   "OK",
-                                  style: context.labelMedium!.copyWith(
+                                  style: context.button!.copyWith(
                                     color: context.colors.onPrimary,
                                   ),
                                 ),
@@ -142,7 +142,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                 },
                                 child: Text(
                                   "Cancel",
-                                  style: context.labelMedium,
+                                  style: context.button,
                                 ),
                               ),
                             ],

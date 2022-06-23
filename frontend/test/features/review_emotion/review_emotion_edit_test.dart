@@ -396,7 +396,7 @@ void main() {
       );
 
       await tester.pump();
-      final deleteButton = find.widgetWithText(OutlinedButton, "Delete");
+      final deleteButton = find.widgetWithText(ElevatedButton, "Delete");
       expect(deleteButton, findsOneWidget);
 
       await tester.tap(deleteButton.first);

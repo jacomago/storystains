@@ -53,11 +53,13 @@ class AccountPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
+                style:
+                    ElevatedButton.styleFrom(primary: context.colors.secondary),
                 onPressed: () => auth.logout(),
                 child: Text(
                   'Log out',
-                  style: context.labelLarge!
-                      .copyWith(color: context.colors.onPrimary),
+                  style:
+                      context.button!.copyWith(color: context.colors.onPrimary),
                 ),
               ),
               const SizedBox(height: 10),
@@ -65,7 +67,7 @@ class AccountPage extends StatelessWidget {
                 onPressed: () => _onDelete(context),
                 child: Text(
                   'Delete User',
-                  style: context.labelLarge!
+                  style: context.button!
                       .copyWith(color: context.colors.onErrorContainer),
                 ),
               ),

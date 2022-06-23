@@ -75,8 +75,8 @@ class ReviewEmotionsList extends StatelessWidget {
                     ),
                   },
                   child: Text(
-                    "ADD",
-                    style: context.titleSmall,
+                    "Add",
+                    style: context.button,
                   ),
                 ),
               ],

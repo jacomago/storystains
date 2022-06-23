@@ -31,8 +31,8 @@ void main() {
       expect(find.bySemanticsLabel('Password'), findsOneWidget);
       expect(find.bySemanticsLabel('Username'), findsOneWidget);
 
-      expect(find.widgetWithText(TextButton, "Register?"), findsOneWidget);
-      expect(find.widgetWithText(MaterialButton, "Login"), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, "Register?"), findsOneWidget);
+      expect(find.widgetWithText(ElevatedButton, "Login"), findsOneWidget);
     });
 
     testWidgets("Swap Login Register ", (tester) async {
@@ -48,14 +48,14 @@ void main() {
 
       await tester.pumpWidget(page);
 
-      var swapButton = find.widgetWithText(TextButton, "Register?");
+      var swapButton = find.widgetWithText(OutlinedButton, "Register?");
       expect(swapButton, findsOneWidget);
 
       await tester.ensureVisible(swapButton);
       await tester.tap(swapButton.first);
       await tester.pump();
 
-      swapButton = find.widgetWithText(TextButton, "Login?");
+      swapButton = find.widgetWithText(OutlinedButton, "Login?");
       expect(swapButton, findsOneWidget);
     });
     testWidgets("Login Failure empty user pass", (tester) async {
@@ -71,7 +71,7 @@ void main() {
 
       await tester.pumpWidget(page);
 
-      var loginButton = find.widgetWithText(MaterialButton, "Login");
+      var loginButton = find.widgetWithText(ElevatedButton, "Login");
       expect(loginButton, findsOneWidget);
 
       await tester.ensureVisible(loginButton);
@@ -102,7 +102,7 @@ void main() {
       await tester.enterText(find.bySemanticsLabel('Password'), "password");
       await tester.enterText(find.bySemanticsLabel('Username'), "username");
 
-      var loginButton = find.widgetWithText(MaterialButton, "Login");
+      var loginButton = find.widgetWithText(ElevatedButton, "Login");
       expect(loginButton, findsOneWidget);
 
       await tester.ensureVisible(loginButton);
@@ -127,7 +127,7 @@ void main() {
 
       await tester.pumpWidget(page);
 
-      var swapButton = find.widgetWithText(TextButton, "Register?");
+      var swapButton = find.widgetWithText(OutlinedButton, "Register?");
 
       await tester.ensureVisible(swapButton);
       await tester.tap(swapButton.first);
@@ -136,7 +136,7 @@ void main() {
       await tester.enterText(find.bySemanticsLabel('Password'), "password");
       await tester.enterText(find.bySemanticsLabel('Username'), "username");
 
-      var loginButton = find.widgetWithText(MaterialButton, "Register");
+      var loginButton = find.widgetWithText(ElevatedButton, "Register");
       expect(loginButton, findsOneWidget);
 
       await tester.ensureVisible(loginButton);
