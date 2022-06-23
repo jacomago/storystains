@@ -31,11 +31,11 @@ class PositionEdit extends StatelessWidget {
                     positionController.value = newValue.clamp(0, 100);
                   }
                 },
-                maxLength: 3,
               ),
             ),
             Expanded(
               child: Slider(
+                activeColor: context.colors.secondary,
                 value: value.toDouble(),
                 min: 0.0,
                 max: 100.0,

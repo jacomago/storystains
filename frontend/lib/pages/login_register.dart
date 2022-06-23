@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/snackbar.dart';
+import 'package:storystains/common/widget/widget.dart';
 
 import '../features/auth/auth_state.dart';
 
@@ -45,13 +46,8 @@ class LoginOrRegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          'Login/Register',
-          style:
-              context.headlineMedium?.copyWith(color: context.colors.onPrimary),
-        ),
-        toolbarHeight: 70,
+      appBar: const StainsAppBar(
+        title: AppBarTitle('Login/Register'),
       ),
       body: Center(
         child: Container(
@@ -88,25 +84,25 @@ class LoginOrRegisterPage extends StatelessWidget {
                 onSubmitted: (_) => _onLogin(context),
               ),
               const SizedBox(height: 24),
-              MaterialButton(
-                onPressed: () => _onLogin(context),
-                height: 50,
-                minWidth: 150,
-                color: context.colors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: context.colors.secondary,
+                  minimumSize: const Size(120, 40),
+                  elevation: 0,
                 ),
+                onPressed: () => _onLogin(context),
                 child: Text(
                   auth.isLogin ? 'Login' : 'Register',
-                  style: context.labelLarge!
-                      .copyWith(color: context.colors.onPrimary),
+                  style:
+                      context.button!.copyWith(color: context.colors.onPrimary),
                 ),
               ),
-              TextButton(
+              const SizedBox(height: 5),
+              OutlinedButton(
                 onPressed: auth.switchLoginRegister,
                 child: Text(
                   auth.isLogin ? 'Register?' : 'Login?',
-                  style: context.labelMedium,
+                  style: context.button,
                 ),
               ),
             ]),

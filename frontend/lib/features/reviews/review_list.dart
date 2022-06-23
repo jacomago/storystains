@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/common/utils/navigation.dart';
-import 'package:storystains/common/widget/card_review_emotions.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/model/entity/review.dart';
@@ -12,7 +11,6 @@ import 'package:storystains/routes/routes.dart';
 import '../review/review.dart';
 import 'reviews_state.dart';
 import 'package:storystains/common/utils/extensions.dart';
-
 
 class ReviewsPage extends StatelessWidget {
   const ReviewsPage({Key? key}) : super(key: key);
@@ -43,31 +41,29 @@ class ReviewsPage extends StatelessWidget {
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          child: RefreshIndicator(
-            onRefresh: reviews.refresh,
-            child: ScrollablePositionedList.builder(
-              itemScrollController: reviews.itemScrollController,
-              itemPositionsListener: reviews.itemPositionsListener,
-              itemBuilder: (context, index) {
-                bool isItem = index < reviews.count;
-                bool isLastIndex = index == reviews.count;
-                bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
+        return RefreshIndicator(
+          onRefresh: reviews.refresh,
+          child: ScrollablePositionedList.builder(
+            itemScrollController: reviews.itemScrollController,
+            itemPositionsListener: reviews.itemPositionsListener,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              bool isItem = index < reviews.count;
+              bool isLastIndex = index == reviews.count;
+              bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
 
-                // Review Item
-                if (isItem) {
-                  return _buildReviewItem(context, reviews.item(index));
-                }
+              // Review Item
+              if (isItem) {
+                return _buildReviewItem(context, reviews.item(index));
+              }
 
-                // Show loading more at the bottom
-                if (isLoadingMore) return const LoadingMore();
+              // Show loading more at the bottom
+              if (isLoadingMore) return const LoadingMore();
 
-                // Default empty content
-                return Container();
-              },
-              itemCount: reviews.count,
-            ),
+              // Default empty content
+              return Container();
+            },
+            itemCount: reviews.count,
           ),
         );
       },
@@ -75,19 +71,14 @@ class ReviewsPage extends StatelessWidget {
   }
 
   Widget _buildReviewItem(BuildContext context, Review review) {
-    return GestureDetector(
-      onTap: () => context
-          .push(Routes.reviewDetail, arguments: ReviewArguement(review))
-          .then((value) => _afterPush(context)),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Card(
-          color: context.colors.primaryContainer,
-          elevation: 8.0,
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () => context
+              .push(Routes.reviewDetail, arguments: ReviewArguement(review))
+              .then((value) => _afterPush(context)),
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-            height: 175,
-            width: 350,
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -99,6 +90,9 @@ class ReviewsPage extends StatelessWidget {
                   create: (_) => ReviewEmotionsState(review.emotions),
                   child: const CardReviewEmotionsList(),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,11 +101,17 @@ class ReviewsPage extends StatelessWidget {
                     _buildDate(context, review.updatedAt),
                   ],
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 0),
+                  child: Divider(
+                    color: context.colors.secondary,
+                  ),
+                ),
               ],
             ),
           ),
         ),
-      ),
+      ],
     );
   }
 
@@ -135,9 +135,10 @@ class ReviewsPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          username,
+          "@$username",
           style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
           overflow: TextOverflow.fade,
+          semanticsLabel: 'Username',
         ),
       ],
     );
@@ -151,6 +152,7 @@ class ReviewsPage extends StatelessWidget {
           DateFormat.yMMMMEEEEd().format(date),
           style: context.caption,
           overflow: TextOverflow.ellipsis,
+          semanticsLabel: 'Modified Date',
         ),
       ],
     );

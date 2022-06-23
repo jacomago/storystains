@@ -3,6 +3,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/snackbar.dart';
+import 'package:storystains/common/widget/app_bar.dart';
+import 'package:storystains/common/widget/title.dart';
 
 import '../features/auth/auth_state.dart';
 
@@ -32,13 +34,10 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
+      appBar: const StainsAppBar(
+        title: AppBarTitle(
           'User Account',
-          style:
-              context.headlineMedium?.copyWith(color: context.colors.onPrimary),
         ),
-        toolbarHeight: 70,
       ),
       body: Center(
         child: Container(
@@ -53,18 +52,23 @@ class AccountPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              MaterialButton(
-                onPressed: () => _onDelete(context),
-                height: 50,
-                minWidth: 150,
-                color: context.colors.error,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+              ElevatedButton(
+                style:
+                    ElevatedButton.styleFrom(primary: context.colors.secondary),
+                onPressed: () => auth.logout(),
+                child: Text(
+                  'Log out',
+                  style:
+                      context.button!.copyWith(color: context.colors.onPrimary),
                 ),
+              ),
+              const SizedBox(height: 10),
+              OutlinedButton(
+                onPressed: () => _onDelete(context),
                 child: Text(
                   'Delete User',
-                  style: context.labelLarge!
-                      .copyWith(color: context.colors.onError),
+                  style: context.button!
+                      .copyWith(color: context.colors.onErrorContainer),
                 ),
               ),
             ]),

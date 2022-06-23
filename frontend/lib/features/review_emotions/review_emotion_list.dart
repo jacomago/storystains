@@ -2,11 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/common/widget/emotion_picker.dart';
 import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/emotions/emotion_state.dart';
+import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/model/entity/emotion.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 
@@ -57,13 +55,13 @@ class ReviewEmotionsList extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Emotions",
-                  style: context.headlineMedium,
+                  "Emotions:",
+                  style: context.titleMedium,
                 ),
-                TextButton(
+                OutlinedButton(
                   onPressed: () async => {
                     showDialog<Emotion>(
                       context: context,
@@ -78,7 +76,7 @@ class ReviewEmotionsList extends StatelessWidget {
                   },
                   child: Text(
                     "Add",
-                    style: context.headlineMedium,
+                    style: context.button,
                   ),
                 ),
               ],
@@ -99,7 +97,7 @@ class ReviewEmotionsList extends StatelessWidget {
                 : Row(),
             Timeline(
               gutterSpacing: 10,
-              indicatorSize: 200,
+              indicatorSize: 100,
               indicators: reviewEmotions.items
                   .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
                   .toList(),
@@ -130,20 +128,24 @@ class ReviewEmotionsList extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Position: ${reviewEmotion.position}"),
+                Text(
+                  "Notes",
+                  style: context.labelLarge,
+                ),
                 const SizedBox(
                   width: 10,
                 ),
-                const Text("Notes"),
+                Text(
+                  "Position: ${reviewEmotion.position}",
+                  style: context.labelMedium,
+                ),
               ],
-            ),
-            const SizedBox(
-              height: 10,
             ),
             const Divider(),
             Text(
               reviewEmotion.notes,
               textAlign: TextAlign.left,
+              style: context.bodySmall,
             ),
           ],
         ),
@@ -158,8 +160,8 @@ class ReviewEmotionsList extends StatelessWidget {
   ) {
     return EmotionEdit(
       emotion: reviewEmotion.emotion,
-      width: 200,
-      height: 200,
+      width: 100,
+      height: 100,
       handler: (value) => _updateEmotion(context, reviewEmotion, index, value),
     );
   }

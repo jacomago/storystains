@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
+import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/review_emotions/review_emotions_state.dart';
@@ -58,11 +59,11 @@ class ReviewDetailPage extends StatelessWidget {
       builder: (context, review, authState, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text("Review"),
+          appBar: const StainsAppBar(
+            title: AppBarTitle('Review'),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,80 +78,88 @@ class ReviewDetailPage extends StatelessWidget {
                           const SizedBox(height: 4),
                           Text(
                             review.review?.title ?? '',
-                            style: context.displayMedium,
+                            style: context.headlineSmall,
                             semanticsLabel: 'Title',
                           ),
                         ],
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 4,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                        ],
+                      _buildUsername(
+                        context,
+                        review.review!.user.username,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const SizedBox(height: 4),
-                          Text(
-                            "@${review.review?.user.username ?? ''}",
-                            style: context.titleMedium
-                                ?.copyWith(fontStyle: FontStyle.italic),
-                            semanticsLabel: 'Username',
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Created At: ${DateFormat.yMMMMEEEEd().format(review.review!.createdAt)}",
-                            style: context.caption,
-                            overflow: TextOverflow.ellipsis,
-                            semanticsLabel: 'Creation Date',
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            "Updated At: ${DateFormat.yMMMMEEEEd().format(review.review!.updatedAt)}",
-                            style: context.caption,
-                            overflow: TextOverflow.ellipsis,
-                            semanticsLabel: 'Modified Date',
-                          ),
-                        ],
+                      _buildDate(
+                        context,
+                        review.review!.updatedAt,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 10),
+                  Divider(
+                    color: context.colors.secondary,
+                  ),
+                  const SizedBox(height: 10),
                   ChangeNotifierProvider(
                     create: (_) => ReviewEmotionsState(review.review!.emotions),
                     child: const ReviewEmotionsList(),
+                  ),
+                  Divider(
+                    color: context.colors.secondary,
                   ),
                   Markdown(
                     physics: const NeverScrollableScrollPhysics(),
                     data: review.review?.body ?? '',
                     selectable: true,
                     shrinkWrap: true,
-                    padding: EdgeInsets.zero,
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                   ),
-                  const Divider(height: 48),
                 ],
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: CustomFloatingButton(
             onPressed: () async => _goEdit(context, review, authState),
-            backgroundColor: context.colors.primary,
-            child: Icon(
-              Icons.edit,
-              color: context.colors.onBackground,
-            ),
+            icon: Icons.edit_note,
           ),
         );
       },
+    );
+  }
+
+  Widget _buildUsername(BuildContext context, String username) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "@$username",
+          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+          overflow: TextOverflow.fade,
+          semanticsLabel: 'Username',
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDate(BuildContext context, DateTime date) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          DateFormat.yMMMMEEEEd().format(date),
+          style: context.caption,
+          overflow: TextOverflow.ellipsis,
+          semanticsLabel: 'Modified Date',
+        ),
+      ],
     );
   }
 }

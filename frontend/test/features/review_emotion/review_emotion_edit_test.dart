@@ -7,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import 'dart:io' as io;
@@ -108,7 +107,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(TextButton, "Cancel"));
+      await tester.tap(find.widgetWithText(OutlinedButton, "Cancel"));
       await tester.pump();
 
       expect(ok, false);
@@ -178,7 +177,7 @@ void main() {
       );
 
       await tester.pump();
-      final okButton = find.widgetWithText(TextButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, "OK");
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -263,7 +262,7 @@ void main() {
       );
 
       await tester.pump();
-      final okButton = find.widgetWithText(TextButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, "OK");
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -333,7 +332,7 @@ void main() {
           .thenThrow(testApiError(400, 'Error message.'));
 
       await tester.pump();
-      final okButton = find.widgetWithText(TextButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, "OK");
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -397,7 +396,7 @@ void main() {
       );
 
       await tester.pump();
-      final deleteButton = find.widgetWithText(TextButton, "Delete");
+      final deleteButton = find.widgetWithText(ElevatedButton, "Delete");
       expect(deleteButton, findsOneWidget);
 
       await tester.tap(deleteButton.first);

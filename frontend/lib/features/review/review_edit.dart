@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/widget/markdown_edit.dart';
-import 'package:storystains/features/review_emotions/review_emotion_list.dart';
+import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
@@ -61,9 +60,9 @@ class ReviewEditPage extends StatelessWidget {
       builder: (context, state, _) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: const Text('Review'),
-            actions: [
+          appBar: StainsAppBar(
+            title: const AppBarTitle('Review'),
+            moreActions: [
               PopupMenuButton<Text>(
                 icon: Icon(Icons.adaptive.more),
                 itemBuilder: (BuildContext context) => <PopupMenuItem<Text>>[
@@ -82,22 +81,19 @@ class ReviewEditPage extends StatelessWidget {
             ],
           ),
           body: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: TextField(
-                      textInputAction: TextInputAction.next,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Title',
-                        hintText: 'Review title',
-                      ),
-                      style: context.headlineMedium,
-                      controller: state.titleController,
+                  TextField(
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Title',
+                      hintText: 'Review title',
                     ),
+                    style: context.titleMedium,
+                    controller: state.titleController,
                   ),
                   state.isCreate
                       ? Row()
@@ -117,13 +113,9 @@ class ReviewEditPage extends StatelessWidget {
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: CustomFloatingButton(
             onPressed: () => editReview(context),
-            backgroundColor: context.colors.primary,
-            child: Icon(
-              Icons.send_rounded,
-              color: context.colors.onBackground,
-            ),
+            icon: Icons.send_rounded,
           ),
         );
       },

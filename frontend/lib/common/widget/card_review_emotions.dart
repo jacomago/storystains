@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/widget/emotion_image_text.dart';
+import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/features/review_emotions/review_emotions_state.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
@@ -32,7 +32,7 @@ class CardReviewEmotionsList extends StatelessWidget {
   ) {
     return EmotionImageText(
       emotion: reviewEmotion.emotion,
-      width: 50,
+      width: 60,
       height: 60,
     );
   }

@@ -38,6 +38,7 @@ impl TestApp {
             let mut c = get_configuration().expect("Failed to read configuration.");
             // Use a different database for each test case
             c.database.database_name = db_name.to_string();
+            c.database.max_connections = 1;
             // Use a random OS port
             c.application.port = 0;
             c.application.exp_token_seconds = user.exp_seconds;

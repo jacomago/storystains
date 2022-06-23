@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/common/widget/app_bar.dart';
+import 'package:storystains/common/widget/custom_floating_button.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/common/utils/extensions.dart';
@@ -38,40 +40,26 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  Widget _buildTitle(BuildContext context) {
+    return SvgPicture.asset(
+      "assets/images/titletext.svg",
+      color: context.colors.onSurface,
+      height: 35,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<ReviewsState, AuthState>(
       builder: (context, reviews, auth, _) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              AppConfig.appName,
-              style: context.displaySmall
-                  ?.copyWith(color: context.colors.onPrimary),
-            ),
-            toolbarHeight: 70,
-            actions: [
-              if (auth.isAuthenticated)
-                IconButton(
-                  icon: const Icon(Icons.person_rounded),
-                  onPressed: () => context.push(Routes.account),
-                )
-              else
-                IconButton(
-                  onPressed: () => context.push(Routes.login),
-                  icon: const Icon(Icons.login),
-                ),
-            ],
+          appBar: StainsAppBar(
+            title: _buildTitle(context),
           ),
           body: const ReviewsPage(),
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: CustomFloatingButton(
             onPressed: () => _goNewReview(context, reviews, auth),
-            backgroundColor: context.colors.primary,
-            child: Icon(
-              Icons.add_rounded,
-              size: 56,
-              color: context.colors.onPrimary,
-            ),
+            icon: Icons.mode_edit_outline_sharp,
           ),
         );
       },

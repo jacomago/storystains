@@ -53,6 +53,8 @@ extension TypographyUtils on BuildContext {
       );
   TextStyle? get button => textTheme.button?.copyWith(
         color: colors.onSurface,
+        fontSize: 16,
+        fontFamily: 'TT2020E',
       );
   TextStyle? get caption => textTheme.caption?.copyWith(
         color: colors.onSurface,

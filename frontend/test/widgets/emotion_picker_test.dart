@@ -4,7 +4,6 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:storystains/common/widget/emotion_picker.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/model/entity/emotion.dart';
 
