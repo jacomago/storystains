@@ -14,7 +14,7 @@ pub fn review_relative_url(slug: &str) -> String {
 }
 
 pub fn review_relative_url_prefix() -> String {
-    format!("/reviews")
+    "/reviews".to_string()
 }
 
 #[derive(Debug, Serialize, Deserialize)]

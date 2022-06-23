@@ -1,4 +1,4 @@
-use reqwest::{StatusCode, Method};
+use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 use storystains::api::emotions;
 
