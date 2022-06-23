@@ -1,12 +1,21 @@
-use reqwest::StatusCode;
+use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 
-use crate::helpers::{TestApp, TestUser};
+use crate::{
+    auth::route_returns_unauth_when_not_logged_in,
+    helpers::{TestApp, TestUser},
+};
+
+use super::review_relative_url_prefix;
 
 impl TestApp {
     pub async fn post_review(&self, body: String, token: &str) -> reqwest::Response {
         self.api_client
-            .post(&format!("{}/reviews", &self.address))
+            .post(&format!(
+                "{}{}",
+                &self.address,
+                review_relative_url_prefix()
+            ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)
             .body(body)
@@ -18,16 +27,7 @@ impl TestApp {
 
 #[tokio::test]
 async fn post_review_returns_unauth_when_not_logged_in() {
-    // Arrange
-    let app = TestApp::spawn_app().await;
-
-    // Act
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    let response = app.post_review(body.to_string(), "").await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
-    app.teardown().await;
+    route_returns_unauth_when_not_logged_in(&review_relative_url_prefix(), Method::POST).await;
 }
 
 #[tokio::test]

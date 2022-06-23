@@ -1,14 +1,17 @@
-use reqwest::StatusCode;
+use reqwest::{Method, StatusCode};
 
 use crate::{
+    auth::route_returns_unauth_when_not_logged_in,
     helpers::{TestApp, TestUser},
     review::test_review::TestReview,
 };
 
+use super::review_relative_url;
+
 impl TestApp {
     pub async fn delete_review(&self, slug: &str, token: &str) -> reqwest::Response {
         self.api_client
-            .delete(&format!("{}/reviews/{}", &self.address, &slug))
+            .delete(&format!("{}{}", &self.address, review_relative_url(slug)))
             .bearer_auth(token)
             .send()
             .await
@@ -18,16 +21,7 @@ impl TestApp {
 
 #[tokio::test]
 async fn delete_review_returns_unauth_when_not_logged_in() {
-    // Arrange
-    let app = TestApp::spawn_app().await;
-
-    // Act
-    let response = app.delete_review("dune", "").await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
-
-    app.teardown().await;
+    route_returns_unauth_when_not_logged_in(&review_relative_url("slug"), Method::DELETE).await;
 }
 
 #[tokio::test]

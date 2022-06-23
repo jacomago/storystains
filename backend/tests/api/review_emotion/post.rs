@@ -4,6 +4,8 @@ use storystains::api::emotions;
 
 use crate::{helpers::TestApp, review::TestReview};
 
+use super::test_review_emotion::review_emotion_relative_url_prefix;
+
 impl TestApp {
     pub async fn post_emotion(
         &self,
@@ -13,8 +15,9 @@ impl TestApp {
     ) -> reqwest::Response {
         self.api_client
             .post(&format!(
-                "{}/reviews/{}/emotions",
-                &self.address, &review_slug
+                "{}{}",
+                &self.address,
+                &review_emotion_relative_url_prefix(review_slug),
             ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)

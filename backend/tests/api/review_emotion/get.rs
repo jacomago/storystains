@@ -4,14 +4,15 @@ use crate::{
     helpers::TestApp, review::TestReview, review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
-use super::test_review_emotion::TestReviewEmotionResponse;
+use super::test_review_emotion::{review_emotion_relative_url, TestReviewEmotionResponse};
 
 impl TestApp {
     pub async fn get_emotion(&self, slug: &str, position: i32) -> reqwest::Response {
         self.api_client
             .get(&format!(
-                "{}/reviews/{}/emotions/{}",
-                &self.address, &slug, position
+                "{}{}",
+                &self.address,
+                &review_emotion_relative_url(slug, &position),
             ))
             .send()
             .await

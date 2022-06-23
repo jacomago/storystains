@@ -2,12 +2,12 @@ use reqwest::StatusCode;
 
 use crate::{helpers::TestApp, review::test_review::TestReview};
 
-use super::test_review::TestReviewResponse;
+use super::{review_relative_url, test_review::TestReviewResponse};
 
 impl TestApp {
     pub async fn get_review(&self, slug: &str) -> reqwest::Response {
         self.api_client
-            .get(&format!("{}/reviews/{}", &self.address, &slug))
+            .get(&format!("{}{}", &self.address, review_relative_url(slug)))
             .send()
             .await
             .expect("Failed to execute request.")

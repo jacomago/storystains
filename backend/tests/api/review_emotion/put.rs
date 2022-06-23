@@ -7,6 +7,8 @@ use crate::{
     review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
+use super::test_review_emotion::review_emotion_relative_url;
+
 impl TestApp {
     pub async fn put_emotion(
         &self,
@@ -17,8 +19,9 @@ impl TestApp {
     ) -> reqwest::Response {
         self.api_client
             .put(&format!(
-                "{}/reviews/{}/emotions/{}",
-                &self.address, &slug, position
+                "{}{}",
+                &self.address,
+                &review_emotion_relative_url(slug, &position),
             ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)

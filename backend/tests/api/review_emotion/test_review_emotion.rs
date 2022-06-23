@@ -1,9 +1,19 @@
-use crate::helpers::{long_form, TestApp};
+use crate::{
+    helpers::{long_form, TestApp},
+    review::review_relative_url,
+};
 use rand::Rng;
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use storystains::api::{emotions, EmotionData};
+
+pub fn review_emotion_relative_url_prefix(slug: &str) -> String {
+    format!("{}/emotions", review_relative_url(slug))
+}
+pub fn review_emotion_relative_url(slug: &str, position: &i32) -> String {
+    format!("{}/emotions/{}", review_relative_url(slug), position)
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestReviewEmotionResponse {

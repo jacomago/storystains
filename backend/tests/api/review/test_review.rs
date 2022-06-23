@@ -9,6 +9,14 @@ use crate::{
     review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
+pub fn review_relative_url(slug: &str) -> String {
+    format!("/reviews/{}", slug)
+}
+
+pub fn review_relative_url_prefix() -> String {
+    format!("/reviews")
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestReviewResponse {
     pub review: TestReview,

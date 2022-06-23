@@ -3,10 +3,16 @@ use serde_json::{json, Value};
 
 use crate::helpers::{TestApp, TestUser};
 
+use super::review_relative_url_prefix;
+
 impl TestApp {
     pub async fn get_reviews(&self, limit: Option<i64>, offset: Option<i64>) -> reqwest::Response {
         self.api_client
-            .get(&format!("{}/reviews", &self.address))
+            .get(&format!(
+                "{}{}",
+                &self.address,
+                review_relative_url_prefix()
+            ))
             .query(&[("limit", limit), ("offset", offset)])
             .send()
             .await
