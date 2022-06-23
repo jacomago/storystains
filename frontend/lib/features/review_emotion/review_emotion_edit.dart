@@ -104,18 +104,28 @@ class ReviewEmotionEdit extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          OutlinedButton(
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              primary: context.colors.errorContainer,
+                            ),
                             onPressed: () {
                               deleteReviewEmotion(context);
                             },
                             child: Text(
                               "Delete",
-                              style: context.labelMedium,
+                              style: context.labelMedium!.copyWith(
+                                color: context.colors.onErrorContainer,
+                              ),
                             ),
                           ),
                           Row(
                             children: [
                               ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  primary: context.colors.secondary,
+                                ),
                                 onPressed: () {
                                   editReviewEmotion(context);
                                 },

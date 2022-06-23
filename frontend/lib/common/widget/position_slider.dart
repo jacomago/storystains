@@ -35,6 +35,7 @@ class PositionEdit extends StatelessWidget {
             ),
             Expanded(
               child: Slider(
+                activeColor: context.colors.secondary,
                 value: value.toDouble(),
                 min: 0.0,
                 max: 100.0,

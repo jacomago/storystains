@@ -6,7 +6,5 @@ export 'emotion_edit.dart';
 export 'title.dart';
 export 'app_bar.dart';
 export 'card_review_emotions.dart';
-export 'emotion_image.dart';
-export 'emotion_image_text.dart';
 export 'markdown_edit.dart';
 export 'custom_floating_button.dart';

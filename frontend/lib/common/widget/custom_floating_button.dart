@@ -16,7 +16,7 @@ class CustomFloatingButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: onPressed,
-      backgroundColor: ExtraColors.paper,
+      backgroundColor: context.colors.secondary,
       child: Icon(
         icon,
         color: context.colors.onPrimary,
