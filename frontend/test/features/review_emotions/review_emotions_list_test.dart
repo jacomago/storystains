@@ -132,7 +132,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(OutlinedButton, "ADD").first);
+      await tester.tap(find.widgetWithText(OutlinedButton, "Add").first);
       await tester.pump();
 
       final newWidget = find.byType(GridTile);
