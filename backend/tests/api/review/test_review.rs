@@ -9,8 +9,8 @@ use crate::{
     review_emotion::test_review_emotion::TestReviewEmotion,
 };
 
-pub fn review_relative_url(slug: &str) -> String {
-    format!("/reviews/{}", slug)
+pub fn review_relative_url(username: &str, slug: &str) -> String {
+    format!("/reviews/{}/{}", username, slug)
 }
 
 pub fn review_relative_url_prefix() -> String {
