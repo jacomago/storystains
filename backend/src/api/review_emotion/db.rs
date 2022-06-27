@@ -1,6 +1,6 @@
 use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
-use crate::api::reviews::ReviewSlug;
+use crate::api::{reviews::ReviewSlug, users::NewUsername};
 
 use super::model::{EmotionPosition, NewReviewEmotion, StoredReviewEmotion, UpdateReviewEmotion};
 
@@ -45,6 +45,7 @@ pub async fn read_review_emotions(
     )
 )]
 pub async fn read_review_emotion(
+    username: &NewUsername,
     slug: &ReviewSlug,
     position: EmotionPosition,
     pool: &PgPool,
@@ -55,12 +56,16 @@ pub async fn read_review_emotion(
             SELECT emotion_id,
                    position,
                    notes
-              FROM reviews,
+              FROM users, 
+                   reviews,
                    review_emotions,
                    emotions
-            WHERE  reviews.slug   = $1
-              AND  review_emotions.position = $2
+            WHERE  users.user_id  = reviews.user_id
+              AND  users.username = $1
+              AND  reviews.slug   = $2
+              AND  review_emotions.position = $3
         "#,
+        username.as_ref(),
         slug.as_ref(),
         position.as_ref()
     )
@@ -79,6 +84,7 @@ pub async fn read_review_emotion(
     skip(review_emotion, transaction)
 )]
 pub async fn create_review_emotion(
+    username: &NewUsername,
     review_slug: &ReviewSlug,
     review_emotion: &NewReviewEmotion,
     transaction: &mut Transaction<'_, Postgres>,
@@ -98,17 +104,21 @@ pub async fn create_review_emotion(
                 $1,
                 (
                     SELECT id
-                    FROM reviews
-                    WHERE slug = $2
-                    LIMIT 1
+                      FROM users,
+                           reviews
+                     WHERE slug           = $3
+                       AND users.user_id  = reviews.user_id
+                       AND users.username = $2
+                     LIMIT 1
                 ), 
-                $3, 
-                $4,
-                $5 
+                $4, 
+                $5,
+                $6 
             )
             RETURNING emotion_id, position, notes
         "#,
         id,
+        username.as_ref(),
         review_slug.as_ref(),
         review_emotion.emotion as i32,
         review_emotion.position.as_ref(),
@@ -133,6 +143,7 @@ pub async fn create_review_emotion(
     )
 )]
 pub async fn update_review_emotion(
+    username: &NewUsername,
     slug: &ReviewSlug,
     review_emotion: &UpdateReviewEmotion,
     position: EmotionPosition,
@@ -149,8 +160,12 @@ pub async fn update_review_emotion(
                 position    = COALESCE($2, position),
                 notes       = COALESCE($3, notes)
             WHERE review_id = (SELECT id
-                                 FROM reviews
-                                WHERE slug = $4
+                                 FROM users,
+                                      reviews
+                                WHERE slug           = $4
+                                  AND users.user_id  = reviews.user_id
+                                  AND users.username = $6
+                                LIMIT 1
                                )
                AND position = $5
             RETURNING emotion_id,
@@ -161,7 +176,8 @@ pub async fn update_review_emotion(
         update_position,
         notes,
         slug.as_ref(),
-        position.as_ref()
+        position.as_ref(),
+        username.as_ref()
     )
     .fetch_one(transaction)
     .await
@@ -182,6 +198,7 @@ pub async fn update_review_emotion(
     )
 )]
 pub async fn db_delete_review_emotion(
+    username: &NewUsername,
     slug: &ReviewSlug,
     position: EmotionPosition,
     pool: &PgPool,
@@ -191,13 +208,18 @@ pub async fn db_delete_review_emotion(
             DELETE 
               FROM  review_emotions
              WHERE  review_id = (SELECT id
-                                FROM reviews
-                                WHERE slug = $1
+                                   FROM users,
+                                        reviews
+                                  WHERE slug           = $1
+                                    AND users.user_id  = reviews.user_id
+                                    AND users.username = $3
+                                  LIMIT 1
                                )
                 AND position = $2
         "#,
         slug.as_ref(),
-        position.as_ref()
+        position.as_ref(),
+        username.as_ref()
     )
     .execute(pool)
     .await

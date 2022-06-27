@@ -137,7 +137,7 @@ pub async fn post_review_emotion(
         .begin()
         .await
         .context("Failed to acquire a Postgres connection from the pool")?;
-    let stored = create_review_emotion(&slug, &new_review_emotion, &mut transaction)
+    let stored = create_review_emotion(&username, &slug, &new_review_emotion, &mut transaction)
         .await
         .context("Failed to store new review.")?;
     let stored_emotion = read_emotion_by_id_trans(stored.emotion_id, &mut transaction)
@@ -181,7 +181,7 @@ pub async fn get_review_emotion(
         .map_err(ReviewEmotionError::ValidationError)?;
     let position =
         EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
-    let stored = read_review_emotion(&slug, position, pool.get_ref())
+    let stored = read_review_emotion(&username, &slug, position, pool.get_ref())
         .await
         .map_err(ReviewEmotionError::NoDataError)?;
 
@@ -261,9 +261,15 @@ pub async fn put_review_emotion(
         .review_emotion
         .try_into()
         .map_err(ReviewEmotionError::ValidationError)?;
-    let stored = update_review_emotion(&slug, &updated_review_emotion, position, &mut transaction)
-        .await
-        .map_err(ReviewEmotionError::NoDataError)?;
+    let stored = update_review_emotion(
+        &username,
+        &slug,
+        &updated_review_emotion,
+        position,
+        &mut transaction,
+    )
+    .await
+    .map_err(ReviewEmotionError::NoDataError)?;
     let stored_emotion = read_emotion_by_id_trans(stored.emotion_id, &mut transaction)
         .await
         .context("Failed to retrieve emotion details from db")?;
@@ -302,7 +308,7 @@ pub async fn delete_review_emotion(
     let position =
         EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
 
-    db_delete_review_emotion(&slug, position, &pool)
+    db_delete_review_emotion(&username, &slug, position, &pool)
         .await
         .context("delete query failed")?;
     Ok(HttpResponse::Ok().finish())
