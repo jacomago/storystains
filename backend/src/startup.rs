@@ -13,6 +13,7 @@ use actix_web::dev::{self, Server};
 use actix_web::web::Data;
 use actix_web::{http, web, App, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
+use actix_web_lab::web::spa;
 use secrecy::Secret;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
@@ -96,7 +97,12 @@ async fn run(
                 Files::new("/emotions/", format!("{}/emotions", &settings.image_files))
                     .index_file("index.html"),
             )
-            .service(Files::new("/", &settings.static_files).index_file("index.html"))
+            .service(
+                spa()
+                    .index_file(format!("{}index.html", &settings.static_files))
+                    .static_resources_location((&settings.static_files).to_string())
+                    .finish(),
+            )
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
             .app_data(Data::new(HmacSecret(settings.hmac_secret.clone())))
