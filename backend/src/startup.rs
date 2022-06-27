@@ -122,7 +122,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/login", web::post().to(login))
             .route("/emotions", web::get().to(get_emotions))
             .route("/reviews", web::get().to(get_reviews))
-            .route("/reviews/{slug}", web::get().to(get_review))
+            .route("/reviews/{username}/{slug}", web::get().to(get_review))
             .route(
                 "/reviews/{username}/{slug}/emotions/{position}",
                 web::get().to(get_review_emotion),

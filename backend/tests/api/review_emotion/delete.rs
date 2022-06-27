@@ -156,7 +156,9 @@ async fn delete_user_doesnt_delete_others_emotions() {
     let other_token = other_user.store(&app).await;
     let other_review = TestReview::generate(&other_user);
     other_review.store(&app, &other_token).await;
-    other_review.store_emotions(&app, &other_token).await;
+    other_review
+        .store_emotions_by_user(&app, &other_user, &other_token)
+        .await;
 
     // Act
     let response = app.delete_user(&token).await;

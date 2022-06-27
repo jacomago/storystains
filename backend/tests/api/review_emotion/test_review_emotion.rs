@@ -1,5 +1,5 @@
 use crate::{
-    helpers::{long_form, TestApp},
+    helpers::{long_form, TestApp, TestUser},
     review::review_relative_url,
 };
 use rand::Rng;
@@ -59,6 +59,23 @@ impl TestReviewEmotion {
                 review_slug,
                 body.to_string(),
             )
+            .await;
+
+        // Assert
+        assert_eq!(response.status(), StatusCode::OK);
+    }
+
+    pub async fn store_by_user(
+        &self,
+        app: &TestApp,
+        user: &TestUser,
+        token: &str,
+        review_slug: &str,
+    ) {
+        let body = self.create_json();
+        // Act
+        let response = app
+            .post_emotion(&user.username, token, review_slug, body.to_string())
             .await;
 
         // Assert

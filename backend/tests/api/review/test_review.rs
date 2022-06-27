@@ -73,7 +73,14 @@ impl TestReview {
 
     pub async fn store_emotions(&self, app: &TestApp, token: &str) {
         for e in self.emotions.as_ref().unwrap() {
-            e.store(app, token, &self.slug).await;
+            e.store_by_user(app, &app.test_user, token, &self.slug)
+                .await;
+        }
+    }
+
+    pub async fn store_emotions_by_user(&self, app: &TestApp, user: &TestUser, token: &str) {
+        for e in self.emotions.as_ref().unwrap() {
+            e.store_by_user(app, user, token, &self.slug).await;
         }
     }
 
