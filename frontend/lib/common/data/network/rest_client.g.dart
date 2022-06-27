@@ -52,7 +52,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ReviewResp> updateReview(slug, updatedReview) async {
+  Future<ReviewResp> updateReview(username, slug, updatedReview) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -61,7 +61,7 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReviewResp>(
             Options(method: 'PUT', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}',
+                .compose(_dio.options, '/reviews/${username}/${slug}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReviewResp.fromJson(_result.data!);
@@ -69,7 +69,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ReviewResp> readReview(slug) async {
+  Future<ReviewResp> readReview(username, slug) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -77,7 +77,7 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReviewResp>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}',
+                .compose(_dio.options, '/reviews/${username}/${slug}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReviewResp.fromJson(_result.data!);
@@ -85,21 +85,22 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<void> deleteReview(slug) async {
+  Future<void> deleteReview(username, slug) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     await _dio.fetch<void>(_setStreamType<void>(
         Options(method: 'DELETE', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/reviews/${slug}',
+            .compose(_dio.options, '/reviews/${username}/${slug}',
                 queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
   }
 
   @override
-  Future<ReviewEmotionResp> createReviewEmotion(slug, newReviewEmotion) async {
+  Future<ReviewEmotionResp> createReviewEmotion(
+      username, slug, newReviewEmotion) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -108,7 +109,7 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReviewEmotionResp>(
             Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}/emotions',
+                .compose(_dio.options, '/reviews/${username}/${slug}/emotions',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReviewEmotionResp.fromJson(_result.data!);
@@ -117,7 +118,7 @@ class _RestClient implements RestClient {
 
   @override
   Future<ReviewEmotionResp> updateReviewEmotion(
-      slug, position, updatedReviewEmotion) async {
+      username, slug, position, updatedReviewEmotion) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -126,7 +127,8 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReviewEmotionResp>(
             Options(method: 'PUT', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
+                .compose(_dio.options,
+                    '/reviews/${username}/${slug}/emotions/${position}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReviewEmotionResp.fromJson(_result.data!);
@@ -134,7 +136,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ReviewEmotionResp> readReviewEmotion(slug, position) async {
+  Future<ReviewEmotionResp> readReviewEmotion(username, slug, position) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -142,7 +144,8 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ReviewEmotionResp>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
+                .compose(_dio.options,
+                    '/reviews/${username}/${slug}/emotions/${position}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ReviewEmotionResp.fromJson(_result.data!);
@@ -150,16 +153,17 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<void> deleteReviewEmotion(slug, position) async {
+  Future<void> deleteReviewEmotion(username, slug, position) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    await _dio.fetch<void>(_setStreamType<void>(
-        Options(method: 'DELETE', headers: _headers, extra: _extra)
-            .compose(_dio.options, '/reviews/${slug}/emotions/${position}',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+            method: 'DELETE', headers: _headers, extra: _extra)
+        .compose(
+            _dio.options, '/reviews/${username}/${slug}/emotions/${position}',
+            queryParameters: queryParameters, data: _data)
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
   }
 

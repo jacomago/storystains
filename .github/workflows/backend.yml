@@ -11,6 +11,9 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+defaults:
+  run:
+    working-directory: ./backend
 jobs:
 
   cargo-fmt:
@@ -124,6 +127,7 @@ jobs:
             --locked
 
       - name: Migrate database
+        working-directory: ./backend
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
@@ -190,6 +194,7 @@ jobs:
             --locked
 
       - name: Migrate database
+        working-directory: ./backend
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh

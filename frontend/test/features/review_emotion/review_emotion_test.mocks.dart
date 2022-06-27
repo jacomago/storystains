@@ -7,7 +7,8 @@ import 'dart:async' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:storystains/features/review_emotion/review_emotion_service.dart'
     as _i2;
-import 'package:storystains/model/entity/review_emotion.dart' as _i4;
+import 'package:storystains/model/entity/review.dart' as _i4;
+import 'package:storystains/model/entity/review_emotion.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -29,21 +30,22 @@ class MockReviewEmotionService extends _i1.Mock
   }
 
   @override
-  _i3.Future<dynamic> create(String? slug, _i4.ReviewEmotion? reviewEmotion) =>
-      (super.noSuchMethod(Invocation.method(#create, [slug, reviewEmotion]),
+  _i3.Future<dynamic> create(
+          _i4.Review? review, _i5.ReviewEmotion? reviewEmotion) =>
+      (super.noSuchMethod(Invocation.method(#create, [review, reviewEmotion]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> update(
-          String? slug, int? position, _i4.ReviewEmotion? reviewEmotion) =>
+  _i3.Future<dynamic> update(_i4.Review? review, int? position,
+          _i5.ReviewEmotion? reviewEmotion) =>
       (super.noSuchMethod(
-          Invocation.method(#update, [slug, position, reviewEmotion]),
+          Invocation.method(#update, [review, position, reviewEmotion]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> read(String? slug, int? position) =>
-      (super.noSuchMethod(Invocation.method(#read, [slug, position]),
+  _i3.Future<dynamic> read(String? username, String? slug, int? position) =>
+      (super.noSuchMethod(Invocation.method(#read, [username, slug, position]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> delete(String? slug, int? position) =>
-      (super.noSuchMethod(Invocation.method(#delete, [slug, position]),
+  _i3.Future<dynamic> delete(_i4.Review? review, int? position) =>
+      (super.noSuchMethod(Invocation.method(#delete, [review, position]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
 }

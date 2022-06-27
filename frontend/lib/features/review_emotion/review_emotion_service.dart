@@ -1,12 +1,14 @@
 import 'package:storystains/common/data/network/rest_client.dart';
 import 'package:storystains/common/utils/services.dart';
+import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 import 'package:storystains/model/req/create_review_emotion.dart';
 
 class ReviewEmotionService {
-  Future create(String slug, ReviewEmotion reviewEmotion) async {
+  Future create(Review review, ReviewEmotion reviewEmotion) async {
     return await sl.get<RestClient>().createReviewEmotion(
-          slug,
+          review.user.username,
+          review.slug,
           CreateReviewEmotion(
             reviewEmotion: NewReviewEmotion(
               emotion: reviewEmotion.emotion.name,
@@ -17,9 +19,14 @@ class ReviewEmotionService {
         );
   }
 
-  Future update(String slug, int position, ReviewEmotion reviewEmotion) async {
+  Future update(
+    Review review,
+    int position,
+    ReviewEmotion reviewEmotion,
+  ) async {
     return await sl.get<RestClient>().updateReviewEmotion(
-          slug,
+          review.user.username,
+          review.slug,
           position,
           CreateReviewEmotion(
             reviewEmotion: NewReviewEmotion(
@@ -32,16 +39,21 @@ class ReviewEmotionService {
   }
 
   Future read(
+    String username,
     String slug,
     int position,
   ) async {
-    return await sl.get<RestClient>().readReviewEmotion(slug, position);
+    return await sl
+        .get<RestClient>()
+        .readReviewEmotion(username, slug, position);
   }
 
   Future delete(
-    String slug,
+    Review review,
     int position,
   ) async {
-    return await sl.get<RestClient>().deleteReviewEmotion(slug, position);
+    return await sl
+        .get<RestClient>()
+        .deleteReviewEmotion(review.user.username, review.slug, position);
   }
 }

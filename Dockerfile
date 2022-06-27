@@ -40,7 +40,7 @@ WORKDIR /app
 RUN apt update && apt install lld clang -y
 
 FROM chef as planner
-COPY . .
+COPY ./backend .
 # Compute a lock-like file for our project
 RUN cargo chef prepare --recipe-path recipe.json
 
@@ -50,7 +50,7 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 # Up to this point, if our dependency tree stays the same,
 # all layers should be cached.
-COPY . .
+COPY ./backend .
 ENV SQLX_OFFLINE true
 # Build our project
 RUN cargo build --release --bin storystains
@@ -66,6 +66,6 @@ RUN apt-get update -y \
 COPY --from=builder /app/target/release/storystains storystains
 COPY --from=builder /app/assets/images static/images
 COPY --from=frontbuild /app/build/web static/root
-COPY configuration configuration
+COPY ./backend/configuration configuration
 ENV APP_ENVIRONMENT production
 ENTRYPOINT ["./storystains"]

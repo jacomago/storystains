@@ -67,8 +67,12 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
-      when(mockService.update(review.title, review.slug, review.body))
-          .thenThrow(DioError(
+      when(mockService.update(
+        review.user.username,
+        review.title,
+        review.slug,
+        review.body,
+      )).thenThrow(DioError(
         requestOptions: RequestOptions(path: ""),
         type: DioErrorType.response,
         response: Response(
@@ -168,8 +172,12 @@ void main() {
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
-      when(mockService.update(review.slug, review.title, review.body))
-          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+      when(mockService.update(
+        review.user.username,
+        review.slug,
+        review.title,
+        review.body,
+      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -192,7 +200,7 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
 
-      when(mockService.delete(review.slug))
+      when(mockService.delete(review.user.username, review.slug))
           .thenAnswer((realInvocation) async => null);
 
       final menuButton = find.byIcon(Icons.adaptive.more);

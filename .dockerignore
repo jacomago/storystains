@@ -3,7 +3,12 @@ target/
 tests/
 Dockerfile
 scripts/
-migrations/
+migrations/.env
+backend/target/
+backend/tests/
+Dockerfile
+backend/scripts/
+backend/migrations/
 
 # Git
 .git

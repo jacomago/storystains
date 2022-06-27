@@ -81,14 +81,14 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete(review.slug)).thenAnswer(
+      when(mockService.delete(review.user.username, review.slug)).thenAnswer(
         (realInvocation) async =>
             Response(requestOptions: RequestOptions(path: ""), statusCode: 200),
       );
 
       await reviewState.delete();
 
-      verify(mockService.delete(review.title));
+      verify(mockService.delete(review.user.username, review.title));
       expect(reviewState.isUpdated, false);
       expect(reviewState.status, ReviewStatus.deleted);
     });
@@ -102,12 +102,12 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete(""))
+      when(mockService.delete(review.user.username, ""))
           .thenThrow(testApiError(400, "Cannot be empty."));
 
       await reviewState.delete();
 
-      verify(mockService.delete(""));
+      verify(mockService.delete(review.user.username, ""));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Bad Request: Cannot be empty.");
     });
@@ -124,7 +124,8 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.delete(review.slug)).thenThrow(DioError(
+      when(mockService.delete(review.user.username, review.slug))
+          .thenThrow(DioError(
         requestOptions: RequestOptions(path: ""),
         type: DioErrorType.response,
         response: Response(
@@ -136,7 +137,7 @@ void main() {
 
       await reviewState.delete();
 
-      verify(mockService.delete(review.slug));
+      verify(mockService.delete(review.user.username, review.slug));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });
@@ -155,6 +156,7 @@ void main() {
       expect(reviewState.isUpdated, false);
 
       when(mockService.update(
+        review.user.username,
         review.title,
         review.title,
         review.body,
@@ -163,6 +165,7 @@ void main() {
       await reviewState.update(review.title, review.body);
 
       verify(mockService.update(
+        review.user.username,
         review.title,
         review.title,
         review.body,
@@ -184,12 +187,12 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update("", "", ""))
+      when(mockService.update(review.user.username, "", "", ""))
           .thenThrow(testApiError(400, "Cannot be empty."));
 
       await reviewState.update("", "");
 
-      verify(mockService.update("", "", ""));
+      verify(mockService.update(review.user.username, "", "", ""));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Bad Request: Cannot be empty.");
     });
@@ -208,12 +211,12 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update("", "", ""))
+      when(mockService.update(review.user.username, "", "", ""))
           .thenThrow(testApiError(401, "User not logged in."));
 
       await reviewState.update("", "");
 
-      verify(mockService.update("", "", ""));
+      verify(mockService.update(review.user.username, "", "", ""));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });

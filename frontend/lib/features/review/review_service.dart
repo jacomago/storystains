@@ -9,18 +9,19 @@ class ReviewService {
         );
   }
 
-  Future update(String slug, String title, String body) async {
+  Future update(String username, String slug, String title, String body) async {
     return await sl.get<RestClient>().updateReview(
+          username,
           slug,
           CreateReview(review: NewReview(title: title, body: body)),
         );
   }
 
-  Future read(String slug) async {
-    return await sl.get<RestClient>().readReview(slug);
+  Future read(String username, String slug) async {
+    return await sl.get<RestClient>().readReview(username, slug);
   }
 
-  Future delete(String slug) async {
-    return await sl.get<RestClient>().deleteReview(slug);
+  Future delete(String username, String slug) async {
+    return await sl.get<RestClient>().deleteReview(username, slug);
   }
 }

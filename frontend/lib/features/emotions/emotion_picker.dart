@@ -43,7 +43,6 @@ class _EmotionDialogState extends State<EmotionDialog> {
                   e.name,
                   textAlign: TextAlign.center,
                   style: context.caption,
-                  
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20),

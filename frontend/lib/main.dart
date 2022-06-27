@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_theme.dart';
+import 'package:storystains/common/url_strategy/url_strategy.dart';
 import 'package:storystains/common/utils/services.dart';
 import 'package:storystains/features/emotions/emotion_service.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
@@ -14,6 +15,7 @@ import 'features/auth/auth_state.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Services.setup();
+  usePathUrlStrategy();
   runApp(
     MultiProvider(
       providers: [
@@ -40,7 +42,6 @@ class App extends StatelessWidget {
       theme: ThemeData(
         colorScheme: lightColorScheme,
         textTheme: GoogleFonts.libreBaskervilleTextTheme(),
-        
       ),
       onGenerateRoute: routes,
     );
