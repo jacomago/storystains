@@ -80,7 +80,6 @@ class ExtraColors {
   static const sunsetRed = Color(0xfff56979);
   static const sunsetOrange = Color(0xfff79966);
   static const coffeeOnPaper = Color(0xff5c3e2a);
-  
 }
 
 ButtonStyle homeButtonStyle = OutlinedButton.styleFrom(

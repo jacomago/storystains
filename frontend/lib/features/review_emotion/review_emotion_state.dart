@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/model/entity/emotion.dart';
+import 'package:storystains/model/entity/review.dart';
 import 'package:storystains/model/entity/review_emotion.dart';
 import 'package:storystains/model/resp/review_emotion_resp.dart';
 
@@ -55,7 +56,7 @@ class ReviewEmotionState extends ChangeNotifier {
   }
 
   Future update(
-    String slug,
+    Review review,
   ) async {
     _event = ReviewEmotionEvent.update;
     _isLoading = true;
@@ -74,11 +75,11 @@ class ReviewEmotionState extends ChangeNotifier {
       );
       final data = _isCreate
           ? await _service.create(
-              slug,
+              review,
               updateReviewEmotion,
             )
           : await _service.update(
-              slug,
+              review,
               _reviewEmotion!.position,
               updateReviewEmotion,
             );
@@ -102,14 +103,16 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete(String slug) async {
+  Future delete(
+    Review review,
+  ) async {
     _event = ReviewEmotionEvent.delete;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      await _service.delete(slug, _reviewEmotion!.position);
+      await _service.delete(review, _reviewEmotion!.position);
 
       _reviewEmotion = null;
 

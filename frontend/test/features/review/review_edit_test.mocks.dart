@@ -30,15 +30,17 @@ class MockReviewService extends _i1.Mock implements _i2.ReviewService {
       (super.noSuchMethod(Invocation.method(#create, [title, body]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> update(String? slug, String? title, String? body) =>
-      (super.noSuchMethod(Invocation.method(#update, [slug, title, body]),
+  _i3.Future<dynamic> update(
+          String? username, String? slug, String? title, String? body) =>
+      (super.noSuchMethod(
+          Invocation.method(#update, [username, slug, title, body]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> read(String? slug) =>
-      (super.noSuchMethod(Invocation.method(#read, [slug]),
+  _i3.Future<dynamic> read(String? username, String? slug) =>
+      (super.noSuchMethod(Invocation.method(#read, [username, slug]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> delete(String? slug) =>
-      (super.noSuchMethod(Invocation.method(#delete, [slug]),
+  _i3.Future<dynamic> delete(String? username, String? slug) =>
+      (super.noSuchMethod(Invocation.method(#delete, [username, slug]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
 }

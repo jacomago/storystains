@@ -25,44 +25,51 @@ abstract class RestClient {
   @retrofit.POST("/reviews")
   Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
 
-  @retrofit.PUT("/reviews/{slug}")
+  @retrofit.PUT("/reviews/{username}/{slug}")
   Future<ReviewResp> updateReview(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
     @retrofit.Body() CreateReview updatedReview,
   );
 
-  @retrofit.GET("/reviews/{slug}")
+  @retrofit.GET("/reviews/{username}/{slug}")
   Future<ReviewResp> readReview(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
   );
 
-  @retrofit.DELETE("/reviews/{slug}")
+  @retrofit.DELETE("/reviews/{username}/{slug}")
   Future<void> deleteReview(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
   );
 
   // add new review in database
-  @retrofit.POST("/reviews/{slug}/emotions")
+  @retrofit.POST("/reviews/{username}/{slug}/emotions")
   Future<ReviewEmotionResp> createReviewEmotion(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
     @retrofit.Body() CreateReviewEmotion newReviewEmotion,
   );
 
-  @retrofit.PUT("/reviews/{slug}/emotions/{position}")
+  @retrofit.PUT("/reviews/{username}/{slug}/emotions/{position}")
   Future<ReviewEmotionResp> updateReviewEmotion(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
     @retrofit.Path() int position,
     @retrofit.Body() CreateReviewEmotion updatedReviewEmotion,
   );
 
-  @retrofit.GET("/reviews/{slug}/emotions/{position}")
+  @retrofit.GET("/reviews/{username}/{slug}/emotions/{position}")
   Future<ReviewEmotionResp> readReviewEmotion(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
     @retrofit.Path() int position,
   );
 
-  @retrofit.DELETE("/reviews/{slug}/emotions/{position}")
+  @retrofit.DELETE("/reviews/{username}/{slug}/emotions/{position}")
   Future<void> deleteReviewEmotion(
+    @retrofit.Path() String username,
     @retrofit.Path() String slug,
     @retrofit.Path() int position,
   );

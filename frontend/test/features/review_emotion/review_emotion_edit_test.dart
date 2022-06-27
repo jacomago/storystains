@@ -170,7 +170,7 @@ void main() {
       final notes = find.bySemanticsLabel("Notes");
       await tester.enterText(notes.first, reviewEmotion.notes);
 
-      when(service.create(review.slug, reviewEmotion)).thenAnswer(
+      when(service.create(review, reviewEmotion)).thenAnswer(
         (realInvocation) async => ReviewEmotionResp(
           reviewEmotion: reviewEmotion,
         ),
@@ -183,7 +183,7 @@ void main() {
       await tester.tap(okButton.first);
       await tester.pump();
 
-      verify(service.create(review.slug, reviewEmotion));
+      verify(service.create(review, reviewEmotion));
       expect(
         find.widgetWithText(SnackBar, "Created ReviewEmotion"),
         findsOneWidget,
@@ -252,7 +252,7 @@ void main() {
       await tester.enterText(notes.first, newReviewEmotion.notes);
 
       when(service.update(
-        review.slug,
+        review,
         reviewEmotion.position,
         newReviewEmotion,
       )).thenAnswer(
@@ -269,7 +269,7 @@ void main() {
       await tester.pump();
 
       verify(service.update(
-        review.slug,
+        review,
         reviewEmotion.position,
         newReviewEmotion,
       ));
@@ -328,7 +328,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      when(service.update(review.slug, reviewEmotion.position, reviewEmotion))
+      when(service.update(review, reviewEmotion.position, reviewEmotion))
           .thenThrow(testApiError(400, 'Error message.'));
 
       await tester.pump();
@@ -389,7 +389,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       when(service.delete(
-        review.slug,
+        review,
         reviewEmotion.position,
       )).thenAnswer(
         (realInvocation) async => null,
@@ -403,7 +403,7 @@ void main() {
       await tester.pump();
 
       verify(service.delete(
-        review.slug,
+        review,
         reviewEmotion.position,
       ));
       expect(

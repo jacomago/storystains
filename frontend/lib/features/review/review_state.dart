@@ -62,7 +62,12 @@ class ReviewState extends ChangeNotifier {
     try {
       final data = _isCreate
           ? await _service.create(title, body)
-          : await _service.update(_review!.slug, title, body);
+          : await _service.update(
+              _review!.user.username,
+              _review!.slug,
+              title,
+              body,
+            );
 
       if (data is ReviewResp) {
         _review = data.review;
@@ -90,7 +95,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _service.delete(_review!.slug);
+      await _service.delete(_review!.user.username, _review!.slug);
 
       _review = null;
 

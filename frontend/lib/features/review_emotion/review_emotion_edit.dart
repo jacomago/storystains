@@ -47,16 +47,16 @@ class ReviewEmotionEdit extends StatelessWidget {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewEmotionState>();
-    final slug = context.read<ReviewState>().review!.slug;
-    await state.update(slug).then((value) => afterSend(context, state));
+    final review = context.read<ReviewState>().review!;
+    await state.update(review).then((value) => afterSend(context, state));
   }
 
   void deleteReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewEmotionState>();
-    final slug = context.read<ReviewState>().review!.slug;
-    await state.delete(slug).then((value) => afterSend(context, state));
+    final review = context.read<ReviewState>().review!;
+    await state.delete(review).then((value) => afterSend(context, state));
   }
 
   @override
