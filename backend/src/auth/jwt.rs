@@ -11,6 +11,8 @@ use crate::{
     startup::{ExpTokenSeconds, HmacSecret},
 };
 
+use super::model::AuthUser;
+
 /// Claim is structure of the jwt token before encryption
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AuthClaim {
@@ -32,12 +34,12 @@ impl AuthClaim {
     }
 
     /// Create new claim from basic input
-    pub fn new(username: &str, user_id: UserId, exp_token_seconds: &ExpTokenSeconds) -> Self {
+    pub fn new(user: AuthUser, exp_token_seconds: &ExpTokenSeconds) -> Self {
         let exp = Utc::now() + Duration::seconds(exp_token_seconds.0.try_into().unwrap());
         Self {
             exp: exp.timestamp(),
-            id: *user_id,
-            username: username.to_string(),
+            id: *user.user_id,
+            username: user.username.to_string(),
         }
     }
 }

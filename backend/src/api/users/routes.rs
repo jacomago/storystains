@@ -7,7 +7,7 @@ use sqlx::PgPool;
 
 use crate::{
     api::{error_chain_fmt, reviews::delete_reviews_by_user_id},
-    auth::{validate_credentials, AuthClaim, AuthError, Credentials},
+    auth::{validate_credentials, AuthClaim, AuthError, AuthUser, Credentials},
     startup::{ExpTokenSeconds, HmacSecret},
 };
 
@@ -71,7 +71,14 @@ pub async fn login(
             let user = read_user_by_id(&user_id, &pool)
                 .await
                 .map_err(|e| login_error(LoginError::UnexpectedError(e.into())))?;
-            let token = AuthClaim::new(&user.username, user_id, &exp_token_days).token(&secret);
+            let token = AuthClaim::new(
+                AuthUser {
+                    username: user.username.to_string(),
+                    user_id,
+                },
+                &exp_token_days,
+            )
+            .token(&secret);
             Ok(HttpResponse::Ok().json(UserResponse::from((user, token))))
         }
         Err(e) => {
@@ -154,7 +161,14 @@ pub async fn signup(
         .await
         .context("Error storing user")?;
     let user_id = stored.user_id.into();
-    let token = AuthClaim::new(&stored.username, user_id, &exp_token_days).token(&secret);
+    let token = AuthClaim::new(
+        AuthUser {
+            username: stored.username.to_string(),
+            user_id,
+        },
+        &exp_token_days,
+    )
+    .token(&secret);
     Ok(HttpResponse::Ok().json(UserResponse::from((stored, token))))
 }
 
@@ -181,12 +195,12 @@ impl ResponseError for DeleteUserError {
 }
 
 /// Delete user api handler currently deletes all user's review
-#[tracing::instrument(skip(pool, user_id), fields())]
+#[tracing::instrument(skip(pool, auth_user), fields())]
 pub async fn delete_user(
-    user_id: web::ReqData<UserId>,
+    auth_user: web::ReqData<AuthUser>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, DeleteUserError> {
-    let user_id = user_id.into_inner();
+    let user_id = auth_user.into_inner().user_id;
     let mut transaction = pool
         .begin()
         .await

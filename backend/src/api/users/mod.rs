@@ -2,6 +2,7 @@ pub mod routes;
 pub use routes::*;
 pub mod model;
 pub use model::UserId;
+pub use model::NewUsername;
 
 pub mod db;
 pub use db::check_user_exists;

@@ -10,6 +10,8 @@ use argon2::{
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
 
+use super::model::Credentials;
+
 /// Errors that can happen during authenticaion
 #[derive(thiserror::Error, Debug)]
 pub enum AuthError {
@@ -19,14 +21,6 @@ pub enum AuthError {
     /// Any other error
     #[error(transparent)]
     UnexpectedError(#[from] anyhow::Error),
-}
-
-/// Credentials for authentication
-pub struct Credentials {
-    /// username
-    pub username: String,
-    /// password as a secret
-    pub password: Secret<String>,
 }
 
 /// Authenticating credentials

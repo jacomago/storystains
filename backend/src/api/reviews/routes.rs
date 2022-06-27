@@ -1,12 +1,19 @@
 use std::iter::zip;
 
 use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
+use serde::Deserialize;
 
-use crate::api::{
-    error_chain_fmt,
-    review_emotion::{delete_review_emotions_by_review, read_review_emotions, ReviewEmotionData},
-    shared::put_block::{block_non_creator, BlockError},
-    LongFormText, QueryLimits, UserId,
+use crate::{
+    api::{
+        error_chain_fmt,
+        review_emotion::{
+            delete_review_emotions_by_review, read_review_emotions, ReviewEmotionData,
+        },
+        shared::put_block::{block_non_creator, BlockError},
+        users::NewUsername,
+        LongFormText, QueryLimits, UserId,
+    },
+    auth::AuthUser,
 };
 use anyhow::Context;
 use futures_lite::{stream, StreamExt};
@@ -102,11 +109,11 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     )
 )]
 pub async fn post_review(
-    user_id: web::ReqData<UserId>,
+    auth_user: web::ReqData<AuthUser>,
     json: web::Json<PostReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
-    let user_id = user_id.into_inner();
+    let user_id = auth_user.into_inner().user_id;
     let new_review = (json.0.review, user_id)
         .try_into()
         .map_err(ReviewError::ValidationError)?;
@@ -118,20 +125,31 @@ pub async fn post_review(
     }))
 }
 
+/// Input parameters for accessing a review emotion url
+#[derive(Deserialize)]
+pub struct ReviewPath {
+    /// username from path
+    pub username: String,
+    /// slug of review in path
+    pub slug: String,
+}
+
 /// API for getting a review, takes slug as id
 #[tracing::instrument(
     name = "Getting a review",
-    skip(pool),
+    skip(pool, path),
     fields(
-        slug = %slug,
+        slug = %path.slug,
     )
 )]
 pub async fn get_review(
-    slug: web::Path<String>,
+    path: web::Path<ReviewPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
-    let stored = read_review(&slug, pool.get_ref())
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ReviewError::ValidationError)?;
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ReviewError::ValidationError)?;
+    let stored = read_review(&username, &slug, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?;
     let review_emotions = read_review_emotions(&stored.id, pool.get_ref())
@@ -172,23 +190,24 @@ impl TryFrom<PutReviewData> for UpdateReview {
 /// API for updating a review
 #[tracing::instrument(
     name = "Putting a review",
-    skip(pool, json),
+    skip(pool, json, path),
     fields(
-        slug = %slug,
+        slug = %path.slug,
         reviews_title = %format!("{:?}",json.review.title),
         reviews_review = %format!("{:?}",json.review.body)
     )
 )]
 pub async fn put_review(
-    slug: web::Path<String>,
-    user_id: web::ReqData<UserId>,
+    path: web::Path<ReviewPath>,
+    auth_user: web::ReqData<AuthUser>,
     json: web::Json<PutReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
-    let user_id = user_id.into_inner();
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ReviewError::ValidationError)?;
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ReviewError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, pool.get_ref()).await?;
+    block_non_creator(&username, &auth_user.into_inner()).await?;
     let updated_review = json
         .0
         .review
@@ -208,17 +227,20 @@ pub async fn put_review(
 /// API for deleting a review
 #[tracing::instrument(
     name = "Deleting a review",
-    skip(pool),
+    skip(pool, path),
     fields(
-        slug = %slug,
+        slug = %path.slug,
     )
 )]
 pub async fn delete_review_by_slug(
-    slug: web::Path<String>,
+    path: web::Path<ReviewPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewError> {
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewError::ValidationError)?;
-    let review_id = read_review(&slug, pool.get_ref())
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ReviewError::ValidationError)?;
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ReviewError::ValidationError)?;
+
+    let review_id = read_review(&username, &slug, pool.get_ref())
         .await
         .map_err(ReviewError::NoDataError)?
         .id;

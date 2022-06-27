@@ -2,11 +2,12 @@ use actix_web::ResponseError;
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::api::{
+use crate::{api::{
     error_chain_fmt,
     reviews::{read_review_user, ReviewSlug},
+    users::NewUsername,
     UserId,
-};
+}, auth::AuthUser};
 
 /// Block Error is to announce error when modifying another users data
 #[derive(thiserror::Error)]
@@ -36,15 +37,10 @@ impl ResponseError for BlockError {
 }
 // TODO convert to middleware and/or don't read from db
 pub async fn block_non_creator(
-    slug: &ReviewSlug,
-    user_id: UserId,
-    pool: &PgPool,
+    username: &NewUsername,
+    auth_user: &AuthUser,
 ) -> Result<(), BlockError> {
-    let review_user_id = read_review_user(slug, pool)
-        .await
-        .map_err(BlockError::NoDataError)?;
-
-    if user_id != review_user_id {
+    if username.as_ref() != auth_user.username {
         return Err(BlockError::NotAllowedError(
             "Must be the creator of the data.".to_string(),
         ));

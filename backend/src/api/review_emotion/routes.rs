@@ -7,12 +7,16 @@ use reqwest::StatusCode;
 use serde::Deserialize;
 use sqlx::PgPool;
 
-use crate::api::{
-    emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, Emotion},
-    error_chain_fmt,
-    reviews::ReviewSlug,
-    shared::put_block::{block_non_creator, BlockError},
-    LongFormText, UserId,
+use crate::{
+    api::{
+        emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, Emotion},
+        error_chain_fmt,
+        reviews::ReviewSlug,
+        shared::put_block::{block_non_creator, BlockError},
+        users::NewUsername,
+        LongFormText, ReviewPath, UserId,
+    },
+    auth::AuthUser,
 };
 
 use super::{
@@ -104,22 +108,25 @@ impl TryFrom<PostReviewEmotionData> for NewReviewEmotion {
 /// API for adding a new review
 #[tracing::instrument(
     name = "Adding a new review emotion",
-    skip(pool, json),
+    skip(pool, json, path),
     fields(
+        slug = %path.slug,
         emotion = %json.review_emotion.emotion,
         position = %json.review_emotion.position,
     )
 )]
 pub async fn post_review_emotion(
-    user_id: web::ReqData<UserId>,
-    slug: web::Path<String>,
+    auth_user: web::ReqData<AuthUser>,
+    path: web::Path<ReviewPath>,
     json: web::Json<PostReviewEmotion>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
-    let user_id = user_id.into_inner();
-    let slug = ReviewSlug::parse(slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let slug =
+        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let username = NewUsername::parse(path.username.to_string())
+        .map_err(ReviewEmotionError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, pool.get_ref()).await?;
+    block_non_creator(&username, &auth_user.into_inner()).await?;
     let new_review_emotion = json
         .0
         .review_emotion
@@ -150,6 +157,7 @@ pub async fn post_review_emotion(
 /// Input parameters for accessing a review emotion url
 #[derive(Deserialize)]
 pub struct ReviewEmotionPath {
+    username: String,
     slug: String,
     position: i32,
 }
@@ -169,6 +177,8 @@ pub async fn get_review_emotion(
 ) -> Result<HttpResponse, ReviewEmotionError> {
     let slug =
         ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let username = NewUsername::parse(path.username.to_string())
+        .map_err(ReviewEmotionError::ValidationError)?;
     let position =
         EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
     let stored = read_review_emotion(&slug, position, pool.get_ref())
@@ -228,18 +238,20 @@ impl TryFrom<PutReviewEmotionData> for UpdateReviewEmotion {
     )
 )]
 pub async fn put_review_emotion(
-    user_id: web::ReqData<UserId>,
+    auth_user: web::ReqData<AuthUser>,
     path: web::Path<ReviewEmotionPath>,
     json: web::Json<PutReviewEmotion>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
-    let user_id = user_id.into_inner();
     let slug =
         ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
+    let username = NewUsername::parse(path.username.to_string())
+        .map_err(ReviewEmotionError::ValidationError)?;
+
+    block_non_creator(&username, &auth_user.into_inner()).await?;
     let position =
         EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
 
-    block_non_creator(&slug, user_id, pool.get_ref()).await?;
     let mut transaction = pool
         .begin()
         .await
@@ -276,17 +288,19 @@ pub async fn put_review_emotion(
     )
 )]
 pub async fn delete_review_emotion(
-    user_id: web::ReqData<UserId>,
+    auth_user: web::ReqData<AuthUser>,
     path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ReviewEmotionError> {
-    let user_id = user_id.into_inner();
+    let username = NewUsername::parse(path.username.to_string())
+        .map_err(ReviewEmotionError::ValidationError)?;
+
+    block_non_creator(&username, &auth_user.into_inner()).await?;
+
     let slug =
         ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
     let position =
         EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
-
-    block_non_creator(&slug, user_id, pool.get_ref()).await?;
 
     db_delete_review_emotion(&slug, position, &pool)
         .await

@@ -8,7 +8,7 @@ use crate::{
     startup::{ExpTokenSeconds, HmacSecret},
 };
 
-use super::{jwt, AuthError};
+use super::{jwt, AuthError, AuthUser};
 
 /// Return an opaque 500 while preserving the error root's cause for logging.
 pub fn e500<T>(e: T) -> actix_web::Error
@@ -61,7 +61,10 @@ pub async fn bearer_auth(
                 .map_err(AuthError::UnexpectedError)?;
 
             if user_exists {
-                let _ = req.extensions_mut().insert(user_id);
+                let _ = req.extensions_mut().insert(AuthUser {
+                    username: c.username,
+                    user_id,
+                });
                 Ok(req)
             } else {
                 Err(actix_web::Error::from(AuthError::InvalidCredentials(

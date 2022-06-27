@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
 use crate::api::{
-    read_user_by_id, reviews::model::StoredReview, users::model::StoredUser, Limits, UserId,
+    read_user_by_id, reviews::model::StoredReview, users::{model::StoredUser, NewUsername}, Limits, UserId,
 };
 
 use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
@@ -39,7 +39,11 @@ impl From<(DBReview, StoredUser)> for StoredReview {
         slug = %slug
     )
 )]
-pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
+pub async fn read_review(
+    username: &NewUsername,
+    slug: &ReviewSlug,
+    pool: &PgPool,
+) -> Result<StoredReview, sqlx::Error> {
     let review = sqlx::query_as!(
         StoredReview,
         r#"
@@ -52,9 +56,11 @@ pub async fn read_review(slug: &ReviewSlug, pool: &PgPool) -> Result<StoredRevie
                    username
               FROM reviews,
                    users
-            WHERE  slug          = $1
-              AND  users.user_id = reviews.user_id
+            WHERE  slug           = $2
+              AND  users.user_id  = reviews.user_id
+              AND  users.username = $1
         "#,
+        username.as_ref(),
         slug.as_ref()
     )
     .fetch_one(pool)
