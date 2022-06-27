@@ -13,6 +13,7 @@ use super::test_review_emotion::review_emotion_relative_url;
 impl TestApp {
     pub async fn put_emotion(
         &self,
+        username: &str,
         slug: &str,
         position: i32,
         body: String,
@@ -22,7 +23,7 @@ impl TestApp {
             .put(&format!(
                 "{}{}",
                 &self.address,
-                &review_emotion_relative_url(slug, &position),
+                &review_emotion_relative_url(username, slug, &position),
             ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)
@@ -35,8 +36,11 @@ impl TestApp {
 
 #[tokio::test]
 async fn put_review_emotion_returns_unauth_when_not_logged_in() {
-    route_returns_unauth_when_not_logged_in(&review_emotion_relative_url("slug", &1), Method::PUT)
-        .await;
+    route_returns_unauth_when_not_logged_in(
+        |username| review_emotion_relative_url(username, "slug", &1),
+        Method::PUT,
+    )
+    .await;
 }
 
 #[tokio::test]
@@ -52,7 +56,13 @@ async fn put_review_emotion_stores_new_emotion() {
     emotion.store(&app, &token, review.slug()).await;
     let body = json!({"review_emotion": {"emotion":"Anger" }});
     let response = app
-        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -88,7 +98,13 @@ async fn put_review_emotion_stores_new_position() {
     let new_position = if emotion.position == 57 { 56 } else { 57 };
     let body = json!({"review_emotion": {"position":new_position }});
     let response = app
-        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -124,7 +140,13 @@ async fn put_review_emotion_stores_new_data() {
     let new_position = if emotion.position == 57 { 56 } else { 57 };
     let body = json!({"review_emotion": {"emotion":"Anger" , "position": new_position}});
     let response = app
-        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -169,7 +191,13 @@ async fn put_review_emotion_stores_new_data_with_many_emotions() {
     let body = json!({"review_emotion": {"emotion":"Anger" , "position": new_position}});
 
     let response = app
-        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -206,7 +234,13 @@ async fn put_review_emotion_returns_not_found_for_non_existant_review() {
     let emotion = TestReviewEmotion::generate(None);
     let body = json!({"review_emotion": {"emotion":"Anger" }});
     let response = app
-        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -224,7 +258,13 @@ async fn put_review_emotion_returns_bad_request_for_invalid_position() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
     let response = app
-        .put_emotion(review.slug(), -1, "".to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            -1,
+            "".to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -257,7 +297,13 @@ async fn put_review_emotion_returns_a_400_when_fields_are_present_but_invalid() 
     for (body, description) in test_cases {
         // Act
         let response = app
-            .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+            .put_emotion(
+                &app.test_user.username,
+                review.slug(),
+                emotion.position,
+                body.to_string(),
+                &token,
+            )
             .await;
 
         // Assert
@@ -287,7 +333,13 @@ async fn put_review_emotion_returns_json() {
 
     // Act
     let response = app
-        .put_emotion(review.slug(), emotion.position, body.to_string(), &token)
+        .put_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -319,6 +371,7 @@ async fn put_review_emotion_only_allows_creator_to_modify() {
     // Act
     let response = app
         .put_emotion(
+            &app.test_user.username,
             review.slug(),
             emotion.position,
             body.to_string(),

@@ -2,7 +2,10 @@ use chrono::{DateTime, Utc};
 use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
 use crate::api::{
-    read_user_by_id, reviews::model::StoredReview, users::{model::StoredUser, NewUsername}, Limits, UserId,
+    read_user_by_id,
+    reviews::model::StoredReview,
+    users::{model::StoredUser, NewUsername},
+    Limits, UserId,
 };
 
 use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};

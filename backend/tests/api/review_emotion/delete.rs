@@ -12,6 +12,7 @@ use super::test_review_emotion::review_emotion_relative_url;
 impl TestApp {
     pub async fn delete_emotion(
         &self,
+        username: &str,
         slug: &str,
         position: i32,
         token: &str,
@@ -20,7 +21,7 @@ impl TestApp {
             .delete(&format!(
                 "{}{}",
                 &self.address,
-                &review_emotion_relative_url(slug, &position),
+                &review_emotion_relative_url(username, slug, &position),
             ))
             .bearer_auth(token)
             .send()
@@ -32,7 +33,7 @@ impl TestApp {
 #[tokio::test]
 async fn delete_review_emotion_returns_unauth_when_not_logged_in() {
     route_returns_unauth_when_not_logged_in(
-        &review_emotion_relative_url("slug", &1),
+        |username| review_emotion_relative_url(username, "slug", &1),
         Method::DELETE,
     )
     .await;
@@ -47,7 +48,9 @@ async fn delete_review_emotion_returns_bad_request_for_invalid_position() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let response = app.delete_emotion(review.slug(), 101, &token).await;
+    let response = app
+        .delete_emotion(&app.test_user.username, review.slug(), 101, &token)
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
@@ -67,7 +70,12 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
     let emotion = TestReviewEmotion::generate(None);
     emotion.store(&app, &token, review.slug()).await;
     let response = app
-        .delete_emotion(review.slug(), emotion.position, &token)
+        .delete_emotion(
+            &app.test_user.username,
+            review.slug(),
+            emotion.position,
+            &token,
+        )
         .await;
 
     // Assert
@@ -93,7 +101,9 @@ async fn delete_review_deletes_emotions() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
     review.store_emotions(&app, &token).await;
-    let response = app.delete_review(review.slug(), &token).await;
+    let response = app
+        .delete_review(&app.test_user.username, review.slug(), &token)
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);

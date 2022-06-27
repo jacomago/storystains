@@ -218,6 +218,63 @@
     },
     "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = $1\n        "
   },
+  "59a3ade2a3cb06a97e9476ed74712f8a47b8f77c0eee804e0a7c7650a1f55547": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "username",
+          "ordinal": 6,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            SELECT id,\n                   title,\n                   slug, \n                   body, \n                   created_at, \n                   updated_at, \n                   username\n              FROM reviews,\n                   users\n            WHERE  slug           = $2\n              AND  users.user_id  = reviews.user_id\n              AND  users.username = $1\n        "
+  },
   "670dfcff9385a45e93291925c6208bc300c1d3d1af9412646480bea77a3328a3": {
     "describe": {
       "columns": [],
@@ -511,62 +568,6 @@
       }
     },
     "query": "\n            SELECT emotion_id,\n                   position,\n                   notes\n              FROM review_emotions\n            WHERE  review_id = $1\n          ORDER BY position ASC\n        "
-  },
-  "e6f7451655ff6d0de8b25c11e0a27ed84c44c2e25f748b9d89b72d2dd90477ff": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "username",
-          "ordinal": 6,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            SELECT id,\n                   title,\n                   slug, \n                   body, \n                   created_at, \n                   updated_at, \n                   username\n              FROM reviews,\n                   users\n            WHERE  slug          = $1\n              AND  users.user_id = reviews.user_id\n        "
   },
   "ee4e254b722701b7b57f8a484dab7df8da3d711cad21104ec32c36fdecbe5265": {
     "describe": {

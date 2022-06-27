@@ -2,12 +2,15 @@ use actix_web::ResponseError;
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::{api::{
-    error_chain_fmt,
-    reviews::{read_review_user, ReviewSlug},
-    users::NewUsername,
-    UserId,
-}, auth::AuthUser};
+use crate::{
+    api::{
+        error_chain_fmt,
+        reviews::{read_review_user, ReviewSlug},
+        users::NewUsername,
+        UserId,
+    },
+    auth::AuthUser,
+};
 
 /// Block Error is to announce error when modifying another users data
 #[derive(thiserror::Error)]

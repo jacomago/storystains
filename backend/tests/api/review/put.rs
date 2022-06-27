@@ -10,9 +10,19 @@ use crate::{
 use super::review_relative_url;
 
 impl TestApp {
-    pub async fn put_review(&self, slug: &str, body: String, token: &str) -> reqwest::Response {
+    pub async fn put_review(
+        &self,
+        username: &str,
+        slug: &str,
+        body: String,
+        token: &str,
+    ) -> reqwest::Response {
         self.api_client
-            .put(&format!("{}{}", &self.address, review_relative_url(slug)))
+            .put(&format!(
+                "{}{}",
+                &self.address,
+                review_relative_url(username, slug)
+            ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)
             .body(body)
@@ -24,7 +34,11 @@ impl TestApp {
 
 #[tokio::test]
 async fn put_review_returns_unauth_when_not_logged_in() {
-    route_returns_unauth_when_not_logged_in(&review_relative_url("slug"), Method::PUT).await;
+    route_returns_unauth_when_not_logged_in(
+        |username| review_relative_url(username, "slug"),
+        Method::PUT,
+    )
+    .await;
 }
 
 #[tokio::test]
@@ -38,7 +52,12 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     review.store(&app, &token).await;
     let body = json!({"review": {"body":"3stars" }});
     let response = app
-        .put_review(review.slug(), body.to_string(), &token)
+        .put_review(
+            &app.test_user.username,
+            review.slug(),
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -63,6 +82,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
     // Act
     let response = app
         .put_review(
+            &app.test_user.username,
             "dune",
             json!({"review": {"title": "Dune", "body":"5stars" }}).to_string(),
             &token,
@@ -82,7 +102,12 @@ async fn put_review_returns_bad_request_for_invalid_slug() {
 
     // Act
     let response = app
-        .put_review(&"a".repeat(257), "".to_string(), &token)
+        .put_review(
+            &app.test_user.username,
+            &"a".repeat(257),
+            "".to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -112,7 +137,12 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     for (body, description) in test_cases {
         // Act
         let response = app
-            .put_review(review.slug(), body.to_string(), &token)
+            .put_review(
+                &app.test_user.username,
+                review.slug(),
+                body.to_string(),
+                &token,
+            )
             .await;
 
         // Assert
@@ -139,7 +169,12 @@ async fn put_review_returns_json() {
 
     // Act
     let response = app
-        .put_review(review.slug(), body.to_string(), &token)
+        .put_review(
+            &app.test_user.username,
+            review.slug(),
+            body.to_string(),
+            &token,
+        )
         .await;
 
     // Assert
@@ -166,7 +201,12 @@ async fn put_review_only_allows_creator_to_modify() {
 
     // Act
     let response = app
-        .put_review(review.slug(), body.to_string(), &new_token)
+        .put_review(
+            &app.test_user.username,
+            review.slug(),
+            body.to_string(),
+            &new_token,
+        )
         .await;
 
     // Assert

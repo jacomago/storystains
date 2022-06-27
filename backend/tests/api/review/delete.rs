@@ -9,9 +9,18 @@ use crate::{
 use super::review_relative_url;
 
 impl TestApp {
-    pub async fn delete_review(&self, slug: &str, token: &str) -> reqwest::Response {
+    pub async fn delete_review(
+        &self,
+        username: &str,
+        slug: &str,
+        token: &str,
+    ) -> reqwest::Response {
         self.api_client
-            .delete(&format!("{}{}", &self.address, review_relative_url(slug)))
+            .delete(&format!(
+                "{}{}",
+                &self.address,
+                review_relative_url(username, slug)
+            ))
             .bearer_auth(token)
             .send()
             .await
@@ -21,7 +30,11 @@ impl TestApp {
 
 #[tokio::test]
 async fn delete_review_returns_unauth_when_not_logged_in() {
-    route_returns_unauth_when_not_logged_in(&review_relative_url("slug"), Method::DELETE).await;
+    route_returns_unauth_when_not_logged_in(
+        |username: &str| review_relative_url(username, "slug"),
+        Method::DELETE,
+    )
+    .await;
 }
 
 #[tokio::test]
@@ -31,7 +44,9 @@ async fn delete_review_returns_bad_request_for_invalid_title() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let response = app.delete_review(&"a".repeat(257), &token).await;
+    let response = app
+        .delete_review(&app.test_user.username, &"a".repeat(257), &token)
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
@@ -48,7 +63,9 @@ async fn delete_review_returns_a_200_for_valid_slug() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let response = app.delete_review(review.slug(), &token).await;
+    let response = app
+        .delete_review(&app.test_user.username, review.slug(), &token)
+        .await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);

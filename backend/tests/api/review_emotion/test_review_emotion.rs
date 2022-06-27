@@ -8,11 +8,15 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use storystains::api::{emotions, EmotionData};
 
-pub fn review_emotion_relative_url_prefix(slug: &str) -> String {
-    format!("{}/emotions", review_relative_url(slug))
+pub fn review_emotion_relative_url_prefix(username: &str, slug: &str) -> String {
+    format!("{}/emotions", review_relative_url(username, slug))
 }
-pub fn review_emotion_relative_url(slug: &str, position: &i32) -> String {
-    format!("{}/emotions/{}", review_relative_url(slug), position)
+pub fn review_emotion_relative_url(username: &str, slug: &str, position: &i32) -> String {
+    format!(
+        "{}/emotions/{}",
+        review_relative_url(username, slug),
+        position
+    )
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -48,7 +52,14 @@ impl TestReviewEmotion {
     pub async fn store(&self, app: &TestApp, token: &str, review_slug: &str) {
         let body = self.create_json();
         // Act
-        let response = app.post_emotion(token, review_slug, body.to_string()).await;
+        let response = app
+            .post_emotion(
+                &app.test_user.username,
+                token,
+                review_slug,
+                body.to_string(),
+            )
+            .await;
 
         // Assert
         assert_eq!(response.status(), StatusCode::OK);

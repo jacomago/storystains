@@ -13,6 +13,7 @@ use super::test_review_emotion::review_emotion_relative_url_prefix;
 impl TestApp {
     pub async fn post_emotion(
         &self,
+        username: &str,
         token: &str,
         review_slug: &str,
         body: String,
@@ -21,7 +22,7 @@ impl TestApp {
             .post(&format!(
                 "{}{}",
                 &self.address,
-                &review_emotion_relative_url_prefix(review_slug),
+                &review_emotion_relative_url_prefix(username, review_slug),
             ))
             .header("Content-Type", "application/json")
             .bearer_auth(token)
@@ -35,7 +36,7 @@ impl TestApp {
 #[tokio::test]
 async fn post_review_emotion_to_review_unauth_when_not_logged_in() {
     route_returns_unauth_when_not_logged_in(
-        &review_emotion_relative_url_prefix("slug"),
+        |username| review_emotion_relative_url_prefix(username, "slug"),
         Method::POST,
     )
     .await;
@@ -51,7 +52,7 @@ async fn post_review_emotion_to_review_unauth_when_logged_out() {
         }
     });
     route_returns_unauth_when_logged_out(
-        &review_emotion_relative_url_prefix("slug"),
+        |username| review_emotion_relative_url_prefix(username, "slug"),
         Method::POST,
         body,
     )
@@ -85,7 +86,12 @@ async fn post_review_emotion_returns_a_400_when_data_is_missing() {
     for (invalid_body, error_message) in test_cases {
         // Act
         let response = app
-            .post_emotion(&token, review.slug(), invalid_body.to_string())
+            .post_emotion(
+                &app.test_user.username,
+                &token,
+                review.slug(),
+                invalid_body.to_string(),
+            )
             .await;
 
         // Assert
@@ -117,7 +123,12 @@ async fn post_review_emotion_persists_the_new_review() {
         }
     });
     let response = app
-        .post_emotion(&token, review.slug(), body.to_string())
+        .post_emotion(
+            &app.test_user.username,
+            &token,
+            review.slug(),
+            body.to_string(),
+        )
         .await;
 
     // Assert
@@ -157,7 +168,12 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
     for (body, description) in test_cases {
         // Act
         let response = app
-            .post_emotion(&token, review.slug(), body.to_string())
+            .post_emotion(
+                &app.test_user.username,
+                &token,
+                review.slug(),
+                body.to_string(),
+            )
             .await;
 
         // Assert
@@ -190,7 +206,12 @@ async fn post_review_emotion_returns_json() {
 
     // Act
     let response = app
-        .post_emotion(&token, review.slug(), body.to_string())
+        .post_emotion(
+            &app.test_user.username,
+            &token,
+            review.slug(),
+            body.to_string(),
+        )
         .await;
 
     // Assert
@@ -230,7 +251,12 @@ async fn post_every_emotion_succeeds() {
     for body in test_cases {
         // Act
         let response = app
-            .post_emotion(&token, review.slug(), body.to_string())
+            .post_emotion(
+                &app.test_user.username,
+                &token,
+                review.slug(),
+                body.to_string(),
+            )
             .await;
 
         // Assert

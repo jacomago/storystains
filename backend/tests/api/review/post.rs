@@ -27,13 +27,18 @@ impl TestApp {
 
 #[tokio::test]
 async fn post_review_returns_unauth_when_not_logged_in() {
-    route_returns_unauth_when_not_logged_in(&review_relative_url_prefix(), Method::POST).await;
+    route_returns_unauth_when_not_logged_in(|_| review_relative_url_prefix(), Method::POST).await;
 }
 
 #[tokio::test]
 async fn post_review_returns_unauth_when_logged_out() {
     let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    route_returns_unauth_when_logged_out(&review_relative_url_prefix(), Method::POST, body).await;
+    route_returns_unauth_when_logged_out(
+        |username| review_relative_url_prefix(),
+        Method::POST,
+        body,
+    )
+    .await;
 }
 
 #[tokio::test]
