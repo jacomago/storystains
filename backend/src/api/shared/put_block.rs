@@ -1,14 +1,8 @@
 use actix_web::ResponseError;
 use reqwest::StatusCode;
-use sqlx::PgPool;
 
 use crate::{
-    api::{
-        error_chain_fmt,
-        reviews::{read_review_user, ReviewSlug},
-        users::NewUsername,
-        UserId,
-    },
+    api::{error_chain_fmt, users::NewUsername},
     auth::AuthUser,
 };
 

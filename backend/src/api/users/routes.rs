@@ -14,7 +14,7 @@ use crate::{
 use super::{
     create_user, delete_user_by_id,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
-    read_user_by_id, UserId,
+    read_user_by_id,
 };
 
 /// Errors that can happen during login flow

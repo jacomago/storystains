@@ -7,7 +7,6 @@ use jsonwebtoken as jwt;
 use uuid::Uuid;
 
 use crate::{
-    api::UserId,
     startup::{ExpTokenSeconds, HmacSecret},
 };
 

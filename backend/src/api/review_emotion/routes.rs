@@ -14,7 +14,7 @@ use crate::{
         reviews::ReviewSlug,
         shared::put_block::{block_non_creator, BlockError},
         users::NewUsername,
-        LongFormText, ReviewPath, UserId,
+        LongFormText, ReviewPath,
     },
     auth::AuthUser,
 };
