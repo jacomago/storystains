@@ -6,9 +6,7 @@ use serde::{Deserialize, Serialize};
 use jsonwebtoken as jwt;
 use uuid::Uuid;
 
-use crate::{
-    startup::{ExpTokenSeconds, HmacSecret},
-};
+use crate::startup::{ExpTokenSeconds, HmacSecret};
 
 use super::model::AuthUser;
 

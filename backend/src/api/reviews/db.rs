@@ -5,7 +5,7 @@ use crate::api::{
     read_user_by_id,
     reviews::model::StoredReview,
     users::{model::StoredUser, NewUsername},
-    Limits, UserId,
+    Limits, 
 };
 
 use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
@@ -148,31 +148,6 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
     })?;
     let user = read_user_by_id(&review.user_id, pool).await?;
     Ok(StoredReview::from((created_review, user)))
-}
-
-#[tracing::instrument(
-    name = "Retreive user_id of review from database.", 
-    skip(pool),
-    fields(
-        slug = %slug
-    )
-)]
-pub async fn read_review_user(slug: &ReviewSlug, pool: &PgPool) -> Result<UserId, sqlx::Error> {
-    let row = sqlx::query!(
-        r#"
-            SELECT user_id
-            FROM reviews 
-            WHERE slug = $1
-        "#,
-        slug.as_ref()
-    )
-    .fetch_one(pool)
-    .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })?;
-    Ok(row.user_id.into())
 }
 
 #[tracing::instrument(
