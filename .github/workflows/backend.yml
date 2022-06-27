@@ -24,6 +24,7 @@ jobs:
           override: true
           components: rustfmt
       - uses: actions-rs/cargo@v1
+        working-directory: ./backend
         with:
           command: fmt
           args: --all -- --check
@@ -41,6 +42,7 @@ jobs:
           override: true
           components: rust-docs
       - uses: actions-rs/cargo@v1
+        working-directory: ./backend
         with:
           command: doc
           args: --no-deps --all-features
@@ -63,6 +65,7 @@ jobs:
 
       - name: Run clippy
         uses: actions-rs/clippy-check@v1
+        working-directory: ./backend
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: -- -D warnings
@@ -124,12 +127,14 @@ jobs:
             --locked
 
       - name: Migrate database
+        working-directory: ./backend
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
       - name: Run cargo test
         uses: actions-rs/cargo@v1
+        working-directory: ./backend
         with:
           command: test
 
@@ -190,12 +195,14 @@ jobs:
             --locked
 
       - name: Migrate database
+        working-directory: ./backend
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
+        working-directory: ./backend
         with:
           args: '--ignore-tests --avoid-cfg-tarpaulin'
 
