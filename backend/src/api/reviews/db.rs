@@ -5,7 +5,7 @@ use crate::api::{
     read_user_by_id,
     reviews::model::StoredReview,
     users::{model::StoredUser, NewUsername},
-    Limits, 
+    Limits,
 };
 
 use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
@@ -158,6 +158,7 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
     )
 )]
 pub async fn update_review(
+    username: &NewUsername,
     slug: &ReviewSlug,
     review: &UpdateReview,
     pool: &PgPool,
@@ -174,14 +175,19 @@ pub async fn update_review(
                 slug       = COALESCE($2, slug),
                 body       = COALESCE($3, body),
                 updated_at = $4
-            WHERE     slug = $5
+            WHERE         slug    = $5
+              AND reviews.user_id = (SELECT user_id
+                                       FROM users
+                                      WHERE username = $6
+                                    )
             RETURNING id, title, slug, body, created_at, updated_at, user_id
         "#,
         title,
         update_slug,
         body,
         updated_at,
-        slug.as_ref()
+        slug.as_ref(),
+        username.as_ref()
     )
     .fetch_one(pool)
     .await

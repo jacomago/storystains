@@ -213,7 +213,7 @@ pub async fn put_review(
         .review
         .try_into()
         .map_err(ReviewError::ValidationError)?;
-    let stored = update_review(&slug, &updated_review, &pool)
+    let stored = update_review(&username, &slug, &updated_review, &pool)
         .await
         .map_err(ReviewError::NoDataError)?;
     let review_emotions = read_review_emotions(&stored.id, pool.get_ref())
