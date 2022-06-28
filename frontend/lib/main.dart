@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/constant/app_theme.dart';
 import 'package:storystains/common/url_strategy/url_strategy.dart';
-import 'package:storystains/common/utils/services.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/emotions/emotion_service.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/routes/routes.dart';

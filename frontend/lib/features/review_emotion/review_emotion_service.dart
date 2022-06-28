@@ -1,5 +1,5 @@
 import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/common/utils/services.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 

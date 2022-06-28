@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/common/data/network/dio_manager.dart';
-import 'package:storystains/common/utils/services.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth_storage.dart';
 
 final interceptors = [
