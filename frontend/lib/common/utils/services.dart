@@ -6,7 +6,7 @@ import 'package:storystains/common/data/network/rest_client.dart';
 // Service Locator
 final sl = GetIt.instance;
 
-class Services {
+class ServiceLocator {
   static void setup() {
     final dioManager = DioManager();
     sl.registerSingleton<DioManager>(dioManager);

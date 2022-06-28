@@ -14,7 +14,7 @@ import 'features/auth/auth_state.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  Services.setup();
+  ServiceLocator.setup();
   usePathUrlStrategy();
   runApp(
     MultiProvider(
