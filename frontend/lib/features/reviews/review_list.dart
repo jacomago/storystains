@@ -5,10 +5,9 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/common/utils/navigation.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
-import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/routes/routes.dart';
 
-import '../review/review.dart';
 import 'reviews_state.dart';
 import 'package:storystains/common/utils/extensions.dart';
 

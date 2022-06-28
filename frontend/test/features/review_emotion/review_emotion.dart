@@ -1,7 +1,7 @@
-import 'package:storystains/model/entity/emotion.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
+import 'package:storystains/features/emotions/emotion_model.dart';
+import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
-import 'emotion.dart';
+import '../emotions/emotion.dart';
 
 ReviewEmotion testReviewEmotion({
   int? position,

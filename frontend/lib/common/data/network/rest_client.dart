@@ -1,16 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart' as retrofit;
 import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/model/req/add_user.dart';
-import 'package:storystains/model/req/create_review.dart';
-import 'package:storystains/model/req/create_review_emotion.dart';
-import 'package:storystains/model/req/login.dart';
-import 'package:storystains/model/resp/emotions_resp.dart';
-import 'package:storystains/model/resp/review_emotion_resp.dart';
-import 'package:storystains/model/resp/review_resp.dart';
-import 'package:storystains/model/resp/reviews_resp.dart';
-import 'package:storystains/model/resp/user_resp.dart';
-
+import 'package:storystains/features/auth/auth_model.dart';
+import 'package:storystains/features/emotions/emotion_model.dart';
+import 'package:storystains/features/review/review_model.dart';
+import 'package:storystains/features/review_emotion/review_emotion_model.dart';
+import 'package:storystains/features/reviews/reviews_model.dart';
 part 'rest_client.g.dart';
 
 @retrofit.RestApi(baseUrl: AppConfig.baseUrl)

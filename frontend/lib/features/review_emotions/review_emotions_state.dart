@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:storystains/model/entity/emotion.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
+import 'package:storystains/features/emotions/emotion_model.dart';
+import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
 class ReviewEmotionsState extends ChangeNotifier {
   List<ReviewEmotion> _items = [];

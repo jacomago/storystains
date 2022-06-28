@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/model/entity/emotion.dart';
+import 'package:storystains/features/emotions/emotion_model.dart';
 
 import 'emotion_service.dart';
 

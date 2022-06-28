@@ -2,8 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/resp/review_resp.dart';
+import 'package:storystains/features/review/review_model.dart';
 
 import 'review_service.dart';
 

@@ -4,7 +4,6 @@ import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review/review_state.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
 import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
 
 class ReviewEmotionEdit extends StatelessWidget {
   const ReviewEmotionEdit({

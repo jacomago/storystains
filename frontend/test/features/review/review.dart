@@ -1,6 +1,6 @@
-import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/features/review/review_model.dart';
 
-import 'user.dart';
+import '../auth/user.dart';
 
 Review testReview({
   String? slug,

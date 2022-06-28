@@ -10,7 +10,7 @@ import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 
-import '../../model/review.dart';
+import '../review/review.dart';
 import 'review_list_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(

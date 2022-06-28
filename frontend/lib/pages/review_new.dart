@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
 
-class CreateReview extends StatelessWidget {
-  const CreateReview({Key? key}) : super(key: key);
+class ReviewNew extends StatelessWidget {
+  const ReviewNew({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

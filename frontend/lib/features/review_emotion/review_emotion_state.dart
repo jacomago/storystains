@@ -2,10 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/model/entity/emotion.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
-import 'package:storystains/model/resp/review_emotion_resp.dart';
+import 'package:storystains/features/emotions/emotion_model.dart';
+import 'package:storystains/features/review/review_model.dart';
+import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
 import 'review_emotion_service.dart';
 

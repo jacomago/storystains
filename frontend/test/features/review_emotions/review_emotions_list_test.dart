@@ -9,15 +9,15 @@ import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
-import 'package:storystains/model/entity/emotion.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
+import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
 import 'dart:io' as io;
+
 import '../../common/image_mock_http.dart';
-import '../../model/emotion.dart';
-import '../../model/review.dart';
-import '../../model/review_emotion.dart';
-import '../emotions/emotions_test.mocks.dart';
+import '../emotions/emotion.dart';
+import '../review/review.dart';
+import '../review_emotion/review_emotion.dart';
+import 'review_emotions_list_test.mocks.dart';
 
 Widget wrapWithMaterial(
   Widget w,

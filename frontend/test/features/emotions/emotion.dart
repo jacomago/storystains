@@ -1,4 +1,4 @@
-import 'package:storystains/model/entity/emotion.dart';
+import 'package:storystains/features/emotions/emotion_model.dart';
 
 Emotion testEmotion({String? name}) => Emotion(
       name: name ?? "name",

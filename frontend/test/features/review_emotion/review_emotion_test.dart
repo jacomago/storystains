@@ -5,12 +5,10 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mockito/annotations.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
-import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import '../../common/errors.dart';
-import '../../model/review.dart';
-import '../../model/review_emotion.dart';
+import '../review/review.dart';
+import 'review_emotion.dart';
 import 'review_emotion_test.mocks.dart';
 
 void updateControllers(ReviewEmotionState state, ReviewEmotion reviewEmotion) {

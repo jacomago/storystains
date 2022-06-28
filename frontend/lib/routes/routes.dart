@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/features/review/review.dart';
 import 'package:storystains/pages/account.dart';
 import 'package:storystains/pages/home.dart';
 import 'package:storystains/pages/login_register.dart';
 import 'package:storystains/pages/review_detail.dart';
 import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/pages/review_new.dart';
-
 
 class Routes {
   static const String root = '/';
@@ -30,9 +29,9 @@ Route routes(RouteSettings settings) {
     case Routes.reviewDetail:
       return _page(const ReviewDetail(), settings);
     case Routes.reviewEdit:
-      return _page(const EditReview<Review>(), settings);
+      return _page(const ReviewEdit<Review>(), settings);
     case Routes.reviewNew:
-      return _page(const CreateReview(), settings);
+      return _page(const ReviewNew(), settings);
     case Routes.root:
     default:
       return _page(const Home(), settings);

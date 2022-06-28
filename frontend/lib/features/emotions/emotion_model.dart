@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'emotion.g.dart';
+part 'emotion_model.g.dart';
 
 @JsonSerializable()
 class Emotion {
@@ -34,4 +34,16 @@ class Emotion {
 
   @override
   int get hashCode => name.hashCode;
+}
+
+@JsonSerializable()
+class EmotionsResp {
+  List<Emotion> emotions;
+
+  EmotionsResp({required this.emotions});
+
+  factory EmotionsResp.fromJson(Map<String, dynamic> json) =>
+      _$EmotionsRespFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EmotionsRespToJson(this);
 }

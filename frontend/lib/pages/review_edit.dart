@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/features/review/review.dart';
 
-class EditReview<Review> extends StatelessWidget {
-  const EditReview({Key? key}) : super(key: key);
+class ReviewEdit<Review> extends StatelessWidget {
+  const ReviewEdit({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

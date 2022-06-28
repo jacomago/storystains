@@ -7,14 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/model/resp/review_emotion_resp.dart';
 
 import 'dart:io' as io;
 import '../../common/errors.dart';
 import '../../common/image_mock_http.dart';
-import '../../model/emotion.dart';
-import '../../model/review.dart';
-import '../../model/review_emotion.dart';
+import '../emotions/emotion.dart';
+import '../review/review.dart';
+import 'review_emotion.dart';
 import 'review_emotion_edit_test.mocks.dart';
 
 Widget wrapWithMaterial(

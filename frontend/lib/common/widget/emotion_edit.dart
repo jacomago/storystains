@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:storystains/common/utils/utils.dart';
 
 import 'package:storystains/features/emotions/emotion.dart';
-import 'package:storystains/model/entity/emotion.dart';
 
 class EmotionEdit extends StatelessWidget {
   final Emotion emotion;

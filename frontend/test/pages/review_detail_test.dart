@@ -7,8 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
 import 'package:storystains/pages/review_detail.dart';
 
 Widget wrapWithMaterial(

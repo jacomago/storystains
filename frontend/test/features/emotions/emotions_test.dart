@@ -4,12 +4,10 @@ import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:mockito/annotations.dart';
-import 'package:storystains/model/entity/emotion.dart';
-import 'package:storystains/model/resp/emotions_resp.dart';
 
 import 'dart:io' as io;
 import '../../common/image_mock_http.dart';
-import '../../model/emotion.dart';
+import 'emotion.dart';
 import 'emotions_test.mocks.dart';
 
 @GenerateMocks([EmotionsService])

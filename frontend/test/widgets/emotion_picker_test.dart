@@ -5,11 +5,10 @@ import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
-import 'package:storystains/model/entity/emotion.dart';
 
 import 'dart:io' as io;
 import '../common/image_mock_http.dart';
-import '../model/emotion.dart';
+import '../features/emotions/emotion.dart';
 import 'emotion_picker_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, EmotionsState? emotionsState) =>

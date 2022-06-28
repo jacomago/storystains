@@ -6,9 +6,9 @@ import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 import 'package:mockito/annotations.dart';
-import 'package:storystains/model/resp/reviews_resp.dart';
+import 'package:storystains/features/reviews/reviews_model.dart';
 
-import '../../model/review.dart';
+import '../review/review.dart';
 import 'reviews_test.mocks.dart';
 
 @GenerateMocks([ReviewsService])

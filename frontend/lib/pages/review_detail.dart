@@ -5,13 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/auth/auth.dart';
+import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotions/review_emotion_list.dart';
 import 'package:storystains/features/review_emotions/review_emotions_state.dart';
 import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
-
-import '../features/review/review.dart';
-import '../model/entity/review.dart';
 
 class ReviewDetail extends StatelessWidget {
   const ReviewDetail({Key? key}) : super(key: key);
@@ -40,7 +38,7 @@ class ReviewDetailPage extends StatelessWidget {
                 arguments: ReviewArguement(review.review!),
               ),
               builder: (BuildContext context) {
-                return const EditReview();
+                return const ReviewEdit();
               },
             ),
           )

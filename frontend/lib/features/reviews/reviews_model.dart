@@ -1,8 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:storystains/features/review/review_model.dart';
 
-import '../entity/review.dart';
-
-part 'reviews_resp.g.dart';
+part 'reviews_model.g.dart';
 
 @JsonSerializable()
 class ReviewsResp {
