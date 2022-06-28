@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/common/data/network/dio_manager.dart';
 import 'package:storystains/common/utils/service_locator.dart';
+import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/auth/auth_storage.dart';
 
 final interceptors = [
@@ -31,16 +32,17 @@ class CancelInterceptors extends Interceptor {
 
 class AuthInterceptors extends Interceptor {
   @override
-  Future<void> onRequest(
+  Future<void> onRequest
+  (
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
     final uri = options.uri;
-    final tokenExists = await AuthStorage.tokenExists();
+    final authState = sl.get<AuthState>();
+    await authState.init();
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
-        tokenExists) {
-      options.headers['authorization'] =
-          'Bearer ${await AuthStorage.getToken()}';
+        authState.isAuthenticated) {
+      options.headers['authorization'] = 'Bearer ${authState.token}';
     }
     handler.next(options);
   }
@@ -50,7 +52,7 @@ class AuthInterceptors extends Interceptor {
     final uri = response.requestOptions.uri;
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         response.statusCode == 401) {
-      await AuthStorage.logout();
+      await sl.get<AuthState>().logout();
     } else {
       handler.next(response);
     }

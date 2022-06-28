@@ -9,7 +9,6 @@ import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/routes/routes.dart';
 
 import 'common/constant/app_config.dart';
-import 'features/auth/auth_service.dart';
 import 'features/auth/auth_state.dart';
 
 void main() {
@@ -20,7 +19,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => AuthState(AuthService()),
+          create: (_) => sl.get<AuthState>(),
         ),
         ChangeNotifierProvider(
           create: (_) => EmotionsState(EmotionsService()),
