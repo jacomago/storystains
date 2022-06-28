@@ -12,8 +12,8 @@ import 'package:storystains/routes/routes.dart';
 import 'reviews_state.dart';
 import 'package:storystains/common/utils/extensions.dart';
 
-class ReviewsPage extends StatelessWidget {
-  const ReviewsPage({Key? key}) : super(key: key);
+class ReviewList extends StatelessWidget {
+  const ReviewList({Key? key}) : super(key: key);
 
   void _afterPush(BuildContext context) {
     final state = context.read<ReviewsState>();

@@ -17,4 +17,3 @@ class ServiceLocator {
     sl.registerSingleton<AuthState>(AuthState(AuthService()));
   }
 }
- 

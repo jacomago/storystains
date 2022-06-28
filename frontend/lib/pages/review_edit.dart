@@ -15,7 +15,10 @@ class ReviewEdit<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService(), review: review, path: path),
+      create: (_) => ReviewState(
+        ReviewService(),
+        review: review,
+      ),
       child: const ReviewEditPage(),
     );
   }

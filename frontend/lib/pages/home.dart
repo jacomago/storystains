@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  Widget _buildTitle(BuildContext context) {
+  static Widget buildAppTitle(BuildContext context) {
     return SvgPicture.asset(
       "assets/images/titletext.svg",
       color: context.colors.onSurface,
@@ -51,9 +51,9 @@ class HomePage extends StatelessWidget {
       builder: (context, reviews, auth, _) {
         return Scaffold(
           appBar: StainsAppBar(
-            title: _buildTitle(context),
+            title: buildAppTitle(context),
           ),
-          body: const ReviewsPage(),
+          body: const ReviewList(),
           floatingActionButton: CustomFloatingButton(
             onPressed: () => _goNewReview(context, reviews, auth),
             icon: Icons.mode_edit_outline_sharp,

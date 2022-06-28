@@ -41,7 +41,7 @@ void main() {
         mockService,
       );
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
+          .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
       expect(find.text('Fetching data failed'), findsOneWidget);
@@ -57,7 +57,7 @@ void main() {
       );
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
+          .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
       expect(find.text('No data'), findsOneWidget);
@@ -77,7 +77,7 @@ void main() {
       );
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
+          .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
       expect(find.text(review.title), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
 
       await tester.pumpWidget(wrapWithMaterial(
-        const ReviewsPage(),
+        const ReviewList(),
         ReviewsState(
           mockService,
         ),

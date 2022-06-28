@@ -19,10 +19,6 @@ class Routes {
   static const String reviewNew = '/reviewNew';
 }
 
-MaterialPageRoute _page(page, RouteSettings settings) {
-  return MaterialPageRoute(builder: (_) => page, settings: settings);
-}
-
 typedef PathWidgetBuilder = Widget Function(BuildContext, List<String>?);
 
 class Path {
@@ -95,7 +91,7 @@ class RouteConfiguration {
       ['username', 'slug'],
       (context, matchs) => ReviewEdit(
         path: matchs == null
-            ? null 
+            ? null
             : ReviewRoutePath(
                 matchs[0],
                 matchs[1],

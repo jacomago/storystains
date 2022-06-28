@@ -5,7 +5,6 @@ import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/common/data/network/dio_manager.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
-import 'package:storystains/features/auth/auth_storage.dart';
 
 final interceptors = [
   CancelInterceptors(),
@@ -32,8 +31,7 @@ class CancelInterceptors extends Interceptor {
 
 class AuthInterceptors extends Interceptor {
   @override
-  Future<void> onRequest
-  (
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
