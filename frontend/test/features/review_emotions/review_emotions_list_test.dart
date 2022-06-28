@@ -35,7 +35,7 @@ Widget wrapWithMaterial(
         ChangeNotifierProvider<ReviewState>(
           create: (_) => ReviewState(
             ReviewService(),
-            testReview(),
+            review: testReview(),
           ),
         ),
       ],

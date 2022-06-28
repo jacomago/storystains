@@ -40,7 +40,7 @@ Widget wrapWithMaterial(
               reviewState ??
               ReviewState(
                 ReviewService(),
-                testReview(),
+                review: testReview(),
               ),
         ),
       ],
@@ -131,7 +131,7 @@ void main() {
       }
 
       final review = testReview();
-      final reviewState = ReviewState(ReviewService(), review);
+      final reviewState = ReviewState(ReviewService(), review: review);
       final emotion = testEmotion();
       final service = MockReviewEmotionService();
 
@@ -210,7 +210,7 @@ void main() {
       }
 
       final review = testReview();
-      final reviewState = ReviewState(ReviewService(), review);
+      final reviewState = ReviewState(ReviewService(), review: review);
       final emotion = testEmotion(name: "randomemotion");
       final service = MockReviewEmotionService();
       final reviewEmotion = testReviewEmotion();
@@ -299,7 +299,7 @@ void main() {
       }
 
       final review = testReview();
-      final reviewState = ReviewState(ReviewService(), review);
+      final reviewState = ReviewState(ReviewService(), review: review);
       final emotion = testEmotion();
       final service = MockReviewEmotionService();
 
@@ -366,7 +366,7 @@ void main() {
       }
 
       final review = testReview();
-      final reviewState = ReviewState(ReviewService(), review);
+      final reviewState = ReviewState(ReviewService(), review: review);
       final emotion = testEmotion(name: "randomemotion");
       final service = MockReviewEmotionService();
       final reviewEmotion = testReviewEmotion();

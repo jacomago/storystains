@@ -37,7 +37,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final review = testReview();
 
-      final reviewState = ReviewState(ReviewService(), review);
+      final reviewState = ReviewState(ReviewService(), review: review);
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
 
@@ -61,7 +61,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final review = testReview(slug: "/");
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
       await tester.pumpAndSettle();
@@ -164,7 +164,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final review = testReview();
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
 
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
@@ -193,7 +193,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final review = testReview();
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
 
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));

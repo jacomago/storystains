@@ -74,7 +74,7 @@ void main() {
 
       final mockService = MockReviewService();
 
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -95,7 +95,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final review = testReview(slug: "");
       final mockService = MockReviewService();
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -116,7 +116,7 @@ void main() {
       final mockService = MockReviewService();
       final reviewState = ReviewState(
         mockService,
-        review,
+        review: review,
       );
 
       expect(reviewState.isCreate, false);
@@ -148,7 +148,7 @@ void main() {
 
       final mockService = MockReviewService();
 
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
@@ -179,7 +179,7 @@ void main() {
       );
       final reviewState = ReviewState(
         mockService,
-        review,
+        review: review,
       );
 
       expect(reviewState.isCreate, false);
@@ -203,7 +203,7 @@ void main() {
       );
       final reviewState = ReviewState(
         mockService,
-        review,
+        review: review,
       );
 
       expect(reviewState.isCreate, false);
@@ -226,7 +226,7 @@ void main() {
       final review = testReview();
 
       final mockService = MockReviewService();
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
 
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);

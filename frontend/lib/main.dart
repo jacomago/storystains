@@ -43,7 +43,7 @@ class App extends StatelessWidget {
         colorScheme: lightColorScheme,
         textTheme: GoogleFonts.libreBaskervilleTextTheme(),
       ),
-      onGenerateRoute: routes,
+      onGenerateRoute: RouteConfiguration.onGenerateRoute,
     );
   }
 }

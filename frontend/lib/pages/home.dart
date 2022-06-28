@@ -3,15 +3,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/app_bar.dart';
 import 'package:storystains/common/widget/custom_floating_button.dart';
-import 'package:storystains/features/reviews/reviews_service.dart';
+import 'package:storystains/features/auth/auth.dart';
+import 'package:storystains/features/reviews/reviews.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/navigation.dart';
 import 'package:storystains/common/utils/snackbar.dart';
-
-import '../features/reviews/review_list.dart';
-import '../features/auth/auth_state.dart';
-import '../features/reviews/reviews_state.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);

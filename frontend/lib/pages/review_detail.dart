@@ -12,14 +12,15 @@ import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/routes/routes.dart';
 
 class ReviewDetail extends StatelessWidget {
-  const ReviewDetail({Key? key}) : super(key: key);
+  const ReviewDetail({Key? key, this.path, this.review}) : super(key: key);
+
+  final Review? review;
+  final ReviewRoutePath? path;
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ReviewArguement;
-
     return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService(), args.review),
+      create: (_) => ReviewState(ReviewService(), path: path, review: review),
       child: const ReviewDetailPage(),
     );
   }
@@ -31,17 +32,13 @@ class ReviewDetailPage extends StatelessWidget {
   _goEdit(BuildContext context, ReviewState review, AuthState authState) async {
     if (authState.isAuthenticated && authState.sameUser(review.review!.user)) {
       Navigator.of(context)
-          .push(
-            MaterialPageRoute<Review>(
-              settings: RouteSettings(
-                name: Routes.reviewEdit,
-                arguments: ReviewArguement(review.review!),
-              ),
-              builder: (BuildContext context) {
-                return const ReviewEdit();
-              },
+          .push(ReviewRoute.route(
+            Routes.reviewEdit,
+            review.review!,
+            (r) => ReviewEdit(
+              review: r,
             ),
-          )
+          ))
           .then(
             (value) async =>
                 {value != null ? await review.putReview(value) : context.pop()},
@@ -92,11 +89,11 @@ class ReviewDetailPage extends StatelessWidget {
                     children: [
                       _buildUsername(
                         context,
-                        review.review!.user.username,
+                        review.review?.user.username ?? '',
                       ),
                       _buildDate(
                         context,
-                        review.review!.updatedAt,
+                        review.review?.updatedAt ?? DateTime.now(),
                       ),
                     ],
                   ),
@@ -105,10 +102,13 @@ class ReviewDetailPage extends StatelessWidget {
                     color: context.colors.secondary,
                   ),
                   const SizedBox(height: 10),
-                  ChangeNotifierProvider(
-                    create: (_) => ReviewEmotionsState(review.review!.emotions),
-                    child: const ReviewEmotionsList(),
-                  ),
+                  review.review != null
+                      ? ChangeNotifierProvider(
+                          create: (_) =>
+                              ReviewEmotionsState(review.review!.emotions),
+                          child: const ReviewEmotionsList(),
+                        )
+                      : Row(),
                   Divider(
                     color: context.colors.secondary,
                   ),

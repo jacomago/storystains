@@ -41,7 +41,7 @@ void main() {
       final time = DateTime.now();
       final reviewState = ReviewState(
         ReviewService(),
-        Review(
+        review: Review(
           body: "body",
           createdAt: time,
           slug: "title",
@@ -74,7 +74,7 @@ void main() {
       final time = DateTime.now();
       final reviewState = ReviewState(
         ReviewService(),
-        Review(
+        review: Review(
           body: "body",
           createdAt: time,
           slug: "title",

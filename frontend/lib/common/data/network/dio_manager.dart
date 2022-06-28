@@ -6,8 +6,6 @@ import 'interceptors.dart';
 class DioManager {
   late CancelToken defaultCancelToken = CancelToken();
   late final Dio dio = Dio(BaseOptions(
-    connectTimeout: 2000,
-    receiveTimeout: 2000,
     receiveDataWhenStatusError: true,
     baseUrl: AppConfig.baseUrl,
   ))

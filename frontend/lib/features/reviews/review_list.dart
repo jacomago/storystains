@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:storystains/common/utils/navigation.dart';
 import 'package:storystains/common/widget/widget.dart';
+import 'package:storystains/features/review/review_route.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/review/review_model.dart';
+import 'package:storystains/pages/review_detail.dart';
 import 'package:storystains/routes/routes.dart';
 
 import 'reviews_state.dart';
@@ -69,13 +70,25 @@ class ReviewsPage extends StatelessWidget {
     );
   }
 
+  _tapItem(BuildContext context, Review review) {
+    Navigator.of(context)
+        .push(
+          ReviewRoute.route(
+            Routes.reviewDetail,
+            review,
+            (r) => ReviewDetail(
+              review: r,
+            ),
+          ),
+        )
+        .then((value) => _afterPush(context));
+  }
+
   Widget _buildReviewItem(BuildContext context, Review review) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () => context
-              .push(Routes.reviewDetail, arguments: ReviewArguement(review))
-              .then((value) => _afterPush(context)),
+          onTap: () => _tapItem(context, review),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: Column(

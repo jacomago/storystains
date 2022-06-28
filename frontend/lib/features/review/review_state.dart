@@ -2,9 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/features/review/review_model.dart';
-
-import 'review_service.dart';
+import 'package:storystains/features/review/review.dart';
 
 enum ReviewEvent { read, update, delete }
 
@@ -36,15 +34,55 @@ class ReviewState extends ChangeNotifier {
   late TextEditingController titleController;
   late TextEditingController bodyController;
 
-  ReviewState(this._service, [Review? review]) {
+  ReviewState(this._service, {Review? review, ReviewRoutePath? path}) {
     _event = null;
     _status = ReviewStatus.initial;
     _isLoading = false;
     _error = '';
+
+    if (path != null) {
+      _init(path);
+    }
+
     _isCreate = review == null;
     _review = review;
     titleController = TextEditingController(text: review?.title);
     bodyController = TextEditingController(text: review?.body);
+  }
+
+  Future<void> _init(ReviewRoutePath path) async {
+    _startLoading();
+
+    try {
+      final data = await _service.read(path.username, path.slug);
+
+      if (data is ReviewResp) {
+        _review = data.review;
+
+        _status = ReviewStatus.read;
+      } else {
+        final e = StatusCodeException.exception(data);
+        throw e;
+      }
+    } on DioError catch (e) {
+      _status = ReviewStatus.failed;
+      _error = errorMessage(e);
+    } catch (e) {
+      _status = ReviewStatus.failed;
+    }
+
+    notifyListeners();
+    _stopLoading();
+  }
+
+  void _startLoading() {
+    _isLoading = true;
+    notifyListeners();
+  }
+
+  void _stopLoading() {
+    _isLoading = false;
+    notifyListeners();
   }
 
   Future putReview(Review review) async {
