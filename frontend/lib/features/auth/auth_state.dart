@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
-import 'package:storystains/common/utils/prefs.dart';
 import 'auth.dart';
 
 enum AuthEvent { register, login, logout, delete }
@@ -54,11 +51,11 @@ class AuthState extends ChangeNotifier {
   }
 
   Future init() async {
-    final user = await Prefs.getString('user');
+    final user = await AuthStorage.getUser();
     final token = await AuthStorage.getToken();
 
     if (user != null) {
-      _user = User.fromJson(jsonDecode(user));
+      _user = user;
     }
 
     if (token != null) {
@@ -88,8 +85,7 @@ class AuthState extends ChangeNotifier {
       if (data is UserResp && data.user.token.isNotEmpty) {
         _user = data.user;
 
-        await Prefs.setString('user', jsonEncode(_user!.toJson()));
-        await Prefs.setString('token', _user!.token);
+        AuthStorage.login(_user!);
 
         _status = AuthStatus.authenticated;
       } else {

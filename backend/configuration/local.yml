@@ -2,6 +2,7 @@ application:
   host: 127.0.0.1
   static_files: "../frontend/build/web/"
   image_files: "./assets/images/"
+  exp_token_seconds: 10
 database:
   host: localhost
   require_ssl: false
