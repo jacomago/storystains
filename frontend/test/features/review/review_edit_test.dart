@@ -278,14 +278,53 @@ void main() {
     });
   });
   group("test delete", () {
+    testWidgets('can delete when logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // find menu button
+      final menuButton = find.byIcon(Icons.adaptive.more);
+      expect(menuButton, findsOneWidget);
+    });
+    testWidgets('cant delete when not logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+      ));
+      // find edit button
+      // find menu button
+      final menuButton = find.byIcon(Icons.adaptive.more);
+      expect(
+        menuButton,
+        findsNothing,
+      );
+    });
     testWidgets('delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
+      final user = testUser();
       final review = testReview();
       final reviewState = ReviewState(mockService, review: review);
+      final authState = await loggedInState(username: user.username);
 
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
       await tester.pumpAndSettle();
 
       when(mockService.delete(review.user.username, review.slug))
@@ -300,8 +339,8 @@ void main() {
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
-      // verify(mockService.delete(review.slug));
       // TODO fix
+      //verify(mockService.delete(review.user.username, review.slug));
       // expect(
       //   find.widgetWithText(SnackBar, "Deleted Review"),
       //   findsOneWidget,
