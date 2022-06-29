@@ -21,7 +21,7 @@ class ReviewTitle extends StatelessWidget {
               controller: state.titleController,
             )
           : Text(
-              state.review?.title ?? '',
+              state.review?.title ?? (state.isFailed ? 'Not Found' : ''),
               style: context.headlineSmall,
               semanticsLabel: 'Title',
             );
