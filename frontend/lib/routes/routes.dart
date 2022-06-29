@@ -54,6 +54,23 @@ class RouteConfiguration {
   /// take priority.
   static List<Path> paths = [
     Path(
+      r'^' + Routes.reviewDetail + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
+      ['username', 'slug'],
+      (context, matchs) => ReviewDetail(
+        path: matchs == null
+            ? null
+            : ReviewRoutePath(
+                matchs[1],
+                matchs[0],
+              ),
+      ),
+    ),
+    Path(
+      r'^' + Routes.reviewNew,
+      [],
+      (context, matchs) => const ReviewNew(),
+    ),
+    Path(
       r'^' + Routes.home,
       [],
       (context, matchs) => const Home(),
@@ -67,23 +84,6 @@ class RouteConfiguration {
       r'^' + Routes.account,
       [],
       (context, matchs) => const AccountPage(),
-    ),
-    Path(
-      r'^' + Routes.reviewNew,
-      [],
-      (context, matchs) => const ReviewNew(),
-    ),
-    Path(
-      r'^' + Routes.reviewDetail + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
-      ['username', 'slug'],
-      (context, matchs) => ReviewDetail(
-        path: matchs == null
-            ? null
-            : ReviewRoutePath(
-                matchs[0],
-                matchs[1],
-              ),
-      ),
     ),
     Path(
       r'^' + Routes.root,
