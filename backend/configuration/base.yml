@@ -2,7 +2,7 @@ application:
   port: 8080
   base_url: "http://localhost"
   hmac_secret: "E1Ta/KyHHCx8V6GAW1CS2/7IkzTkYEIdDL+FlW8N280="
-  exp_token_seconds: 14400 # 4 hours in seconds
+  exp_token_seconds: 900 # 15 minutes in seconds
 database:
   host: "localhost"
   port: 5432
