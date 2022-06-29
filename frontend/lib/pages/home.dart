@@ -3,15 +3,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/app_bar.dart';
 import 'package:storystains/common/widget/custom_floating_button.dart';
-import 'package:storystains/features/reviews/reviews_service.dart';
+import 'package:storystains/features/auth/auth.dart';
+import 'package:storystains/features/reviews/reviews.dart';
 import 'package:storystains/routes/routes.dart';
 import 'package:storystains/common/utils/extensions.dart';
 import 'package:storystains/common/utils/navigation.dart';
 import 'package:storystains/common/utils/snackbar.dart';
-
-import '../features/reviews/review_list.dart';
-import '../features/auth/auth_state.dart';
-import '../features/reviews/reviews_state.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -40,7 +37,7 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  Widget _buildTitle(BuildContext context) {
+  static Widget buildAppTitle(BuildContext context) {
     return SvgPicture.asset(
       "assets/images/titletext.svg",
       color: context.colors.onSurface,
@@ -54,9 +51,9 @@ class HomePage extends StatelessWidget {
       builder: (context, reviews, auth, _) {
         return Scaffold(
           appBar: StainsAppBar(
-            title: _buildTitle(context),
+            title: buildAppTitle(context),
           ),
-          body: const ReviewsPage(),
+          body: const ReviewList(),
           floatingActionButton: CustomFloatingButton(
             onPressed: () => _goNewReview(context, reviews, auth),
             icon: Icons.mode_edit_outline_sharp,

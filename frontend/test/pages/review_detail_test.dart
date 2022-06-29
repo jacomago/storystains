@@ -7,9 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/user.dart';
-import 'package:storystains/pages/review_detail.dart';
 
 Widget wrapWithMaterial(
   Widget w,
@@ -43,7 +40,7 @@ void main() {
       final time = DateTime.now();
       final reviewState = ReviewState(
         ReviewService(),
-        Review(
+        review: Review(
           body: "body",
           createdAt: time,
           slug: "title",
@@ -54,7 +51,7 @@ void main() {
         ),
       );
       await tester.pumpWidget(wrapWithMaterial(
-        const ReviewDetailPage(),
+        const ReviewWidget(),
         reviewState,
         AuthState(AuthService()),
       ));
@@ -71,12 +68,12 @@ void main() {
         findsOneWidget,
       );
     });
-    testWidgets('block edit', (tester) async {
+    testWidgets('block edit only copy', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final time = DateTime.now();
       final reviewState = ReviewState(
         ReviewService(),
-        Review(
+        review: Review(
           body: "body",
           createdAt: time,
           slug: "title",
@@ -87,19 +84,13 @@ void main() {
         ),
       );
       await tester.pumpWidget(wrapWithMaterial(
-        const ReviewDetailPage(),
+        const ReviewWidget(),
         reviewState,
         AuthState(AuthService()),
       ));
 
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump();
-
       expect(
-        find.widgetWithText(SnackBar, "Must be logged in as creator to edit."),
+        find.widgetWithIcon(FloatingActionButton, Icons.copy),
         findsOneWidget,
       );
     });

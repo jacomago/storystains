@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/emotions/emotion_state.dart';
-import 'package:storystains/features/review_emotions/review_emotions_state.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
+import 'package:storystains/features/review_emotion/review_emotion.dart';
+import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 class CardReviewEmotionsList extends StatelessWidget {
   const CardReviewEmotionsList({Key? key}) : super(key: key);

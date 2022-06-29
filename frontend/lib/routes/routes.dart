@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/features/review/review.dart';
 import 'package:storystains/pages/account.dart';
 import 'package:storystains/pages/home.dart';
 import 'package:storystains/pages/login_register.dart';
+import 'package:storystains/pages/not_found.dart';
 import 'package:storystains/pages/review_detail.dart';
-import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/pages/review_new.dart';
-
 
 class Routes {
   static const String root = '/';
@@ -19,26 +18,103 @@ class Routes {
   static const String reviewNew = '/reviewNew';
 }
 
-Route routes(RouteSettings settings) {
-  switch (settings.name) {
-    case Routes.home:
-      return _page(const Home(), settings);
-    case Routes.login:
-      return _page(LoginOrRegisterPage(), settings);
-    case Routes.account:
-      return _page(const AccountPage(), settings);
-    case Routes.reviewDetail:
-      return _page(const ReviewDetail(), settings);
-    case Routes.reviewEdit:
-      return _page(const EditReview<Review>(), settings);
-    case Routes.reviewNew:
-      return _page(const CreateReview(), settings);
-    case Routes.root:
-    default:
-      return _page(const Home(), settings);
-  }
+typedef PathWidgetBuilder = Widget Function(BuildContext, List<String>?);
+
+class Path {
+  const Path(
+    this.pattern,
+    this.groupNames,
+    this.builder,
+  );
+
+  /// A RegEx string for route matching.
+  final String pattern;
+
+  /// Names used in the pattern for matching.
+  final List<String> groupNames;
+
+  /// The builder for the associated pattern route. The first argument is the
+  /// [BuildContext] and the second argument a RegEx match if that is included
+  /// in the pattern.
+  ///
+  /// ```dart
+  /// Path(
+  ///   'r'^/demo/([\w-]+)$',
+  ///   (context, matches) => Page(argument: match),
+  /// )
+  /// ```
+  final PathWidgetBuilder builder;
 }
 
-MaterialPageRoute _page(page, RouteSettings settings) {
-  return MaterialPageRoute(builder: (_) => page, settings: settings);
+class RouteConfiguration {
+  /// List of [Path] to for route matching. When a named route is pushed with
+  /// [Navigator.pushNamed], the route name is matched with the [Path.pattern]
+  /// in the list below. As soon as there is a match, the associated builder
+  /// will be returned. This means that the paths higher up in the list will
+  /// take priority.
+  static List<Path> paths = [
+    Path(
+      r'^' + Routes.reviewDetail + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
+      ['username', 'slug'],
+      (context, matchs) => ReviewDetail(
+        path: matchs == null
+            ? null
+            : ReviewRoutePath(
+                matchs[1],
+                matchs[0],
+              ),
+      ),
+    ),
+    Path(
+      r'^' + Routes.reviewNew,
+      [],
+      (context, matchs) => const ReviewNew(),
+    ),
+    Path(
+      r'^' + Routes.home,
+      [],
+      (context, matchs) => const Home(),
+    ),
+    Path(
+      r'^' + Routes.login,
+      [],
+      (context, matchs) => LoginOrRegisterPage(),
+    ),
+    Path(
+      r'^' + Routes.account,
+      [],
+      (context, matchs) => const AccountPage(),
+    ),
+    Path(
+      r'^' + Routes.root,
+      [],
+      (context, matchs) => const Home(),
+    ),
+  ];
+
+  /// The route generator callback used when the app is navigated to a named
+  /// route. Set it on the [MaterialApp.onGenerateRoute] or
+  /// [WidgetsApp.onGenerateRoute] to make use of the [paths] for route
+  /// matching.
+  static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    for (final path in paths) {
+      final regExpPattern = RegExp(path.pattern);
+      if (regExpPattern.hasMatch(settings.name!)) {
+        final firstMatch = regExpPattern.firstMatch(settings.name!)!;
+        final matchs = (firstMatch.groupCount > 0)
+            ? path.groupNames.map((e) => firstMatch.namedGroup(e)!).toList()
+            : null;
+
+        return MaterialPageRoute<void>(
+          builder: (context) => path.builder(context, matchs),
+          settings: settings,
+        );
+      }
+    }
+
+    return MaterialPageRoute<void>(
+      builder: (context) => const NotFoundPage(),
+      settings: settings,
+    );
+  }
 }

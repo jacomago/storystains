@@ -10,7 +10,7 @@ import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
 
-import '../../model/review.dart';
+import '../review/review.dart';
 import 'review_list_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
@@ -41,7 +41,7 @@ void main() {
         mockService,
       );
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
+          .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
       expect(find.text('Fetching data failed'), findsOneWidget);
@@ -57,7 +57,7 @@ void main() {
       );
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
+          .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
       expect(find.text('No data'), findsOneWidget);
@@ -77,7 +77,7 @@ void main() {
       );
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewsPage(), reviewsState));
+          .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
       expect(find.text(review.title), findsOneWidget);
@@ -92,7 +92,7 @@ void main() {
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
 
       await tester.pumpWidget(wrapWithMaterial(
-        const ReviewsPage(),
+        const ReviewList(),
         ReviewsState(
           mockService,
         ),

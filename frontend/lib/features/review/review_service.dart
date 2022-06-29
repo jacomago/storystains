@@ -1,6 +1,7 @@
 import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/common/utils/services.dart';
-import 'package:storystains/model/req/create_review.dart';
+import 'package:storystains/common/utils/service_locator.dart';
+
+import 'review_model.dart';
 
 class ReviewService {
   Future create(String title, String body) async {

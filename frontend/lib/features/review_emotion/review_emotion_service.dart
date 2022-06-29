@@ -1,8 +1,7 @@
 import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/common/utils/services.dart';
-import 'package:storystains/model/entity/review.dart';
-import 'package:storystains/model/entity/review_emotion.dart';
-import 'package:storystains/model/req/create_review_emotion.dart';
+import 'package:storystains/common/utils/service_locator.dart';
+import 'package:storystains/features/review/review_model.dart';
+import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
 class ReviewEmotionService {
   Future create(Review review, ReviewEmotion reviewEmotion) async {

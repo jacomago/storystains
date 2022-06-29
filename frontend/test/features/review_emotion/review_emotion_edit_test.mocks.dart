@@ -5,10 +5,11 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:storystains/features/review/review_model.dart' as _i4;
+import 'package:storystains/features/review_emotion/review_emotion_model.dart'
+    as _i5;
 import 'package:storystains/features/review_emotion/review_emotion_service.dart'
     as _i2;
-import 'package:storystains/model/entity/review.dart' as _i4;
-import 'package:storystains/model/entity/review_emotion.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values

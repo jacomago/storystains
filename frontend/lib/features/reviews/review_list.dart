@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:storystains/common/utils/navigation.dart';
 import 'package:storystains/common/widget/widget.dart';
+import 'package:storystains/features/review/review_route.dart';
+import 'package:storystains/features/review/widgets/review_date.dart';
+import 'package:storystains/features/review/widgets/review_username.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
-import 'package:storystains/model/entity/review.dart';
+import 'package:storystains/features/review/review_model.dart';
+import 'package:storystains/pages/review_detail.dart';
 import 'package:storystains/routes/routes.dart';
 
-import '../review/review.dart';
 import 'reviews_state.dart';
 import 'package:storystains/common/utils/extensions.dart';
 
-class ReviewsPage extends StatelessWidget {
-  const ReviewsPage({Key? key}) : super(key: key);
+class ReviewList extends StatelessWidget {
+  const ReviewList({Key? key}) : super(key: key);
 
   void _afterPush(BuildContext context) {
     final state = context.read<ReviewsState>();
@@ -70,13 +71,25 @@ class ReviewsPage extends StatelessWidget {
     );
   }
 
+  _tapItem(BuildContext context, Review review) {
+    Navigator.of(context)
+        .push(
+          ReviewRoute.route(
+            Routes.reviewDetail,
+            review,
+            (r) => ReviewDetail(
+              review: r,
+            ),
+          ),
+        )
+        .then((value) => _afterPush(context));
+  }
+
   Widget _buildReviewItem(BuildContext context, Review review) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () => context
-              .push(Routes.reviewDetail, arguments: ReviewArguement(review))
-              .then((value) => _afterPush(context)),
+          onTap: () => _tapItem(context, review),
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: Column(
@@ -97,8 +110,8 @@ class ReviewsPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildUsername(context, review.user.username),
-                    _buildDate(context, review.updatedAt),
+                    ReviewUsername(username: review.user.username),
+                    ReviewDate(date: review.updatedAt),
                   ],
                 ),
                 Container(
@@ -126,34 +139,6 @@ class ReviewsPage extends StatelessWidget {
           overflow: TextOverflow.fade,
         ),
         const SizedBox(height: 4),
-      ],
-    );
-  }
-
-  Widget _buildUsername(BuildContext context, String username) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "@$username",
-          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-          overflow: TextOverflow.fade,
-          semanticsLabel: 'Username',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDate(BuildContext context, DateTime date) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          DateFormat.yMMMMEEEEd().format(date),
-          style: context.caption,
-          overflow: TextOverflow.ellipsis,
-          semanticsLabel: 'Modified Date',
-        ),
       ],
     );
   }

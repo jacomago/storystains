@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/emotions/emotion.dart';
-import 'package:storystains/model/entity/emotion.dart';
 
 class EmotionDialog extends StatefulWidget {
   const EmotionDialog({

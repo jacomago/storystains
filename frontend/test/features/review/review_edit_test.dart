@@ -8,18 +8,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/model/resp/review_resp.dart';
 
-import '../../model/review.dart';
+import '../auth/user.dart';
+import 'review.dart';
 import 'review_edit_test.mocks.dart';
 
-Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
+Widget wrapWithMaterial(
+  Widget w,
+  ReviewState reviewState, {
+  AuthState? authState,
+}) =>
+    MultiProvider(
       providers: [
         ChangeNotifierProvider<ReviewState>(
           create: (_) => reviewState,
         ),
         ChangeNotifierProvider<AuthState>(
-          create: (_) => AuthState(AuthService()),
+          create: (_) => authState ?? AuthState(AuthService()),
         ),
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => EmotionsState(EmotionsService()),
@@ -33,20 +38,85 @@ Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
 @GenerateMocks([ReviewService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Edit Review", () {
+  group("Floating button", () {
+    testWidgets('can edit when logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // find edit button
+      expect(
+        find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
+        findsOneWidget,
+      );
+    });
+    testWidgets('can send after edit when logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.widgetWithIcon(FloatingActionButton, Icons.send_rounded),
+        findsOneWidget,
+      );
+    });
+    testWidgets('cant edit when not logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+      ));
+      // find edit button
+      expect(
+        find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
+        findsNothing,
+      );
+    });
+  });
+  group("test edit", () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final review = testReview();
+      final user = testUser();
+      final review = testReview(username: user.username);
 
-      final reviewState = ReviewState(ReviewService(), review);
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.widgetWithText(TextField, review.title);
       expect(titleField, findsOneWidget);
       expect(find.text(review.title), findsOneWidget);
 
-      final bodyField = find.bySemanticsLabel('Body');
+      final bodyField = find.widgetWithText(TextField, review.body);
       expect(bodyField, findsOneWidget);
       expect(find.text(review.body), findsOneWidget);
 
@@ -60,11 +130,18 @@ void main() {
     });
     testWidgets('error message editing on bad info', (tester) async {
       SharedPreferences.setMockInitialValues({});
+      final user = testUser();
       final mockService = MockReviewService();
       final review = testReview(slug: "/");
-      final reviewState = ReviewState(mockService, review);
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      final reviewState = ReviewState(mockService, review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
       when(mockService.update(
@@ -93,13 +170,51 @@ void main() {
         findsOneWidget,
       );
     });
-    testWidgets('error message creating on bad info', (tester) async {
+    testWidgets('update', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final user = testUser();
+      final review = testReview();
+      final reviewState = ReviewState(mockService, review: review);
+
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      await tester.pumpAndSettle();
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      when(mockService.update(
+        review.user.username,
+        review.slug,
+        review.title,
+        review.body,
+      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Updated Review"),
+        findsOneWidget,
+      );
+    });
+  });
+  group("test create", () {
+    testWidgets('error message creating on bad info create', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService);
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
@@ -137,7 +252,7 @@ void main() {
       final review = testReview();
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
@@ -157,47 +272,59 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Created Review"),
+        find.widgetWithText(SnackBar, "Updated Review"),
         findsOneWidget,
       );
     });
-    testWidgets('update', (tester) async {
+  });
+  group("test delete", () {
+    testWidgets('can delete when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final mockService = MockReviewService();
-      final review = testReview();
-      final reviewState = ReviewState(mockService, review);
+      final user = testUser();
+      final review = testReview(username: user.username);
 
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // find menu button
+      final menuButton = find.byIcon(Icons.adaptive.more);
+      expect(menuButton, findsOneWidget);
+    });
+    testWidgets('cant delete when not logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
 
-      when(mockService.update(
-        review.user.username,
-        review.slug,
-        review.title,
-        review.body,
-      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
-
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump();
-
+      final reviewState = ReviewState(ReviewService(), review: review);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+      ));
+      // find edit button
+      // find menu button
+      final menuButton = find.byIcon(Icons.adaptive.more);
       expect(
-        find.widgetWithText(SnackBar, "Updated Review"),
-        findsOneWidget,
+        menuButton,
+        findsNothing,
       );
     });
     testWidgets('delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
+      final user = testUser();
       final review = testReview();
-      final reviewState = ReviewState(mockService, review);
+      final reviewState = ReviewState(mockService, review: review);
+      final authState = await loggedInState(username: user.username);
 
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
       await tester.pumpAndSettle();
 
       when(mockService.delete(review.user.username, review.slug))
@@ -212,8 +339,8 @@ void main() {
       await tester.tap(find.text('Delete'));
       await tester.pumpAndSettle();
 
-      // verify(mockService.delete(review.slug));
       // TODO fix
+      //verify(mockService.delete(review.user.username, review.slug));
       // expect(
       //   find.widgetWithText(SnackBar, "Deleted Review"),
       //   findsOneWidget,

@@ -29,7 +29,7 @@ class ForbiddenException extends ApiException {
 }
 
 class NotFoundException extends ApiException {
-  NotFoundException([message]) : super(message, 'Forbidden: ');
+  NotFoundException([message]) : super(message, 'Not Found: ');
 }
 
 class InternalErrorException extends ApiException {
