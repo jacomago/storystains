@@ -39,7 +39,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
 
       final titleField = find.bySemanticsLabel('Title');
       expect(titleField, findsOneWidget);
@@ -63,7 +63,7 @@ void main() {
       final review = testReview(slug: "/");
       final reviewState = ReviewState(mockService, review: review);
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       when(mockService.update(
@@ -98,7 +98,7 @@ void main() {
       final reviewState = ReviewState(mockService);
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
@@ -136,7 +136,7 @@ void main() {
       final review = testReview();
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
@@ -167,7 +167,7 @@ void main() {
       final reviewState = ReviewState(mockService, review: review);
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
       await tester.pumpAndSettle();
 
@@ -196,7 +196,7 @@ void main() {
       final reviewState = ReviewState(mockService, review: review);
 
       await tester
-          .pumpWidget(wrapWithMaterial(const ReviewEditPage(), reviewState));
+          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       when(mockService.delete(review.user.username, review.slug))

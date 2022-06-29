@@ -8,23 +8,28 @@ enum ReviewEvent { read, update, delete }
 
 enum ReviewStatus { initial, read, updated, deleted, failed }
 
+enum ReviewStateType { edit, create, read }
+
 class ReviewState extends ChangeNotifier {
   final ReviewService _service;
 
   Review? _review;
   ReviewEvent? _event;
   ReviewStatus _status = ReviewStatus.initial;
+  ReviewStateType? _stateType;
   bool _isLoading = false;
   String? _token;
   String _error = '';
-  bool _isCreate = true;
 
   Review? get review => _review;
   ReviewEvent? get event => _event;
   ReviewStatus get status => _status;
+  ReviewStateType? get stateType => _stateType;
   String? get token => _token;
   String get error => _error;
-  bool get isCreate => _isCreate;
+
+  bool get isCreate => _stateType == ReviewStateType.create;
+  bool get isEdit => _stateType != ReviewStateType.read;
 
   bool get isLoading => _isLoading;
   bool get isUpdated => _status == ReviewStatus.updated;
@@ -44,10 +49,20 @@ class ReviewState extends ChangeNotifier {
       _init(path);
     }
 
-    _isCreate = review == null;
+    _stateType = review == null ? ReviewStateType.create : ReviewStateType.read;
     _review = review;
     titleController = TextEditingController(text: review?.title);
     bodyController = TextEditingController(text: review?.body);
+  }
+
+  edit() {
+    _stateType = ReviewStateType.edit;
+    notifyListeners();
+  }
+
+  unEdit() {
+    _stateType = ReviewStateType.read;
+    notifyListeners();
   }
 
   Future<void> _init(ReviewRoutePath path) async {
@@ -85,11 +100,6 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future putReview(Review review) async {
-    _review = review;
-    notifyListeners();
-  }
-
   Future update(String title, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
@@ -97,7 +107,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = _isCreate
+      final data = isCreate
           ? await _service.create(title, body)
           : await _service.update(
               _review!.user.username,
@@ -110,6 +120,7 @@ class ReviewState extends ChangeNotifier {
         _review = data.review;
 
         _status = ReviewStatus.updated;
+        _stateType = ReviewStateType.read;
       } else {
         final e = StatusCodeException.exception(data);
         throw e;
@@ -137,6 +148,7 @@ class ReviewState extends ChangeNotifier {
       _review = null;
 
       _status = ReviewStatus.deleted;
+      _stateType = null;
       _error = '';
       _event = null;
       _review = null;

@@ -5,7 +5,6 @@ import 'package:storystains/pages/home.dart';
 import 'package:storystains/pages/login_register.dart';
 import 'package:storystains/pages/not_found.dart';
 import 'package:storystains/pages/review_detail.dart';
-import 'package:storystains/pages/review_edit.dart';
 import 'package:storystains/pages/review_new.dart';
 
 class Routes {
@@ -78,18 +77,6 @@ class RouteConfiguration {
       r'^' + Routes.reviewDetail + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
       ['username', 'slug'],
       (context, matchs) => ReviewDetail(
-        path: matchs == null
-            ? null
-            : ReviewRoutePath(
-                matchs[0],
-                matchs[1],
-              ),
-      ),
-    ),
-    Path(
-      r'^' + Routes.reviewEdit + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
-      ['username', 'slug'],
-      (context, matchs) => ReviewEdit(
         path: matchs == null
             ? null
             : ReviewRoutePath(
