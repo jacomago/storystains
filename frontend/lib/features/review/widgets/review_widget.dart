@@ -82,8 +82,7 @@ class ReviewWidget extends StatelessWidget {
           appBar: StainsAppBar(
             title: const AppBarTitle('Review'),
             moreActions: canEdit(state, authState)
-                ? []
-                : [
+                ? [
                     PopupMenuButton<Text>(
                       icon: Icon(Icons.adaptive.more),
                       itemBuilder: (BuildContext context) =>
@@ -100,7 +99,8 @@ class ReviewWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ],
+                  ]
+                : [],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
