@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
+import 'package:storystains/features/review/widgets/review_title.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
+
+import 'review_body.dart';
 
 class ReviewWidget extends StatelessWidget {
   const ReviewWidget({Key? key}) : super(key: key);
@@ -106,7 +107,7 @@ class ReviewWidget extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  _buildTitle(context, state),
+                  const ReviewTitle(),
                   const SizedBox(
                     height: 10,
                   ),
@@ -114,15 +115,13 @@ class ReviewWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildUsername(
-                        context,
-                        state.review?.user.username ??
+                      ReviewUsername(
+                        username: state.review?.user.username ??
                             authState.user?.username ??
                             '',
                       ),
-                      _buildDate(
-                        context,
-                        state.review?.updatedAt ?? DateTime.now(),
+                      ReviewDate(
+                        date: state.review?.updatedAt ?? DateTime.now(),
                       ),
                     ],
                   ),
@@ -134,9 +133,9 @@ class ReviewWidget extends StatelessWidget {
                               ReviewEmotionsState(state.review!.emotions),
                           child: const ReviewEmotionsList(),
                         ),
-                  Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: _buildBody(state),
+                  const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: ReviewBody(),
                   ),
                 ],
               ),
@@ -167,67 +166,5 @@ class ReviewWidget extends StatelessWidget {
                 onPressed: () async => _goCopy(state),
                 icon: Icons.copy,
               );
-  }
-
-  Widget _buildTitle(BuildContext context, ReviewState state) {
-    return state.isEdit
-        ? TextField(
-            textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Title',
-              hintText: 'Review title',
-            ),
-            style: context.titleMedium,
-            controller: state.titleController,
-          )
-        : Text(
-            state.review?.title ?? '',
-            style: context.headlineSmall,
-            semanticsLabel: 'Title',
-          );
-  }
-
-  Widget _buildBody(ReviewState state) {
-    return state.isEdit
-        ? MarkdownEdit(
-            bodyController: state.bodyController,
-            title: 'Body',
-          )
-        : Markdown(
-            physics: const NeverScrollableScrollPhysics(),
-            data: state.review?.body ?? '',
-            selectable: true,
-            shrinkWrap: true,
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-          );
-  }
-
-  Widget _buildUsername(BuildContext context, String username) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "@$username",
-          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-          overflow: TextOverflow.fade,
-          semanticsLabel: 'Username',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDate(BuildContext context, DateTime date) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          DateFormat.yMMMMEEEEd().format(date),
-          style: context.caption,
-          overflow: TextOverflow.ellipsis,
-          semanticsLabel: 'Modified Date',
-        ),
-      ],
-    );
   }
 }

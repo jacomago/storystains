@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review/review_route.dart';
+import 'package:storystains/features/review/widgets/review_date.dart';
+import 'package:storystains/features/review/widgets/review_username.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/pages/review_detail.dart';
@@ -109,8 +110,8 @@ class ReviewList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildUsername(context, review.user.username),
-                    _buildDate(context, review.updatedAt),
+                    ReviewUsername(username: review.user.username),
+                    ReviewDate(date: review.updatedAt),
                   ],
                 ),
                 Container(
@@ -138,34 +139,6 @@ class ReviewList extends StatelessWidget {
           overflow: TextOverflow.fade,
         ),
         const SizedBox(height: 4),
-      ],
-    );
-  }
-
-  Widget _buildUsername(BuildContext context, String username) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "@$username",
-          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-          overflow: TextOverflow.fade,
-          semanticsLabel: 'Username',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDate(BuildContext context, DateTime date) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          DateFormat.yMMMMEEEEd().format(date),
-          style: context.caption,
-          overflow: TextOverflow.ellipsis,
-          semanticsLabel: 'Modified Date',
-        ),
       ],
     );
   }

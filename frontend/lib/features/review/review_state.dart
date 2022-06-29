@@ -45,14 +45,16 @@ class ReviewState extends ChangeNotifier {
     _isLoading = false;
     _error = '';
 
-    if (path != null) {
-      _init(path);
-    }
-
-    _stateType = review == null ? ReviewStateType.create : ReviewStateType.read;
+    _stateType = (review == null && path == null)
+        ? ReviewStateType.create
+        : ReviewStateType.read;
     _review = review;
     titleController = TextEditingController(text: review?.title);
     bodyController = TextEditingController(text: review?.body);
+
+    if (path != null) {
+      _init(path);
+    }
   }
 
   edit() {
@@ -75,6 +77,7 @@ class ReviewState extends ChangeNotifier {
         _review = data.review;
 
         _status = ReviewStatus.read;
+        _stateType = ReviewStateType.read;
       } else {
         final e = StatusCodeException.exception(data);
         throw e;
