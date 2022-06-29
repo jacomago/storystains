@@ -68,7 +68,7 @@ void main() {
         findsOneWidget,
       );
     });
-    testWidgets('block edit', (tester) async {
+    testWidgets('block edit only copy', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final time = DateTime.now();
       final reviewState = ReviewState(
@@ -89,14 +89,8 @@ void main() {
         AuthState(AuthService()),
       ));
 
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump();
-
       expect(
-        find.widgetWithText(SnackBar, "Must be logged in as creator to edit."),
+        find.widgetWithIcon(FloatingActionButton, Icons.copy),
         findsOneWidget,
       );
     });
