@@ -38,7 +38,7 @@ Widget wrapWithMaterial(
 @GenerateMocks([ReviewService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Edit Review", () {
+  group("Floating button", () {
     testWidgets('can edit when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
@@ -94,6 +94,8 @@ void main() {
         findsNothing,
       );
     });
+  });
+  group("test edit", () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
@@ -128,11 +130,18 @@ void main() {
     });
     testWidgets('error message editing on bad info', (tester) async {
       SharedPreferences.setMockInitialValues({});
+      final user = testUser();
       final mockService = MockReviewService();
       final review = testReview(slug: "/");
       final reviewState = ReviewState(mockService, review: review);
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
       when(mockService.update(
@@ -161,7 +170,45 @@ void main() {
         findsOneWidget,
       );
     });
-    testWidgets('error message creating on bad info', (tester) async {
+    testWidgets('update', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final user = testUser();
+      final review = testReview();
+      final reviewState = ReviewState(mockService, review: review);
+
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      await tester.pumpAndSettle();
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      when(mockService.update(
+        review.user.username,
+        review.slug,
+        review.title,
+        review.body,
+      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.widgetWithText(SnackBar, "Updated Review"),
+        findsOneWidget,
+      );
+    });
+  });
+  group("test create", () {
+    testWidgets('error message creating on bad info create', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService);
@@ -225,39 +272,12 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Created Review"),
-        findsOneWidget,
-      );
-    });
-    testWidgets('update', (tester) async {
-      SharedPreferences.setMockInitialValues({});
-      final mockService = MockReviewService();
-      final review = testReview();
-      final reviewState = ReviewState(mockService, review: review);
-
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
-      await tester.pumpAndSettle();
-      await tester.pumpAndSettle();
-
-      when(mockService.update(
-        review.user.username,
-        review.slug,
-        review.title,
-        review.body,
-      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
-
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pump();
-      await tester.pump();
-      await tester.pump();
-
-      expect(
         find.widgetWithText(SnackBar, "Updated Review"),
         findsOneWidget,
       );
     });
+  });
+  group("test delete", () {
     testWidgets('delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
