@@ -9,16 +9,22 @@ import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 
+import '../auth/user.dart';
 import 'review.dart';
 import 'review_edit_test.mocks.dart';
 
-Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
+Widget wrapWithMaterial(
+  Widget w,
+  ReviewState reviewState, {
+  AuthState? authState,
+}) =>
+    MultiProvider(
       providers: [
         ChangeNotifierProvider<ReviewState>(
           create: (_) => reviewState,
         ),
         ChangeNotifierProvider<AuthState>(
-          create: (_) => AuthState(AuthService()),
+          create: (_) => authState ?? AuthState(AuthService()),
         ),
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => EmotionsState(EmotionsService()),
@@ -33,19 +39,82 @@ Widget wrapWithMaterial(Widget w, ReviewState reviewState) => MultiProvider(
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
   group("Edit Review", () {
-    testWidgets('fields exist', (tester) async {
+    testWidgets('can edit when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final review = testReview();
+      final user = testUser();
+      final review = testReview(username: user.username);
 
       final reviewState = ReviewState(ReviewService(), review: review);
-      await tester
-          .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // find edit button
+      expect(
+        find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
+        findsOneWidget,
+      );
+    });
+    testWidgets('can send after edit when logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
 
-      final titleField = find.bySemanticsLabel('Title');
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.widgetWithIcon(FloatingActionButton, Icons.send_rounded),
+        findsOneWidget,
+      );
+    });
+    testWidgets('cant edit when not logged in', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+      ));
+      // find edit button
+      expect(
+        find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
+        findsNothing,
+      );
+    });
+    testWidgets('fields exist', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review = testReview(username: user.username);
+
+      final reviewState = ReviewState(ReviewService(), review: review);
+      final authState = await loggedInState(username: user.username);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      final titleField = find.widgetWithText(TextField, review.title);
       expect(titleField, findsOneWidget);
       expect(find.text(review.title), findsOneWidget);
 
-      final bodyField = find.bySemanticsLabel('Body');
+      final bodyField = find.widgetWithText(TextField, review.body);
       expect(bodyField, findsOneWidget);
       expect(find.text(review.body), findsOneWidget);
 
