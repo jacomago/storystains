@@ -6,15 +6,24 @@ import 'package:storystains/features/auth/auth.dart';
 
 class AuthStorage {
   static const key = 'user';
+  static const aOptions = AndroidOptions(
+    encryptedSharedPreferences: true,
+  );
   static logout() async {
     final storage = sl.get<FlutterSecureStorage>();
-    await storage.delete(key: key);
+    await storage.delete(
+      key: key,
+      aOptions: aOptions,
+    );
   }
 
   static Future<String?> getToken() async {
     final storage = sl.get<FlutterSecureStorage>();
 
-    final userString = await storage.read(key: key);
+    final userString = await storage.read(
+      key: key,
+      aOptions: aOptions,
+    );
 
     return userString == null
         ? null
@@ -24,18 +33,28 @@ class AuthStorage {
   static Future<bool> tokenExists() async {
     final storage = sl.get<FlutterSecureStorage>();
 
-    return await storage.containsKey(key: key);
+    return await storage.containsKey(
+      key: key,
+      aOptions: aOptions,
+    );
   }
 
   static Future<User?> getUser() async {
     final storage = sl.get<FlutterSecureStorage>();
-    final userString = await storage.read(key: key);
+    final userString = await storage.read(
+      key: key,
+      aOptions: aOptions,
+    );
 
     return userString == null ? null : User.fromJson(jsonDecode(userString));
   }
 
   static login(User user) async {
     final storage = sl.get<FlutterSecureStorage>();
-    await storage.write(key: key, value: jsonEncode(user));
+    await storage.write(
+      key: key,
+      value: jsonEncode(user),
+      aOptions: aOptions,
+    );
   }
 }
