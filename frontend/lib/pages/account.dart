@@ -30,6 +30,25 @@ class AccountPage extends StatelessWidget {
     });
   }
 
+  void afterLogout(BuildContext context, AuthState auth) {
+    if (auth.isAuthenticated || auth.isFailed) {
+      context.snackbar('Logout user failed');
+    } else {
+      Navigator.of(context).pop();
+      context.snackbar('Logout succeded');
+    }
+  }
+
+  void _onLogout(BuildContext context) async {
+    FocusScope.of(context).unfocus();
+
+    final auth = context.read<AuthState>();
+
+    await auth.logout().then((value) {
+      afterLogout(context, auth);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,10 +71,15 @@ class AccountPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              Text(
+                'Hello ${auth.user?.username}',
+                style: context.bodyMedium,
+              ),
+              const SizedBox(height: 10),
               ElevatedButton(
                 style:
                     ElevatedButton.styleFrom(primary: context.colors.secondary),
-                onPressed: () => auth.logout(),
+                onPressed: () => _onLogout(context),
                 child: Text(
                   'Log out',
                   style:

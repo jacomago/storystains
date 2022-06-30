@@ -17,6 +17,18 @@
             ]
         },
         {
+            "name": "flutter Launch Android",
+            "cwd": "frontend",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "deviceId": "a13f568f",
+            "args": [
+                "--dart-define",
+                "BASE_URL=https://storystains.fly.dev/api"
+            ]
+        },
+        {
             "name": "frontend",
             "cwd": "frontend",
             "request": "launch",
