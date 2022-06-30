@@ -1,7 +1,12 @@
-application:
-  host: 0.0.0.0
-  static_files: "./static/root/"
-  image_files: "./static/images/"
-database:
-  require_ssl: true
-  max_connections: 100
+# Values needed to be set in env
+
+# application:
+#   host: 127.0.0.1
+#   base_url: "http://localhost"
+#   hmac_secret: "E1Ta/KyHHCx8V6GAW1CS2/7IkzTkYEIdDL+FlW8N280="
+# database:
+#   host: "localhost"
+#   require_ssl: false
+#   username: "postgres"
+#   password: "password"
+# frontend_origin: "http://localhost:50547"

@@ -1,12 +1,11 @@
 application:
   port: 8080
-  base_url: "http://localhost"
-  hmac_secret: "E1Ta/KyHHCx8V6GAW1CS2/7IkzTkYEIdDL+FlW8N280="
+  static_files: "./static/root/"
+  image_files: "./static/images/"
+  host: 0.0.0.0
   exp_token_seconds: 900 # 15 minutes in seconds
 database:
-  host: "localhost"
   port: 5432
-  username: "postgres"
-  password: "password"
   database_name: "storystains"
-  max_connections: 10
+  require_ssl: true  
+  max_connections: 100
