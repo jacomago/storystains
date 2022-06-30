@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:mockito/annotations.dart';
 
@@ -11,7 +12,13 @@ import 'auth_test.mocks.dart';
 
 @GenerateMocks([AuthService])
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    ServiceLocator.setup();
+  });
+  tearDown(() {
+    sl.reset();
+  });
   group("login", () {
     test('After logging in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});

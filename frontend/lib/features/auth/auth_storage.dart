@@ -1,30 +1,41 @@
 import 'dart:convert';
 
-import 'package:storystains/common/utils/prefs.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 
 class AuthStorage {
+  static const key = 'user';
   static logout() async {
-    await Prefs.remove('user');
-    await Prefs.remove('token');
+    final storage = sl.get<FlutterSecureStorage>();
+    await storage.delete(key: key);
   }
 
   static Future<String?> getToken() async {
-    return await Prefs.getString('token');
+    final storage = sl.get<FlutterSecureStorage>();
+
+    final userString = await storage.read(key: key);
+
+    return userString == null
+        ? null
+        : User.fromJson(jsonDecode(userString)).token;
   }
 
   static Future<bool> tokenExists() async {
-    return await Prefs.containsKey('token');
+    final storage = sl.get<FlutterSecureStorage>();
+
+    return await storage.containsKey(key: key);
   }
 
   static Future<User?> getUser() async {
-    final userString = await Prefs.getString('user');
+    final storage = sl.get<FlutterSecureStorage>();
+    final userString = await storage.read(key: key);
 
     return userString == null ? null : User.fromJson(jsonDecode(userString));
   }
 
   static login(User user) async {
-    await Prefs.setString('user', jsonEncode(user.toJson()));
-    await Prefs.setString('token', user.token);
+    final storage = sl.get<FlutterSecureStorage>();
+    await storage.write(key: key, value: jsonEncode(user));
   }
 }

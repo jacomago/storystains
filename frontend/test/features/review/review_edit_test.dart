@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
@@ -37,7 +39,18 @@ Widget wrapWithMaterial(
 
 @GenerateMocks([ReviewService])
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    // Not doing a full setup as not testing 
+    // the network caching of images in the emotions service
+    // in this set of tests. The full setup includes the dio
+    // http client and so tries to do network requests which don't 
+    // timeout.
+    sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
+  });
+  tearDown(() {
+    sl.reset();
+  });
   group("Floating button", () {
     testWidgets('can edit when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});

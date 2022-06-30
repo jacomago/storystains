@@ -28,6 +28,7 @@ dependencies:
   flutter_svg: ^1.1.0
   collection: ^1.16.0
   bottom_drawer: ^0.0.5
+  flutter_secure_storage: ^5.0.2
 
 
 dev_dependencies:
