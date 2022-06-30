@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/widget/card_review_emotions.dart';
 import 'package:storystains/features/emotions/emotion.dart';
-import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
 import 'dart:io' as io;
@@ -13,15 +12,11 @@ import 'dart:io' as io;
 import '../common/image_mock_http.dart';
 
 Widget wrapWithMaterial(
-  Widget w,
-  ReviewEmotionsState reviewEmotionsState, {
+  Widget w, {
   EmotionsState? emotionsState,
 }) =>
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<ReviewEmotionsState>(
-          create: (_) => reviewEmotionsState,
-        ),
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => emotionsState ?? EmotionsState(EmotionsService()),
         ),
@@ -46,14 +41,13 @@ void main() {
     testWidgets('no data smoke test', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final reviewEmotionsState = ReviewEmotionsState([]);
       await tester.pumpWidget(
-        wrapWithMaterial(const CardReviewEmotionsList(), reviewEmotionsState),
+        wrapWithMaterial(const CardReviewEmotionsList(items: [])),
       );
       await tester.pumpAndSettle();
     });
     testWidgets('load list', (tester) async {
-      final list = [
+      final List<ReviewEmotion> list = [
         ReviewEmotion(
           notes: "notes0",
           emotion: Emotion(
@@ -82,12 +76,14 @@ void main() {
           position: 2,
         ),
       ];
-      final reviewEmotionsState = ReviewEmotionsState(list);
       // in a scroll for the scolling list part
       await tester.pumpWidget(
         wrapWithMaterial(
-          const SingleChildScrollView(child: CardReviewEmotionsList()),
-          reviewEmotionsState,
+          SingleChildScrollView(
+            child: CardReviewEmotionsList(
+              items: list,
+            ),
+          ),
         ),
       );
       await tester.pumpAndSettle();
