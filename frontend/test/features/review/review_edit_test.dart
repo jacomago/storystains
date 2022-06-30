@@ -41,10 +41,10 @@ Widget wrapWithMaterial(
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
-    // Not doing a full setup as not testing 
+    // Not doing a full setup as not testing
     // the network caching of images in the emotions service
     // in this set of tests. The full setup includes the dio
-    // http client and so tries to do network requests which don't 
+    // http client and so tries to do network requests which don't
     // timeout.
     sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   });
@@ -346,18 +346,19 @@ void main() {
       final menuButton = find.byIcon(Icons.adaptive.more);
       expect(menuButton, findsOneWidget);
       await tester.tap(menuButton.first);
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('Delete'), findsOneWidget);
       await tester.tap(find.text('Delete'));
-      await tester.pumpAndSettle();
+      await tester.pump();
+      await tester.pump();
+      await tester.pump();
 
-      // TODO fix
-      //verify(mockService.delete(review.user.username, review.slug));
-      // expect(
-      //   find.widgetWithText(SnackBar, "Deleted Review"),
-      //   findsOneWidget,
-      // );
+      verify(mockService.delete(review.user.username, review.slug));
+      expect(
+        find.widgetWithText(SnackBar, "Deleted Review"),
+        findsOneWidget,
+      );
     });
   });
 }
