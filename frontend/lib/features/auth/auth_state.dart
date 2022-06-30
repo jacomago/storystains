@@ -52,19 +52,14 @@ class AuthState extends ChangeNotifier {
 
   Future init() async {
     final user = await AuthStorage.getUser();
-    final token = await AuthStorage.getToken();
 
     if (user != null) {
       _user = user;
+      _token = user.token;
     }
 
-    if (token != null) {
-      _token = token;
-    }
-
-    _status = _user != null && _token != null
-        ? AuthStatus.authenticated
-        : AuthStatus.notauthenticated;
+    _status =
+        _user != null ? AuthStatus.authenticated : AuthStatus.notauthenticated;
 
     notifyListeners();
   }
