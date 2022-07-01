@@ -145,7 +145,7 @@ async fn post_story_returns_a_400_when_fields_are_present_but_invalid() {
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.post_review(body.to_string(), &token).await;
+        let response = app.post_story(body.to_string(), &token).await;
 
         // Assert
         assert_eq!(
@@ -159,7 +159,7 @@ async fn post_story_returns_a_400_when_fields_are_present_but_invalid() {
 }
 
 #[tokio::test]
-async fn post_review_returns_json() {
+async fn post_story_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
@@ -167,7 +167,7 @@ async fn post_review_returns_json() {
     let body = json!({"story": {"title": "Dune", "medium":"Film", "creator":"David Lynch" }});
 
     // Act
-    let response = app.post_review(body.to_string(), &token).await;
+    let response = app.post_story(body.to_string(), &token).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
