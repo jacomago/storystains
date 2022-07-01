@@ -2,7 +2,10 @@ use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 
 use crate::{
-    auth::{route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in},
+    auth::{
+        route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in,
+        route_returns_unauth_when_using_valid_but_non_existant_user,
+    },
     helpers::{TestApp, TestUser},
 };
 
@@ -39,23 +42,13 @@ async fn post_review_returns_unauth_when_logged_out() {
 
 #[tokio::test]
 async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
-    // Arrange
-    let app = TestApp::spawn_app().await;
-
-    // create new user
-    let user = TestUser::generate();
-    // take token
-    let token = user.store(&app).await;
-    // delete user
-    app.delete_user(&token).await;
-
-    // Act
     let body = json!({"review": {"title": "Dune", "body":"5stars" }});
-    let response = app.post_review(body.to_string(), &token).await;
-
-    // Assert
-    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
-    app.teardown().await;
+    route_returns_unauth_when_using_valid_but_non_existant_user(
+        |_| review_relative_url_prefix(),
+        Method::POST,
+        body,
+    )
+    .await;
 }
 
 #[tokio::test]

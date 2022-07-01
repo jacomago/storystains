@@ -1,6 +1,6 @@
 use reqwest::{Method, Response, StatusCode};
 
-use crate::helpers::TestApp;
+use crate::helpers::{TestApp, TestUser};
 
 impl TestApp {
     pub async fn method_route(
@@ -50,6 +50,38 @@ pub async fn route_returns_unauth_when_logged_out<T>(
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
     app.test_user.logout().await;
+
+    // Act
+    let response = app
+        .method_route(
+            route(&app.test_user.username),
+            method,
+            body.to_string(),
+            &token,
+        )
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+    app.teardown().await;
+}
+
+pub async fn route_returns_unauth_when_using_valid_but_non_existant_user<T>(
+    route: T,
+    method: Method,
+    body: serde_json::Value,
+) where
+    T: Fn(&str) -> String,
+{
+    // Arrange
+    let app = TestApp::spawn_app().await;
+
+    // create new user
+    let user = TestUser::generate();
+    // take token
+    let token = user.store(&app).await;
+    // delete user
+    app.delete_user(&token).await;
 
     // Act
     let response = app
