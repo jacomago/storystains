@@ -9,10 +9,6 @@ pub fn story_relative_url_prefix() -> String {
     "/stories".to_string()
 }
 
-pub fn story_relative_url(slug: &str) -> String {
-    format!("/stories/{}", slug)
-}
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestStoryResponse {
     pub story: TestStory,
