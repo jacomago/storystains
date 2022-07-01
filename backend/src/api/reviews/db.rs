@@ -279,16 +279,9 @@ pub async fn update_review(
         RETURNING id,
             (
                 SELECT title
-                FROM stories,
-                     reviews
+                FROM stories
                 WHERE stories.id = story_id
-                  AND slug = $5
-                  AND reviews.user_id = (
-                      SELECT user_id
-                      FROM users
-                      WHERE username = $6
-                  )
-            ),
+            ) as title,
             story_id,
             slug,
             body,
