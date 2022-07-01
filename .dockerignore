@@ -10,6 +10,9 @@ Dockerfile
 backend/scripts/
 backend/migrations/
 
+# Design new image files
+design
+
 # Git
 .git
 .gitignore
