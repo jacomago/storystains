@@ -5,7 +5,8 @@ use serde_json::{json, Value};
 
 use crate::{
     helpers::{long_form, TestApp, TestUser},
-    review_emotion::test_review_emotion::TestReviewEmotion, story::TestStory,
+    review_emotion::test_review_emotion::TestReviewEmotion,
+    story::TestStory,
 };
 
 pub fn review_relative_url(username: &str, slug: &str) -> String {
@@ -20,7 +21,6 @@ pub fn review_relative_url_prefix() -> String {
 pub struct TestReviewResponse {
     pub review: TestReview,
 }
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TestReview {
@@ -46,9 +46,9 @@ impl TestReview {
     pub fn generate(user: &TestUser) -> Self {
         let story = TestStory::generate();
         Self {
-            story,
+            story: story.clone(),
             body: long_form(),
-            slug: story.title.to_string(),
+            slug: story.title,
             created_at: Utc::now(),
             updated_at: Utc::now(),
             emotions: Some(
@@ -92,7 +92,6 @@ impl TestReview {
         self.story.title.to_string()
     }
 }
-
 
 impl PartialEq for TestReview {
     fn eq(&self, other: &Self) -> bool {
