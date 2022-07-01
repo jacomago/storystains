@@ -157,6 +157,6 @@ async fn post_review_returns_json() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "5stars");
-    assert_eq!(json["review"]["title"], "Dune");
+    assert_eq!(json["review"]["story"]["title"], "Dune");
     app.teardown().await;
 }

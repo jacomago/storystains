@@ -95,10 +95,10 @@ async fn get_reviews_returns_reviews() {
     assert!(json["reviews"].is_array());
     assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
 
-    assert_eq!(json["reviews"][0]["title"], "LoTR");
+    assert_eq!(json["reviews"][0]["story"]["title"], "LoTR");
     assert_eq!(json["reviews"][0]["body"], "4 stars");
 
-    assert_eq!(json["reviews"][1]["title"], "Dune");
+    assert_eq!(json["reviews"][1]["story"]["title"], "Dune");
     assert_eq!(json["reviews"][1]["body"], "5stars");
 
     app.teardown().await;
@@ -129,9 +129,9 @@ async fn get_reviews_returns_reviews_singular_multi_user() {
     assert!(json["reviews"].is_array());
     assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
 
-    assert_eq!(json["reviews"][0]["title"], "LoTR");
+    assert_eq!(json["reviews"][0]["story"]["title"], "LoTR");
     assert_eq!(json["reviews"][0]["body"], "4 stars");
-    assert_eq!(json["reviews"][1]["title"], "Dune");
+    assert_eq!(json["reviews"][1]["story"]["title"], "Dune");
     assert_eq!(json["reviews"][1]["body"], "5stars");
 
     app.teardown().await;

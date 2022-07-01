@@ -182,7 +182,7 @@ async fn put_review_returns_json() {
     assert_eq!(response.status(), StatusCode::OK);
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "3stars");
-    assert_eq!(json["review"]["title"], "Dune2");
+    assert_eq!(json["review"]["story"]["title"], "Dune2");
     app.teardown().await;
 }
 
