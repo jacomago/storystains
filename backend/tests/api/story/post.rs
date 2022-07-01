@@ -81,7 +81,7 @@ async fn post_story_persists_the_new_story() {
     .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.medium, Some("Book".to_string()));
-    assert_eq!(saved.medium, Some("Frank Herbert".to_string()));
+    assert_eq!(saved.creator, Some("Frank Herbert".to_string()));
     assert_eq!(saved.title, "Dune");
     app.teardown().await;
 }

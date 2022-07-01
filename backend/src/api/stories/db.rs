@@ -6,19 +6,28 @@ use super::model::{NewStory, StoredStory};
 pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
     let id = Uuid::new_v4();
     let creator_id = Uuid::new_v4();
+
+    let mut transaction = pool.begin().await?;
+
+    let updated_creator = sqlx::query!(
+        r#"
+        INSERT INTO creators (id, name)
+        VALUES ($1, $2) ON CONFLICT DO NOTHING
+        RETURNING id
+        "#,
+        creator_id,
+        story.creator.as_ref(),
+    )
+    .fetch_one(&mut transaction)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+
     let created_story = sqlx::query_as!(
         StoredStory,
         r#" 
-        WITH creator as (
-            INSERT INTO creators (id, name)
-            VALUES ($4, $5) ON CONFLICT DO NOTHING
-            RETURNING (
-                    SELECT id
-                    FROM creators
-                    WHERE name = $5
-                    LIMIT 1
-                ) as id
-        )
         INSERT INTO stories (id, title, medium_id, creator_id)
         VALUES (
                 $1,
@@ -28,11 +37,7 @@ pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory
                     FROM mediums
                     WHERE name = $3
                     LIMIT 1
-                ), (
-                    SELECT id
-                    FROM creator
-                    LIMIT 1
-                )
+                ), $4
             )
         RETURNING id,
             title,
@@ -52,14 +57,16 @@ pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory
         id,
         story.title.as_ref(),
         story.medium.as_ref(),
-        creator_id,
-        story.creator.as_ref(),
+        updated_creator.id,
     )
-    .fetch_one(pool)
+    .fetch_one(&mut transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
+
+    transaction.commit().await?;
+
     Ok(created_story)
 }
