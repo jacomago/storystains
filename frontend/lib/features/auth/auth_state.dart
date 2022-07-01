@@ -1,4 +1,6 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:storystains/common/utils/utils.dart';
 
 import 'auth.dart';
 
@@ -86,6 +88,9 @@ class AuthState extends ChangeNotifier {
       } else {
         _status = AuthStatus.notauthenticated;
       }
+    } on DioError catch (e) {
+      _status = AuthStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = AuthStatus.failed;
       _error = e.toString();
@@ -111,6 +116,9 @@ class AuthState extends ChangeNotifier {
       _user = null;
       _token = null;
       _isLoading = false;
+    } on DioError catch (e) {
+      _status = AuthStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = AuthStatus.failed;
       _error = e.toString();

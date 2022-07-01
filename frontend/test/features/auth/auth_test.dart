@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +8,7 @@ import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:mockito/annotations.dart';
 
+import '../../common/errors.dart';
 import 'user.dart';
 import 'auth_test.mocks.dart';
 
@@ -102,14 +102,14 @@ void main() {
 
       expect(authState.isAuthenticated, false);
 
-      when(mockService.login("", "")).thenAnswer((realInvocation) async =>
-          Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
+      when(mockService.login("", ""))
+          .thenThrow(testApiError(400, "Invalid info."));
 
       await authState.loginRegister("", "");
 
       verify(mockService.login("", ""));
       expect(authState.isAuthenticated, false);
-      expect(authState.error, "");
+      expect(authState.error, "Bad Request: Invalid info.");
     });
   });
   group("signup", () {
@@ -139,15 +139,15 @@ void main() {
 
       expect(authState.isAuthenticated, false);
 
-      when(mockService.register("", "")).thenAnswer((realInvocation) async =>
-          Response(requestOptions: RequestOptions(path: ""), statusCode: 401));
+      when(mockService.register("", ""))
+          .thenThrow(testApiError(400, "Invalid info."));
       authState.switchLoginRegister();
 
       await authState.loginRegister("", "");
 
       verify(mockService.register("", ""));
       expect(authState.isAuthenticated, false);
-      expect(authState.error, "");
+      expect(authState.error, "Bad Request: Invalid info.");
     });
   });
   group("logout", () {
