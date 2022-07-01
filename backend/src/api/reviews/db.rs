@@ -13,7 +13,7 @@ use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
 #[derive(Debug)]
 pub struct DBReview {
     pub id: sqlx::types::Uuid,
-    pub title: Option<String>,
+    pub story_id: sqlx::types::Uuid,
     pub slug: String,
     pub body: String,
     pub created_at: DateTime<Utc>,
@@ -21,11 +21,11 @@ pub struct DBReview {
     pub user_id: sqlx::types::Uuid,
 }
 
-impl From<(DBReview, StoredUser)> for StoredReview {
-    fn from((review, user): (DBReview, StoredUser)) -> Self {
+impl From<(DBReview, StoredUser, &str)> for StoredReview {
+    fn from((review, user, title): (DBReview, StoredUser, &str)) -> Self {
         Self {
             id: review.id,
-            title: review.title.unwrap(),
+            title: title.to_string(),
             slug: review.slug,
             body: review.body,
             created_at: review.created_at,
@@ -129,27 +129,41 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
     let story_id = Uuid::new_v4();
     let time = Utc::now();
     let user_id: Uuid = review.user_id.try_into().unwrap();
+
+    let mut transaction = pool.begin().await?;
+
+    let updated_story = sqlx::query!(
+        r#"
+        INSERT INTO stories (id, title, medium_id, creator_id)
+        VALUES (
+                $1,
+                $2,
+                (
+                    SELECT id
+                    FROM mediums
+                    WHERE name = 'Book'
+                ),
+                (
+                    SELECT id
+                    FROM creators
+                    WHERE name = 'Anonymous'
+                )
+            ) ON CONFLICT DO NOTHING
+        RETURNING id
+        "#,
+        story_id,
+        review.title.as_ref(),
+    )
+    .fetch_one(&mut transaction)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+
     let created_review = sqlx::query_as!(
         DBReview,
         r#" 
-        WITH new_story as (
-            INSERT INTO stories (id, title, medium_id, creator_id)
-            VALUES (
-                    $8,
-                    $2,
-                    (
-                        select id
-                        from mediums
-                        where name = 'Book'
-                    ),
-                    (
-                        select id
-                        from creators
-                        where name = 'Anonymous'
-                    )
-                )
-            RETURNING title
-        )
         INSERT INTO reviews (
                 id,
                 story_id,
@@ -159,12 +173,9 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
                 updated_at,
                 user_id
             )
-        VALUES ($1, $8, $3, $4, $5, $6, $7)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
         RETURNING id,
-            (
-                select title
-                from new_story
-            ) as title,
+            story_id,
             slug,
             body,
             created_at,
@@ -172,22 +183,28 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
             user_id
         "#,
         id,
-        review.title.as_ref(),
+        story_id,
         review.slug.as_ref(),
         review.body.as_ref(),
         time,
         time,
         user_id,
-        story_id
     )
-    .fetch_one(pool)
+    .fetch_one(&mut transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
+
+    transaction.commit().await?;
+
     let user = read_user_by_id(&review.user_id, pool).await?;
-    Ok(StoredReview::from((created_review, user)))
+    Ok(StoredReview::from((
+        created_review,
+        user,
+        review.title.as_ref(),
+    )))
 }
 
 #[tracing::instrument(
@@ -210,7 +227,7 @@ pub async fn update_review(
 
     let mut transaction = pool.begin().await?;
 
-    let story_id = match title {
+    let updated_story = match title {
         Some(t) => {
             let id = Uuid::new_v4();
             let updated_story = sqlx::query!(
@@ -220,17 +237,17 @@ pub async fn update_review(
                         $1,
                         $2,
                         (
-                            select id
-                            from mediums
-                            where name = 'Book'
+                            SELECT id
+                            FROM mediums
+                            WHERE name = 'Book'
                         ),
                         (
-                            select id
-                            from creators
-                            where name = 'Anonymous'
+                            SELECT id
+                            FROM creators
+                            WHERE name = 'Anonymous'
                         )
                     ) ON CONFLICT DO NOTHING
-                RETURNING id
+                RETURNING id, title
                 "#,
                 id,
                 t,
@@ -241,13 +258,12 @@ pub async fn update_review(
                 tracing::error!("Failed to execute query: {:?}", e);
                 e
             })?;
-            Some(updated_story.id)
+            Some(updated_story)
         }
         None => None,
     };
 
-    let updated_review = sqlx::query_as!(
-        DBReview,
+    let updated_review = sqlx::query!(
         r#"
         UPDATE reviews
         SET story_id = COALESCE($1, story_id),
@@ -262,17 +278,25 @@ pub async fn update_review(
             )
         RETURNING id,
             (
-                select title
-                from stories
-                where id = story_id
+                SELECT title
+                FROM stories,
+                     reviews
+                WHERE stories.id = story_id
+                  AND slug = $5
+                  AND reviews.user_id = (
+                      SELECT user_id
+                      FROM users
+                      WHERE username = $6
+                  )
             ),
+            story_id,
             slug,
             body,
             created_at,
             updated_at,
             user_id
         "#,
-        story_id,
+        updated_story.map(|o| o.id),
         update_slug,
         body,
         updated_at,
@@ -290,7 +314,15 @@ pub async fn update_review(
 
     let user = read_user_by_id(&updated_review.user_id.into(), pool).await?;
 
-    Ok(StoredReview::from((updated_review, user)))
+    Ok(StoredReview {
+        id: updated_review.id,
+        title: updated_review.title.unwrap(),
+        slug: updated_review.slug,
+        body: updated_review.body,
+        created_at: updated_review.created_at,
+        updated_at,
+        username: user.username,
+    })
 }
 
 #[tracing::instrument(
