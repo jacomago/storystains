@@ -3,7 +3,7 @@ use serde::{Serialize, Serializer};
 
 use crate::api::{
     review_emotion::ReviewEmotionData, shared::long_form_text::LongFormText,
-    users::model::UserProfileData, UserId,
+    stories::StoryResponseData, users::model::UserProfileData, UserId,
 };
 
 use super::{ReviewSlug, ReviewTitle};
@@ -49,7 +49,7 @@ pub struct ReviewResponse {
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct ReviewResponseData {
-    title: String,
+    story: StoryResponseData,
     slug: String,
     body: String,
     created_at: ResponseTime,
@@ -61,7 +61,11 @@ pub struct ReviewResponseData {
 impl From<(StoredReview, Vec<ReviewEmotionData>)> for ReviewResponseData {
     fn from((stored, emotions): (StoredReview, Vec<ReviewEmotionData>)) -> Self {
         Self {
-            title: stored.title,
+            story: StoryResponseData {
+                title: stored.title,
+                medium: "Book".to_string(),
+                creator: "Anonymous".to_string(),
+            },
             slug: stored.slug,
             body: stored.body,
             created_at: ResponseTime(stored.created_at),

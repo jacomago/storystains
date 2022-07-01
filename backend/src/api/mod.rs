@@ -4,6 +4,9 @@ pub use shared::long_form_text::*;
 mod reviews;
 pub use reviews::routes::*;
 
+mod stories;
+pub use stories::routes::*;
+
 mod review_emotion;
 pub use review_emotion::routes::*;
 

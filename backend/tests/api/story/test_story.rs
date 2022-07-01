@@ -18,8 +18,8 @@ impl TestStory {
     pub fn generate() -> Self {
         TestStory {
             title: faker::lorem::en::Word().fake(),
-            creator: faker::name::en::Name().fake(),
-            medium: faker::lorem::en::Word().fake(),
+            creator: "Anonymous".to_string(),
+            medium: "Book".to_string(),
         }
     }
 }
