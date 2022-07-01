@@ -1,12 +1,12 @@
 use reqwest::{Method, StatusCode};
-use serde_json::json;
+use serde_json::{json, Value};
 
 use crate::{
     auth::{
         route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in,
         route_returns_unauth_when_using_valid_but_non_existant_user,
     },
-    helpers::{TestApp, TestUser},
+    helpers::TestApp,
 };
 
 use super::story_relative_url_prefix;
@@ -102,7 +102,7 @@ async fn post_story_returns_a_400_when_data_is_missing() {
             "missing the title and creator",
         ),
         (
-            json!({"story":{{"medium": "Book", "creator": "Frank Herbert"}}}),
+            json!({"story":{"medium": "Book", "creator": "Frank Herbert"}}),
             "missing title",
         ),
     ];
