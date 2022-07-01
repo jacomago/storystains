@@ -70,7 +70,7 @@ async fn delete_review_returns_a_200_for_valid_slug() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, body FROM reviews",)
+    let saved = sqlx::query!("SELECT story_id, body FROM reviews",)
         .fetch_optional(&app.db_pool)
         .await
         .expect("Query failed to execute.");
@@ -94,7 +94,7 @@ async fn delete_user_deletes_reviews() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, body FROM reviews",)
+    let saved = sqlx::query!("SELECT story_id, body FROM reviews",)
         .fetch_optional(&app.db_pool)
         .await
         .expect("Query failed to execute.");

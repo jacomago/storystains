@@ -71,13 +71,14 @@ async fn post_review_persists_the_new_review() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, body FROM reviews",)
-        .fetch_one(&app.db_pool)
-        .await
-        .expect("Failed to fetch saved data.");
+    let saved =
+        sqlx::query!("SELECT (select title from stories where id = story_id), body FROM reviews",)
+            .fetch_one(&app.db_pool)
+            .await
+            .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.body, "5stars");
-    assert_eq!(saved.title, "Dune");
+    assert_eq!(saved.title, Some("Dune".to_string()));
     app.teardown().await;
 }
 

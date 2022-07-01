@@ -63,13 +63,14 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, body FROM reviews",)
-        .fetch_one(&app.db_pool)
-        .await
-        .expect("Failed to fetch saved data.");
+    let saved =
+        sqlx::query!("SELECT (select title from stories where id = story_id), body FROM reviews",)
+            .fetch_one(&app.db_pool)
+            .await
+            .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.body, "3stars");
-    assert_eq!(saved.title, review.title());
+    assert_eq!(saved.title, Some(review.title()));
     app.teardown().await;
 }
 

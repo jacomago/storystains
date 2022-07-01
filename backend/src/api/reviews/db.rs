@@ -13,7 +13,7 @@ use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
 #[derive(Debug)]
 pub struct DBReview {
     pub id: sqlx::types::Uuid,
-    pub title: String,
+    pub title: Option<String>,
     pub slug: String,
     pub body: String,
     pub created_at: DateTime<Utc>,
@@ -25,7 +25,7 @@ impl From<(DBReview, StoredUser)> for StoredReview {
     fn from((review, user): (DBReview, StoredUser)) -> Self {
         Self {
             id: review.id,
-            title: review.title,
+            title: review.title.unwrap(),
             slug: review.slug,
             body: review.body,
             created_at: review.created_at,
@@ -50,18 +50,20 @@ pub async fn read_review(
     let review = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT id,
-                   title,
-                   slug, 
-                   body, 
-                   created_at, 
-                   updated_at, 
-                   username
-              FROM reviews,
-                   users
-            WHERE  slug           = $2
-              AND  users.user_id  = reviews.user_id
-              AND  users.username = $1
+        SELECT reviews.id as id,
+            title,
+            slug,
+            body,
+            created_at,
+            updated_at,
+            username
+        FROM reviews,
+            users,
+            stories
+        WHERE slug = $2
+            AND users.user_id = reviews.user_id
+            AND users.username = $1
+            AND stories.id = reviews.story_id
         "#,
         username.as_ref(),
         slug.as_ref()
@@ -92,20 +94,21 @@ pub async fn read_reviews(
     let reviews = sqlx::query_as!(
         StoredReview,
         r#"
-            SELECT  id,
-                    title, 
-                    slug, 
-                    body, 
-                    created_at, 
-                    updated_at, 
-                    username
-              FROM  reviews, 
-                    users
-            WHERE   reviews.user_id = COALESCE($3, reviews.user_id)
-                AND reviews.user_id = users.user_id
-            ORDER BY updated_at DESC
-            LIMIT $1
-            OFFSET $2
+        SELECT reviews.id as id,
+            title,
+            slug,
+            body,
+            created_at,
+            updated_at,
+            username
+        FROM reviews,
+            users,
+            stories
+        WHERE reviews.user_id = COALESCE($3, reviews.user_id)
+            AND reviews.user_id = users.user_id
+            AND stories.id = reviews.story_id
+        ORDER BY updated_at DESC
+        LIMIT $1 OFFSET $2
         "#,
         limits.limit,
         limits.offset,
@@ -123,14 +126,50 @@ pub async fn read_reviews(
 #[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
 pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
     let id = Uuid::new_v4();
+    let story_id = Uuid::new_v4();
     let time = Utc::now();
     let user_id: Uuid = review.user_id.try_into().unwrap();
     let created_review = sqlx::query_as!(
         DBReview,
-        r#"
-            INSERT INTO reviews (id, title, slug, body, created_at, updated_at, user_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
-            RETURNING id, title, slug, body, created_at, updated_at, user_id
+        r#" 
+        WITH new_story as (
+            INSERT INTO stories (id, title, medium_id, creator_id)
+            VALUES (
+                    $8,
+                    $2,
+                    (
+                        select id
+                        from mediums
+                        where name = 'Book'
+                    ),
+                    (
+                        select id
+                        from creators
+                        where name = 'Anonymous'
+                    )
+                )
+            RETURNING title
+        )
+        INSERT INTO reviews (
+                id,
+                story_id,
+                slug,
+                body,
+                created_at,
+                updated_at,
+                user_id
+            )
+        VALUES ($1, $8, $3, $4, $5, $6, $7)
+        RETURNING id,
+            (
+                select title
+                from new_story
+            ) as title,
+            slug,
+            body,
+            created_at,
+            updated_at,
+            user_id
         "#,
         id,
         review.title.as_ref(),
@@ -138,7 +177,8 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
         review.body.as_ref(),
         time,
         time,
-        user_id
+        user_id,
+        story_id
     )
     .fetch_one(pool)
     .await
@@ -167,34 +207,86 @@ pub async fn update_review(
     let update_slug = review.slug.as_ref().map(|t| t.as_ref());
     let body = review.body.as_ref().map(|t| t.as_ref());
     let updated_at = Utc::now();
+
+    let mut transaction = pool.begin().await?;
+
+    let story_id = match title {
+        Some(t) => {
+            let id = Uuid::new_v4();
+            let updated_story = sqlx::query!(
+                r#"
+                INSERT INTO stories (id, title, medium_id, creator_id)
+                VALUES (
+                        $1,
+                        $2,
+                        (
+                            select id
+                            from mediums
+                            where name = 'Book'
+                        ),
+                        (
+                            select id
+                            from creators
+                            where name = 'Anonymous'
+                        )
+                    ) ON CONFLICT DO NOTHING
+                RETURNING id
+                "#,
+                id,
+                t,
+            )
+            .fetch_one(&mut transaction)
+            .await
+            .map_err(|e| {
+                tracing::error!("Failed to execute query: {:?}", e);
+                e
+            })?;
+            Some(updated_story.id)
+        }
+        None => None,
+    };
+
     let updated_review = sqlx::query_as!(
         DBReview,
         r#"
-            UPDATE reviews
-            SET title      = COALESCE($1, title),
-                slug       = COALESCE($2, slug),
-                body       = COALESCE($3, body),
-                updated_at = $4
-            WHERE         slug    = $5
-              AND reviews.user_id = (SELECT user_id
-                                       FROM users
-                                      WHERE username = $6
-                                    )
-            RETURNING id, title, slug, body, created_at, updated_at, user_id
+        UPDATE reviews
+        SET story_id = COALESCE($1, story_id),
+            slug = COALESCE($2, slug),
+            body = COALESCE($3, body),
+            updated_at = $4
+        WHERE slug = $5
+            AND reviews.user_id = (
+                SELECT user_id
+                FROM users
+                WHERE username = $6
+            )
+        RETURNING id,
+            (
+                select title
+                from stories
+                where id = story_id
+            ),
+            slug,
+            body,
+            created_at,
+            updated_at,
+            user_id
         "#,
-        title,
+        story_id,
         update_slug,
         body,
         updated_at,
         slug.as_ref(),
         username.as_ref()
     )
-    .fetch_one(pool)
+    .fetch_one(&mut transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
+
+    transaction.commit().await?;
 
     let user = read_user_by_id(&updated_review.user_id.into(), pool).await?;
 
@@ -215,7 +307,7 @@ pub async fn delete_review(
     let _ = sqlx::query!(
         r#"
             DELETE FROM reviews
-            WHERE     id = $1
+            WHERE id = $1
         "#,
         id
     )
@@ -242,7 +334,7 @@ pub async fn db_delete_reviews_by_user_id(
     let _ = sqlx::query!(
         r#"
             DELETE FROM reviews
-            WHERE       user_id = $1
+            WHERE user_id = $1
         "#,
         user_id
     )

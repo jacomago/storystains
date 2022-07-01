@@ -11,6 +11,16 @@
       "database": "storystains",
       "username": "postgres",
       "password": "password"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "test storystains migrations",
+      "database": "test_storystains_migration",
+      "username": "postgres",
+      "password": "password"
     }
   ],
 }
