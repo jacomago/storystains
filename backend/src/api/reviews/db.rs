@@ -183,7 +183,7 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
             user_id
         "#,
         id,
-        story_id,
+        updated_story.id,
         review.slug.as_ref(),
         review.body.as_ref(),
         time,
