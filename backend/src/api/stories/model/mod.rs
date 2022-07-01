@@ -1,2 +1,3 @@
 mod stories;
-pub use stories::StoryResponseData;
+
+pub use stories::*;

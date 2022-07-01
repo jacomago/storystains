@@ -101,6 +101,48 @@
     },
     "query": "\n        SELECT user_id, password_hash FROM users\n        WHERE username = $1\n        "
   },
+  "1fe24919817ef6e4f49660e030bea264f785ffb356a758a8ab126cbf388766ff": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "medium",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "creator",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": " \n        WITH creator as (\n            INSERT INTO creators (id, name)\n            VALUES ($4, $5) ON CONFLICT DO NOTHING\n            RETURNING (\n                    SELECT id\n                    FROM creators\n                    WHERE name = $5\n                    LIMIT 1\n                ) as id\n        )\n        INSERT INTO stories (id, title, medium_id, creator_id)\n        VALUES (\n                $1,\n                $2,\n                (\n                    SELECT id\n                    FROM mediums\n                    WHERE name = $3\n                    LIMIT 1\n                ), (\n                    SELECT id\n                    FROM creator\n                    LIMIT 1\n                )\n            )\n        RETURNING id,\n            title,\n            (\n                SELECT name\n                FROM mediums\n                WHERE id = medium_id\n                LIMIT 1\n            ) as medium,\n            (\n                SELECT name\n                FROM creators\n                WHERE id = creator_id\n                LIMIT 1\n            ) as creator\n        "
+  },
   "2c46d9b3160ef9ad68700bb4c6aad60da9de1c0011e9c484acd438f4c18cf32f": {
     "describe": {
       "columns": [

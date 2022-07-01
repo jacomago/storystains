@@ -9,7 +9,10 @@ use crate::{
         review_emotion::{
             delete_review_emotions_by_review, read_review_emotions, ReviewEmotionData,
         },
-        shared::put_block::{block_non_creator, BlockError},
+        shared::{
+            put_block::{block_non_creator, BlockError},
+            short_form_text::ShortFormText,
+        },
         users::NewUsername,
         LongFormText, QueryLimits, UserId,
     },
@@ -22,7 +25,7 @@ use sqlx::PgPool;
 use super::{
     db::{create_review, delete_review, read_review, read_reviews, update_review},
     model::{
-        NewReview, ReviewQueryOptions, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewTitle,
+        NewReview, ReviewQueryOptions, ReviewResponse, ReviewResponseData, ReviewSlug,
         ReviewsResponse, StoredReview, UpdateReview,
     },
 };
@@ -87,7 +90,7 @@ pub struct PostReviewData {
 impl TryFrom<(PostReviewData, UserId)> for NewReview {
     type Error = String;
     fn try_from((value, user_id): (PostReviewData, UserId)) -> Result<Self, Self::Error> {
-        let title = ReviewTitle::parse(value.title)?;
+        let title = ShortFormText::parse(value.title)?;
         let body = LongFormText::parse(value.body)?;
         let slug = ReviewSlug::parse(title.slugify())?;
         Ok(Self {
@@ -176,7 +179,7 @@ pub struct PutReviewData {
 impl TryFrom<PutReviewData> for UpdateReview {
     type Error = String;
     fn try_from(value: PutReviewData) -> Result<Self, Self::Error> {
-        let title = value.title.map(ReviewTitle::parse).transpose()?;
+        let title = value.title.map(ShortFormText::parse).transpose()?;
         let body = value.body.map(LongFormText::parse).transpose()?;
         let slug = title
             .as_ref()
