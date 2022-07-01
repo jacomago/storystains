@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,6 +10,7 @@ import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 
+import '../../common/errors.dart';
 import '../auth/user.dart';
 import 'review.dart';
 import 'review_edit_test.mocks.dart';
@@ -162,15 +162,7 @@ void main() {
         review.title,
         review.slug,
         review.body,
-      )).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be /.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      )).thenThrow(testApiError(400, "Cannot be /."));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -237,15 +229,8 @@ void main() {
       await tester.enterText(bodyField, "body");
       await tester.pumpAndSettle();
 
-      when(mockService.create("/", "body")).thenThrow(DioError(
-        requestOptions: RequestOptions(path: ""),
-        type: DioErrorType.response,
-        response: Response(
-          statusCode: 400,
-          data: "Cannot be /.",
-          requestOptions: RequestOptions(path: ""),
-        ),
-      ));
+      when(mockService.create("/", "body"))
+          .thenThrow(testApiError(400, "Cannot be /."));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
