@@ -34,3 +34,16 @@ pub struct NewStory {
     pub medium: ShortFormText,
     pub creator: ShortFormText,
 }
+
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct StoriesResponse {
+    stories: Vec<StoryResponseData>,
+}
+
+impl From<Vec<StoredStory>> for StoriesResponse {
+    fn from(stored: Vec<StoredStory>) -> Self {
+        Self {
+            stories: stored.into_iter().map(StoryResponseData::from).collect(),
+        }
+    }
+}

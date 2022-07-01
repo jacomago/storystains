@@ -148,6 +148,42 @@
     },
     "query": "\n        SELECT user_id, username \n        FROM users\n        WHERE user_id = $1\n        "
   },
+  "2e2dc988cfeddc68cba7e8e27795268a6d674b7917109ca9a25b84c8881dec8f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "medium",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "creator",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n        with story_mediums as (\n            SELECT \n                stories.id as id,\n                stories.title as title,\n                mediums.name as medium,\n                stories.creator_id as creator_id\n            FROM stories\n                JOIN mediums ON stories.medium_id = mediums.id\n            )\n        SELECT\n            story_mediums.id as \"id!\",\n            story_mediums.title as \"title!\",\n            story_mediums.medium,\n            creators.name as creator\n        FROM story_mediums\n            JOIN creators ON story_mediums.creator_id = creators.id\n        "
+  },
   "3f6b86bc5fd6cbbc74917a1e2475522f1d323a79bb2968df23d73072c06c3cf7": {
     "describe": {
       "columns": [

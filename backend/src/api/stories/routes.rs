@@ -3,11 +3,13 @@ use anyhow::Context;
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::api::{error_chain_fmt, shared::short_form_text::ShortFormText};
+use crate::api::{
+    shared::error_chain_fmt, shared::short_form_text::ShortFormText, shared::QueryLimits,
+};
 
 use super::{
-    db::create_story,
-    model::{NewStory, StoryResponse},
+    db::{create_story, read_stories},
+    model::{NewStory, StoriesResponse, StoryResponse},
     StoryResponseData,
 };
 
@@ -100,4 +102,17 @@ pub async fn post_story(
     Ok(HttpResponse::Ok().json(StoryResponse {
         story: StoryResponseData::from(stored),
     }))
+}
+
+/// API for getting many story via an input query of limit
+#[tracing::instrument(name = "Getting stories", skip(pool, query), fields())]
+pub async fn get_stories(
+    query: web::Query<QueryLimits>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, StoryError> {
+    let limits = query.0.into();
+    let stored = read_stories(&limits, pool.get_ref())
+        .await
+        .map_err(StoryError::NoDataError)?;
+    Ok(HttpResponse::Ok().json(StoriesResponse::from(stored)))
 }

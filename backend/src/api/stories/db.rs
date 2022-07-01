@@ -1,5 +1,7 @@
 use sqlx::{types::Uuid, PgPool};
 
+use crate::api::shared::Limits;
+
 use super::model::{NewStory, StoredStory};
 
 #[tracing::instrument(name = "Saving new story details in the database", skip(story, pool))]
@@ -25,6 +27,8 @@ pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory
         e
     })?;
 
+    // TODO should be able to use joins and not the inner queries
+    // see https://github.com/launchbadge/sqlx/issues/1126
     let created_story = sqlx::query_as!(
         StoredStory,
         r#" 
@@ -69,4 +73,45 @@ pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory
     transaction.commit().await?;
 
     Ok(created_story)
+}
+
+#[tracing::instrument(
+    name = "Retreive story details from the database", 
+    skip(pool),
+    fields(
+        limit = %format!("{:?}", limits.limit),
+        offset = %limits.offset
+    )
+)]
+pub async fn read_stories(limits: &Limits, pool: &PgPool) -> Result<Vec<StoredStory>, sqlx::Error> {
+    // TODO Should be able to do a triple join
+    // seems like could be a bug https://github.com/launchbadge/sqlx/issues/1852
+    let stories = sqlx::query_as!(
+        StoredStory,
+        r#"
+        with story_mediums as (
+            SELECT 
+                stories.id as id,
+                stories.title as title,
+                mediums.name as medium,
+                stories.creator_id as creator_id
+            FROM stories
+                JOIN mediums ON stories.medium_id = mediums.id
+            )
+        SELECT
+            story_mediums.id as "id!",
+            story_mediums.title as "title!",
+            story_mediums.medium,
+            creators.name as creator
+        FROM story_mediums
+            JOIN creators ON story_mediums.creator_id = creators.id
+        "#,
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(stories)
 }

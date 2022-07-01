@@ -4,8 +4,8 @@ use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 use crate::api::{
     read_user_by_id,
     reviews::model::StoredReview,
+    shared::Limits,
     users::{model::StoredUser, NewUsername},
-    Limits,
 };
 
 use super::model::{NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
