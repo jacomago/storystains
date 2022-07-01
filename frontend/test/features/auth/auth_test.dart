@@ -1,20 +1,76 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
+import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:mockito/annotations.dart';
 
 import 'user.dart';
 import 'auth_test.mocks.dart';
 
+// In none widget tests secure storage doesn't work
+// So we must mock it for this test
+// In this case we wrap around SharedPreferences instead
+class FakeSecureStorage extends Fake implements FlutterSecureStorage {
+  @override
+  Future<void> write({
+    required String key,
+    required String? value,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) =>
+      Prefs.setString(key, value!);
+
+  @override
+  Future<String?> read({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) =>
+      Prefs.getString(key);
+
+  @override
+  Future<bool> containsKey({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) =>
+      Prefs.containsKey(key);
+
+  @override
+  Future<void> delete({
+    required String key,
+    IOSOptions? iOptions,
+    AndroidOptions? aOptions,
+    LinuxOptions? lOptions,
+    WebOptions? webOptions,
+    MacOsOptions? mOptions,
+    WindowsOptions? wOptions,
+  }) =>
+      Prefs.remove(key);
+}
+
 @GenerateMocks([AuthService])
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
-    ServiceLocator.setup();
+    sl.registerSingleton<FlutterSecureStorage>(FakeSecureStorage());
   });
   tearDown(() {
     sl.reset();
@@ -22,6 +78,7 @@ void main() {
   group("login", () {
     test('After logging in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
+
       const password = "password";
       final user = testUser();
       final userResp = UserResp(user: user);
