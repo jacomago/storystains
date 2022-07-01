@@ -1,8 +1,7 @@
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:storystains/common/utils/utils.dart';
 
-import 'package:storystains/common/utils/prefs.dart';
 import 'auth.dart';
 
 enum AuthEvent { register, login, logout, delete }
@@ -54,20 +53,15 @@ class AuthState extends ChangeNotifier {
   }
 
   Future init() async {
-    final user = await Prefs.getString('user');
-    final token = await AuthStorage.getToken();
+    final user = await AuthStorage.getUser();
 
     if (user != null) {
-      _user = User.fromJson(jsonDecode(user));
+      _user = user;
+      _token = user.token;
     }
 
-    if (token != null) {
-      _token = token;
-    }
-
-    _status = _user != null && _token != null
-        ? AuthStatus.authenticated
-        : AuthStatus.notauthenticated;
+    _status =
+        _user != null ? AuthStatus.authenticated : AuthStatus.notauthenticated;
 
     notifyListeners();
   }
@@ -88,13 +82,15 @@ class AuthState extends ChangeNotifier {
       if (data is UserResp && data.user.token.isNotEmpty) {
         _user = data.user;
 
-        await Prefs.setString('user', jsonEncode(_user!.toJson()));
-        await Prefs.setString('token', _user!.token);
+        AuthStorage.login(_user!);
 
         _status = AuthStatus.authenticated;
       } else {
         _status = AuthStatus.notauthenticated;
       }
+    } on DioError catch (e) {
+      _status = AuthStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = AuthStatus.failed;
       _error = e.toString();
@@ -120,6 +116,9 @@ class AuthState extends ChangeNotifier {
       _user = null;
       _token = null;
       _isLoading = false;
+    } on DioError catch (e) {
+      _status = AuthStatus.failed;
+      _error = errorMessage(e);
     } catch (e) {
       _status = AuthStatus.failed;
       _error = e.toString();

@@ -231,5 +231,49 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
     });
+    test('error on get', () async {
+      SharedPreferences.setMockInitialValues({});
+      final review = testReview();
+
+      final mockService = MockReviewService();
+
+      when(mockService.read(review.user.username, review.slug))
+          .thenThrow(testApiError(401, "Some error."));
+
+      final reviewState = ReviewState(
+        mockService,
+        path: ReviewRoutePath(
+          review.slug,
+          review.user.username,
+        ),
+      );
+
+      expect(reviewState.isCreate, false);
+      expect(reviewState.isUpdated, false);
+      expect(reviewState.error, "Unauthorised: Some error.");
+    });
+    test('init works', () async {
+      SharedPreferences.setMockInitialValues({});
+      final review = testReview();
+
+      final mockService = MockReviewService();
+
+      when(mockService.read(review.user.username, review.slug))
+          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      final reviewState = ReviewState(
+        mockService,
+        path: ReviewRoutePath(
+          review.slug,
+          review.user.username,
+        ),
+      );
+
+      await Future.delayed(const Duration(seconds: 1));
+      expect(reviewState.isCreate, false);
+      expect(reviewState.isUpdated, false);
+      expect(reviewState.status, ReviewStatus.read);
+      expect(reviewState.review, review);
+    });
   });
 }

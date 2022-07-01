@@ -1,27 +1,22 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/emotions/emotion_state.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 class CardReviewEmotionsList extends StatelessWidget {
-  const CardReviewEmotionsList({Key? key}) : super(key: key);
+  const CardReviewEmotionsList({Key? key, required this.items})
+      : super(key: key);
+  final List<ReviewEmotion> items;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ReviewEmotionsState, EmotionsState>(
-      builder: (_, reviewEmotions, emotions, __) {
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: reviewEmotions.items
-                .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
-                .toList(),
-          ),
-        );
-      },
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: items
+            .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
+            .toList(),
+      ),
     );
   }
 

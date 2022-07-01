@@ -8,6 +8,8 @@ import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 
+import '../features/review/review.dart';
+
 Widget wrapWithMaterial(
   Widget w,
   ReviewState reviewState,
@@ -37,18 +39,10 @@ void main() {
   group("Read Review", () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final time = DateTime.now();
+      final review = testReview();
       final reviewState = ReviewState(
         ReviewService(),
-        review: Review(
-          body: "body",
-          createdAt: time,
-          slug: "title",
-          title: "title",
-          updatedAt: time,
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
+        review: review,
       );
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
@@ -58,31 +52,20 @@ void main() {
 
       final titleField = find.bySemanticsLabel('Title');
       expect(titleField, findsOneWidget);
-      expect(find.text('title'), findsOneWidget);
+      expect(find.text(review.title), findsOneWidget);
 
-      expect(find.text('body'), findsOneWidget);
+      expect(find.text(review.body), findsOneWidget);
 
-      expect(find.text("@username"), findsOneWidget);
+      expect(find.text("@${review.user.username}"), findsOneWidget);
       expect(
-        find.text(DateFormat.yMMMMEEEEd().format(time)),
+        find.text(DateFormat.yMMMMEEEEd().format(review.updatedAt)),
         findsOneWidget,
       );
     });
     testWidgets('block edit only copy', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      final time = DateTime.now();
-      final reviewState = ReviewState(
-        ReviewService(),
-        review: Review(
-          body: "body",
-          createdAt: time,
-          slug: "title",
-          title: "title",
-          updatedAt: time,
-          emotions: [],
-          user: UserProfile(username: "username"),
-        ),
-      );
+      final review = testReview();
+      final reviewState = ReviewState(ReviewService(), review: review);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,

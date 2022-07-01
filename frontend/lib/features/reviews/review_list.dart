@@ -5,7 +5,6 @@ import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/review/review_route.dart';
 import 'package:storystains/features/review/widgets/review_date.dart';
 import 'package:storystains/features/review/widgets/review_username.dart';
-import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/pages/review_detail.dart';
 import 'package:storystains/routes/routes.dart';
@@ -99,9 +98,8 @@ class ReviewList extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: _buildTitle(context, review.title),
                 ),
-                ChangeNotifierProvider(
-                  create: (_) => ReviewEmotionsState(review.emotions),
-                  child: const CardReviewEmotionsList(),
+                CardReviewEmotionsList(
+                  items: review.emotions,
                 ),
                 const SizedBox(
                   height: 10,

@@ -76,6 +76,8 @@ class ReviewState extends ChangeNotifier {
       if (data is ReviewResp) {
         _review = data.review;
 
+        titleController = TextEditingController(text: _review?.title);
+        bodyController = TextEditingController(text: _review?.body);
         _status = ReviewStatus.read;
         _stateType = ReviewStateType.read;
       } else {
