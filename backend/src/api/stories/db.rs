@@ -1,16 +1,18 @@
-use sqlx::{types::Uuid, PgPool};
+use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
-use crate::api::shared::Limits;
+use crate::api::shared::{short_form_text::ShortFormText, Limits};
 
 use super::model::{NewStory, StoredStory};
 
-#[tracing::instrument(name = "Saving new story details in the database", skip(story, pool))]
-pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
-    let id = Uuid::new_v4();
+#[tracing::instrument(
+    name = "Saving new creator details in the database",
+    skip(creator, transaction)
+)]
+pub async fn create_or_update_creator(
+    creator: &ShortFormText,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<Uuid, sqlx::Error> {
     let creator_id = Uuid::new_v4();
-
-    let mut transaction = pool.begin().await?;
-
     let updated_creator = sqlx::query!(
         r#"
         INSERT INTO creators (id, name)
@@ -18,14 +20,36 @@ pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory
         RETURNING id
         "#,
         creator_id,
-        story.creator.as_ref(),
+        creator.as_ref(),
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
+    Ok(updated_creator.id)
+}
+
+#[tracing::instrument(name = "Saving new story details in the database", skip(story, pool))]
+pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
+    let mut transaction = pool.begin().await?;
+    let created_story = db_create_story(story, &mut transaction).await?;
+    transaction.commit().await?;
+    Ok(created_story)
+}
+
+#[tracing::instrument(
+    name = "Saving new story details in the database",
+    skip(story, transaction)
+)]
+pub async fn db_create_story(
+    story: &NewStory,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<StoredStory, sqlx::Error> {
+    let id = Uuid::new_v4();
+
+    let creator_id = create_or_update_creator(&story.creator, transaction).await?;
 
     // TODO should be able to use joins and not the inner queries
     // see https://github.com/launchbadge/sqlx/issues/1126
@@ -61,16 +85,14 @@ pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory
         id,
         story.title.as_ref(),
         story.medium.as_ref(),
-        updated_creator.id,
+        creator_id,
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
-
-    transaction.commit().await?;
 
     Ok(created_story)
 }

@@ -5,6 +5,7 @@ use crate::api::{
     read_user_by_id,
     reviews::model::StoredReview,
     shared::Limits,
+    stories::create_or_return_story_id,
     users::{model::StoredUser, NewUsername},
 };
 
@@ -123,43 +124,18 @@ pub async fn read_reviews(
     Ok(reviews)
 }
 
-#[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
-pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
+#[tracing::instrument(
+    name = "Saving new review details in the database",
+    skip(review, story_id, transaction)
+)]
+pub async fn db_create_review(
+    review: &NewReview,
+    story_id: Uuid,
+    transaction: &mut Transaction<'_, Postgres>,
+) -> Result<DBReview, sqlx::Error> {
     let id = Uuid::new_v4();
-    let story_id = Uuid::new_v4();
     let time = Utc::now();
     let user_id: Uuid = review.user_id.try_into().unwrap();
-
-    let mut transaction = pool.begin().await?;
-
-    let updated_story = sqlx::query!(
-        r#"
-        INSERT INTO stories (id, title, medium_id, creator_id)
-        VALUES (
-                $1,
-                $2,
-                (
-                    SELECT id
-                    FROM mediums
-                    WHERE name = 'Book'
-                ),
-                (
-                    SELECT id
-                    FROM creators
-                    WHERE name = 'Anonymous'
-                )
-            ) ON CONFLICT DO NOTHING
-        RETURNING id
-        "#,
-        story_id,
-        review.title.as_ref(),
-    )
-    .fetch_one(&mut transaction)
-    .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })?;
 
     let created_review = sqlx::query_as!(
         DBReview,
@@ -183,27 +159,35 @@ pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredRe
             user_id
         "#,
         id,
-        updated_story.id,
+        story_id,
         review.slug.as_ref(),
         review.body.as_ref(),
         time,
         time,
         user_id,
     )
-    .fetch_one(&mut transaction)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
 
+    Ok(created_review)
+}
+
+#[tracing::instrument(name = "Saving new review details in the database", skip(review, pool))]
+pub async fn create_review(review: &NewReview, pool: &PgPool) -> Result<StoredReview, sqlx::Error> {
+    let mut transaction = pool.begin().await?;
+    let story_id = create_or_return_story_id(&review.story, &mut transaction).await?;
+    let created_review = db_create_review(review, story_id, &mut transaction).await?;
     transaction.commit().await?;
 
     let user = read_user_by_id(&review.user_id, pool).await?;
     Ok(StoredReview::from((
         created_review,
         user,
-        review.title.as_ref(),
+        review.story.title.as_ref(),
     )))
 }
 

@@ -12,6 +12,20 @@ pub struct StoryResponseData {
     pub creator: String,
 }
 
+impl TryFrom<StoryResponseData> for NewStory {
+    type Error = String;
+    fn try_from(value: StoryResponseData) -> Result<Self, Self::Error> {
+        let title = ShortFormText::parse(value.title)?;
+        let medium = ShortFormText::parse(value.medium)?;
+        let creator = ShortFormText::parse(value.creator)?;
+        Ok(Self {
+            title,
+            medium,
+            creator,
+        })
+    }
+}
+
 #[derive(Debug)]
 pub struct StoredStory {
     pub id: sqlx::types::Uuid,
@@ -33,6 +47,12 @@ pub struct NewStory {
     pub title: ShortFormText,
     pub medium: ShortFormText,
     pub creator: ShortFormText,
+}
+
+impl NewStory {
+    pub fn slugify(&self) -> String {
+        self.title.slugify()
+    }
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]

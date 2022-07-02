@@ -52,29 +52,7 @@ impl ResponseError for StoryError {
 /// Story input on Post
 #[derive(serde::Deserialize)]
 pub struct PostStory {
-    story: PostStoryData,
-}
-
-/// Data of story input on Post
-#[derive(serde::Deserialize)]
-pub struct PostStoryData {
-    title: String,
-    medium: String,
-    creator: String,
-}
-
-impl TryFrom<PostStoryData> for NewStory {
-    type Error = String;
-    fn try_from(value: PostStoryData) -> Result<Self, Self::Error> {
-        let title = ShortFormText::parse(value.title)?;
-        let medium = ShortFormText::parse(value.medium)?;
-        let creator = ShortFormText::parse(value.creator)?;
-        Ok(Self {
-            title,
-            medium,
-            creator,
-        })
-    }
+    story: StoryResponseData,
 }
 
 /// API for adding a new story

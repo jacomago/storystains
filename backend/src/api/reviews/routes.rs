@@ -13,6 +13,7 @@ use crate::{
             put_block::{block_non_creator, BlockError},
             short_form_text::ShortFormText,
         },
+        stories::{NewStory, StoryResponseData},
         users::NewUsername,
         LongFormText, UserId,
     },
@@ -83,18 +84,18 @@ pub struct PostReview {
 /// Data of review input on Post
 #[derive(serde::Deserialize)]
 pub struct PostReviewData {
-    title: String,
+    story: StoryResponseData,
     body: String,
 }
 
 impl TryFrom<(PostReviewData, UserId)> for NewReview {
     type Error = String;
     fn try_from((value, user_id): (PostReviewData, UserId)) -> Result<Self, Self::Error> {
-        let title = ShortFormText::parse(value.title)?;
+        let story: NewStory = value.story.try_into()?;
         let body = LongFormText::parse(value.body)?;
-        let slug = ReviewSlug::parse(title.slugify())?;
+        let slug = ReviewSlug::parse(story.slugify())?;
         Ok(Self {
-            title,
+            story,
             body,
             slug,
             user_id,
@@ -107,7 +108,7 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     name = "Adding a new review",
     skip(json, pool),
     fields(
-        reviews_title = %json.review.title,
+        reviews_title = %json.review.story.title,
         reviews_review = %json.review.body
     )
 )]

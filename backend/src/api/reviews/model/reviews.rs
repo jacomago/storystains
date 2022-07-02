@@ -4,7 +4,7 @@ use serde::{Serialize, Serializer};
 use crate::api::{
     review_emotion::ReviewEmotionData,
     shared::{long_form_text::LongFormText, short_form_text::ShortFormText},
-    stories::StoryResponseData,
+    stories::{NewStory, StoryResponseData},
     users::model::UserProfileData,
     UserId,
 };
@@ -13,7 +13,7 @@ use super::ReviewSlug;
 
 pub struct NewReview {
     pub body: LongFormText,
-    pub title: ShortFormText,
+    pub story: NewStory,
     pub slug: ReviewSlug,
     pub user_id: UserId,
 }
