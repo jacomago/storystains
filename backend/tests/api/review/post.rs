@@ -7,6 +7,7 @@ use crate::{
         route_returns_unauth_when_using_valid_but_non_existant_user,
     },
     helpers::TestApp,
+    story::TestStory,
 };
 
 use super::review_relative_url_prefix;
@@ -35,14 +36,16 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 
 #[tokio::test]
 async fn post_review_returns_unauth_when_logged_out() {
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_json(), "body":"5stars" }});
     route_returns_unauth_when_logged_out(|_| review_relative_url_prefix(), Method::POST, body)
         .await;
 }
 
 #[tokio::test]
 async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_json(),"body":"5stars" }});
     route_returns_unauth_when_using_valid_but_non_existant_user(
         |_| review_relative_url_prefix(),
         Method::POST,
@@ -58,7 +61,8 @@ async fn post_review_persists_the_new_review() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_json(), "body":"5stars" }});
     let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
@@ -81,8 +85,9 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     let app = TestApp::spawn_app().await;
 
     let token = app.test_user.login(&app).await;
+    let story = TestStory::generate();
     let test_cases = vec![
-        (json!({"review": {"title": "Dune"} }), "missing the review"),
+        (json!({"review": {"story": story.create_json()} }), "missing the review"),
         (json!({ "review":{"body":"5stars"} }), "missing the title"),
         (json!({"review":{}}), "missing both title and review"),
     ];

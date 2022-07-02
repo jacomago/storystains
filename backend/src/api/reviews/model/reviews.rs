@@ -19,6 +19,7 @@ pub struct NewReview {
 }
 
 pub struct UpdateReview {
+    pub story: Option<NewStory>,
     pub body: Option<LongFormText>,
 }
 

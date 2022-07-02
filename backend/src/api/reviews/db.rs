@@ -6,7 +6,7 @@ use crate::api::{
     review_emotion::read_review_emotions,
     reviews::model::StoredReview,
     shared::Limits,
-    stories::{read_story, read_story_by_id, StoryResponseData},
+    stories::{create_or_return_story, read_story_by_id, StoryResponseData},
     users::{model::UserProfileData, NewUsername},
 };
 
@@ -192,12 +192,12 @@ pub async fn read_reviews(
 
 #[tracing::instrument(
     name = "Saving new review details in the database",
-    skip(review, story_id, pool)
+    skip(review, story_id, transaction)
 )]
 async fn db_create_review(
     review: &NewReview,
     story_id: Uuid,
-    pool: &PgPool,
+    transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredReview, sqlx::Error> {
     let id = Uuid::new_v4();
     let time = Utc::now();
@@ -232,7 +232,7 @@ async fn db_create_review(
         time,
         user_id,
     )
-    .fetch_one(pool)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
@@ -250,9 +250,14 @@ pub async fn create_review(
     review: &NewReview,
     pool: &PgPool,
 ) -> Result<CompleteReviewData, sqlx::Error> {
-    let story = read_story(&review.story, pool).await?;
-    let created_review = db_create_review(review, story.id, pool).await?;
-    let user = read_user_by_id(&review.user_id, pool).await?;
+    let mut transaction = pool.begin().await?;
+
+    let story = create_or_return_story(&review.story, &mut transaction).await?;
+    let created_review = db_create_review(review, story.id, &mut transaction).await?;
+
+    transaction.commit().await?;
+
+    let user = read_user_by_id(&created_review.user_id.into(), pool).await?;
 
     Ok(CompleteReviewData {
         stored_review: created_review,
@@ -264,7 +269,7 @@ pub async fn create_review(
 
 #[tracing::instrument(
     name = "Saving updated review details in the database",
-    skip(review, pool),
+    skip(review, transaction),
     fields(
         slug = %slug
     )
@@ -273,7 +278,7 @@ async fn db_update_review(
     username: &NewUsername,
     slug: &ReviewSlug,
     review: &UpdateReview,
-    pool: &PgPool,
+    transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredReview, sqlx::Error> {
     let body = review.body.as_ref().map(|t| t.as_ref());
     let updated_at = Utc::now();
@@ -303,7 +308,7 @@ async fn db_update_review(
         slug.as_ref(),
         username.as_ref()
     )
-    .fetch_one(pool)
+    .fetch_one(transaction)
     .await
     .map_err(|e| {
         tracing::error!("Failed to execute query: {:?}", e);
@@ -326,7 +331,17 @@ pub async fn update_review(
     review: &UpdateReview,
     pool: &PgPool,
 ) -> Result<CompleteReviewData, sqlx::Error> {
-    let updated_review = db_update_review(username, slug, review, pool).await?;
+    let mut transaction = pool.begin().await?;
+
+    match &review.story {
+        Some(s) => {
+            create_or_return_story(s, &mut transaction).await?;
+        }
+        None => {},
+    };
+    let updated_review = db_update_review(username, slug, review, &mut transaction).await?;
+
+    transaction.commit().await?;
 
     create_complete_review(updated_review, pool).await
 }

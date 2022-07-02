@@ -165,14 +165,16 @@ pub struct PutReview {
 /// Review input data on Put
 #[derive(serde::Deserialize, Debug)]
 pub struct PutReviewData {
+    story: Option<StoryResponseData>,
     body: Option<String>,
 }
 
 impl TryFrom<PutReviewData> for UpdateReview {
     type Error = String;
     fn try_from(value: PutReviewData) -> Result<Self, Self::Error> {
+        let story = value.story.map(NewStory::try_from).transpose()?;
         let body = value.body.map(LongFormText::parse).transpose()?;
-        Ok(Self { body })
+        Ok(Self { story, body })
     }
 }
 

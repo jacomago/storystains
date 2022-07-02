@@ -27,7 +27,7 @@ impl PartialEq for TestStory {
 }
 
 impl TestStory {
-    fn create_json(&self) -> Value {
+    pub fn create_json(&self) -> Value {
         json!(
             {
                 "story": {
