@@ -1,8 +1,7 @@
-import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review_model.dart';
-import 'package:storystains/features/story/story.dart';
 
 import '../auth/user.dart';
+import '../story/story.dart';
 
 Review testReview({
   String? slug,
@@ -12,11 +11,7 @@ Review testReview({
       body: "body$slug",
       createdAt: DateTime.now(),
       slug: slug ?? "title",
-      story: Story(
-        title: slug ?? "title",
-        creator: 'Anonymous',
-        medium: Medium(name: 'Book'),
-      ),
+      story: testStory(title: slug),
       updatedAt: DateTime.now(),
       emotions: [],
       user: testUserProfile(username: username),

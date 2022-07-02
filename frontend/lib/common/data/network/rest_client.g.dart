@@ -52,19 +52,19 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<StoryResp> createStory(newStory) async {
+  Future<WrappedStory> createStory(newStory) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(newStory.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<StoryResp>(
+        _setStreamType<WrappedStory>(
             Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, '/stories',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = StoryResp.fromJson(_result.data!);
+    final value = WrappedStory.fromJson(_result.data!);
     return value;
   }
 

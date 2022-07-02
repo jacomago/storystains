@@ -86,7 +86,7 @@ void main() {
 
       await reviewState.delete();
 
-      verify(mockService.delete(review.user.username, review.story.title));
+      verify(mockService.delete(review.user.username, review.slug));
       expect(reviewState.isUpdated, false);
       expect(reviewState.status, ReviewStatus.deleted);
     });
@@ -155,7 +155,7 @@ void main() {
 
       when(mockService.update(
         review.user.username,
-        review.story.title,
+        review.slug,
         review.story.title,
         review.body,
       )).thenAnswer((realInvocation) async => reviewResp);
@@ -164,7 +164,7 @@ void main() {
 
       verify(mockService.update(
         review.user.username,
-        review.story.title,
+        review.slug,
         review.story.title,
         review.body,
       ));

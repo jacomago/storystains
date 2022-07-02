@@ -24,7 +24,7 @@ abstract class RestClient {
 
   // add new story in database
   @retrofit.POST("/stories")
-  Future<StoryResp> createStory(@retrofit.Body() CreateStory newStory);
+  Future<WrappedStory> createStory(@retrofit.Body() WrappedStory newStory);
 
   @retrofit.PUT("/reviews/{username}/{slug}")
   Future<ReviewResp> updateReview(

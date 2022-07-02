@@ -8,6 +8,10 @@ part 'story_model.g.dart';
 @JsonSerializable()
 class Story {
   String title;
+  @JsonKey(
+    fromJson: _mediumFromName,
+    toJson: _mediumToName,
+  )
   Medium medium;
   String creator;
 
@@ -21,6 +25,9 @@ class Story {
 
   Map<String, dynamic> toJson() => _$StoryToJson(this);
 
+  static Medium _mediumFromName(String name) => Medium(name: name);
+  static String _mediumToName(Medium medium) => medium.name;
+
   @override
   String toString() {
     return json.encode(toJson());
@@ -28,43 +35,13 @@ class Story {
 }
 
 @JsonSerializable()
-class CreateStory {
-  NewStory story;
-
-  CreateStory({required this.story});
-
-  factory CreateStory.fromJson(Map<String, dynamic> json) =>
-      _$CreateStoryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CreateStoryToJson(this);
-}
-
-@JsonSerializable()
-class NewStory {
-  String title;
-  String medium;
-  String creator;
-
-  NewStory({
-    required this.title,
-    required this.medium,
-    required this.creator,
-  });
-
-  factory NewStory.fromJson(Map<String, dynamic> json) =>
-      _$NewStoryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$NewStoryToJson(this);
-}
-
-@JsonSerializable()
-class StoryResp {
+class WrappedStory {
   Story story;
 
-  StoryResp({required this.story});
+  WrappedStory({required this.story});
 
-  factory StoryResp.fromJson(Map<String, dynamic> json) =>
-      _$StoryRespFromJson(json);
+  factory WrappedStory.fromJson(Map<String, dynamic> json) =>
+      _$WrappedStoryFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StoryRespToJson(this);
+  Map<String, dynamic> toJson() => _$WrappedStoryToJson(this);
 }

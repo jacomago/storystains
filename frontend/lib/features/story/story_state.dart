@@ -38,7 +38,7 @@ class StoryState extends ChangeNotifier {
 
   late TextEditingController titleController;
   late TextEditingController creatorController;
-  late ValueNotifier<Medium> mediumContorller;
+  late ValueNotifier<Medium> mediumController;
 
   StoryState(this._service, {Story? story}) {
     _event = null;
@@ -47,9 +47,10 @@ class StoryState extends ChangeNotifier {
     _error = '';
 
     _story = story;
-    titleController = TextEditingController(text: story?.title);
-    creatorController = TextEditingController(text: story?.creator);
-    mediumContorller = ValueNotifier(story?.medium ?? Medium(name: 'Book'));
+    _isEdit = story != null;
+    titleController = TextEditingController(text: story?.title ?? "");
+    creatorController = TextEditingController(text: story?.creator ?? "");
+    mediumController = ValueNotifier(story?.medium ?? Medium(name: 'Book'));
   }
 
   edit() {
@@ -62,19 +63,26 @@ class StoryState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future update(String title, String creator) async {
+  Future update() async {
     _event = StoryEvent.update;
     _isLoading = true;
 
     notifyListeners();
 
     try {
-      final data = await _service.create(title, creator);
+      final title = titleController.text;
+      final creator = creatorController.text;
+      final medium = mediumController.value;
 
-      if (data is StoryResp) {
+      final data = await _service.create(title, creator, medium);
+
+      if (data is WrappedStory) {
         _story = data.story;
 
         _status = StoryStatus.updated;
+        titleController = TextEditingController(text: data.story.title);
+        creatorController = TextEditingController(text: data.story.creator);
+        mediumController = ValueNotifier(data.story.medium);
       } else {
         final e = StatusCodeException.exception(data);
         throw e;
