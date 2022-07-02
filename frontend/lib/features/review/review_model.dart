@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 import 'package:storystains/features/auth/auth_model.dart';
+import 'package:storystains/features/story/story.dart';
 
 part 'review_model.g.dart';
 
@@ -17,7 +18,7 @@ class Review {
   @JsonKey(name: 'created_at')
   DateTime createdAt;
   String slug;
-  String title;
+  Story story;
   @JsonKey(name: 'updated_at')
   DateTime updatedAt;
   List<ReviewEmotion> emotions;
@@ -27,7 +28,7 @@ class Review {
     required this.body,
     required this.createdAt,
     required this.slug,
-    required this.title,
+    required this.story,
     required this.updatedAt,
     required this.emotions,
     required this.user,
@@ -58,11 +59,11 @@ class CreateReview {
 @JsonSerializable()
 class NewReview {
   String body;
-  String title;
+  Story story;
 
   NewReview({
     required this.body,
-    required this.title,
+    required this.story,
   });
 
   factory NewReview.fromJson(Map<String, dynamic> json) =>

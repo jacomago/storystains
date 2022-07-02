@@ -49,7 +49,7 @@ class ReviewState extends ChangeNotifier {
         ? ReviewStateType.create
         : ReviewStateType.read;
     _review = review;
-    titleController = TextEditingController(text: review?.title);
+    titleController = TextEditingController(text: review?.story.title);
     bodyController = TextEditingController(text: review?.body);
 
     if (path != null) {
@@ -76,7 +76,7 @@ class ReviewState extends ChangeNotifier {
       if (data is ReviewResp) {
         _review = data.review;
 
-        titleController = TextEditingController(text: _review?.title);
+        titleController = TextEditingController(text: _review?.story.title);
         bodyController = TextEditingController(text: _review?.body);
         _status = ReviewStatus.read;
         _stateType = ReviewStateType.read;

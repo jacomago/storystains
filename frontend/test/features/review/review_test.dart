@@ -24,12 +24,12 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create(review.title, review.body))
+      when(mockService.create(review.story.title, review.body))
           .thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.title, review.body);
+      await reviewState.update(review.story.title, review.body);
 
-      verify(mockService.create(review.title, review.body));
+      verify(mockService.create(review.story.title, review.body));
       expect(reviewState.isUpdated, true);
     });
 
@@ -86,7 +86,7 @@ void main() {
 
       await reviewState.delete();
 
-      verify(mockService.delete(review.user.username, review.title));
+      verify(mockService.delete(review.user.username, review.story.title));
       expect(reviewState.isUpdated, false);
       expect(reviewState.status, ReviewStatus.deleted);
     });
@@ -155,17 +155,17 @@ void main() {
 
       when(mockService.update(
         review.user.username,
-        review.title,
-        review.title,
+        review.story.title,
+        review.story.title,
         review.body,
       )).thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.title, review.body);
+      await reviewState.update(review.story.title, review.body);
 
       verify(mockService.update(
         review.user.username,
-        review.title,
-        review.title,
+        review.story.title,
+        review.story.title,
         review.body,
       ));
       expect(reviewState.isUpdated, true);

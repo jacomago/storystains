@@ -52,7 +52,7 @@ void main() {
 
       final titleField = find.bySemanticsLabel('Title');
       expect(titleField, findsOneWidget);
-      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.story.title), findsOneWidget);
 
       expect(find.text(review.body), findsOneWidget);
 

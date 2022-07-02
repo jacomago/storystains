@@ -125,9 +125,9 @@ void main() {
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      final titleField = find.widgetWithText(TextField, review.title);
+      final titleField = find.widgetWithText(TextField, review.story.title);
       expect(titleField, findsOneWidget);
-      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.story.title), findsOneWidget);
 
       final bodyField = find.widgetWithText(TextField, review.body);
       expect(bodyField, findsOneWidget);
@@ -159,7 +159,7 @@ void main() {
 
       when(mockService.update(
         review.user.username,
-        review.title,
+        review.story.title,
         review.slug,
         review.body,
       )).thenThrow(testApiError(400, "Cannot be /."));
@@ -196,7 +196,7 @@ void main() {
       when(mockService.update(
         review.user.username,
         review.slug,
-        review.title,
+        review.story.title,
         review.body,
       )).thenAnswer((realInvocation) async => ReviewResp(review: review));
 
@@ -254,13 +254,13 @@ void main() {
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
-      await tester.enterText(titleField, review.title);
+      await tester.enterText(titleField, review.story.title);
 
       final bodyField = find.bySemanticsLabel('Body');
       await tester.enterText(bodyField, review.body);
       await tester.pumpAndSettle();
 
-      when(mockService.create(review.title, review.body))
+      when(mockService.create(review.story.title, review.body))
           .thenAnswer((realInvocation) async => ReviewResp(review: review));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);

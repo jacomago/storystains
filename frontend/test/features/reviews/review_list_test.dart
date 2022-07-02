@@ -80,7 +80,7 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
-      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.story.title), findsOneWidget);
       expect(find.text("@${review.user.username}"), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
@@ -99,7 +99,7 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.text(review.title), findsNothing);
+      expect(find.text(review.story.title), findsNothing);
 
       when(mockService.fetch()).thenAnswer((realInvocation) async => [review]);
       when(mockService.fetch(offset: AppConfig.defaultLimit))
@@ -111,7 +111,7 @@ void main() {
 
       verify(mockService.fetch());
 
-      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.story.title), findsOneWidget);
       expect(find.text("@${review.user.username}"), findsOneWidget);
     });
   });
