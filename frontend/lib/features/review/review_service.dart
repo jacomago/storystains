@@ -1,5 +1,6 @@
 import 'package:storystains/common/data/network/rest_client.dart';
 import 'package:storystains/common/utils/service_locator.dart';
+import 'package:storystains/features/mediums/mediums.dart';
 import 'package:storystains/features/story/story.dart';
 
 import 'review_model.dart';
@@ -11,7 +12,7 @@ class ReviewService {
             review: NewReview(
               story: Story(
                 creator: 'Anonymous',
-                medium: 'Book',
+                medium: Medium(name: 'Book'),
                 title: title,
               ),
               body: body,
@@ -28,7 +29,7 @@ class ReviewService {
             review: NewReview(
               story: Story(
                 creator: 'Anonymous',
-                medium: 'Book',
+                medium: Medium(name: 'Book'),
                 title: title,
               ),
               body: body,

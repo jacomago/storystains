@@ -1,3 +1,4 @@
+import 'package:storystains/features/mediums/mediums.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/features/story/story.dart';
 
@@ -14,7 +15,7 @@ Review testReview({
       story: Story(
         title: slug ?? "title",
         creator: 'Anonymous',
-        medium: 'Book',
+        medium: Medium(name: 'Book'),
       ),
       updatedAt: DateTime.now(),
       emotions: [],
