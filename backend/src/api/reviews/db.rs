@@ -337,7 +337,7 @@ pub async fn update_review(
         Some(s) => {
             create_or_return_story(s, &mut transaction).await?;
         }
-        None => {},
+        None => {}
     };
     let updated_review = db_update_review(username, slug, review, &mut transaction).await?;
 

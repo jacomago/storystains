@@ -5,6 +5,7 @@ use crate::{
     auth::route_returns_unauth_when_not_logged_in,
     helpers::{TestApp, TestUser},
     review::test_review::TestReview,
+    story::TestStory,
 };
 
 use super::review_relative_url;
@@ -50,7 +51,8 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let body = json!({"review": {"body":"3stars" }});
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_json(), "body":"3stars" }});
     let response = app
         .put_review(
             &app.test_user.username,
@@ -125,7 +127,17 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let test_cases = vec![(json!({"review": { "body":"" }}), "empty review")];
+    let story = TestStory::generate();
+    let test_cases = vec![
+        (
+            json!({"review": { "story": story.create_json(), "body":"" }}),
+            "empty review",
+        ),
+        (
+            json!({"review": { "story":{}, "body": "body"}}),
+            "empty story",
+        ),
+    ];
     for (body, description) in test_cases {
         // Act
         let response = app
@@ -156,8 +168,9 @@ async fn put_review_returns_json() {
 
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
+    let story = TestStory::generate();
 
-    let body = json!({"review": { "body":"3stars" }});
+    let body = json!({"review": { "story": story.create_json(), "body":"3stars" }});
 
     // Act
     let response = app
@@ -173,6 +186,7 @@ async fn put_review_returns_json() {
     assert_eq!(response.status(), StatusCode::OK);
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "3stars");
+    assert_eq!(json["review"]["story"]["title"], story.title);
     app.teardown().await;
 }
 

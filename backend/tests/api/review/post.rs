@@ -87,7 +87,10 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     let token = app.test_user.login(&app).await;
     let story = TestStory::generate();
     let test_cases = vec![
-        (json!({"review": {"story": story.create_json()} }), "missing the review"),
+        (
+            json!({"review": {"story": story.create_json()} }),
+            "missing the review",
+        ),
         (json!({ "review":{"body":"5stars"} }), "missing the title"),
         (json!({"review":{}}), "missing both title and review"),
     ];

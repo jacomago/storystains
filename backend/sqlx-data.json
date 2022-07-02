@@ -38,38 +38,6 @@
     },
     "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n            WHERE id = $1\n        "
   },
-  "0cd09080350cff1acfe0c83a9ee671e60506699e9f97dc1d4d43f633eb995943": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        },
-        {
-          "name": "notes",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Int4"
-        ]
-      }
-    },
-    "query": "\n            SELECT name, position, notes \n              FROM review_emotions, emotions \n             WHERE review_emotions.emotion_id = emotions.id\n               AND position = $1\n        "
-  },
   "0f5ea20e3ce0ffe2910777bf1ec7fc918bbebb5ceaa3f92d922cdd170cc78a72": {
     "describe": {
       "columns": [
@@ -106,80 +74,6 @@
       }
     },
     "query": "\n            UPDATE review_emotions\n            SET emotion_id  = COALESCE($1, emotion_id),\n                position    = COALESCE($2, position),\n                notes       = COALESCE($3, notes)\n            WHERE review_id = (SELECT id\n                                 FROM users,\n                                      reviews\n                                WHERE slug           = $4\n                                  AND users.user_id  = reviews.user_id\n                                  AND users.username = $6\n                                LIMIT 1\n                               )\n               AND position = $5\n            RETURNING emotion_id,\n                      position, \n                      notes\n        "
-  },
-  "0ff08b0f8b6a1f3caad3619e764858b3da9e7a3a80979d762c47c476a0c3e784": {
-    "describe": {
-      "columns": [
-        {
-          "name": "emotion_id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT emotion_id, position FROM review_emotions"
-  },
-  "10d017b6878f73657068465987c5280cc4a6b2210d835dcdba3d66f6949a1bd9": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            SELECT id \n              FROM reviews,\n                   users\n             WHERE reviews.user_id = users.user_id\n               AND users.username  = $1\n        "
-  },
-  "15894393cfaf0fc7e6c3b2563325b604a0d40465aaf1fdba3a0d5c405c77edf5": {
-    "describe": {
-      "columns": [
-        {
-          "name": "emotion_id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        },
-        {
-          "name": "notes",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT emotion_id, position, notes FROM review_emotions"
   },
   "1a66539537c71a52ffacfe03719f39c0e6b174a6cecccbfba7750371af8cd19d": {
     "describe": {
@@ -367,36 +261,6 @@
     },
     "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n        "
   },
-  "42e908612b6ba32bcff221e747eba0cbab0e1a250c5727f1f840cc366812c302": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "medium",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "creator",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        null,
-        null
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n            SELECT \n                title, \n                (\n                    SELECT name\n                    FROM mediums\n                    WHERE id = medium_id\n                ) as medium,\n                (\n                    SELECT name\n                    FROM creators\n                    WHERE id = creator_id\n                ) as creator\n            FROM stories\n            "
-  },
   "4afbaf66bf2bb839815a6697fb360a63dd26f485f9c2012e35174a723374ee07": {
     "describe": {
       "columns": [
@@ -461,30 +325,6 @@
       }
     },
     "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = $1\n        "
-  },
-  "79a10353194a104a8ef6370adb83504759ff41157c4ee40bb867fae9ad31a8b0": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        null,
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT (select title from stories where id = story_id), body FROM reviews"
   },
   "7b0224a2e18604b44f638e14c18e7a2410da4c646ac2284b3864c7237eea2e29": {
     "describe": {
@@ -630,16 +470,6 @@
     },
     "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.id = $1\n            AND stories.creator_id = creators.id\n            AND stories.medium_id = mediums.id\n        "
   },
-  "99336e0a4c90c33a950842228444d9c0d4e958a23c0f62371aa182f0b0bd8b3e": {
-    "describe": {
-      "columns": [],
-      "nullable": [],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "INSERT INTO emotions(id, name, description, icon_url) values (22, 'French', 'fab', 'fab')"
-  },
   "a9c64f70a0b65beade2022a32505ef6433f811c130cdcfc9171fa9f286efd5b4": {
     "describe": {
       "columns": [],
@@ -688,36 +518,6 @@
       }
     },
     "query": " \n            INSERT INTO review_emotions(\n                id,\n                review_id,\n                emotion_id,\n                position,\n                notes\n            )\n            VALUES (\n                $1,\n                (\n                    SELECT id\n                      FROM users,\n                           reviews\n                     WHERE slug           = $3\n                       AND users.user_id  = reviews.user_id\n                       AND users.username = $2\n                     LIMIT 1\n                ), \n                $4, \n                $5,\n                $6 \n            )\n            RETURNING emotion_id, position, notes\n        "
-  },
-  "be9fadfa68729fb5c597bd062033a6510b45769b719ae071bea6499cafa50204": {
-    "describe": {
-      "columns": [
-        {
-          "name": "name",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        },
-        {
-          "name": "notes",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        true,
-        true,
-        true
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "\n            SELECT name, position, notes \n              FROM review_emotions, emotions \n             WHERE review_emotions.emotion_id = emotions.id\n        "
   },
   "befcf3fbec2b4da4aac07ea9f1de8b2bce3e8e47a787b8c223f1f2ec780dad76": {
     "describe": {
@@ -918,30 +718,6 @@
     },
     "query": "\n            DELETE FROM users\n            WHERE       user_id = $1\n        "
   },
-  "de7a80a6fd5d6b684859c92697666454e9b5d0938ba22f43d6155c1cd137c606": {
-    "describe": {
-      "columns": [
-        {
-          "name": "story_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "body",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": []
-      }
-    },
-    "query": "SELECT story_id, body FROM reviews"
-  },
   "e424f34fcc9c80469eb9fbb3b067140079256b6ca6b3bc460f9d450284fcac85": {
     "describe": {
       "columns": [
@@ -1047,51 +823,5 @@
       }
     },
     "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.title = $1\n            AND stories.creator_id = creators.id\n            AND creators.name = $2\n            AND stories.medium_id = mediums.id\n            AND mediums.name = $3\n        "
-  },
-  "eebcf1d9357eead180ffad835d160657d5e0d29c14d8bfcf6cb44a42ac4fbab4": {
-    "describe": {
-      "columns": [
-        {
-          "name": "emotion_id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            SELECT emotion_id, position \n              FROM review_emotions,\n                   reviews,\n                   users\n             WHERE review_id       = reviews.id\n               AND reviews.user_id = users.user_id\n               AND users.username  = $1\n        "
-  },
-  "f4ea2ad9ba4f26093152e4a0e008ef6c3114fbe9e51301611c5633e1cc944c05": {
-    "describe": {
-      "columns": [
-        {
-          "name": "user_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "SELECT user_id FROM users WHERE username = $1"
   }
 }
