@@ -1,7 +1,10 @@
 use reqwest::StatusCode;
 use serde_json::{json, Value};
 
-use crate::helpers::{TestApp, TestUser};
+use crate::{
+    helpers::{TestApp, TestUser},
+    story::TestStory,
+};
 
 use super::review_relative_url_prefix;
 
@@ -80,9 +83,11 @@ async fn get_reviews_returns_reviews() {
     let token = app.test_user.login(&app).await;
 
     // Act
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let first_story = TestStory::generate();
+    let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
-    let body = json!({"review": {"title": "LoTR", "body":"4 stars" }});
+    let second_story = TestStory::generate();
+    let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
     app.post_review(body.to_string(), &token).await;
 
     let response = app.get_reviews(Some(10), Some(0)).await;
@@ -95,10 +100,10 @@ async fn get_reviews_returns_reviews() {
     assert!(json["reviews"].is_array());
     assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
 
-    assert_eq!(json["reviews"][0]["story"]["title"], "LoTR");
+    assert_eq!(json["reviews"][0]["story"]["title"], second_story.title);
     assert_eq!(json["reviews"][0]["body"], "4 stars");
 
-    assert_eq!(json["reviews"][1]["story"]["title"], "Dune");
+    assert_eq!(json["reviews"][1]["story"]["title"], first_story.title);
     assert_eq!(json["reviews"][1]["body"], "5stars");
 
     app.teardown().await;
@@ -114,9 +119,11 @@ async fn get_reviews_returns_reviews_singular_multi_user() {
     let other_user = TestUser::generate();
     other_user.store(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let first_story = TestStory::generate();
+    let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
     app.post_review(body.to_string(), &token).await;
-    let body = json!({"review": {"title": "LoTR", "body":"4 stars" }});
+    let second_story = TestStory::generate();
+    let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
     app.post_review(body.to_string(), &token).await;
 
     let response = app.get_reviews(Some(10), Some(0)).await;
@@ -129,9 +136,10 @@ async fn get_reviews_returns_reviews_singular_multi_user() {
     assert!(json["reviews"].is_array());
     assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
 
-    assert_eq!(json["reviews"][0]["story"]["title"], "LoTR");
+    assert_eq!(json["reviews"][0]["story"]["title"], second_story.title);
     assert_eq!(json["reviews"][0]["body"], "4 stars");
-    assert_eq!(json["reviews"][1]["story"]["title"], "Dune");
+
+    assert_eq!(json["reviews"][1]["story"]["title"], first_story.title);
     assert_eq!(json["reviews"][1]["body"], "5stars");
 
     app.teardown().await;
