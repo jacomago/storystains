@@ -1,4 +1,4 @@
-import 'package:storystains/features/mediums/mediums.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/features/story/story.dart';
 

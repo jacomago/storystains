@@ -3,7 +3,7 @@ import 'package:retrofit/retrofit.dart' as retrofit;
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/features/auth/auth_model.dart';
 import 'package:storystains/features/emotions/emotion_model.dart';
-import 'package:storystains/features/mediums/mediums.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 import 'package:storystains/features/reviews/reviews_model.dart';

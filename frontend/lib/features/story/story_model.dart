@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:storystains/features/mediums/mediums.dart';
+import 'package:storystains/features/mediums/medium.dart';
 
 part 'story_model.g.dart';
 
