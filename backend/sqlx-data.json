@@ -38,27 +38,6 @@
     },
     "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n            WHERE id = $1\n        "
   },
-  "0be16ffec869c9e7af5512fc8bf794560b497b8205df56846cf9d48564c6f1ab": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        INSERT INTO stories (id, title, medium_id, creator_id)\n        VALUES (\n                $1,\n                $2,\n                (\n                    SELECT id\n                    FROM mediums\n                    WHERE name = 'Book'\n                ),\n                (\n                    SELECT id\n                    FROM creators\n                    WHERE name = 'Anonymous'\n                )\n            ) ON CONFLICT DO NOTHING\n        RETURNING id\n        "
-  },
   "0f5ea20e3ce0ffe2910777bf1ec7fc918bbebb5ceaa3f92d922cdd170cc78a72": {
     "describe": {
       "columns": [
@@ -148,7 +127,7 @@
     },
     "query": "\n        SELECT user_id, username \n        FROM users\n        WHERE user_id = $1\n        "
   },
-  "2e2dc988cfeddc68cba7e8e27795268a6d674b7917109ca9a25b84c8881dec8f": {
+  "32c0705187f2dffe367d2d723d0404b88d5f6ba5585b66c91aeb358aa30656a5": {
     "describe": {
       "columns": [
         {
@@ -162,12 +141,12 @@
           "type_info": "Text"
         },
         {
-          "name": "medium",
+          "name": "medium!",
           "ordinal": 2,
           "type_info": "Text"
         },
         {
-          "name": "creator",
+          "name": "creator!",
           "ordinal": 3,
           "type_info": "Text"
         }
@@ -179,10 +158,72 @@
         true
       ],
       "parameters": {
-        "Left": []
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
       }
     },
-    "query": "\n        with story_mediums as (\n            SELECT \n                stories.id as id,\n                stories.title as title,\n                mediums.name as medium,\n                stories.creator_id as creator_id\n            FROM stories\n                JOIN mediums ON stories.medium_id = mediums.id\n            )\n        SELECT\n            story_mediums.id as \"id!\",\n            story_mediums.title as \"title!\",\n            story_mediums.medium,\n            creators.name as creator\n        FROM story_mediums\n            JOIN creators ON story_mediums.creator_id = creators.id\n        "
+    "query": "\n        SELECT\n            stories.id as \"id!\",\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM stories\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        LIMIT $1\n        OFFSET $2\n        "
+  },
+  "36516bc05f21cf97e963deebe1bd7b685c9bfa6e8343f0cf150bcdfd6078bbbb": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "story_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Timestamptz",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        UPDATE reviews\n        SET body = COALESCE($1, body),\n            updated_at = $2\n        WHERE slug = $3\n            AND reviews.user_id = (\n                SELECT user_id\n                FROM users\n                WHERE username = $4\n            )\n        RETURNING id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            user_id\n        "
   },
   "3f6b86bc5fd6cbbc74917a1e2475522f1d323a79bb2968df23d73072c06c3cf7": {
     "describe": {
@@ -220,7 +261,7 @@
     },
     "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n        "
   },
-  "425bf365f676ef80b3b947e10dc2e5c035d36ee14ff4eb875771d050bd88ebcf": {
+  "4afbaf66bf2bb839815a6697fb360a63dd26f485f9c2012e35174a723374ee07": {
     "describe": {
       "columns": [
         {
@@ -229,17 +270,17 @@
           "type_info": "Uuid"
         },
         {
-          "name": "title",
+          "name": "title!",
           "ordinal": 1,
           "type_info": "Text"
         },
         {
-          "name": "medium",
+          "name": "medium!",
           "ordinal": 2,
           "type_info": "Text"
         },
         {
-          "name": "creator",
+          "name": "creator!",
           "ordinal": 3,
           "type_info": "Text"
         }
@@ -247,8 +288,8 @@
       "nullable": [
         false,
         false,
-        null,
-        null
+        false,
+        false
       ],
       "parameters": {
         "Left": [
@@ -259,7 +300,7 @@
         ]
       }
     },
-    "query": " \n        INSERT INTO stories (id, title, medium_id, creator_id)\n        VALUES (\n                $1,\n                $2,\n                (\n                    SELECT id\n                    FROM mediums\n                    WHERE name = $3\n                    LIMIT 1\n                ), $4\n            )\n        RETURNING id,\n            title,\n            (\n                SELECT name\n                FROM mediums\n                WHERE id = medium_id\n                LIMIT 1\n            ) as medium,\n            (\n                SELECT name\n                FROM creators\n                WHERE id = creator_id\n                LIMIT 1\n            ) as creator\n        "
+    "query": " \n        with new_story as (\n            INSERT INTO stories (id, title, medium_id, creator_id)\n            VALUES (\n                    $1,\n                    $2,\n                    (\n                        SELECT id\n                        FROM mediums\n                        WHERE name = $3\n                        LIMIT 1\n                    ), $4\n                )\n            RETURNING id,\n                title,\n                medium_id,\n                creator_id\n        )\n        SELECT \n            new_story.id,\n            new_story.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            new_story,\n            creators,\n            mediums\n        WHERE creators.id = $4\n        AND new_story.medium_id = mediums.id\n        "
   },
   "55a2a58fcbe135ccec901ab34886a344947135a5824b23c1203a01ef2cc05a57": {
     "describe": {
@@ -284,6 +325,63 @@
       }
     },
     "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = $1\n        "
+  },
+  "7b0224a2e18604b44f638e14c18e7a2410da4c646ac2284b3864c7237eea2e29": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "story_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM reviews,\n            users\n        WHERE slug = $2\n            AND users.user_id = reviews.user_id\n            AND users.username = $1\n        "
   },
   "7ce6d78feae8cbc4700e0cbcf8dc4764f269a8791a965ddbb8ece7fb34365d80": {
     "describe": {
@@ -334,6 +432,44 @@
     },
     "query": "\n            INSERT INTO users (user_id, username, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING user_id, username\n        "
   },
+  "873beda52d26d7ea506f39bbb8062dc20baab802da0a0f019529a897e8790eaa": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "medium!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "creator!",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.id = $1\n            AND stories.creator_id = creators.id\n            AND stories.medium_id = mediums.id\n        "
+  },
   "a9c64f70a0b65beade2022a32505ef6433f811c130cdcfc9171fa9f286efd5b4": {
     "describe": {
       "columns": [],
@@ -383,7 +519,7 @@
     },
     "query": " \n            INSERT INTO review_emotions(\n                id,\n                review_id,\n                emotion_id,\n                position,\n                notes\n            )\n            VALUES (\n                $1,\n                (\n                    SELECT id\n                      FROM users,\n                           reviews\n                     WHERE slug           = $3\n                       AND users.user_id  = reviews.user_id\n                       AND users.username = $2\n                     LIMIT 1\n                ), \n                $4, \n                $5,\n                $6 \n            )\n            RETURNING emotion_id, position, notes\n        "
   },
-  "c0662261f685d73031942324e240c0ad9ad4cf44debaab977fcc9c865d924f14": {
+  "befcf3fbec2b4da4aac07ea9f1de8b2bce3e8e47a787b8c223f1f2ec780dad76": {
     "describe": {
       "columns": [
         {
@@ -392,9 +528,9 @@
           "type_info": "Uuid"
         },
         {
-          "name": "title",
+          "name": "story_id",
           "ordinal": 1,
-          "type_info": "Text"
+          "type_info": "Uuid"
         },
         {
           "name": "slug",
@@ -417,9 +553,9 @@
           "type_info": "Timestamptz"
         },
         {
-          "name": "username",
+          "name": "user_id",
           "ordinal": 6,
-          "type_info": "Text"
+          "type_info": "Uuid"
         }
       ],
       "nullable": [
@@ -433,12 +569,13 @@
       ],
       "parameters": {
         "Left": [
-          "Text",
-          "Text"
+          "Int8",
+          "Int8",
+          "Uuid"
         ]
       }
     },
-    "query": "\n        SELECT reviews.id as id,\n            title,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            username\n        FROM reviews,\n            users,\n            stories\n        WHERE slug = $2\n            AND users.user_id = reviews.user_id\n            AND users.username = $1\n            AND stories.id = reviews.story_id\n        "
+    "query": "\n        SELECT id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM reviews,\n            users\n        WHERE reviews.user_id = COALESCE($3, reviews.user_id)\n            AND reviews.user_id = users.user_id\n        ORDER BY updated_at DESC\n        LIMIT $1 OFFSET $2\n        "
   },
   "c410ceada60020f7471e7247a8bcd27ffc3af878ba0558df5b9301d5f4305bf6": {
     "describe": {
@@ -453,6 +590,27 @@
       }
     },
     "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = (SELECT id\n                                   FROM users,\n                                        reviews\n                                  WHERE slug           = $1\n                                    AND users.user_id  = reviews.user_id\n                                    AND users.username = $3\n                                  LIMIT 1\n                               )\n                AND position = $2\n        "
+  },
+  "c45d3056a4f83f1b5618b0a2faf148e2738918fcb1104d1b88a32b83ad6b7b43": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT id\n        FROM reviews,\n            users\n        WHERE slug = $2\n            AND users.user_id = reviews.user_id\n            AND users.username = $1\n        "
   },
   "c99d9e22fcc337ad063d3c6165b47ad0fcd61fb4d319685fc5b4f3c92d4a2a47": {
     "describe": {
@@ -548,33 +706,6 @@
     },
     "query": " \n        INSERT INTO reviews (\n                id,\n                story_id,\n                slug,\n                body,\n                created_at,\n                updated_at,\n                user_id\n            )\n        VALUES ($1, $2, $3, $4, $5, $6, $7)\n        RETURNING id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            user_id\n        "
   },
-  "dd717cc9945066e5d4451259adc328efaa19211e29ddbf77866db6fe053d5993": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n                INSERT INTO stories (id, title, medium_id, creator_id)\n                VALUES (\n                        $1,\n                        $2,\n                        (\n                            SELECT id\n                            FROM mediums\n                            WHERE name = 'Book'\n                        ),\n                        (\n                            SELECT id\n                            FROM creators\n                            WHERE name = 'Anonymous'\n                        )\n                    ) ON CONFLICT DO NOTHING\n                RETURNING id, title\n                "
-  },
   "dd81f4650f63031bf532acd0697be75db211f9df6f5dc43f0cccdeadb67b3f3e": {
     "describe": {
       "columns": [],
@@ -586,131 +717,6 @@
       }
     },
     "query": "\n            DELETE FROM users\n            WHERE       user_id = $1\n        "
-  },
-  "df4d947abbfb0cdc8f85075cb93f8dc63eb6ec6a5409af4e9e930ba1b3bd54db": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "story_id",
-          "ordinal": 2,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "slug",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 4,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 6,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 7,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        null,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text",
-          "Timestamptz",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        UPDATE reviews\n        SET story_id = COALESCE($1, story_id),\n            slug = COALESCE($2, slug),\n            body = COALESCE($3, body),\n            updated_at = $4\n        WHERE slug = $5\n            AND reviews.user_id = (\n                SELECT user_id\n                FROM users\n                WHERE username = $6\n            )\n        RETURNING id,\n            (\n                SELECT title\n                FROM stories\n                WHERE stories.id = story_id\n            ) as title,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            user_id\n        "
-  },
-  "e2300840ae7a05d77d482000d9727950b3c49454bb824fd518bdffc8629bd336": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "slug",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "username",
-          "ordinal": 6,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT reviews.id as id,\n            title,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            username\n        FROM reviews,\n            users,\n            stories\n        WHERE reviews.user_id = COALESCE($3, reviews.user_id)\n            AND reviews.user_id = users.user_id\n            AND stories.id = reviews.story_id\n        ORDER BY updated_at DESC\n        LIMIT $1 OFFSET $2\n        "
   },
   "e424f34fcc9c80469eb9fbb3b067140079256b6ca6b3bc460f9d450284fcac85": {
     "describe": {
@@ -777,5 +783,45 @@
       }
     },
     "query": "\n            SELECT emotion_id,\n                   position,\n                   notes\n              FROM review_emotions\n            WHERE  review_id = $1\n          ORDER BY position ASC\n        "
+  },
+  "eea8ecd2d681971a1457fa08fad296e429b5ba93ba982049c853a3dde3622beb": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "medium!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "creator!",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.title = $1\n            AND stories.creator_id = creators.id\n            AND creators.name = $2\n            AND stories.medium_id = mediums.id\n            AND mediums.name = $3\n        "
   }
 }

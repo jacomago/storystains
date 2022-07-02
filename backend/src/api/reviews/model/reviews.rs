@@ -3,7 +3,7 @@ use serde::{Serialize, Serializer};
 
 use crate::api::{
     review_emotion::ReviewEmotionData,
-    shared::{long_form_text::LongFormText, short_form_text::ShortFormText},
+    shared::long_form_text::LongFormText,
     stories::{NewStory, StoryResponseData},
     users::model::UserProfileData,
     UserId,
@@ -20,19 +20,17 @@ pub struct NewReview {
 
 pub struct UpdateReview {
     pub body: Option<LongFormText>,
-    pub title: Option<ShortFormText>,
-    pub slug: Option<ReviewSlug>,
 }
 
 #[derive(Debug)]
 pub struct StoredReview {
     pub id: sqlx::types::Uuid,
-    pub title: String,
+    pub story_id: sqlx::types::Uuid,
     pub slug: String,
     pub body: String,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
-    pub username: String,
+    pub user_id: sqlx::types::Uuid,
 }
 
 #[derive(Debug, PartialEq, serde::Deserialize)]
@@ -61,22 +59,23 @@ pub struct ReviewResponseData {
     user: UserProfileData,
 }
 
-impl From<(StoredReview, Vec<ReviewEmotionData>)> for ReviewResponseData {
-    fn from((stored, emotions): (StoredReview, Vec<ReviewEmotionData>)) -> Self {
+pub struct CompleteReviewData {
+    pub stored_review: StoredReview,
+    pub emotions: Vec<ReviewEmotionData>,
+    pub story: StoryResponseData,
+    pub user: UserProfileData,
+}
+
+impl From<CompleteReviewData> for ReviewResponseData {
+    fn from(complete_review: CompleteReviewData) -> Self {
         Self {
-            story: StoryResponseData {
-                title: stored.title,
-                medium: "Book".to_string(),
-                creator: "Anonymous".to_string(),
-            },
-            slug: stored.slug,
-            body: stored.body,
-            created_at: ResponseTime(stored.created_at),
-            updated_at: ResponseTime(stored.updated_at),
-            emotions,
-            user: UserProfileData {
-                username: stored.username,
-            },
+            story: complete_review.story,
+            slug: complete_review.stored_review.slug,
+            body: complete_review.stored_review.body,
+            created_at: ResponseTime(complete_review.stored_review.created_at),
+            updated_at: ResponseTime(complete_review.stored_review.updated_at),
+            emotions: complete_review.emotions,
+            user: complete_review.user,
         }
     }
 }
@@ -86,8 +85,8 @@ pub struct ReviewsResponse {
     reviews: Vec<ReviewResponseData>,
 }
 
-impl From<Vec<(StoredReview, Vec<ReviewEmotionData>)>> for ReviewsResponse {
-    fn from(stored: Vec<(StoredReview, Vec<ReviewEmotionData>)>) -> Self {
+impl From<Vec<CompleteReviewData>> for ReviewsResponse {
+    fn from(stored: Vec<CompleteReviewData>) -> Self {
         Self {
             reviews: stored.into_iter().map(ReviewResponseData::from).collect(),
         }

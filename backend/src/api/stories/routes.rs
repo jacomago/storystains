@@ -3,13 +3,11 @@ use anyhow::Context;
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::api::{
-    shared::error_chain_fmt, shared::short_form_text::ShortFormText, shared::QueryLimits,
-};
+use crate::api::{shared::error_chain_fmt, shared::QueryLimits};
 
 use super::{
     db::{create_story, read_stories},
-    model::{NewStory, StoriesResponse, StoryResponse},
+    model::{StoriesResponse, StoryResponse},
     StoryResponseData,
 };
 

@@ -56,31 +56,34 @@ pub async fn db_create_story(
     let created_story = sqlx::query_as!(
         StoredStory,
         r#" 
-        INSERT INTO stories (id, title, medium_id, creator_id)
-        VALUES (
-                $1,
-                $2,
-                (
-                    SELECT id
-                    FROM mediums
-                    WHERE name = $3
-                    LIMIT 1
-                ), $4
-            )
-        RETURNING id,
-            title,
-            (
-                SELECT name
-                FROM mediums
-                WHERE id = medium_id
-                LIMIT 1
-            ) as medium,
-            (
-                SELECT name
-                FROM creators
-                WHERE id = creator_id
-                LIMIT 1
-            ) as creator
+        with new_story as (
+            INSERT INTO stories (id, title, medium_id, creator_id)
+            VALUES (
+                    $1,
+                    $2,
+                    (
+                        SELECT id
+                        FROM mediums
+                        WHERE name = $3
+                        LIMIT 1
+                    ), $4
+                )
+            RETURNING id,
+                title,
+                medium_id,
+                creator_id
+        )
+        SELECT 
+            new_story.id,
+            new_story.title as "title!",
+            mediums.name as "medium!",
+            creators.name as "creator!"
+        FROM 
+            new_story,
+            creators,
+            mediums
+        WHERE creators.id = $4
+        AND new_story.medium_id = mediums.id
         "#,
         id,
         story.title.as_ref(),
@@ -98,6 +101,81 @@ pub async fn db_create_story(
 }
 
 #[tracing::instrument(
+    name = "Retreive a single story details from the database",
+    skip(story, pool),
+    fields()
+)]
+pub async fn db_read_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
+    let stored_story = sqlx::query_as!(
+        StoredStory,
+        r#"
+        SELECT 
+            stories.id,
+            stories.title as "title!",
+            mediums.name as "medium!",
+            creators.name as "creator!"
+        FROM 
+            stories,
+            creators,
+            mediums
+        WHERE 
+                stories.title = $1
+            AND stories.creator_id = creators.id
+            AND creators.name = $2
+            AND stories.medium_id = mediums.id
+            AND mediums.name = $3
+        "#,
+        story.title.as_ref(),
+        story.creator.as_ref(),
+        story.medium.as_ref(),
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(stored_story)
+}
+
+#[tracing::instrument(
+    name = "Retreive a single story details from the database by id",
+    skip(story_id, pool),
+    fields()
+)]
+pub async fn db_read_story_by_id(
+    story_id: &Uuid,
+    pool: &PgPool,
+) -> Result<StoredStory, sqlx::Error> {
+    let stored_story = sqlx::query_as!(
+        StoredStory,
+        r#"
+        SELECT 
+            stories.id,
+            stories.title as "title!",
+            mediums.name as "medium!",
+            creators.name as "creator!"
+        FROM 
+            stories,
+            creators,
+            mediums
+        WHERE 
+                stories.id = $1
+            AND stories.creator_id = creators.id
+            AND stories.medium_id = mediums.id
+        "#,
+        story_id,
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(stored_story)
+}
+
+#[tracing::instrument(
     name = "Retreive story details from the database", 
     skip(pool),
     fields(
@@ -111,23 +189,19 @@ pub async fn read_stories(limits: &Limits, pool: &PgPool) -> Result<Vec<StoredSt
     let stories = sqlx::query_as!(
         StoredStory,
         r#"
-        with story_mediums as (
-            SELECT 
-                stories.id as id,
-                stories.title as title,
-                mediums.name as medium,
-                stories.creator_id as creator_id
-            FROM stories
-                JOIN mediums ON stories.medium_id = mediums.id
-            )
         SELECT
-            story_mediums.id as "id!",
-            story_mediums.title as "title!",
-            story_mediums.medium,
-            creators.name as creator
-        FROM story_mediums
-            JOIN creators ON story_mediums.creator_id = creators.id
+            stories.id as "id!",
+            stories.title as "title!",
+            mediums.name as "medium!",
+            creators.name as "creator!"
+        FROM stories
+            JOIN creators ON stories.creator_id = creators.id
+            JOIN mediums ON stories.medium_id = mediums.id
+        LIMIT $1
+        OFFSET $2
         "#,
+        limits.limit.as_ref(),
+        limits.offset
     )
     .fetch_all(pool)
     .await
