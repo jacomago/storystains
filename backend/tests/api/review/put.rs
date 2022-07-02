@@ -85,7 +85,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
         .put_review(
             &app.test_user.username,
             "dune",
-            json!({"review": {"title": "Dune", "body":"5stars" }}).to_string(),
+            json!({"review": {"body":"5stars" }}).to_string(),
             &token,
         )
         .await;
@@ -125,16 +125,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let test_cases = vec![
-        (
-            json!({"review": {"title": "", "body":"5stars" }}),
-            "empty title",
-        ),
-        (
-            json!({"review": {"title": "Dune", "body":"" }}),
-            "empty review",
-        ),
-    ];
+    let test_cases = vec![(json!({"review": { "body":"" }}), "empty review")];
     for (body, description) in test_cases {
         // Act
         let response = app
@@ -166,7 +157,7 @@ async fn put_review_returns_json() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
+    let body = json!({"review": { "body":"3stars" }});
 
     // Act
     let response = app
@@ -182,7 +173,6 @@ async fn put_review_returns_json() {
     assert_eq!(response.status(), StatusCode::OK);
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "3stars");
-    assert_eq!(json["review"]["story"]["title"], "Dune2");
     app.teardown().await;
 }
 
@@ -195,7 +185,7 @@ async fn put_review_only_allows_creator_to_modify() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
+    let body = json!({"review": {"body":"3stars" }});
 
     let new_user = TestUser::generate();
     let new_token = new_user.store(&app).await;
