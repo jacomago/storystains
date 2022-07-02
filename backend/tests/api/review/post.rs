@@ -75,7 +75,7 @@ async fn post_review_persists_the_new_review() {
             .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.body, "5stars");
-    assert_eq!(saved.title, Some("Dune".to_string()));
+    assert_eq!(saved.title, Some(story.title.to_string()));
     app.teardown().await;
 }
 

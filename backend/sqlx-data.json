@@ -166,65 +166,6 @@
     },
     "query": "\n        SELECT\n            stories.id as \"id!\",\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM stories\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        LIMIT $1\n        OFFSET $2\n        "
   },
-  "36516bc05f21cf97e963deebe1bd7b685c9bfa6e8343f0cf150bcdfd6078bbbb": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "story_id",
-          "ordinal": 1,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "slug",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 6,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Timestamptz",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        UPDATE reviews\n        SET body = COALESCE($1, body),\n            updated_at = $2\n        WHERE slug = $3\n            AND reviews.user_id = (\n                SELECT user_id\n                FROM users\n                WHERE username = $4\n            )\n        RETURNING id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            user_id\n        "
-  },
   "3f6b86bc5fd6cbbc74917a1e2475522f1d323a79bb2968df23d73072c06c3cf7": {
     "describe": {
       "columns": [
@@ -823,5 +764,65 @@
       }
     },
     "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.title = $1\n            AND stories.creator_id = creators.id\n            AND creators.name = $2\n            AND stories.medium_id = mediums.id\n            AND mediums.name = $3\n        "
+  },
+  "f5160d3e4d88beada06fb4d7232746effcf398325c36ccd10533b1e2e7e0724b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "story_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Timestamptz",
+          "Text",
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE reviews\n        SET story_id = COALESCE($5, story_id),\n            body = COALESCE($1, body),\n            updated_at = $2\n        WHERE slug = $3\n            AND reviews.user_id = (\n                SELECT user_id\n                FROM users\n                WHERE username = $4\n            )\n        RETURNING id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            user_id\n        "
   }
 }

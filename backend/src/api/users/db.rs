@@ -26,7 +26,7 @@ pub async fn get_stored_credentials(
 }
 
 /// Retreive User details by ID
-#[tracing::instrument(name = "Read user details from db", skip(user_id, pool))]
+#[tracing::instrument(name = "Read user details from db by id", skip(user_id, pool))]
 pub async fn read_user_by_id(user_id: &UserId, pool: &PgPool) -> Result<StoredUser, sqlx::Error> {
     let id = Uuid::from(*user_id);
 

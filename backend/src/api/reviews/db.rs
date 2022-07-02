@@ -276,6 +276,7 @@ pub async fn create_review(
 )]
 async fn db_update_review(
     username: &NewUsername,
+    story_id: Option<Uuid>,
     slug: &ReviewSlug,
     review: &UpdateReview,
     transaction: &mut Transaction<'_, Postgres>,
@@ -287,7 +288,8 @@ async fn db_update_review(
         StoredReview,
         r#"
         UPDATE reviews
-        SET body = COALESCE($1, body),
+        SET story_id = COALESCE($5, story_id),
+            body = COALESCE($1, body),
             updated_at = $2
         WHERE slug = $3
             AND reviews.user_id = (
@@ -306,7 +308,8 @@ async fn db_update_review(
         body,
         updated_at,
         slug.as_ref(),
-        username.as_ref()
+        username.as_ref(),
+        story_id
     )
     .fetch_one(transaction)
     .await
@@ -333,13 +336,18 @@ pub async fn update_review(
 ) -> Result<CompleteReviewData, sqlx::Error> {
     let mut transaction = pool.begin().await?;
 
-    match &review.story {
-        Some(s) => {
-            create_or_return_story(s, &mut transaction).await?;
-        }
-        None => {}
+    let stored_story = match &review.story {
+        Some(s) => Some(create_or_return_story(s, &mut transaction).await?),
+        None => None,
     };
-    let updated_review = db_update_review(username, slug, review, &mut transaction).await?;
+    let updated_review = db_update_review(
+        username,
+        stored_story.map(|s| s.id),
+        slug,
+        review,
+        &mut transaction,
+    )
+    .await?;
 
     transaction.commit().await?;
 

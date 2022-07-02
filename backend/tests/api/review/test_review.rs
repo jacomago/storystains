@@ -40,7 +40,7 @@ pub struct TestUserProfile {
 
 impl TestReview {
     fn create_json(&self) -> Value {
-        json!({"review": {"story": self.story.create_json(), "body":self.body.to_string()}})
+        json!({"review": {"story": self.story.create_inner_json(), "body":self.body.to_string()}})
     }
 
     pub fn generate(user: &TestUser) -> Self {
@@ -86,10 +86,6 @@ impl TestReview {
 
     pub fn slug(&self) -> &str {
         &self.slug
-    }
-
-    pub fn title(&self) -> String {
-        self.story.title.to_string()
     }
 }
 

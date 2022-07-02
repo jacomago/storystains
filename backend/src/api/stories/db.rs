@@ -5,7 +5,7 @@ use crate::api::shared::{short_form_text::ShortFormText, Limits};
 use super::model::{NewStory, StoredStory};
 
 #[tracing::instrument(
-    name = "Saving new creator details in the database",
+    name = "Creating or reading creator details from the database",
     skip(creator, transaction)
 )]
 pub async fn create_or_update_creator(
@@ -31,7 +31,7 @@ pub async fn create_or_update_creator(
     Ok(updated_creator.id)
 }
 
-#[tracing::instrument(name = "Saving new story details in the database", skip(story, pool))]
+#[tracing::instrument(name = "Saving new story details", skip(story, pool))]
 pub async fn create_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
     let mut transaction = pool.begin().await?;
     let created_story = db_create_story(story, &mut transaction).await?;

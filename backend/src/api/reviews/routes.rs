@@ -103,7 +103,7 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     name = "Adding a new review",
     skip(json, pool),
     fields(
-        reviews_title = %json.review.story.title,
+        reviews_story = %format!("{:?}",json.review.story),
         reviews_review = %json.review.body
     )
 )]
@@ -185,6 +185,7 @@ impl TryFrom<PutReviewData> for UpdateReview {
     skip(pool, json, path),
     fields(
         slug = %path.slug,
+        reviews_story = %format!("{:?}",json.review.story),
         reviews_body = %format!("{:?}",json.review.body)
     )
 )]
