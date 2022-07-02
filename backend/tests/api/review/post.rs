@@ -37,7 +37,7 @@ async fn post_review_returns_unauth_when_not_logged_in() {
 #[tokio::test]
 async fn post_review_returns_unauth_when_logged_out() {
     let story = TestStory::generate();
-    let body = json!({"review": {"story": story.create_json(), "body":"5stars" }});
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
     route_returns_unauth_when_logged_out(|_| review_relative_url_prefix(), Method::POST, body)
         .await;
 }
@@ -45,7 +45,7 @@ async fn post_review_returns_unauth_when_logged_out() {
 #[tokio::test]
 async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
     let story = TestStory::generate();
-    let body = json!({"review": {"story": story.create_json(),"body":"5stars" }});
+    let body = json!({"review": {"story": story.create_inner_json(),"body":"5stars" }});
     route_returns_unauth_when_using_valid_but_non_existant_user(
         |_| review_relative_url_prefix(),
         Method::POST,
@@ -62,7 +62,7 @@ async fn post_review_persists_the_new_review() {
 
     // Act
     let story = TestStory::generate();
-    let body = json!({"review": {"story": story.create_json(), "body":"5stars" }});
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
     let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
@@ -88,11 +88,11 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     let story = TestStory::generate();
     let test_cases = vec![
         (
-            json!({"review": {"story": story.create_json()} }),
+            json!({"review": {"story": story.create_inner_json()} }),
             "missing the review",
         ),
-        (json!({ "review":{"body":"5stars"} }), "missing the title"),
-        (json!({"review":{}}), "missing both title and review"),
+        (json!({ "review":{"body":"5stars"} }), "missing the story"),
+        (json!({"review":{}}), "missing both story and review"),
     ];
 
     for (invalid_body, error_message) in test_cases {
@@ -117,13 +117,14 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
+    let story = TestStory::generate();
     let test_cases = vec![
         (
-            json!({"review": {"title": "", "body":"5stars" }}),
-            "empty title",
+            json!({"review": {"story": {}, "body":"5stars" }}),
+            "empty story",
         ),
         (
-            json!({"review": {"title": "Dune", "body":"" }}),
+            json!({"review": {"story": story.create_inner_json(), "body":"" }}),
             "empty review",
         ),
     ];
@@ -148,7 +149,8 @@ async fn post_review_returns_json() {
     let app = TestApp::spawn_app().await;
     let token = app.test_user.login(&app).await;
 
-    let body = json!({"review": {"title": "Dune", "body":"5stars" }});
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
 
     // Act
     let response = app.post_review(body.to_string(), &token).await;
@@ -158,6 +160,6 @@ async fn post_review_returns_json() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "5stars");
-    assert_eq!(json["review"]["story"]["title"], "Dune");
+    assert_eq!(json["review"]["story"]["title"], story.title);
     app.teardown().await;
 }

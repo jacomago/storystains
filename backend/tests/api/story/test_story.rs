@@ -27,14 +27,19 @@ impl PartialEq for TestStory {
 }
 
 impl TestStory {
+    pub fn create_inner_json(&self) -> Value {
+        json!(
+            {
+                "title": self.title,
+                "medium": self.medium,
+                "creator": self.creator
+            }
+        )
+    }
     pub fn create_json(&self) -> Value {
         json!(
             {
-                "story": {
-                    "title": self.title,
-                    "medium": self.medium,
-                    "creator": self.creator
-                }
+                "story": self.create_inner_json()
             }
         )
     }

@@ -52,7 +52,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
     let story = TestStory::generate();
-    let body = json!({"review": {"story": story.create_json(), "body":"3stars" }});
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"3stars" }});
     let response = app
         .put_review(
             &app.test_user.username,
@@ -130,7 +130,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let story = TestStory::generate();
     let test_cases = vec![
         (
-            json!({"review": { "story": story.create_json(), "body":"" }}),
+            json!({"review": { "story": story.create_inner_json(), "body":"" }}),
             "empty review",
         ),
         (
@@ -170,7 +170,7 @@ async fn put_review_returns_json() {
     review.store(&app, &token).await;
     let story = TestStory::generate();
 
-    let body = json!({"review": { "story": story.create_json(), "body":"3stars" }});
+    let body = json!({"review": { "story": story.create_inner_json(), "body":"3stars" }});
 
     // Act
     let response = app
