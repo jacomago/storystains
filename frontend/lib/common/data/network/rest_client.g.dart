@@ -52,6 +52,23 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<WrappedStory> createStory(newStory) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(newStory.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<WrappedStory>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/stories',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = WrappedStory.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ReviewResp> updateReview(username, slug, updatedReview) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -230,6 +247,22 @@ class _RestClient implements RestClient {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = EmotionsResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<MediumsResp> getMediums() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<MediumsResp>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/mediums',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = MediumsResp.fromJson(_result.data!);
     return value;
   }
 

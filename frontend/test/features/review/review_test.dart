@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:mockito/annotations.dart';
+import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
 import 'review.dart';
@@ -24,12 +26,12 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create(review.title, review.body))
+      when(mockService.create(review.story, review.body))
           .thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.title, review.body);
+      await reviewState.update(review.story, review.body);
 
-      verify(mockService.create(review.title, review.body));
+      verify(mockService.create(review.story, review.body));
       expect(reviewState.isUpdated, true);
     });
 
@@ -40,12 +42,32 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create("", ""))
-          .thenThrow(testApiError(400, "Cannot be empty."));
+      when(mockService.create(
+        Story(
+          title: "",
+          medium: Medium.mediumDefault,
+          creator: "",
+        ),
+        "",
+      )).thenThrow(testApiError(400, "Cannot be empty."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium.mediumDefault,
+          creator: "",
+        ),
+        "",
+      );
 
-      verify(mockService.create("", ""));
+      verify(mockService.create(
+        Story(
+          title: "",
+          medium: Medium.mediumDefault,
+          creator: "",
+        ),
+        "",
+      ));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Bad Request: Cannot be empty.");
     });
@@ -57,12 +79,32 @@ void main() {
 
       expect(reviewState.isCreate, true);
 
-      when(mockService.create("", ""))
-          .thenThrow(testApiError(401, "User not logged in."));
+      when(mockService.create(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      )).thenThrow(testApiError(401, "User not logged in."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
-      verify(mockService.create("", ""));
+      verify(mockService.create(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      ));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });
@@ -86,7 +128,7 @@ void main() {
 
       await reviewState.delete();
 
-      verify(mockService.delete(review.user.username, review.title));
+      verify(mockService.delete(review.user.username, review.slug));
       expect(reviewState.isUpdated, false);
       expect(reviewState.status, ReviewStatus.deleted);
     });
@@ -155,17 +197,17 @@ void main() {
 
       when(mockService.update(
         review.user.username,
-        review.title,
-        review.title,
+        review.slug,
+        review.story,
         review.body,
       )).thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.title, review.body);
+      await reviewState.update(review.story, review.body);
 
       verify(mockService.update(
         review.user.username,
-        review.title,
-        review.title,
+        review.slug,
+        review.story,
         review.body,
       ));
       expect(reviewState.isUpdated, true);
@@ -185,12 +227,36 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update(review.user.username, "", "", ""))
-          .thenThrow(testApiError(400, "Cannot be empty."));
+      when(mockService.update(
+        review.user.username,
+        "",
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      )).thenThrow(testApiError(400, "Cannot be empty."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
-      verify(mockService.update(review.user.username, "", "", ""));
+      verify(mockService.update(
+        review.user.username,
+        "",
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      ));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Bad Request: Cannot be empty.");
     });
@@ -209,12 +275,36 @@ void main() {
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
 
-      when(mockService.update(review.user.username, "", "", ""))
-          .thenThrow(testApiError(401, "User not logged in."));
+      when(mockService.update(
+        review.user.username,
+        "",
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      )).thenThrow(testApiError(401, "User not logged in."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
-      verify(mockService.update(review.user.username, "", "", ""));
+      verify(mockService.update(
+        review.user.username,
+        "",
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      ));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Unauthorised: User not logged in.");
     });

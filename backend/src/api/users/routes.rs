@@ -6,7 +6,7 @@ use secrecy::Secret;
 use sqlx::PgPool;
 
 use crate::{
-    api::{error_chain_fmt, reviews::delete_reviews_by_user_id},
+    api::{reviews::delete_reviews_by_user_id, shared::error_chain_fmt},
     auth::{validate_credentials, AuthClaim, AuthError, AuthUser, Credentials},
     startup::{ExpTokenSeconds, HmacSecret},
 };

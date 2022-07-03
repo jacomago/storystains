@@ -10,8 +10,8 @@ use sqlx::PgPool;
 use crate::{
     api::{
         emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, Emotion},
-        error_chain_fmt,
         reviews::ReviewSlug,
+        shared::error_chain_fmt,
         shared::put_block::{block_non_creator, BlockError},
         users::NewUsername,
         LongFormText, ReviewPath,

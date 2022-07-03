@@ -3,9 +3,11 @@ import 'package:retrofit/retrofit.dart' as retrofit;
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/features/auth/auth_model.dart';
 import 'package:storystains/features/emotions/emotion_model.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 import 'package:storystains/features/reviews/reviews_model.dart';
+import 'package:storystains/features/story/story.dart';
 part 'rest_client.g.dart';
 
 @retrofit.RestApi(baseUrl: AppConfig.baseUrl)
@@ -19,6 +21,10 @@ abstract class RestClient {
   // add new review in database
   @retrofit.POST("/reviews")
   Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
+
+  // add new story in database
+  @retrofit.POST("/stories")
+  Future<WrappedStory> createStory(@retrofit.Body() WrappedStory newStory);
 
   @retrofit.PUT("/reviews/{username}/{slug}")
   Future<ReviewResp> updateReview(
@@ -87,6 +93,10 @@ abstract class RestClient {
   // get emotions
   @retrofit.GET("/emotions")
   Future<EmotionsResp> getEmotions();
+
+  // get emotions
+  @retrofit.GET("/mediums")
+  Future<MediumsResp> getMediums();
 
   //get current user
   @retrofit.GET("user")

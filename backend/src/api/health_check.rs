@@ -4,7 +4,7 @@ use anyhow::Context;
 use reqwest::StatusCode;
 use sqlx::PgPool;
 
-use crate::api::error_chain_fmt;
+use crate::api::shared::error_chain_fmt;
 
 use super::emotions::emotions_check;
 

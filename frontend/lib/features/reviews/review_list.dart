@@ -96,7 +96,7 @@ class ReviewList extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.topLeft,
-                  child: _buildTitle(context, review.title),
+                  child: _buildTitle(context, review.story.title),
                 ),
                 CardReviewEmotionsList(
                   items: review.emotions,

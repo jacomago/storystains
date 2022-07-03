@@ -37,3 +37,11 @@ pub struct NewUser {
 pub struct UserProfileData {
     pub username: String,
 }
+
+impl From<StoredUser> for UserProfileData {
+    fn from(user: StoredUser) -> Self {
+        Self {
+            username: user.username,
+        }
+    }
+}

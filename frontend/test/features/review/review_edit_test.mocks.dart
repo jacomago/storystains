@@ -6,6 +6,7 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:storystains/features/review/review_service.dart' as _i2;
+import 'package:storystains/features/story/story.dart' as _i4;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -26,14 +27,14 @@ class MockReviewService extends _i1.Mock implements _i2.ReviewService {
   }
 
   @override
-  _i3.Future<dynamic> create(String? title, String? body) =>
-      (super.noSuchMethod(Invocation.method(#create, [title, body]),
+  _i3.Future<dynamic> create(_i4.Story? story, String? body) =>
+      (super.noSuchMethod(Invocation.method(#create, [story, body]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
   _i3.Future<dynamic> update(
-          String? username, String? slug, String? title, String? body) =>
+          String? username, String? slug, _i4.Story? story, String? body) =>
       (super.noSuchMethod(
-          Invocation.method(#update, [username, slug, title, body]),
+          Invocation.method(#update, [username, slug, story, body]),
           returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
   @override
   _i3.Future<dynamic> read(String? username, String? slug) =>

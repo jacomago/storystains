@@ -1,7 +1,7 @@
 use actix_web::{HttpResponse, ResponseError};
 use reqwest::StatusCode;
 
-use crate::api::{emotions::model::emotions, error_chain_fmt, EmotionData};
+use crate::api::{emotions::model::emotions, shared::error_chain_fmt, EmotionData};
 
 /// API for getting a list of all emotions
 #[tracing::instrument(name = "Getting emotions", skip(), fields())]

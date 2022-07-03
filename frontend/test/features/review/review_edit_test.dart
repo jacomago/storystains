@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review.dart';
+import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
 import '../auth/user.dart';
@@ -30,6 +32,9 @@ Widget wrapWithMaterial(
         ),
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => EmotionsState(EmotionsService()),
+        ),
+        ChangeNotifierProvider<MediumsState>(
+          create: (_) => MediumsState(MediumsService()),
         ),
       ],
       child: MaterialApp(
@@ -125,9 +130,9 @@ void main() {
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
 
-      final titleField = find.widgetWithText(TextField, review.title);
+      final titleField = find.widgetWithText(TextField, review.story.title);
       expect(titleField, findsOneWidget);
-      expect(find.text(review.title), findsOneWidget);
+      expect(find.text(review.story.title), findsOneWidget);
 
       final bodyField = find.widgetWithText(TextField, review.body);
       expect(bodyField, findsOneWidget);
@@ -159,8 +164,8 @@ void main() {
 
       when(mockService.update(
         review.user.username,
-        review.title,
         review.slug,
+        review.story,
         review.body,
       )).thenThrow(testApiError(400, "Cannot be /."));
 
@@ -196,7 +201,7 @@ void main() {
       when(mockService.update(
         review.user.username,
         review.slug,
-        review.title,
+        review.story,
         review.body,
       )).thenAnswer((realInvocation) async => ReviewResp(review: review));
 
@@ -229,8 +234,14 @@ void main() {
       await tester.enterText(bodyField, "body");
       await tester.pumpAndSettle();
 
-      when(mockService.create("/", "body"))
-          .thenThrow(testApiError(400, "Cannot be /."));
+      when(mockService.create(
+        Story(
+          creator: '',
+          title: "/",
+          medium: Medium.mediumDefault,
+        ),
+        "body",
+      )).thenThrow(testApiError(400, "Cannot be /."));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -254,14 +265,23 @@ void main() {
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
-      await tester.enterText(titleField, review.title);
+      await tester.enterText(titleField, review.story.title);
+
+      final creatorField = find.bySemanticsLabel('Creator');
+      await tester.enterText(creatorField, review.story.creator);
 
       final bodyField = find.bySemanticsLabel('Body');
       await tester.enterText(bodyField, review.body);
       await tester.pumpAndSettle();
 
-      when(mockService.create(review.title, review.body))
-          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+      when(mockService.create(
+        Story(
+          title: review.story.title,
+          medium: Medium.mediumDefault,
+          creator: review.story.creator,
+        ),
+        review.body,
+      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));

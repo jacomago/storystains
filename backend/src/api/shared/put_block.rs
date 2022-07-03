@@ -2,7 +2,7 @@ use actix_web::ResponseError;
 use reqwest::StatusCode;
 
 use crate::{
-    api::{error_chain_fmt, users::NewUsername},
+    api::{shared::error_chain_fmt, users::NewUsername},
     auth::AuthUser,
 };
 

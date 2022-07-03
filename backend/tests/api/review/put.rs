@@ -5,6 +5,7 @@ use crate::{
     auth::route_returns_unauth_when_not_logged_in,
     helpers::{TestApp, TestUser},
     review::test_review::TestReview,
+    story::TestStory,
 };
 
 use super::review_relative_url;
@@ -50,7 +51,8 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
-    let body = json!({"review": {"body":"3stars" }});
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"3stars" }});
     let response = app
         .put_review(
             &app.test_user.username,
@@ -63,13 +65,15 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
 
-    let saved = sqlx::query!("SELECT title, body FROM reviews",)
-        .fetch_one(&app.db_pool)
-        .await
-        .expect("Failed to fetch saved data.");
+    let saved = sqlx::query!(
+        "SELECT (select title from stories where id = story_id) as title, body FROM reviews",
+    )
+    .fetch_one(&app.db_pool)
+    .await
+    .expect("Failed to fetch saved data.");
 
     assert_eq!(saved.body, "3stars");
-    assert_eq!(saved.title, review.title());
+    assert_eq!(saved.title, Some(story.title));
     app.teardown().await;
 }
 
@@ -84,7 +88,7 @@ async fn put_review_returns_not_found_for_non_existant_review() {
         .put_review(
             &app.test_user.username,
             "dune",
-            json!({"review": {"title": "Dune", "body":"5stars" }}).to_string(),
+            json!({"review": {"body":"5stars" }}).to_string(),
             &token,
         )
         .await;
@@ -124,14 +128,15 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
+    let story = TestStory::generate();
     let test_cases = vec![
         (
-            json!({"review": {"title": "", "body":"5stars" }}),
-            "empty title",
+            json!({"review": { "story": story.create_inner_json(), "body":"" }}),
+            "empty review",
         ),
         (
-            json!({"review": {"title": "Dune", "body":"" }}),
-            "empty review",
+            json!({"review": { "story":{}, "body": "body"}}),
+            "empty story",
         ),
     ];
     for (body, description) in test_cases {
@@ -164,8 +169,9 @@ async fn put_review_returns_json() {
 
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
+    let story = TestStory::generate();
 
-    let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
+    let body = json!({"review": { "story": story.create_inner_json(), "body":"3stars" }});
 
     // Act
     let response = app
@@ -181,7 +187,7 @@ async fn put_review_returns_json() {
     assert_eq!(response.status(), StatusCode::OK);
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "3stars");
-    assert_eq!(json["review"]["title"], "Dune2");
+    assert_eq!(json["review"]["story"]["title"], story.title);
     app.teardown().await;
 }
 
@@ -194,7 +200,7 @@ async fn put_review_only_allows_creator_to_modify() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app, &token).await;
 
-    let body = json!({"review": {"title": "Dune2", "body":"3stars" }});
+    let body = json!({"review": {"body":"3stars" }});
 
     let new_user = TestUser::generate();
     let new_token = new_user.store(&app).await;
