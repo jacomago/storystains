@@ -23,3 +23,6 @@ pub use users::routes::*;
 mod health_check;
 pub use health_check::db_check;
 pub use health_check::health_check;
+
+mod mediums;
+pub use mediums::routes::*;

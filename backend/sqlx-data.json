@@ -127,6 +127,30 @@
     },
     "query": "\n        SELECT user_id, username \n        FROM users\n        WHERE user_id = $1\n        "
   },
+  "2faa0dad05bcc69a05aa13ce112aceed3bf081807e4914eb4abc237df1ecf9d2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n            SELECT id, name\n            FROM mediums\n        "
+  },
   "32c0705187f2dffe367d2d723d0404b88d5f6ba5585b66c91aeb358aa30656a5": {
     "describe": {
       "columns": [
