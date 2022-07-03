@@ -10,6 +10,7 @@ import 'package:storystains/routes/routes.dart';
 
 import 'common/constant/app_config.dart';
 import 'features/auth/auth_state.dart';
+import 'features/mediums/medium.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,9 @@ void main() {
         ),
         ChangeNotifierProvider(
           create: (_) => EmotionsState(EmotionsService()),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => MediumsState(MediumsService()),
         ),
       ],
       child: const App(),

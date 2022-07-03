@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review.dart';
+import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
 import '../auth/user.dart';
@@ -159,8 +161,8 @@ void main() {
 
       when(mockService.update(
         review.user.username,
-        review.story.title,
         review.slug,
+        review.story,
         review.body,
       )).thenThrow(testApiError(400, "Cannot be /."));
 
@@ -196,7 +198,7 @@ void main() {
       when(mockService.update(
         review.user.username,
         review.slug,
-        review.story.title,
+        review.story,
         review.body,
       )).thenAnswer((realInvocation) async => ReviewResp(review: review));
 
@@ -229,8 +231,14 @@ void main() {
       await tester.enterText(bodyField, "body");
       await tester.pumpAndSettle();
 
-      when(mockService.create("/", "body"))
-          .thenThrow(testApiError(400, "Cannot be /."));
+      when(mockService.create(
+        Story(
+          creator: '',
+          title: "/",
+          medium: Medium.mediumDefault,
+        ),
+        "body",
+      )).thenThrow(testApiError(400, "Cannot be /."));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -260,7 +268,7 @@ void main() {
       await tester.enterText(bodyField, review.body);
       await tester.pumpAndSettle();
 
-      when(mockService.create(review.story.title, review.body))
+      when(mockService.create(review.story, review.body))
           .thenAnswer((realInvocation) async => ReviewResp(review: review));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);

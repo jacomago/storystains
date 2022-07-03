@@ -12,31 +12,26 @@ class MediumPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MediumsState>(
-      create: (_) => MediumsState(MediumsService()),
-      builder: (context, child) {
-        return ValueListenableBuilder<Medium>(
-          valueListenable: mediumController,
-          builder: (context, v, _) {
-            return DropdownButton<Medium>(
-              style: context.titleMedium,
-              value: v,
-              onChanged: (Medium? newValue) {
-                if (newValue != null) {
-                  mediumController.value = newValue;
-                }
-              },
-              items: Provider.of<MediumsState>(context).items.map((e) {
-                return DropdownMenuItem<Medium>(
-                  value: e,
-                  child: Text(
-                    e.name,
-                    style: context.bodyMedium,
-                  ),
-                );
-              }).toList(),
-            );
+    return ValueListenableBuilder<Medium>(
+      valueListenable: mediumController,
+      builder: (context, v, _) {
+        return DropdownButton<Medium>(
+          style: context.titleMedium,
+          value: v,
+          onChanged: (Medium? newValue) {
+            if (newValue != null) {
+              mediumController.value = newValue;
+            }
           },
+          items: Provider.of<MediumsState>(context).items.map((e) {
+            return DropdownMenuItem<Medium>(
+              value: e,
+              child: Text(
+                e.name,
+                style: context.bodyMedium,
+              ),
+            );
+          }).toList(),
         );
       },
     );

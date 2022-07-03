@@ -22,7 +22,7 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create(story.title, story.creator, story.medium))
+      when(mockService.create(story))
           .thenAnswer((realInvocation) async => storyResp);
 
       storyState.titleController.text = story.title;
@@ -30,7 +30,7 @@ void main() {
       storyState.mediumController.value = story.medium;
       await storyState.update();
 
-      verify(mockService.create(story.title, story.creator, story.medium));
+      verify(mockService.create(story));
       expect(storyState.isUpdated, true);
     });
 
@@ -39,12 +39,19 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create("", "", Medium(name: "Book")))
-          .thenThrow(testApiError(400, "Cannot be empty."));
+      when(mockService.create(Story(
+        title: "",
+        medium: Medium(name: ""),
+        creator: "",
+      ))).thenThrow(testApiError(400, "Cannot be empty."));
 
       await storyState.update();
 
-      verify(mockService.create("", "", Medium(name: "Book")));
+      verify(mockService.create(Story(
+        title: "",
+        medium: Medium(name: ""),
+        creator: "",
+      )));
       expect(storyState.isUpdated, false);
       expect(storyState.error, "Bad Request: Cannot be empty.");
     });
@@ -54,12 +61,19 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create("", "", Medium(name: "Book")))
-          .thenThrow(testApiError(401, "User not logged in."));
+      when(mockService.create(Story(
+        title: "",
+        medium: Medium(name: ""),
+        creator: "",
+      ))).thenThrow(testApiError(401, "User not logged in."));
 
       await storyState.update();
 
-      verify(mockService.create("", "", Medium(name: "Book")));
+      verify(mockService.create(Story(
+        title: "",
+        medium: Medium(name: ""),
+        creator: "",
+      )));
       expect(storyState.isUpdated, false);
       expect(storyState.error, "Unauthorised: User not logged in.");
     });

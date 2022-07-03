@@ -28,6 +28,8 @@ class Medium {
 
   @override
   int get hashCode => name.hashCode;
+
+  static Medium mediumDefault = Medium(name: "Book");
 }
 
 @JsonSerializable()

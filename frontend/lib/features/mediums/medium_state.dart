@@ -24,7 +24,7 @@ class MediumsState extends ChangeNotifier {
   Future get initDone => _initFuture;
   Medium item(int index) => _items[index];
 
-  Medium get mediumDefault => _items.isEmpty ? Medium(name: "Book") : _items[0];
+  Medium get mediumDefault => _items.isEmpty ? Medium.mediumDefault : _items[0];
 
   MediumsState(this._service) {
     _initFuture = _init();
