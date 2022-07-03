@@ -2,6 +2,7 @@ mod auth;
 mod emotion;
 mod health_check;
 mod helpers;
+mod medium;
 mod review;
 mod review_emotion;
 mod story;

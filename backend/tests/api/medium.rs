@@ -30,7 +30,7 @@ async fn get_mediums_returns_list() {
     assert!(json["mediums"].is_array());
 
     let mediums = json["mediums"].as_array().unwrap();
-    assert_eq!(mediums.len(), 21);
+    assert_eq!(mediums.len(), 12);
     assert!(mediums.iter().any(|x| x["name"] == "Book"));
     assert!(mediums.iter().any(|x| x["name"] == "Film"));
     assert!(mediums.iter().any(|x| x["name"] == "Short Story"));

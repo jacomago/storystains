@@ -1,6 +1,6 @@
 use crate::api::{
-    db_check, delete_review_by_slug, delete_review_emotion, delete_user, get_emotions, get_review,
-    get_review_emotion, get_reviews, get_stories, health_check, login, post_review,
+    db_check, delete_review_by_slug, delete_review_emotion, delete_user, get_emotions, get_mediums,
+    get_review, get_review_emotion, get_reviews, get_stories, health_check, login, post_review,
     post_review_emotion, post_story, put_review, put_review_emotion, signup,
 };
 
@@ -128,6 +128,7 @@ fn routes(cfg: &mut web::ServiceConfig) {
             .route("/signup", web::post().to(signup))
             .route("/login", web::post().to(login))
             .route("/emotions", web::get().to(get_emotions))
+            .route("/mediums", web::get().to(get_mediums))
             .route("/stories", web::get().to(get_stories))
             .route("/reviews", web::get().to(get_reviews))
             .route("/reviews/{username}/{slug}", web::get().to(get_review))
