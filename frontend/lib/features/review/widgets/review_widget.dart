@@ -35,9 +35,9 @@ class ReviewWidget extends StatelessWidget {
 
     final state = context.read<ReviewState>();
     final body = state.bodyController.value.text;
-    final story = state.storyContoller.story;
+    final story = state.storyContoller.value;
 
-    if (story!.title.isEmpty) {
+    if (story == null || story.title.isEmpty) {
       context.snackbar('Title can\'t be blank');
 
       return;
@@ -107,10 +107,11 @@ class ReviewWidget extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  ChangeNotifierProvider(
-                    create: (context) => state.storyContoller,
-                    child: const StoryWidget(),
-                  ),
+                  state.isEdit
+                      ? StoryEditWidget(state: state.storyContoller)
+                      : StoryWidget(
+                          story: state.review?.story,
+                        ),
                   const SizedBox(
                     height: 10,
                   ),

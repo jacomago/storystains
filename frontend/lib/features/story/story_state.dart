@@ -22,15 +22,12 @@ class StoryState extends ChangeNotifier {
   bool _isLoading = false;
   String? _token;
   String _error = '';
-  bool _isEdit = false;
 
   Story? get story => _story;
   StoryEvent? get event => _event;
   StoryStatus get status => _status;
   String? get token => _token;
   String get error => _error;
-
-  bool get isEdit => _isEdit;
 
   bool get isLoading => _isLoading;
   bool get isUpdated => _status == StoryStatus.updated;
@@ -47,21 +44,17 @@ class StoryState extends ChangeNotifier {
     _error = '';
 
     _story = story;
-    _isEdit = story != null;
+
     titleController = TextEditingController(text: story?.title ?? "");
     creatorController = TextEditingController(text: story?.creator ?? "");
     mediumController = ValueNotifier(story?.medium ?? Medium(name: 'Book'));
   }
 
-  edit() {
-    _isEdit = true;
-    notifyListeners();
-  }
-
-  unEdit() {
-    _isEdit = false;
-    notifyListeners();
-  }
+  Story? get value => Story(
+        title: titleController.text,
+        medium: mediumController.value,
+        creator: creatorController.text,
+      );
 
   Future update() async {
     _event = StoryEvent.update;
@@ -70,11 +63,7 @@ class StoryState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final title = titleController.text;
-      final creator = creatorController.text;
-      final medium = mediumController.value;
-
-      final data = await _service.create(title, creator, medium);
+      final data = await _service.create(value!);
 
       if (data is WrappedStory) {
         _story = data.story;

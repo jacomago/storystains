@@ -1,51 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/story/story.dart';
 
-class StoryWidget extends StatelessWidget {
-  const StoryWidget({Key? key}) : super(key: key);
-
+class StoryEditWidget extends StatelessWidget {
+  const StoryEditWidget({Key? key, required this.state}) : super(key: key);
+  final StoryState state;
   @override
   Widget build(BuildContext context) {
-    return Consumer<StoryState>(builder: (context, state, _) {
-      return state.isEdit
-          ? _buildStoryEdit(context, state)
-          : _buildStoryDisplay(context, state);
-    });
-  }
-
-  Widget _buildStoryDisplay(BuildContext context, StoryState state) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "${state.story?.title ?? (state.isFailed ? 'Not Found' : '')} (${state.story?.medium.name ?? ""})",
-          style: context.headlineSmall,
-          semanticsLabel: 'Title',
+        const SizedBox(
+          height: 5,
         ),
-        Text(
-          "by ${state.story?.creator ?? (state.isFailed ? 'Not Found' : '')}",
-          style: context.headlineSmall!.copyWith(
-            fontStyle: FontStyle.italic,
-          ),
-          semanticsLabel: 'Creator',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStoryEdit(BuildContext context, StoryState state) {
-    return Column(
-      children: [
         StoryTitleEdit(
           titleController: state.titleController,
+        ),
+        const SizedBox(
+          height: 10,
         ),
         StoryCreatorEdit(
           creatorController: state.creatorController,
         ),
+        const SizedBox(
+          height: 10,
+        ),
         MediumPicker(
           mediumController: state.mediumController,
+        ),
+      ],
+    );
+  }
+}
+
+class StoryWidget extends StatelessWidget {
+  const StoryWidget({Key? key, required this.story}) : super(key: key);
+  final Story? story;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "${story?.title}",
+              style: context.headlineMedium,
+              semanticsLabel: 'Title',
+            ),
+            Text(
+              "(${story?.medium.name})",
+              style: context.headlineSmall,
+            ),
+          ],
+        ),
+        Text(
+          "by ${story?.creator ?? ""}",
+          style: context.headlineSmall!.copyWith(
+            fontStyle: FontStyle.italic,
+          ),
+          semanticsLabel: 'Creator',
         ),
       ],
     );

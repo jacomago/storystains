@@ -22,10 +22,6 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      expect(storyState.isEdit, false);
-      storyState.edit();
-      expect(storyState.isEdit, true);
-
       when(mockService.create(story.title, story.creator, story.medium))
           .thenAnswer((realInvocation) async => storyResp);
 
@@ -43,8 +39,6 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      expect(storyState.isEdit, false);
-
       when(mockService.create("", "", Medium(name: "Book")))
           .thenThrow(testApiError(400, "Cannot be empty."));
 
@@ -59,8 +53,6 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
-
-      expect(storyState.isEdit, false);
 
       when(mockService.create("", "", Medium(name: "Book")))
           .thenThrow(testApiError(401, "User not logged in."));

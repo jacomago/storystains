@@ -18,9 +18,7 @@ class MediumPicker extends StatelessWidget {
         return DropdownButton<Medium>(
           style: context.titleMedium,
           value: mediumController.value,
-          onChanged: (Medium? newValue) {
-            mediumController.value = newValue!;
-          },
+          onChanged: (Medium? newValue) => {mediumController.value = newValue!},
           items: Provider.of<MediumsState>(context)
               .items
               .map(
