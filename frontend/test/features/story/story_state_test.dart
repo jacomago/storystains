@@ -41,7 +41,7 @@ void main() {
 
       when(mockService.create(Story(
         title: "",
-        medium: Medium(name: ""),
+        medium: Medium.mediumDefault,
         creator: "",
       ))).thenThrow(testApiError(400, "Cannot be empty."));
 
@@ -49,7 +49,7 @@ void main() {
 
       verify(mockService.create(Story(
         title: "",
-        medium: Medium(name: ""),
+        medium: Medium.mediumDefault,
         creator: "",
       )));
       expect(storyState.isUpdated, false);
@@ -63,7 +63,7 @@ void main() {
 
       when(mockService.create(Story(
         title: "",
-        medium: Medium(name: ""),
+        medium: Medium.mediumDefault,
         creator: "",
       ))).thenThrow(testApiError(401, "User not logged in."));
 
@@ -71,7 +71,7 @@ void main() {
 
       verify(mockService.create(Story(
         title: "",
-        medium: Medium(name: ""),
+        medium: Medium.mediumDefault,
         creator: "",
       )));
       expect(storyState.isUpdated, false);

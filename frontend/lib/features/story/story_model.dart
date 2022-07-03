@@ -32,6 +32,17 @@ class Story {
   String toString() {
     return json.encode(toJson());
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Story &&
+        title == other.title &&
+        creator == other.creator &&
+        medium == other.medium;
+  }
+
+  @override
+  int get hashCode => title.hashCode + creator.hashCode + medium.hashCode;
 }
 
 @JsonSerializable()

@@ -33,6 +33,9 @@ Widget wrapWithMaterial(
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => EmotionsState(EmotionsService()),
         ),
+        ChangeNotifierProvider<MediumsState>(
+          create: (_) => MediumsState(MediumsService()),
+        ),
       ],
       child: MaterialApp(
         home: w,
@@ -264,12 +267,21 @@ void main() {
       final titleField = find.bySemanticsLabel('Title');
       await tester.enterText(titleField, review.story.title);
 
+      final creatorField = find.bySemanticsLabel('Creator');
+      await tester.enterText(creatorField, review.story.creator);
+
       final bodyField = find.bySemanticsLabel('Body');
       await tester.enterText(bodyField, review.body);
       await tester.pumpAndSettle();
 
-      when(mockService.create(review.story, review.body))
-          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+      when(mockService.create(
+        Story(
+          title: review.story.title,
+          medium: Medium.mediumDefault,
+          creator: review.story.creator,
+        ),
+        review.body,
+      )).thenAnswer((realInvocation) async => ReviewResp(review: review));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));

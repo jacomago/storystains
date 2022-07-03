@@ -45,7 +45,7 @@ void main() {
       when(mockService.create(
         Story(
           title: "",
-          medium: Medium(name: ""),
+          medium: Medium.mediumDefault,
           creator: "",
         ),
         "",
@@ -54,13 +54,20 @@ void main() {
       await reviewState.update(
         Story(
           title: "",
-          medium: Medium(name: ""),
+          medium: Medium.mediumDefault,
           creator: "",
         ),
         "",
       );
 
-      verify(mockService.create(null, ""));
+      verify(mockService.create(
+        Story(
+          title: "",
+          medium: Medium.mediumDefault,
+          creator: "",
+        ),
+        "",
+      ));
       expect(reviewState.isUpdated, false);
       expect(reviewState.error, "Bad Request: Cannot be empty.");
     });
