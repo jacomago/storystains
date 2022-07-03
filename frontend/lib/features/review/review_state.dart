@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/features/review/review.dart';
+import 'package:storystains/features/story/story.dart';
 
 enum ReviewEvent { read, update, delete }
 
@@ -36,7 +37,7 @@ class ReviewState extends ChangeNotifier {
   bool get isDeleted => _status == ReviewStatus.deleted;
   bool get isFailed => _status == ReviewStatus.failed;
 
-  late TextEditingController titleController;
+  late StoryState storyContoller;
   late TextEditingController bodyController;
 
   ReviewState(this._service, {Review? review, ReviewRoutePath? path}) {
@@ -49,7 +50,7 @@ class ReviewState extends ChangeNotifier {
         ? ReviewStateType.create
         : ReviewStateType.read;
     _review = review;
-    titleController = TextEditingController(text: review?.story.title);
+    storyContoller = StoryState(StoryService(), story: review?.story);
     bodyController = TextEditingController(text: review?.body);
 
     if (path != null) {
@@ -76,7 +77,7 @@ class ReviewState extends ChangeNotifier {
       if (data is ReviewResp) {
         _review = data.review;
 
-        titleController = TextEditingController(text: _review?.story.title);
+        storyContoller = StoryState(StoryService(), story: review?.story);
         bodyController = TextEditingController(text: _review?.body);
         _status = ReviewStatus.read;
         _stateType = ReviewStateType.read;
@@ -105,7 +106,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future update(String title, String body) async {
+  Future update(Story story, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
 
@@ -113,11 +114,11 @@ class ReviewState extends ChangeNotifier {
 
     try {
       final data = isCreate
-          ? await _service.create(title, body)
+          ? await _service.create(story, body)
           : await _service.update(
               _review!.user.username,
               _review!.slug,
-              title,
+              story,
               body,
             );
 

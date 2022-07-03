@@ -4,8 +4,8 @@ import 'package:storystains/common/widget/widget.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/features/review/widgets/review_title.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
+import 'package:storystains/features/story/story.dart';
 
 import 'review_body.dart';
 
@@ -35,9 +35,9 @@ class ReviewWidget extends StatelessWidget {
 
     final state = context.read<ReviewState>();
     final body = state.bodyController.value.text;
-    final title = state.titleController.value.text;
+    final story = state.storyContoller.story;
 
-    if (title.isEmpty) {
+    if (story!.title.isEmpty) {
       context.snackbar('Title can\'t be blank');
 
       return;
@@ -47,7 +47,7 @@ class ReviewWidget extends StatelessWidget {
       return;
     }
 
-    await state.update(title, body).then((value) => afterSend(context, state));
+    await state.update(story, body).then((value) => afterSend(context, state));
   }
 
   void deleteReview(BuildContext context) async {
@@ -107,7 +107,10 @@ class ReviewWidget extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const ReviewTitle(),
+                  ChangeNotifierProvider(
+                    create: (context) => state.storyContoller,
+                    child: const StoryWidget(),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),

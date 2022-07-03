@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:mockito/annotations.dart';
+import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
 import 'review.dart';
@@ -27,7 +29,7 @@ void main() {
       when(mockService.create(review.story.title, review.body))
           .thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.story.title, review.body);
+      await reviewState.update(review.story, review.body);
 
       verify(mockService.create(review.story.title, review.body));
       expect(reviewState.isUpdated, true);
@@ -43,7 +45,14 @@ void main() {
       when(mockService.create("", ""))
           .thenThrow(testApiError(400, "Cannot be empty."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
       verify(mockService.create("", ""));
       expect(reviewState.isUpdated, false);
@@ -60,7 +69,14 @@ void main() {
       when(mockService.create("", ""))
           .thenThrow(testApiError(401, "User not logged in."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
       verify(mockService.create("", ""));
       expect(reviewState.isUpdated, false);
@@ -160,7 +176,7 @@ void main() {
         review.body,
       )).thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.story.title, review.body);
+      await reviewState.update(review.story, review.body);
 
       verify(mockService.update(
         review.user.username,
@@ -188,7 +204,14 @@ void main() {
       when(mockService.update(review.user.username, "", "", ""))
           .thenThrow(testApiError(400, "Cannot be empty."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
       verify(mockService.update(review.user.username, "", "", ""));
       expect(reviewState.isUpdated, false);
@@ -212,7 +235,14 @@ void main() {
       when(mockService.update(review.user.username, "", "", ""))
           .thenThrow(testApiError(401, "User not logged in."));
 
-      await reviewState.update("", "");
+      await reviewState.update(
+        Story(
+          title: "",
+          medium: Medium(name: ""),
+          creator: "",
+        ),
+        "",
+      );
 
       verify(mockService.update(review.user.username, "", "", ""));
       expect(reviewState.isUpdated, false);
