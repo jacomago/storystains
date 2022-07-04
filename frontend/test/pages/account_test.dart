@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/account.dart';
+
+import 'account_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, AuthState authState) =>
     ChangeNotifierProvider<AuthState>(
@@ -17,6 +22,7 @@ Widget wrapWithMaterial(Widget w, AuthState authState) =>
       ),
     );
 
+@GenerateMocks([AuthService])
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized;
@@ -44,7 +50,8 @@ void main() {
     testWidgets('Account delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final authState = AuthState(AuthService());
+      final authService = MockAuthService();
+      final authState = AuthState(authService);
       ServiceLocator.sl.registerSingleton(authState);
       final widg = wrapWithMaterial(
         Builder(builder: (context) => const AccountPage()),
@@ -55,6 +62,13 @@ void main() {
 
       var button = find.widgetWithText(OutlinedButton, 'Delete User');
       expect(button, findsOneWidget);
+
+      when(authService.delete()).thenThrow(
+        DioError(
+          requestOptions: RequestOptions(path: ''),
+          type: DioErrorType.connectTimeout,
+        ),
+      );
 
       await tester.ensureVisible(button);
       await tester.tap(button.first);
