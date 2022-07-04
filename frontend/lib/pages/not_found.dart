@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
+
 import '../common/widget/widget.dart';
 
 class NotFoundPage extends StatelessWidget {
@@ -24,7 +26,7 @@ class NotFoundPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text('Page Not Found'),
+                Text(AppLocalizations.of(context)!.pageNotFound),
               ],
             ),
           ),

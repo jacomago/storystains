@@ -91,13 +91,17 @@
     "@pleaseTryAgain": {
         "description": "something went wrong, so command the user to try again politely."
     },
-    "dataFetch": "Fetching data failed",
+    "dataFetch": "Fetching data",
     "@dataFetch": {
-        "description": "Fetching the data failed."
+        "description": "Fetching the data."
     },
     "noData": "No Data",
     "@noData": {
         "description": "No data was found."
+    },
+    "pageNotFound": "Page Not Found",
+    "@pageNotFound": {
+        "description": "Response for a 404 error."
     },
     "blankStringError": "{string} can't be blank",
     "@blankStringError": {
