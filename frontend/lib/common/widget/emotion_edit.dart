@@ -84,7 +84,7 @@ class EmotionImage extends StatelessWidget {
   final double? height;
   @override
   Widget build(BuildContext context) => SvgPicture.network(
-        EmotionsState.iconFullUrl(emotion),
+        emotion.iconFullUrl(),
         width: width,
         height: height,
         color: context.colors.onPrimaryContainer,

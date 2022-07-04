@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../common/constant/app_config.dart';
+
 part 'emotion_model.g.dart';
 
 @JsonSerializable()
@@ -18,6 +20,11 @@ class Emotion {
     required this.iconUrl,
     required this.description,
   });
+
+  static String imagesBaseUrl =
+      AppConfig.baseUrl.substring(0, AppConfig.baseUrl.length - 4);
+
+  String iconFullUrl() => '$imagesBaseUrl$iconUrl';
 
   factory Emotion.fromJson(Map<String, dynamic> json) =>
       _$EmotionFromJson(json);

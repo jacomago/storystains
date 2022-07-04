@@ -50,15 +50,12 @@ class EmotionsState extends ChangeNotifier {
     _stopLoading();
   }
 
-  static String iconFullUrl(Emotion emotion) =>
-      '${AppConfig.imagesBaseUrl}${emotion.iconUrl}';
-
   Future<void> _precache() async {
     for (var e in _items) {
       await precachePicture(
         NetworkPicture(
           SvgPicture.svgByteDecoderBuilder,
-          iconFullUrl(e),
+          e.iconFullUrl(),
         ),
         null,
       );
