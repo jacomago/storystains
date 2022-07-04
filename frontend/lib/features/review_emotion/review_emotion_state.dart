@@ -1,17 +1,46 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/data/network/api_exception.dart';
-import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/features/emotions/emotion_model.dart';
-import 'package:storystains/features/review/review_model.dart';
-import 'package:storystains/features/review_emotion/review_emotion_model.dart';
+import '../../common/utils/error.dart';
+import '../emotions/emotion_model.dart';
+import '../review/review_model.dart';
+import 'review_emotion_model.dart';
 
 import 'review_emotion_service.dart';
 
-enum ReviewEmotionEvent { create, read, update, delete }
+/// Events the State can be doing
+enum ReviewEmotionEvent {
+  /// create review emotion
+  create,
 
-enum ReviewEmotionStatus { initial, read, updated, deleted, failed }
+  /// read
+  read,
 
+  /// update
+  update,
+
+  /// delete
+  delete
+}
+
+/// Statues the review emotion could be in
+enum ReviewEmotionStatus {
+  /// starting up
+  initial,
+
+  /// read the emotion from api
+  read,
+
+  /// udpated the emotion
+  updated,
+
+  /// delete the emotion
+  deleted,
+
+  /// failed an action
+  failed
+}
+
+/// State of editing a review emtoion
 class ReviewEmotionState extends ChangeNotifier {
   final ReviewEmotionService _service;
 
@@ -22,21 +51,43 @@ class ReviewEmotionState extends ChangeNotifier {
   String _error = '';
   bool _isCreate = true;
 
+  /// current emotion
   ReviewEmotion? get reviewEmotion => _reviewEmotion;
+
+  /// current event
   ReviewEmotionEvent? get event => _event;
+
+  /// status of state
   ReviewEmotionStatus get status => _status;
+
+  /// error message
   String get error => _error;
+
+  /// if creating and not editing already uploaded review emotion
   bool get isCreate => _isCreate;
 
+  /// If the emotion is still loading
   bool get isLoading => _isLoading;
+
+  /// If the review emotion has been updated
   bool get isUpdated => _status == ReviewEmotionStatus.updated;
+
+  /// If the review emotion has been deleted
   bool get isDeleted => _status == ReviewEmotionStatus.deleted;
+
+  /// If the review emotion has failed
   bool get isFailed => _status == ReviewEmotionStatus.failed;
 
+  /// Contoller for the notes
   late TextEditingController notesController;
+
+  /// Controller for the position
   late ValueNotifier<int> positionController;
+
+  /// Controller for the emotion
   late ValueNotifier<Emotion> emotionController;
 
+  /// Create the state
   ReviewEmotionState(
     this._service, {
     ReviewEmotion? reviewEmotion,
@@ -54,7 +105,8 @@ class ReviewEmotionState extends ChangeNotifier {
     emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
-  Future update(
+  /// Update the review emotion
+  Future<void> update(
     Review review,
   ) async {
     _event = ReviewEmotionEvent.update;
@@ -83,26 +135,20 @@ class ReviewEmotionState extends ChangeNotifier {
               updateReviewEmotion,
             );
 
-      if (data is ReviewEmotionResp) {
-        _reviewEmotion = data.reviewEmotion;
+      _reviewEmotion = data.reviewEmotion;
 
-        _status = ReviewEmotionStatus.updated;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = ReviewEmotionStatus.updated;
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewEmotionStatus.failed;
     }
 
     _isLoading = false;
     notifyListeners();
   }
 
-  Future delete(
+  /// Delete the review emotion
+  Future<void> delete(
     Review review,
   ) async {
     _event = ReviewEmotionEvent.delete;
@@ -122,9 +168,6 @@ class ReviewEmotionState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewEmotionStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;

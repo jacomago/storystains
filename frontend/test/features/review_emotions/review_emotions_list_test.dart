@@ -1,17 +1,19 @@
+import 'dart:io' as io;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/common/widget/emotion_edit.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
-import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
-
-import 'dart:io' as io;
+import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 import '../../common/image_mock_http.dart';
 import '../emotions/emotion.dart';
@@ -40,6 +42,8 @@ Widget wrapWithMaterial(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: Scaffold(
           body: w,
         ),
@@ -49,12 +53,14 @@ Widget wrapWithMaterial(
 @GenerateMocks([EmotionsService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Review Emotions list", () {
+  group('Review Emotions list', () {
     setUp(() {
       // Only needs to be done once since the HttpClient generated
       // by this override is cached as a static singleton.
       io.HttpOverrides.global = TestHttpOverrides();
+      ServiceLocator.setup();
     });
+    tearDown(ServiceLocator.sl.reset);
 
     testWidgets('no data smoke test', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -67,30 +73,30 @@ void main() {
     });
     testWidgets('load list', (tester) async {
       final list = [
-        ReviewEmotion(
-          notes: "notes0",
+        const ReviewEmotion(
+          notes: 'notes0',
           emotion: Emotion(
-            name: "Anger",
-            iconUrl: "/url1",
-            description: "description1",
+            name: 'Anger',
+            iconUrl: '/url1',
+            description: 'description1',
           ),
           position: 0,
         ),
-        ReviewEmotion(
-          notes: "notes1",
+        const ReviewEmotion(
+          notes: 'notes1',
           emotion: Emotion(
-            name: "Joy1",
-            iconUrl: "/url2",
-            description: "description2",
+            name: 'Joy1',
+            iconUrl: '/url2',
+            description: 'description2',
           ),
           position: 1,
         ),
-        ReviewEmotion(
-          notes: "notes2",
+        const ReviewEmotion(
+          notes: 'notes2',
           emotion: Emotion(
-            name: "Anger2",
-            iconUrl: "/url3",
-            description: "description3",
+            name: 'Anger2',
+            iconUrl: '/url3',
+            description: 'description3',
           ),
           position: 2,
         ),
@@ -105,10 +111,10 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      for (ReviewEmotion re in list) {
+      for (var re in list) {
         expect(find.text(re.notes), findsOneWidget);
         expect(find.text(re.emotion.name), findsOneWidget);
-        expect(find.text("Position: ${re.position}"), findsOneWidget);
+        expect(find.text('Position: ${re.position}%'), findsOneWidget);
       }
     });
     testWidgets('add', (tester) async {
@@ -116,7 +122,7 @@ void main() {
       final initEmotion = testEmotion();
       final list = [
         initEmotion,
-        testEmotion(name: "2"),
+        testEmotion(name: '2'),
       ];
       final emotionService = MockEmotionsService();
       when(emotionService.fetch()).thenAnswer((realInvocation) async => list);
@@ -132,7 +138,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(OutlinedButton, "Add").first);
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Add').first);
       await tester.pump();
 
       final newWidget = find.byType(GridTile);
@@ -146,7 +152,7 @@ void main() {
       final initEmotion = testEmotion();
       final emotionList = [
         initEmotion,
-        testEmotion(name: "2"),
+        testEmotion(name: '2'),
       ];
       final emotionService = MockEmotionsService();
       when(emotionService.fetch())

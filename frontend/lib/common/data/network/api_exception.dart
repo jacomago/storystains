@@ -1,58 +1,48 @@
-import 'package:dio/dio.dart';
-
+/// Representaion of a generic exception from the api
 class ApiException implements Exception {
   final String? _message;
   final String? _prefix;
 
+  /// Constructor of Exception
   ApiException([this._message, this._prefix]);
 
   @override
-  String toString() {
-    return '$_prefix$_message';
-  }
+  String toString() => '$_prefix$_message';
 }
 
+/// No connection exception
 class FetchDataException extends ApiException {
-  FetchDataException([message]) : super(message, 'Connection Error: ');
+  /// Constructor for No connection exception
+  FetchDataException([String? message]) : super(message, 'Connection Error: ');
 }
 
+/// Bad request exception
 class BadRequestException extends ApiException {
-  BadRequestException([message]) : super(message, 'Bad Request: ');
+  /// Constructor for Bad request exception
+  BadRequestException([String? message]) : super(message, 'Bad Request: ');
 }
 
+/// Unauthorised exception for 401s
 class UnauthorisedException extends ApiException {
-  UnauthorisedException([message]) : super(message, 'Unauthorised: ');
+  /// Constructor for unauthorised exception
+  UnauthorisedException([String? message]) : super(message, 'Unauthorised: ');
 }
 
+/// Forbidden exception for 403s
 class ForbiddenException extends ApiException {
-  ForbiddenException([message]) : super(message, 'Forbidden: ');
+  /// Forbidden exceptoin for 403s
+  ForbiddenException([String? message]) : super(message, 'Forbidden: ');
 }
 
+/// Not found exception for 404s
 class NotFoundException extends ApiException {
-  NotFoundException([message]) : super(message, 'Not Found: ');
+  /// Not found exception for 404s
+  NotFoundException([String? message]) : super(message, 'Not Found: ');
 }
 
+/// Internal server error exception for 500s
 class InternalErrorException extends ApiException {
-  InternalErrorException([message]) : super(message, 'Internal server error: ');
-}
-
-class StatusCodeException {
-  static ApiException exception(Response response) {
-    switch (response.statusCode) {
-      case 401:
-        {
-          return UnauthorisedException(response.statusMessage);
-        }
-      case 400:
-        {
-          return BadRequestException(response.statusMessage);
-        }
-      case 500:
-        {
-          return InternalErrorException(response.statusMessage);
-        }
-    }
-
-    return FetchDataException(response.statusMessage);
-  }
+  /// Internal server error exception for 500s
+  InternalErrorException([String? message])
+      : super(message, 'Internal server error: ');
 }

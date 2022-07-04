@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:storystains/common/utils/utils.dart';
 
-import 'package:storystains/features/emotions/emotion.dart';
+import '../../features/emotions/emotion.dart';
+import '../utils/utils.dart';
 
+/// A widget for showing and selecting an emotion on click
 class EmotionEdit extends StatelessWidget {
+  /// Currently selected emotion
   final Emotion emotion;
-  final Function(Emotion?) handler;
 
+  /// Handler after choosing an emotion
+  final void Function(Emotion?) handler;
+
+  /// A widget for showing and selecting an emotion on click
   const EmotionEdit({
     Key? key,
     required this.emotion,
@@ -15,30 +20,34 @@ class EmotionEdit extends StatelessWidget {
     this.height,
     this.width,
   }) : super(key: key);
+
+  /// Height of the image of the emotion
   final double? height;
+
+  /// Width of the image of the emotion
   final double? width;
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async => {
-        showDialog<Emotion>(
-          context: context,
-          builder: (context) {
-            return EmotionDialog(initialEmotion: emotion);
-          },
-        ).then(handler),
-      },
-      child: EmotionImageText(
-        emotion: emotion,
-        height: height,
-        width: width,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: () async => {
+          showDialog<Emotion>(
+            context: context,
+            builder: (context) => EmotionDialog(initialEmotion: emotion),
+          ).then(handler),
+        },
+        child: EmotionImageText(
+          emotion: emotion,
+          height: height,
+          width: width,
+        ),
+      );
 }
 
+/// Display an [Emotion] including Image and Text
 class EmotionImageText extends StatelessWidget {
+  /// The emotion to display
   final Emotion emotion;
+
+  /// Display an Emotion including Image and Text
   const EmotionImageText({
     Key? key,
     required this.emotion,
@@ -46,57 +55,62 @@ class EmotionImageText extends StatelessWidget {
     this.width,
   }) : super(key: key);
 
+  /// Height of the image of the emotion
   final double? height;
+
+  /// Width of the image of the emotion
   final double? width;
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: EmotionImage(
-                emotion: emotion,
-                width: width,
-                height: height,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Column(
+            children: [
+              Expanded(
+                child: EmotionImage(
+                  emotion: emotion,
+                  width: width,
+                  height: height,
+                ),
               ),
-            ),
-            Text(
-              emotion.name,
-              style: context.bodySmall,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.fade,
-              maxLines: 1,
-            ),
-          ],
+              Text(
+                emotion.name,
+                style: context.bodySmall,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
+/// How to display just the emotions image
 class EmotionImage extends StatelessWidget {
+  /// How to display just the emotions image
   const EmotionImage({
     Key? key,
     required this.emotion,
     this.width,
     this.height,
   }) : super(key: key);
+
+  /// The emotion to display
   final Emotion emotion;
-  final double? width;
+
+  /// Height of the image of the emotion
   final double? height;
+
+  /// Width of the image of the emotion
+  final double? width;
   @override
-  Widget build(BuildContext context) {
-    return SvgPicture.network(
-      EmotionsState.iconFullUrl(emotion),
-      width: width,
-      height: height,
-      color: context.colors.onPrimaryContainer,
-    );
-  }
+  Widget build(BuildContext context) => SvgPicture.network(
+        emotion.iconFullUrl(),
+        width: width,
+        height: height,
+        color: context.colors.onPrimaryContainer,
+      );
 }

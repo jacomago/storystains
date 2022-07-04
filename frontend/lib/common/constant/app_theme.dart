@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+/// Seed color
 const seed = Color(0xFF6750A4);
 
+/// Light color scheme (default scheme)
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
   primary: ExtraColors.paper,
@@ -34,6 +36,7 @@ const lightColorScheme = ColorScheme(
   surfaceTint: Color(0xFF9F4200),
 );
 
+/// Dark color scheme
 const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: Color(0xFFFFB692),
@@ -66,22 +69,13 @@ const darkColorScheme = ColorScheme(
   surfaceTint: Color(0xFFFFB692),
 );
 
+/// Some extra colors
 class ExtraColors {
+  /// Paper color
   static const paper = Color(0xffded2c9);
-  static const cover = Color(0xfffe7459);
-  static const lighterCover = Color(0xfff37d3a);
-  static const white = Color(0xffc4c4c5);
-  static const purple = Color(0xff947c99);
-  static const red = Color(0xffc55966);
-  static const newPaper = Color(0xffc1bcc0);
-  static const middleAge = Color(0xffb1aba9);
-  static const pagesTogether = Color(0xffa89890);
-  static const darkPagesTogether = Color(0xff9a6e53);
-  static const sunsetRed = Color(0xfff56979);
-  static const sunsetOrange = Color(0xfff79966);
-  static const coffeeOnPaper = Color(0xff5c3e2a);
 }
 
+/// How to style the home button
 ButtonStyle homeButtonStyle = OutlinedButton.styleFrom(
   padding: const EdgeInsets.symmetric(horizontal: 18),
   shape: RoundedRectangleBorder(

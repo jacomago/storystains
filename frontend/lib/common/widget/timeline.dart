@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Timeline widget
 class Timeline extends StatelessWidget {
+  /// time line widget
   const Timeline({
     Key? key,
     required this.children,
@@ -28,86 +30,121 @@ class Timeline extends StatelessWidget {
         assert(indicators == null || children.length == indicators.length),
         super(key: key);
 
+  /// The widgets on the left
   final List<Widget> children;
+
+  /// gap between children
   final double itemGap;
+
+  /// spacing from indicators to children
   final double gutterSpacing;
+
+  /// indicators
   final List<Widget>? indicators;
+
+  /// Left alignted
   final bool isLeftAligned;
+
+  /// Any extra padding
   final EdgeInsets padding;
+
+  /// Scrolling controller
   final ScrollController? controller;
+
+  /// NUmber of items
   final int itemCount;
+
+  ///Physics for scrolling
   final ScrollPhysics? physics;
+
+  /// Whether to srhink wrap it all
   final bool shrinkWrap;
+
+  /// list view option
   final bool primary;
+
+  /// Whether to reverse the list
   final bool reverse;
 
+  /// color of line between indicators
   final Color lineColor;
+
+  /// gap between lines and indicators
   final double lineGap;
+
+  /// size of indicators
   final double indicatorSize;
+
+  /// color of indicator
   final Color indicatorColor;
+
+  /// How to paint indicator
   final PaintingStyle indicatorStyle;
+
+  /// Stroke cap
   final StrokeCap strokeCap;
+
+  /// Width of stroke
   final double strokeWidth;
+
+  /// stroke painting style
   final PaintingStyle style;
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: padding,
-      separatorBuilder: (_, __) => SizedBox(height: itemGap),
-      physics: physics,
-      shrinkWrap: shrinkWrap,
-      itemCount: itemCount,
-      controller: controller,
-      reverse: reverse,
-      primary: primary,
-      itemBuilder: (context, index) {
-        final child = children[index];
+  Widget build(BuildContext context) => ListView.separated(
+        padding: padding,
+        separatorBuilder: (_, __) => SizedBox(height: itemGap),
+        physics: physics,
+        shrinkWrap: shrinkWrap,
+        itemCount: itemCount,
+        controller: controller,
+        reverse: reverse,
+        primary: primary,
+        itemBuilder: (context, index) {
+          final child = children[index];
 
-        Widget? indicator;
-        if (indicators != null) {
-          indicator = indicators![index];
-        }
+          Widget? indicator;
+          if (indicators != null) {
+            indicator = indicators![index];
+          }
 
-        final isFirst = index == 0;
-        final isLast = index == itemCount - 1;
+          final isFirst = index == 0;
+          final isLast = index == itemCount - 1;
 
-        final timelineTile = <Widget>[
-          CustomPaint(
-            foregroundPainter: _TimelinePainter(
-              hideDefaultIndicator: indicator != null,
-              lineColor: lineColor,
-              indicatorColor: indicatorColor,
-              indicatorSize: indicatorSize,
-              indicatorStyle: indicatorStyle,
-              isFirst: isFirst,
-              isLast: isLast,
-              lineGap: lineGap,
-              strokeCap: strokeCap,
-              strokeWidth: strokeWidth,
-              style: style,
-              itemGap: itemGap,
+          final timelineTile = <Widget>[
+            CustomPaint(
+              foregroundPainter: _TimelinePainter(
+                hideDefaultIndicator: indicator != null,
+                lineColor: lineColor,
+                indicatorColor: indicatorColor,
+                indicatorSize: indicatorSize,
+                indicatorStyle: indicatorStyle,
+                isFirst: isFirst,
+                isLast: isLast,
+                lineGap: lineGap,
+                strokeCap: strokeCap,
+                strokeWidth: strokeWidth,
+                style: style,
+                itemGap: itemGap,
+              ),
+              child: SizedBox(
+                height: double.infinity,
+                width: indicatorSize,
+                child: indicator,
+              ),
             ),
-            child: SizedBox(
-              height: double.infinity,
-              width: indicatorSize,
-              child: indicator,
-            ),
-          ),
-          SizedBox(width: gutterSpacing),
-          Expanded(child: child),
-        ];
+            SizedBox(width: gutterSpacing),
+            Expanded(child: child),
+          ];
 
-        return IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children:
-                isLeftAligned ? timelineTile : timelineTile.reversed.toList(),
-          ),
-        );
-      },
-    );
-  }
+          return IntrinsicHeight(
+            child: Row(
+              children:
+                  isLeftAligned ? timelineTile : timelineTile.reversed.toList(),
+            ),
+          );
+        },
+      );
 }
 
 class _TimelinePainter extends CustomPainter {
@@ -168,14 +205,12 @@ class _TimelinePainter extends CustomPainter {
     if (!isLast) canvas.drawLine(centerBottom, bottom, linePaint);
 
     if (!hideDefaultIndicator) {
-      final Offset offsetCenter = size.centerLeft(Offset(indicatorRadius, 0));
+      final offsetCenter = size.centerLeft(Offset(indicatorRadius, 0));
 
       canvas.drawCircle(offsetCenter, indicatorRadius, circlePaint);
     }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

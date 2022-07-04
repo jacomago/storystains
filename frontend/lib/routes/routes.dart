@@ -1,26 +1,47 @@
-import 'package:flutter/material.dart';
-import 'package:storystains/features/review/review.dart';
-import 'package:storystains/pages/account.dart';
-import 'package:storystains/pages/home.dart';
-import 'package:storystains/pages/login_register.dart';
-import 'package:storystains/pages/not_found.dart';
-import 'package:storystains/pages/review_detail.dart';
-import 'package:storystains/pages/review_new.dart';
+// ignore_for_file: avoid_classes_with_only_static_members
 
+import 'package:flutter/material.dart';
+import '../features/review/review.dart';
+import '../pages/account.dart';
+import '../pages/home.dart';
+import '../pages/login_register.dart';
+import '../pages/not_found.dart';
+import '../pages/review_detail.dart';
+import '../pages/review_new.dart';
+
+/// Routes in the app
 class Routes {
+  /// Root path
   static const String root = '/';
+
+  /// Home path
   static const String home = '/home';
+
+  /// Login path
   static const String login = '/login';
+
+  /// Account path
   static const String account = '/account';
+
+  /// Reviews path
   static const String reviews = '/reviews';
+
+  /// Read review path
   static const String reviewDetail = '/reviewDetail';
+
+  /// Path for editing a review
   static const String reviewEdit = '/reviewEdit';
+
+  /// Path for creating a review
   static const String reviewNew = '/reviewNew';
 }
 
+/// Builder of a path for web urls
 typedef PathWidgetBuilder = Widget Function(BuildContext, List<String>?);
 
+/// Url path pattern for regex matching
 class Path {
+  /// Url path pattern for regex matching
   const Path(
     this.pattern,
     this.groupNames,
@@ -46,6 +67,7 @@ class Path {
   final PathWidgetBuilder builder;
 }
 
+/// Config of the app for routing
 class RouteConfiguration {
   /// List of [Path] to for route matching. When a named route is pushed with
   /// [Navigator.pushNamed], the route name is matched with the [Path.pattern]

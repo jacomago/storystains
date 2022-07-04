@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/utils/extensions.dart';
-import 'package:storystains/common/utils/snackbar.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/auth/auth.dart';
+import '../common/utils/extensions.dart';
+import '../common/utils/snackbar.dart';
+import '../common/widget/widget.dart';
+import '../features/auth/auth.dart';
 
+/// Page for logging in or regsitering user
 class LoginOrRegisterPage extends StatelessWidget {
+  /// Page for logging in or regsitering user
   LoginOrRegisterPage({Key? key}) : super(key: key);
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void afterLoging(BuildContext context, AuthState auth) {
+  void _afterLoging(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated) {
       Navigator.of(context).pop();
-      context.snackbar('Signed in as ${auth.user?.username}');
+      context.snackbar(
+        AppLocalizations.of(context)!.greeting(auth.user?.username ?? ''),
+      );
     } else {
       _passwordController.clear();
-      context.snackbar('Sign in failed. Please try again.');
+      context.snackbar(AppLocalizations.of(context)!
+          .actionFailed(AppLocalizations.of(context)!.login));
     }
   }
 
@@ -31,83 +37,101 @@ class LoginOrRegisterPage extends StatelessWidget {
     final empty = username.isEmpty || password.isEmpty;
 
     if (empty) {
-      context.snackbar('Wrong username or password.');
+      context.snackbar(
+        AppLocalizations.of(context)!.or(
+          AppLocalizations.of(context)!
+              .blankStringError(AppLocalizations.of(context)!.username),
+          AppLocalizations.of(context)!
+              .blankStringError(AppLocalizations.of(context)!.password),
+        ),
+      );
 
       return;
     }
 
     await auth.loginRegister(username, password).then((value) {
-      afterLoging(context, auth);
+      _afterLoging(context, auth);
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: const StainsAppBar(
-        title: AppBarTitle('Login/Register'),
-      ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(60),
-          child: Consumer<AuthState>(
-            builder: (_, auth, __) =>
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Center(
-                child: SvgPicture.asset(
-                  'assets/logo/logo.svg',
-                  height: 110,
-                ),
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Username',
-                  hintText: 'Enter your Username',
-                ),
-                controller: _usernameController,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  hintText: 'Enter your secure password',
-                ),
-                controller: _passwordController,
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) => _onLogin(context),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: context.colors.secondary,
-                  minimumSize: const Size(120, 40),
-                  elevation: 0,
-                ),
-                onPressed: () => _onLogin(context),
-                child: Text(
-                  auth.isLogin ? 'Login' : 'Register',
-                  style:
-                      context.button!.copyWith(color: context.colors.onPrimary),
-                ),
-              ),
-              const SizedBox(height: 5),
-              OutlinedButton(
-                onPressed: auth.switchLoginRegister,
-                child: Text(
-                  auth.isLogin ? 'Register?' : 'Login?',
-                  style: context.button,
-                ),
-              ),
-            ]),
+  Widget build(BuildContext context) => Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: StainsAppBar(
+          title: AppBarTitle(
+            AppLocalizations.of(context)!.or(
+              AppLocalizations.of(context)!.login,
+              AppLocalizations.of(context)!.signup,
+            ),
           ),
         ),
-      ),
-    );
-  }
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(60),
+            child: Consumer<AuthState>(
+              builder: (_, auth, __) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: SvgPicture.asset(
+                      'assets/logo/logo.svg',
+                      height: 110,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.username,
+                      hintText: AppLocalizations.of(context)!.usernameHint,
+                    ),
+                    controller: _usernameController,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.password,
+                      hintText: AppLocalizations.of(context)!.passwordHint,
+                    ),
+                    controller: _passwordController,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _onLogin(context),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: context.colors.secondary,
+                      minimumSize: const Size(120, 40),
+                      elevation: 0,
+                    ),
+                    onPressed: () => _onLogin(context),
+                    child: Text(
+                      auth.isLogin
+                          ? AppLocalizations.of(context)!.login
+                          : AppLocalizations.of(context)!.signup,
+                      style: context.button!
+                          .copyWith(color: context.colors.onPrimary),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  OutlinedButton(
+                    onPressed: auth.switchLoginRegister,
+                    child: Text(
+                      auth.isLogin
+                          ? AppLocalizations.of(context)!
+                              .choice(AppLocalizations.of(context)!.signup)
+                          : AppLocalizations.of(context)!
+                              .choice(AppLocalizations.of(context)!.login),
+                      style: context.button,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 }

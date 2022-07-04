@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/review/review_state.dart';
-import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/common/utils/utils.dart';
 
+import '../../common/utils/utils.dart';
+import '../../common/widget/widget.dart';
+import '../review/review_state.dart';
+import 'review_emotion.dart';
+
+/// Widget for editing [ReviewEmotion] on a review
 class ReviewEmotionEdit extends StatelessWidget {
+  /// Widget for editing [ReviewEmotion] on a review
   const ReviewEmotionEdit({
     Key? key,
     required this.cancelHandler,
@@ -13,11 +17,16 @@ class ReviewEmotionEdit extends StatelessWidget {
     required this.deleteHandler,
   }) : super(key: key);
 
+  /// Hadler for cancel button
   final Function cancelHandler;
-  final Function(ReviewEmotion) okHandler;
+
+  /// Handler for OK button
+  final void Function(ReviewEmotion) okHandler;
+
+  /// Handler for delete button
   final Function deleteHandler;
 
-  void afterSend(BuildContext context, ReviewEmotionState state) {
+  void _afterSend(BuildContext context, ReviewEmotionState state) {
     if (state.isUpdated) {
       final msg =
           state.isCreate ? 'Created ReviewEmotion' : 'Updated ReviewEmotion';
@@ -25,7 +34,7 @@ class ReviewEmotionEdit extends StatelessWidget {
       okHandler(state.reviewEmotion!);
     } else if (state.isDeleted) {
       deleteHandler();
-      const msg = "Deleted ReviewEmotion";
+      const msg = 'Deleted ReviewEmotion';
       context.snackbar(msg);
     } else {
       if (state.isFailed) {
@@ -38,38 +47,36 @@ class ReviewEmotionEdit extends StatelessWidget {
     }
   }
 
-  void cancelCreation(BuildContext context) async {
+  void _cancelCreation(BuildContext context) async {
     cancelHandler();
   }
 
-  void editReviewEmotion(BuildContext context) async {
+  void _editReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
-    await state.update(review).then((value) => afterSend(context, state));
+    await state.update(review).then((value) => _afterSend(context, state));
   }
 
-  void deleteReviewEmotion(BuildContext context) async {
+  void _deleteReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
-    await state.delete(review).then((value) => afterSend(context, state));
+    await state.delete(review).then((value) => _afterSend(context, state));
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer2<ReviewEmotionState, ReviewState>(
-      builder: (context, state, review, _) {
-        return SizedBox(
+  Widget build(BuildContext context) =>
+      Consumer2<ReviewEmotionState, ReviewState>(
+        builder: (context, state, review, _) => SizedBox(
           height: 190,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(
-                flex: 1,
                 child: EmotionEdit(
                   emotion: state.emotionController.value,
                   height: 100,
@@ -91,7 +98,9 @@ class ReviewEmotionEdit extends StatelessWidget {
                     ),
                     Expanded(
                       child: MarkdownEdit(
+                        title: AppLocalizations.of(context)!.notes,
                         bodyController: state.notesController,
+                        hint: AppLocalizations.of(context)!.markdownNotes,
                       ),
                     ),
                     const SizedBox(
@@ -109,10 +118,10 @@ class ReviewEmotionEdit extends StatelessWidget {
                               primary: context.colors.errorContainer,
                             ),
                             onPressed: () {
-                              deleteReviewEmotion(context);
+                              _deleteReviewEmotion(context);
                             },
                             child: Text(
-                              "Delete",
+                              AppLocalizations.of(context)!.delete,
                               style: context.button!.copyWith(
                                 color: context.colors.onErrorContainer,
                               ),
@@ -126,10 +135,10 @@ class ReviewEmotionEdit extends StatelessWidget {
                                   primary: context.colors.secondary,
                                 ),
                                 onPressed: () {
-                                  editReviewEmotion(context);
+                                  _editReviewEmotion(context);
                                 },
                                 child: Text(
-                                  "OK",
+                                  AppLocalizations.of(context)!.ok,
                                   style: context.button!.copyWith(
                                     color: context.colors.onPrimary,
                                   ),
@@ -137,10 +146,10 @@ class ReviewEmotionEdit extends StatelessWidget {
                               ),
                               OutlinedButton(
                                 onPressed: () {
-                                  cancelCreation(context);
+                                  _cancelCreation(context);
                                 },
                                 child: Text(
-                                  "Cancel",
+                                  AppLocalizations.of(context)!.cancel,
                                   style: context.button,
                                 ),
                               ),
@@ -154,8 +163,6 @@ class ReviewEmotionEdit extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }

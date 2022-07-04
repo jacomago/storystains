@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/constant/app_theme.dart';
-import 'package:storystains/common/url_strategy/url_strategy.dart';
-import 'package:storystains/common/utils/service_locator.dart';
-import 'package:storystains/features/emotions/emotion_service.dart';
-import 'package:storystains/features/emotions/emotion_state.dart';
-import 'package:storystains/routes/routes.dart';
 
-import 'common/constant/app_config.dart';
+import 'common/constant/app_theme.dart';
+import 'common/url_strategy/url_strategy.dart';
+import 'common/utils/service_locator.dart';
 import 'features/auth/auth_state.dart';
+import 'features/emotions/emotion_service.dart';
+import 'features/emotions/emotion_state.dart';
 import 'features/mediums/medium.dart';
+import 'routes/routes.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => sl.get<AuthState>(),
+          create: (_) => ServiceLocator.sl.get<AuthState>(),
         ),
         ChangeNotifierProvider(
           create: (_) => EmotionsState(EmotionsService()),
@@ -34,19 +34,21 @@ void main() {
   );
 }
 
+/// The main app
 class App extends StatelessWidget {
+  /// The main app
   const App({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppConfig.appTitle,
-      theme: ThemeData(
-        colorScheme: lightColorScheme,
-        textTheme: GoogleFonts.libreBaskervilleTextTheme(),
-      ),
-      onGenerateRoute: RouteConfiguration.onGenerateRoute,
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
+        theme: ThemeData(
+          colorScheme: lightColorScheme,
+          textTheme: GoogleFonts.libreBaskervilleTextTheme(),
+        ),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        onGenerateRoute: RouteConfiguration.onGenerateRoute,
+      );
 }

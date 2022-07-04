@@ -1,26 +1,24 @@
-import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/common/utils/service_locator.dart';
+import '../../common/data/network/rest_client.dart';
+import '../../common/utils/service_locator.dart';
 
 import 'auth_model.dart';
 
+/// Wrapper around [RestClient] methods for [User]
 class AuthService {
-  Future register(String username, String password) async {
-    return await sl.get<RestClient>().addUser(
-          AddUser(user: NewUser(username: username, password: password)),
-        );
-  }
+  /// Wrapper around [RestClient.addUser]
+  Future<UserResp> register(String username, String password) async =>
+      await ServiceLocator.sl.get<RestClient>().addUser(
+            AddUser(user: NewUser(username: username, password: password)),
+          );
 
-  Future login(String username, String password) async {
-    final resp = await sl.get<RestClient>().loginUser(
-          Login(user: LoginUser(username: username, password: password)),
-        );
+  /// Wrapper around [RestClient.loginUser]
+  Future<UserResp> login(String username, String password) async =>
+      await ServiceLocator.sl.get<RestClient>().loginUser(
+            AddUser(user: NewUser(username: username, password: password)),
+          );
 
-    return resp;
-  }
-
-  Future delete() async {
-    final resp = await sl.get<RestClient>().deleteUser();
-
-    return resp;
+  /// Wrapper around [RestClient.deleteUser]
+  Future<void> delete() async {
+    await ServiceLocator.sl.get<RestClient>().deleteUser();
   }
 }

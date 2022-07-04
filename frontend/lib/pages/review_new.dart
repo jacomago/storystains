@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/features/review/review.dart';
+import '../features/review/review.dart';
 
+/// Wrapper around [ReviewWidget] for creating new reviews
 class ReviewNew extends StatelessWidget {
+  /// Wrapper around [ReviewWidget] for creating new reviews
   const ReviewNew({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService()),
-      child: const ReviewWidget(),
-    );
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: (_) => ReviewState(ReviewService()),
+        child: const ReviewWidget(),
+      );
 }

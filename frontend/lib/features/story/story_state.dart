@@ -1,18 +1,37 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/data/network/api_exception.dart';
-import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/features/mediums/medium.dart';
-import 'package:storystains/features/story/story.dart';
+import '../../common/utils/error.dart';
+import '../mediums/medium.dart';
+import 'story.dart';
 
+/// events on [Story]
 enum StoryEvent {
+  /// Update the [Story]
   update,
 }
 
-enum StoryStatus { initial, updated, failed }
+/// status of state
+enum StoryStatus {
+  /// load
+  initial,
 
-enum StoryStateType { edit, create }
+  /// updated to api
+  updated,
 
+  /// failed action
+  failed
+}
+
+/// state type
+enum StoryStateType {
+  /// Editing the review
+  edit,
+
+  /// creating a new review (not in api)
+  create,
+}
+
+/// representation of a story state for editing
 class StoryState extends ChangeNotifier {
   final StoryService _service;
 
@@ -20,23 +39,39 @@ class StoryState extends ChangeNotifier {
   StoryEvent? _event;
   StoryStatus _status = StoryStatus.initial;
   bool _isLoading = false;
-  String? _token;
   String _error = '';
 
+  /// loaded story
   Story? get story => _story;
+
+  /// current action
   StoryEvent? get event => _event;
+
+  /// current status
   StoryStatus get status => _status;
-  String? get token => _token;
+
+  /// error message
   String get error => _error;
 
+  /// currently loading
   bool get isLoading => _isLoading;
+
+  /// updated story
   bool get isUpdated => _status == StoryStatus.updated;
+
+  /// failed event
   bool get isFailed => _status == StoryStatus.failed;
 
+  /// controller for titel
   late TextEditingController titleController;
+
+  /// controller for creator
   late TextEditingController creatorController;
+
+  /// controller for [Medium]
   late ValueNotifier<Medium> mediumController;
 
+  /// representation of a story state for editing
   StoryState(this._service, {Story? story}) {
     _event = null;
     _status = StoryStatus.initial;
@@ -45,18 +80,21 @@ class StoryState extends ChangeNotifier {
 
     _story = story;
 
-    titleController = TextEditingController(text: story?.title ?? "");
-    creatorController = TextEditingController(text: story?.creator ?? "");
-    mediumController = ValueNotifier(story?.medium ?? Medium(name: 'Book'));
+    titleController = TextEditingController(text: story?.title ?? '');
+    creatorController = TextEditingController(text: story?.creator ?? '');
+    mediumController =
+        ValueNotifier(story?.medium ?? const Medium(name: 'Book'));
   }
 
+  /// rvalue from controllers
   Story? get value => Story(
         title: titleController.text,
         medium: mediumController.value,
         creator: creatorController.text,
       );
 
-  Future update() async {
+  /// update the story
+  Future<void> update() async {
     _event = StoryEvent.update;
     _isLoading = true;
 
@@ -65,22 +103,15 @@ class StoryState extends ChangeNotifier {
     try {
       final data = await _service.create(value!);
 
-      if (data is WrappedStory) {
-        _story = data.story;
+      _story = data.story;
 
-        _status = StoryStatus.updated;
-        titleController = TextEditingController(text: data.story.title);
-        creatorController = TextEditingController(text: data.story.creator);
-        mediumController = ValueNotifier(data.story.medium);
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = StoryStatus.updated;
+      titleController = TextEditingController(text: data.story.title);
+      creatorController = TextEditingController(text: data.story.creator);
+      mediumController = ValueNotifier(data.story.medium);
     } on DioError catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = StoryStatus.failed;
     }
 
     _isLoading = false;

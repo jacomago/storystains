@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
@@ -28,6 +30,8 @@ Widget wrapWithMaterial(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: Scaffold(
           body: w,
         ),
@@ -35,8 +39,12 @@ Widget wrapWithMaterial(
     );
 
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Read Review", () {
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    ServiceLocator.setup();
+  });
+  tearDown(ServiceLocator.sl.reset);
+  group('Read Review', () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final review = testReview();
@@ -49,6 +57,7 @@ void main() {
         reviewState,
         AuthState(AuthService()),
       ));
+      await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
       expect(titleField, findsOneWidget);
@@ -56,7 +65,7 @@ void main() {
 
       expect(find.text(review.body), findsOneWidget);
 
-      expect(find.text("@${review.user.username}"), findsOneWidget);
+      expect(find.text('@${review.user.username}'), findsOneWidget);
       expect(
         find.text(DateFormat.yMMMMEEEEd().format(review.updatedAt)),
         findsOneWidget,
@@ -71,6 +80,7 @@ void main() {
         reviewState,
         AuthState(AuthService()),
       ));
+      await tester.pumpAndSettle();
 
       expect(
         find.widgetWithIcon(FloatingActionButton, Icons.copy),

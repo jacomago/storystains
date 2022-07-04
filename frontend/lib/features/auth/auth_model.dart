@@ -2,98 +2,100 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'auth_model.g.dart';
 
+/// Representation of a user with auth token
 @JsonSerializable()
 class User {
+  /// Token for auth
   String token;
+
+  /// Username of user
   String username;
 
+  /// Representation of a user with auth token
   User({
     required this.token,
     required this.username,
   });
 
+  /// user from json
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
+  /// user to json
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
 
+/// representation of user to others
 @JsonSerializable()
 class UserProfile {
+  /// username
   String username;
 
+  /// representation of user to others
   UserProfile({
     required this.username,
   });
 
+  /// profile from json
   factory UserProfile.fromJson(Map<String, dynamic> json) =>
       _$UserProfileFromJson(json);
 
+  /// Profile to json
   Map<String, dynamic> toJson() => _$UserProfileToJson(this);
 }
 
+/// New user for api
 @JsonSerializable()
 class AddUser {
+  /// user and pass
   NewUser user;
 
+  /// user and pass
   AddUser({required this.user});
 
+  /// user and pass from json
   factory AddUser.fromJson(Map<String, dynamic> json) =>
       _$AddUserFromJson(json);
 
+  /// user and pass to json
   Map<String, dynamic> toJson() => _$AddUserToJson(this);
 }
 
+/// user and pass
 @JsonSerializable()
 class NewUser {
+  /// pass
   String password;
+
+  /// username
   String username;
 
+  /// user and pass
   NewUser({
     required this.password,
     required this.username,
   });
 
+  /// user and pass from json
   factory NewUser.fromJson(Map<String, dynamic> json) =>
       _$NewUserFromJson(json);
 
+  /// user and pass to json
   Map<String, dynamic> toJson() => _$NewUserToJson(this);
 }
 
+/// response from server after auth
 @JsonSerializable()
 class UserResp {
+  /// user rep
   User user;
 
+  /// response from server after auth
   UserResp({required this.user});
 
+  /// response from server after auth from json
   factory UserResp.fromJson(Map<String, dynamic> json) =>
       _$UserRespFromJson(json);
 
+  /// response from server after auth to json
   Map<String, dynamic> toJson() => _$UserRespToJson(this);
-}
-
-@JsonSerializable()
-class Login {
-  LoginUser user;
-
-  Login({required this.user});
-
-  factory Login.fromJson(Map<String, dynamic> json) => _$LoginFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LoginToJson(this);
-}
-
-@JsonSerializable()
-class LoginUser {
-  String username;
-  String password;
-
-  LoginUser({
-    required this.username,
-    required this.password,
-  });
-
-  factory LoginUser.fromJson(Map<String, dynamic> json) =>
-      _$LoginUserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$LoginUserToJson(this);
 }

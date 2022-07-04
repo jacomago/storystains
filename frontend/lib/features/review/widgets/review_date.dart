@@ -1,22 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:storystains/common/utils/utils.dart';
 
+import '../../../common/utils/utils.dart';
+
+/// Widget showing a date and formatting
 class ReviewDate extends StatelessWidget {
+  /// Widget showing a date and formatting
   const ReviewDate({Key? key, required this.date}) : super(key: key);
+
+  /// Date to display
   final DateTime date;
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          DateFormat.yMMMMEEEEd().format(date),
-          style: context.caption,
-          overflow: TextOverflow.ellipsis,
-          semanticsLabel: 'Modified Date',
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            DateFormat.yMMMMEEEEd().format(date),
+            style: context.caption,
+            overflow: TextOverflow.ellipsis,
+            semanticsLabel: AppLocalizations.of(context)!.modifiedDate,
+          ),
+        ],
+      );
 }

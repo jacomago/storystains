@@ -1,14 +1,18 @@
-import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/common/utils/service_locator.dart';
-import 'package:storystains/features/mediums/medium_model.dart';
+import 'package:dio/dio.dart';
 
+import '../../common/data/network/rest_client.dart';
+import '../../common/utils/service_locator.dart';
+import 'medium_model.dart';
+
+/// Wrapper around [RestClient] methods on a [Medium]
 class MediumsService {
+  /// Wrapper around [RestClient.getMediums]
   Future<List<Medium>?> fetch() async {
     try {
-      final res = await sl.get<RestClient>().getMediums();
+      final res = await ServiceLocator.sl.get<RestClient>().getMediums();
 
       return res.mediums;
-    } catch (e) {
+    } on DioError catch (_) {
       return null;
     }
   }

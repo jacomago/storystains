@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -38,6 +38,8 @@ Widget wrapWithMaterial(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: w,
       ),
     );
@@ -51,12 +53,12 @@ void main() {
     // in this set of tests. The full setup includes the dio
     // http client and so tries to do network requests which don't
     // timeout.
-    sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
+    final dio = ServiceLocator.setupDio();
+    ServiceLocator.setupRest(dio);
+    ServiceLocator.setupSecureStorage();
   });
-  tearDown(() {
-    sl.reset();
-  });
-  group("Floating button", () {
+  tearDown(ServiceLocator.sl.reset);
+  group('Floating button', () {
     testWidgets('can edit when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
@@ -64,11 +66,13 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
         authState: authState,
       ));
+      await tester.pumpAndSettle();
       // find edit button
       expect(
         find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
@@ -82,6 +86,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -102,10 +107,12 @@ void main() {
       final review = testReview(username: user.username);
 
       final reviewState = ReviewState(ReviewService(), review: review);
+      ServiceLocator.setupAuth();
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
       ));
+      await tester.pumpAndSettle();
       // find edit button
       expect(
         find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
@@ -113,7 +120,7 @@ void main() {
       );
     });
   });
-  group("test edit", () {
+  group('test edit', () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
@@ -121,6 +128,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -138,11 +146,11 @@ void main() {
       expect(bodyField, findsOneWidget);
       expect(find.text(review.body), findsOneWidget);
 
-      await tester.enterText(titleField, "title1");
+      await tester.enterText(titleField, 'title1');
       await tester.pumpAndSettle();
       expect(find.text('title1'), findsOneWidget);
 
-      await tester.enterText(bodyField, "body1");
+      await tester.enterText(bodyField, 'body1');
       await tester.pumpAndSettle();
       expect(find.text('body1'), findsOneWidget);
     });
@@ -150,9 +158,10 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
       final mockService = MockReviewService();
-      final review = testReview(slug: "/");
+      final review = testReview(slug: '/');
       final reviewState = ReviewState(mockService, review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -167,7 +176,7 @@ void main() {
         review.slug,
         review.story,
         review.body,
-      )).thenThrow(testApiError(400, "Cannot be /."));
+      )).thenThrow(testApiError(400, 'Cannot be /.'));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -176,7 +185,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        find.widgetWithText(SnackBar, 'Bad Request: Cannot be /.'),
         findsOneWidget,
       );
     });
@@ -188,6 +197,7 @@ void main() {
       final reviewState = ReviewState(mockService, review: review);
 
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -212,36 +222,37 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Updated Review"),
+        find.widgetWithText(SnackBar, 'Updated Review'),
         findsOneWidget,
       );
     });
   });
-  group("test create", () {
+  group('test create', () {
     testWidgets('error message creating on bad info create', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService);
 
+      ServiceLocator.setupAuth();
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
-      await tester.enterText(titleField, "/");
+      await tester.enterText(titleField, '/');
 
       final bodyField = find.bySemanticsLabel('Body');
-      await tester.enterText(bodyField, "body");
+      await tester.enterText(bodyField, 'body');
       await tester.pumpAndSettle();
 
       when(mockService.create(
         Story(
           creator: '',
-          title: "/",
+          title: '/',
           medium: Medium.mediumDefault,
         ),
-        "body",
-      )).thenThrow(testApiError(400, "Cannot be /."));
+        'body',
+      )).thenThrow(testApiError(400, 'Cannot be /.'));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
@@ -250,7 +261,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Bad Request: Cannot be /."),
+        find.widgetWithText(SnackBar, 'Bad Request: Cannot be /.'),
         findsOneWidget,
       );
     });
@@ -258,6 +269,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService);
+      ServiceLocator.setupAuth();
       final review = testReview();
 
       await tester
@@ -290,12 +302,13 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Updated Review"),
+        find.widgetWithText(SnackBar, 'Updated Review'),
         findsOneWidget,
       );
+      await tester.pumpAndSettle();
     });
   });
-  group("test delete", () {
+  group('test delete', () {
     testWidgets('can delete when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
@@ -303,6 +316,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -311,12 +325,14 @@ void main() {
       // find menu button
       final menuButton = find.byIcon(Icons.adaptive.more);
       expect(menuButton, findsOneWidget);
+      await tester.pumpAndSettle();
     });
     testWidgets('cant delete when not logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
       final review = testReview(username: user.username);
 
+      ServiceLocator.setupAuth();
       final reviewState = ReviewState(ReviewService(), review: review);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
@@ -329,6 +345,7 @@ void main() {
         menuButton,
         findsNothing,
       );
+      await tester.pumpAndSettle();
     });
     testWidgets('delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -337,6 +354,7 @@ void main() {
       final review = testReview();
       final reviewState = ReviewState(mockService, review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
 
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
@@ -346,7 +364,7 @@ void main() {
       await tester.pumpAndSettle();
 
       when(mockService.delete(review.user.username, review.slug))
-          .thenAnswer((realInvocation) async => null);
+          .thenAnswer((realInvocation) async => {});
 
       final menuButton = find.byIcon(Icons.adaptive.more);
       expect(menuButton, findsOneWidget);
@@ -361,9 +379,10 @@ void main() {
 
       verify(mockService.delete(review.user.username, review.slug));
       expect(
-        find.widgetWithText(SnackBar, "Deleted Review"),
+        find.widgetWithText(SnackBar, 'Deleted Review'),
         findsOneWidget,
       );
+      await tester.pumpAndSettle();
     });
   });
 }

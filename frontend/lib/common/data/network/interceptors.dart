@@ -1,17 +1,17 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/common/data/network/dio_manager.dart';
-import 'package:storystains/common/utils/service_locator.dart';
-import 'package:storystains/features/auth/auth.dart';
 
+import '../../../features/auth/auth.dart';
+import '../../constant/app_config.dart';
+import '../../utils/service_locator.dart';
+import 'dio_manager.dart';
+
+/// Dio interceptors of requets
 final interceptors = [
   CancelInterceptors(),
   AuthInterceptors(),
   LogInterceptor(
-    request: true,
-    requestHeader: true,
     requestBody: true,
     responseHeader: false,
     responseBody: true,
@@ -19,16 +19,21 @@ final interceptors = [
   ),
 ];
 
+/// Interceptor for cancelling requests
 class CancelInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    sl.get<DioManager>().addToken(
-          options.cancelToken ??= sl.get<DioManager>().defaultCancelToken,
+    ServiceLocator.sl.get<DioManager>().addToken(
+          options.cancelToken ??=
+              ServiceLocator.sl.get<DioManager>().defaultCancelToken,
         );
     handler.next(options);
   }
 }
 
+/// Interceptor for passing in authorization token
+/// And removing when receiving a 401
+/// Using the [AuthState] from the [ServiceLocator]
 class AuthInterceptors extends Interceptor {
   @override
   Future<void> onRequest(
@@ -36,9 +41,9 @@ class AuthInterceptors extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final uri = options.uri;
-    final authState = sl.get<AuthState>();
+    final authState = ServiceLocator.sl.get<AuthState>();
     await authState.init();
-    if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
+    if (AppConfig.baseUrl.startsWith('${uri.scheme}://${uri.host}') &&
         authState.isAuthenticated) {
       options.headers['authorization'] = 'Bearer ${authState.token}';
     }
@@ -46,11 +51,14 @@ class AuthInterceptors extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) async {
+  void onResponse(
+    Response<dynamic> response,
+    ResponseInterceptorHandler handler,
+  ) async {
     final uri = response.requestOptions.uri;
-    if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
+    if (AppConfig.baseUrl.startsWith('${uri.scheme}://${uri.host}') &&
         response.statusCode == 401) {
-      await sl.get<AuthState>().logout();
+      await ServiceLocator.sl.get<AuthState>().logout();
     } else {
       handler.next(response);
     }

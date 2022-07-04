@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/story/story.dart';
 
@@ -17,6 +19,8 @@ Widget wrapWithMaterial(Widget w, {MediumsState? mediumState}) => MultiProvider(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: Scaffold(
           body: w,
         ),
@@ -25,8 +29,12 @@ Widget wrapWithMaterial(Widget w, {MediumsState? mediumState}) => MultiProvider(
 
 @GenerateMocks([MediumsService])
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Edit review emotion", () {
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    ServiceLocator.setup();
+  });
+  tearDown(ServiceLocator.sl.reset);
+  group('Edit review emotion', () {
     testWidgets('set title', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final state = StoryState(StoryService());
@@ -40,9 +48,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
-      await tester.enterText(titleField, "/");
+      await tester.enterText(titleField, '/');
 
-      expect(state.value!.title, "/");
+      expect(state.value!.title, '/');
     });
     testWidgets('set creator', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -57,9 +65,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final creatorField = find.bySemanticsLabel('Creator');
-      await tester.enterText(creatorField, "/");
+      await tester.enterText(creatorField, '/');
 
-      expect(state.value!.creator, "/");
+      expect(state.value!.creator, '/');
     });
     testWidgets('set medium', (tester) async {
       SharedPreferences.setMockInitialValues({});

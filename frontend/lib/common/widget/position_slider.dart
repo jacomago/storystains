@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/utils.dart';
+import '../utils/utils.dart';
 
+/// Widget to change a percentage
 class PositionEdit extends StatelessWidget {
+  /// The controller of the int
   final ValueNotifier<int> positionController;
 
+  /// Widget to change a percentage
   const PositionEdit({Key? key, required this.positionController})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      builder: (context, value, _) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+  Widget build(BuildContext context) => ValueListenableBuilder<int>(
+        builder: (context, value, _) => Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
@@ -37,7 +37,6 @@ class PositionEdit extends StatelessWidget {
               child: Slider(
                 activeColor: context.colors.secondary,
                 value: value.toDouble(),
-                min: 0.0,
                 max: 100.0,
                 label: '${value.round()}',
                 onChanged: (newValue) {
@@ -46,9 +45,7 @@ class PositionEdit extends StatelessWidget {
               ),
             ),
           ],
-        );
-      },
-      valueListenable: positionController,
-    );
-  }
+        ),
+        valueListenable: positionController,
+      );
 }

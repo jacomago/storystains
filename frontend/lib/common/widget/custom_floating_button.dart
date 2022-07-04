@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/utils.dart';
+import '../utils/utils.dart';
 
+/// Custom floating button for keeping theming consistent
 class CustomFloatingButton extends StatelessWidget {
+  /// Icon on floating button
   final IconData icon;
+
+  /// Action after on press
   final VoidCallback? onPressed;
 
+  /// Custom floating button for keeping theming consistent
   const CustomFloatingButton({
     Key? key,
     required this.icon,
@@ -12,14 +17,12 @@ class CustomFloatingButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: onPressed,
-      backgroundColor: context.colors.secondary,
-      child: Icon(
-        icon,
-        color: context.colors.onPrimary,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => FloatingActionButton(
+        onPressed: onPressed,
+        backgroundColor: context.colors.secondary,
+        child: Icon(
+          icon,
+          color: context.colors.onPrimary,
+        ),
+      );
 }

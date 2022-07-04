@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:storystains/features/mediums/medium_model.dart';
+import 'medium_model.dart';
 
 import 'medium_service.dart';
 
+/// State of loading mediums from api usually at top level for caching
 class MediumsState extends ChangeNotifier {
   final MediumsService _service;
-
-  late Future _initFuture;
 
   List<Medium> _items = [];
 
@@ -14,23 +13,33 @@ class MediumsState extends ChangeNotifier {
   bool _isFailed = false;
   bool _isLoading = false;
 
+  /// count of mediums
   int get count => _items.length;
+
+  /// all mediums possible
   List<Medium> get items => _items;
 
+  /// if empty amount
   bool get isEmpty => _isEmpty;
+
+  /// if failed to load
   bool get isFailed => _isFailed;
+
+  /// if still loading
   bool get isLoading => _isLoading;
 
-  Future get initDone => _initFuture;
+  /// item at index
   Medium item(int index) => _items[index];
 
+  /// default mediums
   Medium get mediumDefault => _items.isEmpty ? Medium.mediumDefault : _items[0];
 
+  /// load mediums
   MediumsState(this._service) {
-    _initFuture = _init();
+    _init();
   }
 
-  Future _init() async {
+  Future<void> _init() async {
     _startLoading();
 
     final items = await _service.fetch();

@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/review/review_route.dart';
-import 'package:storystains/features/review/widgets/review_date.dart';
-import 'package:storystains/features/review/widgets/review_username.dart';
-import 'package:storystains/features/review/review_model.dart';
-import 'package:storystains/pages/review_detail.dart';
-import 'package:storystains/routes/routes.dart';
 
+import '../../common/utils/extensions.dart';
+import '../../common/widget/widget.dart';
+import '../../pages/review_detail.dart';
+import '../../routes/routes.dart';
+import '../review/review.dart';
+import '../story/story.dart';
 import 'reviews_state.dart';
-import 'package:storystains/common/utils/extensions.dart';
 
+/// Widget for displaying a list of [Review]
 class ReviewList extends StatelessWidget {
+  /// Widget for displaying a list of [Review]
   const ReviewList({Key? key}) : super(key: key);
 
   void _afterPush(BuildContext context) {
@@ -21,61 +22,62 @@ class ReviewList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ReviewsState>(
-      builder: (_, reviews, __) {
-        if (reviews.isFailed) {
-          return LoadMessage(
-            'Fetching data failed',
+  Widget build(BuildContext context) => Consumer<ReviewsState>(
+        builder: (_, reviews, __) {
+          if (reviews.isFailed) {
+            return LoadMessage(
+              AppLocalizations.of(context)!
+                  .actionFailed(AppLocalizations.of(context)!.dataFetch),
+              onRefresh: reviews.refresh,
+            );
+          }
+
+          if (reviews.isEmpty) {
+            return LoadMessage(
+              AppLocalizations.of(context)!.noData,
+              onRefresh: reviews.refresh,
+            );
+          }
+
+          if (reviews.isLoadingFirst) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return RefreshIndicator(
             onRefresh: reviews.refresh,
+            child: ScrollablePositionedList.builder(
+              itemScrollController: reviews.itemScrollController,
+              itemPositionsListener: reviews.itemPositionsListener,
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                var isItem = index < reviews.count;
+                var isLastIndex = index == reviews.count;
+                var isLoadingMore = isLastIndex && reviews.isLoadingMore;
+
+                // Review Item
+                if (isItem) {
+                  return _buildReviewItem(context, reviews.item(index));
+                }
+
+                // Show loading more at the bottom
+                if (isLoadingMore) return const LoadingMore();
+
+                // Default empty content
+                return Container();
+              },
+              itemCount: reviews.count,
+            ),
           );
-        }
+        },
+      );
 
-        if (reviews.isEmpty) {
-          return LoadMessage('No data', onRefresh: reviews.refresh);
-        }
-
-        if (reviews.isLoadingFirst) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-
-        return RefreshIndicator(
-          onRefresh: reviews.refresh,
-          child: ScrollablePositionedList.builder(
-            itemScrollController: reviews.itemScrollController,
-            itemPositionsListener: reviews.itemPositionsListener,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              bool isItem = index < reviews.count;
-              bool isLastIndex = index == reviews.count;
-              bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
-
-              // Review Item
-              if (isItem) {
-                return _buildReviewItem(context, reviews.item(index));
-              }
-
-              // Show loading more at the bottom
-              if (isLoadingMore) return const LoadingMore();
-
-              // Default empty content
-              return Container();
-            },
-            itemCount: reviews.count,
-          ),
-        );
-      },
-    );
-  }
-
-  _tapItem(BuildContext context, Review review) {
+  void _tapItem(BuildContext context, Review review) {
     Navigator.of(context)
         .push(
-          ReviewRoute.route(
+          review.route(
             Routes.reviewDetail,
-            review,
             (r) => ReviewDetail(
               review: r,
             ),
@@ -84,60 +86,75 @@ class ReviewList extends StatelessWidget {
         .then((value) => _afterPush(context));
   }
 
-  Widget _buildReviewItem(BuildContext context, Review review) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () => _tapItem(context, review),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: _buildTitle(context, review.story.title),
-                ),
-                CardReviewEmotionsList(
-                  items: review.emotions,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ReviewUsername(username: review.user.username),
-                    ReviewDate(date: review.updatedAt),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
-                  child: Divider(
-                    color: context.colors.secondary,
+  Widget _buildReviewItem(BuildContext context, Review review) => Column(
+        children: [
+          GestureDetector(
+            onTap: () => _tapItem(context, review),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: _buildStory(context, review.story),
                   ),
-                ),
-              ],
+                  CardReviewEmotionsList(
+                    items: review.emotions,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ReviewUsername(username: review.user.username),
+                      ReviewDate(date: review.updatedAt),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(),
+                    child: Divider(
+                      color: context.colors.secondary,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      );
 
-  Widget _buildTitle(BuildContext context, String title) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 4),
-        Text(
-          title,
-          style: context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-          overflow: TextOverflow.fade,
-        ),
-        const SizedBox(height: 4),
-      ],
-    );
-  }
+  Widget _buildStory(BuildContext context, Story story) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                story.title,
+                style:
+                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.fade,
+              ),
+              Text(
+                story.medium.name,
+                style: context.titleSmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: context.colors.onSecondaryContainer,
+                ),
+                overflow: TextOverflow.fade,
+              ),
+            ],
+          ),
+          Text(
+            AppLocalizations.of(context)!.byCreator(story.creator),
+            style: context.titleSmall,
+            overflow: TextOverflow.fade,
+          ),
+          const SizedBox(height: 4),
+        ],
+      );
 }

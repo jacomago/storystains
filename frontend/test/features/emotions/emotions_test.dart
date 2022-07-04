@@ -1,11 +1,12 @@
+import 'dart:io' as io;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/emotions/emotion.dart';
-import 'package:mockito/annotations.dart';
 
-import 'dart:io' as io;
 import '../../common/image_mock_http.dart';
 import 'emotion.dart';
 import 'emotions_test.mocks.dart';
@@ -18,7 +19,7 @@ void main() {
     // by this override is cached as a static singleton.
     io.HttpOverrides.global = TestHttpOverrides();
   });
-  group("emotions state tests", () {
+  group('emotions state tests', () {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
       final emotion = testEmotion();
@@ -47,9 +48,9 @@ void main() {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
 
-      final List<Emotion> emotions = List.generate(
+      final emotions = List<Emotion>.generate(
         2,
-        (index) => testEmotion(name: "name$index"),
+        (index) => testEmotion(name: 'name$index'),
       );
 
       final mockService = MockEmotionsService();
@@ -62,7 +63,7 @@ void main() {
       expect(emotionState.isEmpty, false);
 
       // assert init finished
-      await emotionState.initDone;
+      await Future<void>.delayed(const Duration(seconds: 1));
       expect(emotionState.count, 2);
     });
   });

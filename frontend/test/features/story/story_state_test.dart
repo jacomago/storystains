@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/story/story.dart';
-import 'package:mockito/annotations.dart';
 
 import '../../common/errors.dart';
 import 'story.dart';
@@ -13,7 +13,7 @@ import 'story_state_test.mocks.dart';
 @GenerateMocks([StoryService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("create", () {
+  group('create', () {
     test('After create in isUpdated', () async {
       SharedPreferences.setMockInitialValues({});
       final story = testStory();
@@ -40,20 +40,20 @@ void main() {
       final storyState = StoryState(mockService);
 
       when(mockService.create(Story(
-        title: "",
+        title: '',
         medium: Medium.mediumDefault,
-        creator: "",
-      ))).thenThrow(testApiError(400, "Cannot be empty."));
+        creator: '',
+      ))).thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await storyState.update();
 
       verify(mockService.create(Story(
-        title: "",
+        title: '',
         medium: Medium.mediumDefault,
-        creator: "",
+        creator: '',
       )));
       expect(storyState.isUpdated, false);
-      expect(storyState.error, "Bad Request: Cannot be empty.");
+      expect(storyState.error, 'Bad Request: Cannot be empty.');
     });
 
     test('error message on unauthorised info', () async {
@@ -62,20 +62,20 @@ void main() {
       final storyState = StoryState(mockService);
 
       when(mockService.create(Story(
-        title: "",
+        title: '',
         medium: Medium.mediumDefault,
-        creator: "",
-      ))).thenThrow(testApiError(401, "User not logged in."));
+        creator: '',
+      ))).thenThrow(testApiError(401, 'User not logged in.'));
 
       await storyState.update();
 
       verify(mockService.create(Story(
-        title: "",
+        title: '',
         medium: Medium.mediumDefault,
-        creator: "",
+        creator: '',
       )));
       expect(storyState.isUpdated, false);
-      expect(storyState.error, "Unauthorised: User not logged in.");
+      expect(storyState.error, 'Unauthorised: User not logged in.');
     });
   });
 }

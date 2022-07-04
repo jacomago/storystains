@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -6,8 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/widget/card_review_emotions.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
-
-import 'dart:io' as io;
 
 import '../common/image_mock_http.dart';
 
@@ -31,7 +31,7 @@ Widget wrapWithMaterial(
 @GenerateMocks([EmotionsService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Review Emotions list", () {
+  group('Review Emotions list', () {
     setUp(() {
       // Only needs to be done once since the HttpClient generated
       // by this override is cached as a static singleton.
@@ -47,31 +47,31 @@ void main() {
       await tester.pumpAndSettle();
     });
     testWidgets('load list', (tester) async {
-      final List<ReviewEmotion> list = [
-        ReviewEmotion(
-          notes: "notes0",
+      final list = <ReviewEmotion>[
+        const ReviewEmotion(
+          notes: 'notes0',
           emotion: Emotion(
-            name: "Anger",
-            iconUrl: "/url1",
-            description: "description1",
+            name: 'Anger',
+            iconUrl: '/url1',
+            description: 'description1',
           ),
           position: 0,
         ),
-        ReviewEmotion(
-          notes: "notes1",
+        const ReviewEmotion(
+          notes: 'notes1',
           emotion: Emotion(
-            name: "Joy1",
-            iconUrl: "/url2",
-            description: "description2",
+            name: 'Joy1',
+            iconUrl: '/url2',
+            description: 'description2',
           ),
           position: 1,
         ),
-        ReviewEmotion(
-          notes: "notes2",
+        const ReviewEmotion(
+          notes: 'notes2',
           emotion: Emotion(
-            name: "Anger2",
-            iconUrl: "/url3",
-            description: "description3",
+            name: 'Anger2',
+            iconUrl: '/url3',
+            description: 'description3',
           ),
           position: 2,
         ),
@@ -88,7 +88,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      for (ReviewEmotion re in list) {
+      for (var re in list) {
         expect(find.text(re.emotion.name), findsOneWidget);
       }
     });

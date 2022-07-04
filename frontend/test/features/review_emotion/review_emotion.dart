@@ -9,7 +9,7 @@ ReviewEmotion testReviewEmotion({
   String? notes,
 }) =>
     ReviewEmotion(
-      notes: notes ?? "notes",
+      notes: notes ?? 'notes',
       emotion: emotion ?? testEmotion(),
       position: position ?? 0,
     );

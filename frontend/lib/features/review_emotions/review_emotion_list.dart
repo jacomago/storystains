@@ -1,14 +1,17 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/emotions/emotion.dart';
-import 'package:storystains/features/review_emotion/review_emotion.dart';
+import '../../common/utils/utils.dart';
+import '../../common/widget/widget.dart';
+import '../emotions/emotion.dart';
+import '../review_emotion/review_emotion.dart';
 
 import 'review_emotions_state.dart';
 
+/// List of r[ReviewEmotion] widget
 class ReviewEmotionsList extends StatelessWidget {
+  /// List of review emotions widget
   const ReviewEmotionsList({Key? key}) : super(key: key);
 
   void _updateEmotion(
@@ -22,7 +25,8 @@ class ReviewEmotionsList extends StatelessWidget {
     final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
-      context.snackbar('Must choose an emotion.');
+      context.snackbar(AppLocalizations.of(context)!
+          .blankStringError(AppLocalizations.of(context)!.emotion));
 
       return;
     }
@@ -36,7 +40,8 @@ class ReviewEmotionsList extends StatelessWidget {
     final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
-      context.snackbar('Must choose an emotion.');
+      context.snackbar(AppLocalizations.of(context)!
+          .blankStringError(AppLocalizations.of(context)!.emotion));
 
       return;
     }
@@ -45,35 +50,31 @@ class ReviewEmotionsList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer2<ReviewEmotionsState, EmotionsState>(
-      builder: (_, reviewEmotions, emotions, __) {
-        return Column(
+  Widget build(BuildContext context) =>
+      Consumer2<ReviewEmotionsState, EmotionsState>(
+        builder: (_, reviewEmotions, emotions, __) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Emotions:",
+                  AppLocalizations.of(context)!.emotions,
                   style: context.titleMedium,
                 ),
                 OutlinedButton(
                   onPressed: () async => {
                     showDialog<Emotion>(
                       context: context,
-                      builder: (context) {
-                        return EmotionDialog(
-                          initialEmotion: emotions.emotionDefault,
-                        );
-                      },
+                      builder: (context) => EmotionDialog(
+                        initialEmotion: emotions.emotionDefault,
+                      ),
                     ).then(
                       (value) => _addEmotion(context, value),
                     ),
                   },
                   child: Text(
-                    "Add",
+                    AppLocalizations.of(context)!.add,
                     style: context.button,
                   ),
                 ),
@@ -104,63 +105,60 @@ class ReviewEmotionsList extends StatelessWidget {
                   .toList(),
             ),
           ],
-        );
-      },
-    );
-  }
+        ),
+      );
 
   Widget _buildReviewEmotionItem(
     BuildContext context,
     ReviewEmotion reviewEmotion,
-  ) {
-    return GestureDetector(
-      onTap: () => {
-        UnimplementedError("not done"),
-      },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Notes",
-                  style: context.labelLarge,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "Position: ${reviewEmotion.position}",
-                  style: context.labelMedium,
-                ),
-              ],
-            ),
-            const Divider(),
-            Text(
-              reviewEmotion.notes,
-              textAlign: TextAlign.left,
-              style: context.bodySmall,
-            ),
-          ],
+  ) =>
+      GestureDetector(
+        onTap: () => {
+          UnimplementedError('not done'),
+        },
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.notes,
+                    style: context.labelLarge,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!
+                        .postionPercentage(reviewEmotion.position),
+                    style: context.labelMedium,
+                  ),
+                ],
+              ),
+              const Divider(),
+              Text(
+                reviewEmotion.notes,
+                textAlign: TextAlign.left,
+                style: context.bodySmall,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildEmotionItem(
     BuildContext context,
     ReviewEmotion reviewEmotion,
     int index,
-  ) {
-    return EmotionEdit(
-      emotion: reviewEmotion.emotion,
-      width: 100,
-      height: 100,
-      handler: (value) => _updateEmotion(context, reviewEmotion, index, value),
-    );
-  }
+  ) =>
+      EmotionEdit(
+        emotion: reviewEmotion.emotion,
+        width: 100,
+        height: 100,
+        handler: (value) =>
+            _updateEmotion(context, reviewEmotion, index, value),
+      );
 }

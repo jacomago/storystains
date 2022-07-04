@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/features/reviews/reviews_model.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
 import 'package:storystains/features/reviews/reviews_state.dart';
-import 'package:mockito/annotations.dart';
-import 'package:storystains/features/reviews/reviews_model.dart';
 
 import '../review/review.dart';
 import 'reviews_test.mocks.dart';
@@ -14,10 +14,10 @@ import 'reviews_test.mocks.dart';
 @GenerateMocks([ReviewsService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("get", () {
+  group('get', () {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
-      final review = testReview(slug: "randomtitle");
+      final review = testReview(slug: 'randomtitle');
       final reviewsResp = ReviewsResp(reviews: [review]);
 
       final mockService = MockReviewsService();
@@ -44,7 +44,7 @@ void main() {
     });
     test('fetch test', () async {
       SharedPreferences.setMockInitialValues({});
-      final review = testReview(slug: "randomtitle");
+      final review = testReview(slug: 'randomtitle');
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
@@ -72,16 +72,17 @@ void main() {
       final reviewsResp = ReviewsResp(
         reviews: List.generate(
           45,
-          (int index) => testReview(slug: "title$index"),
+          (index) => testReview(slug: 'title$index'),
         ),
       );
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch(query: '', offset: AppConfig.defaultLimit))
-          .thenAnswer((realInvocation) async => reviewsResp.reviews
-              .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
+      when(mockService.fetch(offset: AppConfig.defaultLimit)).thenAnswer(
+        (realInvocation) async => reviewsResp.reviews
+            .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit),
+      );
 
       final reviewState = ReviewsState(mockService);
 
@@ -136,7 +137,7 @@ void main() {
 
     test('refresh test', () async {
       SharedPreferences.setMockInitialValues({});
-      final review = testReview(slug: "randomtitle");
+      final review = testReview(slug: 'randomtitle');
       final reviewsResp = ReviewsResp(reviews: List.filled(45, review));
 
       final mockService = MockReviewsService();
