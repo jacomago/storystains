@@ -7,13 +7,13 @@ import '../../common/utils/extensions.dart';
 import '../../common/widget/widget.dart';
 import '../../pages/review_detail.dart';
 import '../../routes/routes.dart';
-import '../review/review_model.dart';
-import '../review/review_route.dart';
-import '../review/widgets/review_date.dart';
-import '../review/widgets/review_username.dart';
+import '../review/review.dart';
+import '../story/story.dart';
 import 'reviews_state.dart';
 
+/// Widget for displaying a list of [Review]
 class ReviewList extends StatelessWidget {
+  /// Widget for displaying a list of [Review]
   const ReviewList({Key? key}) : super(key: key);
 
   void _afterPush(BuildContext context) {
@@ -98,7 +98,7 @@ class ReviewList extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: _buildTitle(context, review.story.title),
+                    child: _buildStory(context, review.story),
                   ),
                   CardReviewEmotionsList(
                     items: review.emotions,
@@ -127,14 +127,31 @@ class ReviewList extends StatelessWidget {
         ],
       );
 
-  Widget _buildTitle(BuildContext context, String title) => Column(
+  Widget _buildStory(BuildContext context, Story story) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 4),
-          Text(
-            title,
-            style: context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            overflow: TextOverflow.fade,
+          Row(
+            children: [
+              Text(
+                story.title,
+                style:
+                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.fade,
+              ),
+              Text(
+                AppLocalizations.of(context)!.byCreator(story.creator),
+                style:
+                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.fade,
+              ),
+              Text(
+                '(${story.medium.name})',
+                style:
+                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.fade,
+              ),
+            ],
           ),
           const SizedBox(height: 4),
         ],
