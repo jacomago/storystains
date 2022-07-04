@@ -3,6 +3,10 @@
     "@appName": {
         "description": "The app name."
     },
+    "user": "User",
+    "@user": {
+        "description": "User of the application."
+    },
     "title": "Title",
     "@title": {
         "description": "Name of story."
@@ -71,20 +75,12 @@
     "@review": {
         "description": "A review of some fictional media."
     },
-    "updatedReview": "Updated Review",
-    "@updatedReview": {
-        "description": "The review has been changed."
-    },
-    "deletedReview": "Deleted Review",
-    "@deletedReview": {
-        "description": "The review has been deleted."
-    },
     "pleaseTryAgain": "Please Try Again",
     "@pleaseTryAgain": {
         "description": "something went wrong, so command the user to try again politely."
     },
-    "dataFetchError": "Fetching data failed",
-    "@dataFetchError": {
+    "dataFetch": "Fetching data failed",
+    "@dataFetch": {
         "description": "Fetching the data failed."
     },
     "noData": "No Data",
@@ -118,6 +114,74 @@
             "position": {
                 "type": "int",
                 "example": "100"
+            }
+        }
+    },
+    "updatedObject": "Updated {object}",
+    "@updatedObject": {
+        "description": "The object has been changed.",
+        "placeholders": {
+            "object": {
+                "type": "String",
+                "example": "Review"
+            }
+        }
+    },
+    "deletedObject": "Deleted {object}",
+    "@deletedObject": {
+        "description": "The object has been deleted.",
+        "placeholders": {
+            "object": {
+                "type": "String",
+                "example": "User"
+            }
+        }
+    },
+    "deleteObject": "Delete {object}",
+    "@deleteObject": {
+        "description": "Action to delete object.",
+        "placeholders": {
+            "object": {
+                "type": "String",
+                "example": "User"
+            }
+        }
+    },
+    "logout": "Logout",
+    "@logout": {
+        "description": "Action to delete object."
+    },
+    "acount": "User Account",
+    "@account": {
+        "description": "A users personal details and actions."
+    },
+    "actionFailed": "{action} failed.",
+    "@actionFailed": {
+        "description": "Action failed.",
+        "placeholders": {
+            "action": {
+                "type": "String",
+                "example": "Delete user"
+            }
+        }
+    },
+    "actionSucceded": "{action} succeded.",
+    "@actionSucceded": {
+        "description": "Action succeded.",
+        "placeholders": {
+            "action": {
+                "type": "String",
+                "example": "Delete user"
+            }
+        }
+    },
+    "greeting": "Hello {user}",
+    "@greeting": {
+        "description": "Greeting to a fellow person.",
+        "placeholders": {
+            "user": {
+                "type": "String",
+                "example": "Fred"
             }
         }
     }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+
 import '../common/utils/utils.dart';
 import '../common/widget/widget.dart';
-
 import '../features/auth/auth_state.dart';
 
 class AccountPage extends StatelessWidget {
@@ -11,10 +12,16 @@ class AccountPage extends StatelessWidget {
 
   void afterDelete(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {
-      context.snackbar('Delete user failed');
+      context.snackbar(AppLocalizations.of(context)!
+          .actionFailed(AppLocalizations.of(context)!.deleteObject(
+        AppLocalizations.of(context)!.user,
+      )));
     } else {
       Navigator.of(context).pop();
-      context.snackbar('Delete user succeded');
+      context.snackbar(AppLocalizations.of(context)!
+          .actionSucceded(AppLocalizations.of(context)!.deleteObject(
+        AppLocalizations.of(context)!.user,
+      )));
     }
   }
 
@@ -30,10 +37,12 @@ class AccountPage extends StatelessWidget {
 
   void afterLogout(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {
-      context.snackbar('Logout user failed');
+      context.snackbar(AppLocalizations.of(context)!
+          .actionFailed(AppLocalizations.of(context)!.logout));
     } else {
       Navigator.of(context).pop();
-      context.snackbar('Logout succeded');
+      context.snackbar(AppLocalizations.of(context)!
+          .actionSucceded(AppLocalizations.of(context)!.logout));
     }
   }
 
@@ -50,9 +59,9 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: const StainsAppBar(
+        appBar: StainsAppBar(
           title: AppBarTitle(
-            'User Account',
+            AppLocalizations.of(context)!.acount,
           ),
         ),
         body: Center(
@@ -70,7 +79,9 @@ class AccountPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    'Hello ${auth.user?.username}',
+                    AppLocalizations.of(context)!.greeting(
+                      auth.user?.username ?? AppLocalizations.of(context)!.user,
+                    ),
                     style: context.bodyMedium,
                   ),
                   const SizedBox(height: 10),
@@ -80,7 +91,7 @@ class AccountPage extends StatelessWidget {
                     ),
                     onPressed: () => _onLogout(context),
                     child: Text(
-                      'Log out',
+                      AppLocalizations.of(context)!.logout,
                       style: context.button!
                           .copyWith(color: context.colors.onPrimary),
                     ),
@@ -89,7 +100,8 @@ class AccountPage extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () => _onDelete(context),
                     child: Text(
-                      'Delete User',
+                      AppLocalizations.of(context)!
+                          .deleteObject(AppLocalizations.of(context)!.user),
                       style: context.button!
                           .copyWith(color: context.colors.onErrorContainer),
                     ),

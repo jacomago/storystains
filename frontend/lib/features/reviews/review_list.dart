@@ -26,7 +26,8 @@ class ReviewList extends StatelessWidget {
         builder: (_, reviews, __) {
           if (reviews.isFailed) {
             return LoadMessage(
-              AppLocalizations.of(context)!.dataFetchError,
+              AppLocalizations.of(context)!
+                  .actionFailed(AppLocalizations.of(context)!.dataFetch),
               onRefresh: reviews.refresh,
             );
           }

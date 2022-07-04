@@ -16,10 +16,12 @@ class ReviewWidget extends StatelessWidget {
   void afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
       context.pop(state.review);
-      context.snackbar(AppLocalizations.of(context)!.updatedReview);
+      context.snackbar(AppLocalizations.of(context)!
+          .updatedObject(AppLocalizations.of(context)!.review));
     } else if (state.isDeleted) {
       context.pop();
-      context.snackbar(AppLocalizations.of(context)!.deletedReview);
+      context.snackbar(AppLocalizations.of(context)!
+          .deletedObject(AppLocalizations.of(context)!.review));
     } else {
       if (state.isFailed) {
         context.snackbar(state.error);
