@@ -7,8 +7,10 @@ import 'review_emotion_model.dart';
 
 import 'review_emotion_service.dart';
 
+/// Events the State can be doing
 enum ReviewEmotionEvent { create, read, update, delete }
 
+/// Statues the review emotion could be in
 enum ReviewEmotionStatus { initial, read, updated, deleted, failed }
 
 class ReviewEmotionState extends ChangeNotifier {
@@ -27,15 +29,28 @@ class ReviewEmotionState extends ChangeNotifier {
   String get error => _error;
   bool get isCreate => _isCreate;
 
+  /// If the emotion is still loading
   bool get isLoading => _isLoading;
+
+  /// If the review emotion has been updated
   bool get isUpdated => _status == ReviewEmotionStatus.updated;
+
+  /// If the review emotion has been deleted
   bool get isDeleted => _status == ReviewEmotionStatus.deleted;
+
+  /// If the review emotion has failed
   bool get isFailed => _status == ReviewEmotionStatus.failed;
 
+  /// Contoller for the notes
   late TextEditingController notesController;
+
+  /// Controller for the position
   late ValueNotifier<int> positionController;
+
+  /// Controller for the emotion
   late ValueNotifier<Emotion> emotionController;
 
+  /// Create the state
   ReviewEmotionState(
     this._service, {
     ReviewEmotion? reviewEmotion,
@@ -53,6 +68,7 @@ class ReviewEmotionState extends ChangeNotifier {
     emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
+  /// Update the review emotion
   Future<void> update(
     Review review,
   ) async {
@@ -94,6 +110,7 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Delete the review emotion
   Future<void> delete(
     Review review,
   ) async {
