@@ -3,7 +3,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Storystains"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:fullBackupContent="@xml/backup_rules">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -40,8 +42,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-        <full-backup-content>
-            <exclude domain="sharedpref" path="FlutterSecureStorage"/>
-        </full-backup-content>
     </application>
 </manifest>
