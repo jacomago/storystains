@@ -12,6 +12,7 @@ enum LoginRegister { login, register }
 
 class AuthState extends ChangeNotifier {
   final AuthService _service;
+  late final AuthStorage _storage;
 
   User? _user;
   AuthEvent? _event;
@@ -39,6 +40,7 @@ class AuthState extends ChangeNotifier {
     _isLoading = false;
     _loginRegister = LoginRegister.login;
     _error = '';
+    _storage = AuthStorage();
   }
 
   void switchLoginRegister() {
@@ -51,7 +53,7 @@ class AuthState extends ChangeNotifier {
   bool sameUser(UserProfile other) => _user?.username == other.username;
 
   Future<void> init() async {
-    final user = await AuthStorage.getUser();
+    final user = await _storage.getUser();
 
     if (user != null) {
       _user = user;
@@ -80,7 +82,7 @@ class AuthState extends ChangeNotifier {
       if (data.user.token.isNotEmpty) {
         _user = data.user;
 
-        AuthStorage.login(_user!);
+        _storage.login(_user!);
 
         _status = AuthStatus.authenticated;
       } else {
@@ -103,7 +105,7 @@ class AuthState extends ChangeNotifier {
 
     try {
       await _service.delete();
-      AuthStorage.logout();
+      _storage.logout();
 
       _status = AuthStatus.deleted;
       _error = '';
@@ -126,7 +128,7 @@ class AuthState extends ChangeNotifier {
 
     notifyListeners();
 
-    AuthStorage.logout();
+    _storage.logout();
 
     _status = AuthStatus.initial;
     _error = '';

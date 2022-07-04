@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../common/constant/app_config.dart';
 import 'emotion_model.dart';
 
 import 'emotion_service.dart';

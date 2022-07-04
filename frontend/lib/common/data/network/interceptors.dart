@@ -21,8 +21,9 @@ final interceptors = [
 class CancelInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    sl.get<DioManager>().addToken(
-          options.cancelToken ??= sl.get<DioManager>().defaultCancelToken,
+    ServiceLocator.sl.get<DioManager>().addToken(
+          options.cancelToken ??=
+              ServiceLocator.sl.get<DioManager>().defaultCancelToken,
         );
     handler.next(options);
   }
@@ -35,7 +36,7 @@ class AuthInterceptors extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     final uri = options.uri;
-    final authState = sl.get<AuthState>();
+    final authState = ServiceLocator.sl.get<AuthState>();
     await authState.init();
     if (AppConfig.baseUrl.startsWith('${uri.scheme}://${uri.host}') &&
         authState.isAuthenticated) {
@@ -52,7 +53,7 @@ class AuthInterceptors extends Interceptor {
     final uri = response.requestOptions.uri;
     if (AppConfig.baseUrl.startsWith('${uri.scheme}://${uri.host}') &&
         response.statusCode == 401) {
-      await sl.get<AuthState>().logout();
+      await ServiceLocator.sl.get<AuthState>().logout();
     } else {
       handler.next(response);
     }

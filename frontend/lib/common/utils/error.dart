@@ -21,7 +21,8 @@ String errorMessage(DioError error) {
             .toString();
       default:
         return FetchDataException(
-          'Error occured while connecting to server with StatusCode : ${error.response?.statusCode}',
+          'Error occured while connecting to server with StatusCode : '
+          '${error.response?.statusCode}',
         ).toString();
     }
   } else {

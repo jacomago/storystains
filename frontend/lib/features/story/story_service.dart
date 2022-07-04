@@ -6,7 +6,7 @@ import 'story_model.dart';
 
 class StoryService {
   Future<WrappedStory> create(Story story) async =>
-      await sl.get<RestClient>().createStory(
+      await ServiceLocator.sl.get<RestClient>().createStory(
             WrappedStory(story: story),
           );
 }

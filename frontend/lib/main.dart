@@ -4,7 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'common/constant/app_config.dart';
 import 'common/constant/app_theme.dart';
 import 'common/url_strategy/url_strategy.dart';
 import 'common/utils/service_locator.dart';
@@ -22,7 +21,7 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => sl.get<AuthState>(),
+          create: (_) => ServiceLocator.sl.get<AuthState>(),
         ),
         ChangeNotifierProvider(
           create: (_) => EmotionsState(EmotionsService()),

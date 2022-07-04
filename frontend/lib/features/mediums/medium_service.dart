@@ -7,7 +7,7 @@ import 'medium_model.dart';
 class MediumsService {
   Future<List<Medium>?> fetch() async {
     try {
-      final res = await sl.get<RestClient>().getMediums();
+      final res = await ServiceLocator.sl.get<RestClient>().getMediums();
 
       return res.mediums;
     } on DioError catch (_) {

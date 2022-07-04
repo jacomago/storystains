@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_classes_with_only_static_members
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Prefs {
@@ -55,7 +57,7 @@ class Prefs {
     return _prefs!.getStringList(key);
   }
 
-  static Future<bool> setBool(String key, bool value) async {
+  static Future<bool> setBool(String key, {required bool value}) async {
     await _init();
 
     return await _prefs!.setBool(key, value);

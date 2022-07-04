@@ -70,9 +70,10 @@ class FakeSecureStorage extends Fake implements FlutterSecureStorage {
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
-    sl.registerSingleton<FlutterSecureStorage>(FakeSecureStorage());
+    ServiceLocator.sl
+        .registerSingleton<FlutterSecureStorage>(FakeSecureStorage());
   });
-  tearDown(sl.reset);
+  tearDown(ServiceLocator.sl.reset);
   group('login', () {
     test('After logging in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});

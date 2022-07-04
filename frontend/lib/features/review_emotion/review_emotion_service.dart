@@ -8,7 +8,7 @@ class ReviewEmotionService {
     Review review,
     ReviewEmotion reviewEmotion,
   ) async =>
-      await sl.get<RestClient>().createReviewEmotion(
+      await ServiceLocator.sl.get<RestClient>().createReviewEmotion(
             review.user.username,
             review.slug,
             CreateReviewEmotion(
@@ -25,7 +25,7 @@ class ReviewEmotionService {
     int position,
     ReviewEmotion reviewEmotion,
   ) async =>
-      await sl.get<RestClient>().updateReviewEmotion(
+      await ServiceLocator.sl.get<RestClient>().updateReviewEmotion(
             review.user.username,
             review.slug,
             position,
@@ -43,13 +43,15 @@ class ReviewEmotionService {
     String slug,
     int position,
   ) async =>
-      await sl.get<RestClient>().readReviewEmotion(username, slug, position);
+      await ServiceLocator.sl
+          .get<RestClient>()
+          .readReviewEmotion(username, slug, position);
 
   Future<void> delete(
     Review review,
     int position,
   ) async =>
-      await sl
+      await ServiceLocator.sl
           .get<RestClient>()
           .deleteReviewEmotion(review.user.username, review.slug, position);
 }

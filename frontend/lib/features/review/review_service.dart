@@ -6,7 +6,7 @@ import 'review_model.dart';
 
 class ReviewService {
   Future<ReviewResp> create(Story story, String body) async =>
-      await sl.get<RestClient>().createReview(
+      await ServiceLocator.sl.get<RestClient>().createReview(
             CreateReview(
               review: NewReview(
                 story: story,
@@ -21,7 +21,7 @@ class ReviewService {
     Story story,
     String body,
   ) async =>
-      await sl.get<RestClient>().updateReview(
+      await ServiceLocator.sl.get<RestClient>().updateReview(
             username,
             slug,
             CreateReview(
@@ -33,8 +33,8 @@ class ReviewService {
           );
 
   Future<ReviewResp> read(String username, String slug) async =>
-      await sl.get<RestClient>().readReview(username, slug);
+      await ServiceLocator.sl.get<RestClient>().readReview(username, slug);
 
   Future<void> delete(String username, String slug) async =>
-      await sl.get<RestClient>().deleteReview(username, slug);
+      await ServiceLocator.sl.get<RestClient>().deleteReview(username, slug);
 }

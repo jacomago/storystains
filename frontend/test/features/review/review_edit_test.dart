@@ -51,9 +51,10 @@ void main() {
     // in this set of tests. The full setup includes the dio
     // http client and so tries to do network requests which don't
     // timeout.
-    sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
+    ServiceLocator.sl
+        .registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
   });
-  tearDown(sl.reset);
+  tearDown(ServiceLocator.sl.reset);
   group('Floating button', () {
     testWidgets('can edit when logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});

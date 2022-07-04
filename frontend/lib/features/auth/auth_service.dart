@@ -5,12 +5,12 @@ import 'auth_model.dart';
 
 class AuthService {
   Future<UserResp> register(String username, String password) async =>
-      await sl.get<RestClient>().addUser(
+      await ServiceLocator.sl.get<RestClient>().addUser(
             AddUser(user: NewUser(username: username, password: password)),
           );
 
   Future<UserResp> login(String username, String password) async {
-    final resp = await sl.get<RestClient>().loginUser(
+    final resp = await ServiceLocator.sl.get<RestClient>().loginUser(
           Login(user: LoginUser(username: username, password: password)),
         );
 
@@ -18,6 +18,6 @@ class AuthService {
   }
 
   Future<void> delete() async {
-    await sl.get<RestClient>().deleteUser();
+    await ServiceLocator.sl.get<RestClient>().deleteUser();
   }
 }

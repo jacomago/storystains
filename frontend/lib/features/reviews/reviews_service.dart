@@ -8,7 +8,7 @@ import '../review/review_model.dart';
 class ReviewsService {
   Future<List<Review>?> fetch({String query = '', int offset = 0}) async {
     try {
-      final res = await sl
+      final res = await ServiceLocator.sl
           .get<RestClient>()
           .getReviews(limit: AppConfig.defaultLimit, offset: offset);
 

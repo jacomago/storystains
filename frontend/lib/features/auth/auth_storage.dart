@@ -9,19 +9,21 @@ class AuthStorage {
   static const aOptions = AndroidOptions(
     encryptedSharedPreferences: true,
   );
+  late final FlutterSecureStorage _secureStorage;
 
-  static Future<void> logout() async {
-    final storage = sl.get<FlutterSecureStorage>();
-    await storage.delete(
+  AuthStorage() {
+    _secureStorage = ServiceLocator.sl.get<FlutterSecureStorage>();
+  }
+
+  Future<void> logout() async {
+    await _secureStorage.delete(
       key: key,
       aOptions: aOptions,
     );
   }
 
-  static Future<String?> getToken() async {
-    final storage = sl.get<FlutterSecureStorage>();
-
-    final userString = await storage.read(
+  Future<String?> getToken() async {
+    final userString = await _secureStorage.read(
       key: key,
       aOptions: aOptions,
     );
@@ -31,18 +33,13 @@ class AuthStorage {
         : User.fromJson(jsonDecode(userString) as Map<String, dynamic>).token;
   }
 
-  static Future<bool> tokenExists() async {
-    final storage = sl.get<FlutterSecureStorage>();
+  Future<bool> tokenExists() async => await _secureStorage.containsKey(
+        key: key,
+        aOptions: aOptions,
+      );
 
-    return await storage.containsKey(
-      key: key,
-      aOptions: aOptions,
-    );
-  }
-
-  static Future<User?> getUser() async {
-    final storage = sl.get<FlutterSecureStorage>();
-    final userString = await storage.read(
+  Future<User?> getUser() async {
+    final userString = await _secureStorage.read(
       key: key,
       aOptions: aOptions,
     );
@@ -52,9 +49,8 @@ class AuthStorage {
         : User.fromJson(jsonDecode(userString) as Map<String, dynamic>);
   }
 
-  static Future<void> login(User user) async {
-    final storage = sl.get<FlutterSecureStorage>();
-    await storage.write(
+  Future<void> login(User user) async {
+    await _secureStorage.write(
       key: key,
       value: jsonEncode(user),
       aOptions: aOptions,
