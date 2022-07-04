@@ -53,6 +53,8 @@ void main() {
     // in this set of tests. The full setup includes the dio
     // http client and so tries to do network requests which don't
     // timeout.
+    final dio = ServiceLocator.setupDio();
+    ServiceLocator.setupRest(dio);
     ServiceLocator.setupSecureStorage();
   });
   tearDown(ServiceLocator.sl.reset);
@@ -64,8 +66,6 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
-      final dio = ServiceLocator.setupDio();
-      ServiceLocator.setupRest(dio);
       ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
@@ -86,6 +86,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -106,10 +107,12 @@ void main() {
       final review = testReview(username: user.username);
 
       final reviewState = ReviewState(ReviewService(), review: review);
+      ServiceLocator.setupAuth();
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
       ));
+      await tester.pumpAndSettle();
       // find edit button
       expect(
         find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
@@ -125,6 +128,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -157,6 +161,7 @@ void main() {
       final review = testReview(slug: '/');
       final reviewState = ReviewState(mockService, review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -192,6 +197,7 @@ void main() {
       final reviewState = ReviewState(mockService, review: review);
 
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -227,6 +233,7 @@ void main() {
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService);
 
+      ServiceLocator.setupAuth();
       await tester
           .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
@@ -262,6 +269,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockReviewService();
       final reviewState = ReviewState(mockService);
+      ServiceLocator.setupAuth();
       final review = testReview();
 
       await tester
@@ -297,6 +305,7 @@ void main() {
         find.widgetWithText(SnackBar, 'Updated Review'),
         findsOneWidget,
       );
+      await tester.pumpAndSettle();
     });
   });
   group('test delete', () {
@@ -307,6 +316,7 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
@@ -315,12 +325,14 @@ void main() {
       // find menu button
       final menuButton = find.byIcon(Icons.adaptive.more);
       expect(menuButton, findsOneWidget);
+      await tester.pumpAndSettle();
     });
     testWidgets('cant delete when not logged in', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final user = testUser();
       final review = testReview(username: user.username);
 
+      ServiceLocator.setupAuth();
       final reviewState = ReviewState(ReviewService(), review: review);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
@@ -333,6 +345,7 @@ void main() {
         menuButton,
         findsNothing,
       );
+      await tester.pumpAndSettle();
     });
     testWidgets('delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -341,6 +354,7 @@ void main() {
       final review = testReview();
       final reviewState = ReviewState(mockService, review: review);
       final authState = await loggedInState(username: user.username);
+      ServiceLocator.sl.registerSingleton(authState);
 
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
@@ -368,6 +382,7 @@ void main() {
         find.widgetWithText(SnackBar, 'Deleted Review'),
         findsOneWidget,
       );
+      await tester.pumpAndSettle();
     });
   });
 }
