@@ -8,8 +8,6 @@ import 'emotion_service.dart';
 class EmotionsState extends ChangeNotifier {
   final EmotionsService _service;
 
-  late Future _initFuture;
-
   List<Emotion> _items = [];
 
   bool _isEmpty = false;
@@ -23,7 +21,6 @@ class EmotionsState extends ChangeNotifier {
   bool get isFailed => _isFailed;
   bool get isLoading => _isLoading;
 
-  Future get initDone => _initFuture;
   Emotion item(int index) => _items[index];
 
   Emotion get emotionDefault => _items.isEmpty
@@ -31,10 +28,10 @@ class EmotionsState extends ChangeNotifier {
       : _items[0];
 
   EmotionsState(this._service) {
-    _initFuture = _init();
+    _init();
   }
 
-  Future _init() async {
+  Future<void> _init() async {
     _startLoading();
 
     final items = await _service.fetch();

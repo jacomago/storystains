@@ -18,7 +18,7 @@ class EmotionDialog extends StatefulWidget {
 }
 
 class _EmotionDialogState extends State<EmotionDialog> {
-  late final ValueNotifier _selectedEmotion =
+  late final ValueNotifier<Emotion> _selectedEmotion =
       ValueNotifier(widget.initialEmotion);
 
   @override

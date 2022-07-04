@@ -14,7 +14,7 @@ class ReviewEmotionEdit extends StatelessWidget {
   }) : super(key: key);
 
   final Function cancelHandler;
-  final Function(ReviewEmotion) okHandler;
+  final void Function(ReviewEmotion) okHandler;
   final Function deleteHandler;
 
   void afterSend(BuildContext context, ReviewEmotionState state) {

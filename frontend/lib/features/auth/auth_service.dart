@@ -4,13 +4,13 @@ import 'package:storystains/common/utils/service_locator.dart';
 import 'auth_model.dart';
 
 class AuthService {
-  Future register(String username, String password) async {
+  Future<UserResp> register(String username, String password) async {
     return await sl.get<RestClient>().addUser(
           AddUser(user: NewUser(username: username, password: password)),
         );
   }
 
-  Future login(String username, String password) async {
+  Future<UserResp> login(String username, String password) async {
     final resp = await sl.get<RestClient>().loginUser(
           Login(user: LoginUser(username: username, password: password)),
         );
@@ -18,9 +18,7 @@ class AuthService {
     return resp;
   }
 
-  Future delete() async {
-    final resp = await sl.get<RestClient>().deleteUser();
-
-    return resp;
+  Future<void> delete() async {
+    await sl.get<RestClient>().deleteUser();
   }
 }

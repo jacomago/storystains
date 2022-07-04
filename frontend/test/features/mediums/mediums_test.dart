@@ -62,7 +62,7 @@ void main() {
       expect(mediumState.isEmpty, false);
 
       // assert init finished
-      await mediumState.initDone;
+      await Future<void>.delayed(const Duration(seconds: 1));
       expect(mediumState.count, 2);
     });
   });

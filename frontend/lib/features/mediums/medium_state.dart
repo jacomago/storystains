@@ -6,8 +6,6 @@ import 'medium_service.dart';
 class MediumsState extends ChangeNotifier {
   final MediumsService _service;
 
-  late Future _initFuture;
-
   List<Medium> _items = [];
 
   bool _isEmpty = false;
@@ -21,16 +19,15 @@ class MediumsState extends ChangeNotifier {
   bool get isFailed => _isFailed;
   bool get isLoading => _isLoading;
 
-  Future get initDone => _initFuture;
   Medium item(int index) => _items[index];
 
   Medium get mediumDefault => _items.isEmpty ? Medium.mediumDefault : _items[0];
 
   MediumsState(this._service) {
-    _initFuture = _init();
+    _init();
   }
 
-  Future _init() async {
+  Future<void> _init() async {
     _startLoading();
 
     final items = await _service.fetch();

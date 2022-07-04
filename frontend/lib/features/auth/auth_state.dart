@@ -52,7 +52,7 @@ class AuthState extends ChangeNotifier {
     return _user?.username == other.username;
   }
 
-  Future init() async {
+  Future<void> init() async {
     final user = await AuthStorage.getUser();
 
     if (user != null) {
@@ -66,7 +66,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future loginRegister(String username, String password) async {
+  Future<void> loginRegister(String username, String password) async {
     _event = _loginRegister == LoginRegister.login
         ? AuthEvent.login
         : AuthEvent.register;
@@ -79,7 +79,7 @@ class AuthState extends ChangeNotifier {
           ? await _service.login(username, password)
           : await _service.register(username, password);
 
-      if (data is UserResp && data.user.token.isNotEmpty) {
+      if (data.user.token.isNotEmpty) {
         _user = data.user;
 
         AuthStorage.login(_user!);
@@ -100,7 +100,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete() async {
+  Future<void> delete() async {
     _event = AuthEvent.delete;
     _isLoading = true;
 
@@ -128,7 +128,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future logout() async {
+  Future<void> logout() async {
     _event = AuthEvent.logout;
     _isLoading = true;
 

@@ -25,7 +25,7 @@ class Home extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
-  _goNewReview(
+  Future<void> _goNewReview(
     BuildContext context,
     ReviewsState reviewsState,
     AuthState authState,

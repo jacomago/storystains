@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/story/story.dart';
@@ -101,7 +100,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future update(Story story, String body) async {
+  Future<void> update(Story story, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
 
@@ -132,7 +131,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete() async {
+  Future<void> delete() async {
     _event = ReviewEvent.delete;
     _isLoading = true;
 

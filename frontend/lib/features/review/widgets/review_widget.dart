@@ -69,7 +69,7 @@ class ReviewWidget extends StatelessWidget {
         (state.review != null && authState.sameUser(state.review!.user));
   }
 
-  _goCopy(ReviewState state) {
+  void _goCopy(ReviewState state) {
     UnimplementedError();
   }
 

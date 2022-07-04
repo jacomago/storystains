@@ -70,7 +70,7 @@ class ReviewList extends StatelessWidget {
     );
   }
 
-  _tapItem(BuildContext context, Review review) {
+  void _tapItem(BuildContext context, Review review) {
     Navigator.of(context)
         .push(
           ReviewRoute.route(

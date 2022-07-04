@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/story/story.dart';

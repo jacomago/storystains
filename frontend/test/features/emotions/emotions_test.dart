@@ -62,7 +62,7 @@ void main() {
       expect(emotionState.isEmpty, false);
 
       // assert init finished
-      await emotionState.initDone;
+      await Future<void>.delayed(const Duration(seconds: 1));
       expect(emotionState.count, 2);
     });
   });

@@ -6,7 +6,7 @@ import 'package:storystains/features/emotions/emotion.dart';
 
 class EmotionEdit extends StatelessWidget {
   final Emotion emotion;
-  final Function(Emotion?) handler;
+  final void Function(Emotion?) handler;
 
   const EmotionEdit({
     Key? key,

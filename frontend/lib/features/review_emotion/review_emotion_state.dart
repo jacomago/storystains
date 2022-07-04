@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/data/network/api_exception.dart';
 import 'package:storystains/common/utils/error.dart';
 import 'package:storystains/features/emotions/emotion_model.dart';
 import 'package:storystains/features/review/review_model.dart';
@@ -54,7 +53,7 @@ class ReviewEmotionState extends ChangeNotifier {
     emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
-  Future update(
+  Future<void> update(
     Review review,
   ) async {
     _event = ReviewEmotionEvent.update;
@@ -97,7 +96,7 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future delete(
+  Future<void> delete(
     Review review,
   ) async {
     _event = ReviewEmotionEvent.delete;

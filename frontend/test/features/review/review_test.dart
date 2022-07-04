@@ -122,8 +122,8 @@ void main() {
       expect(reviewState.isUpdated, false);
 
       when(mockService.delete(review.user.username, review.slug)).thenAnswer(
-        (realInvocation) async =>
-            Response(requestOptions: RequestOptions(path: ""), statusCode: 200),
+        (realInvocation) async => Response<dynamic>(
+            requestOptions: RequestOptions(path: ""), statusCode: 200),
       );
 
       await reviewState.delete();
@@ -359,7 +359,7 @@ void main() {
         ),
       );
 
-      await Future.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 1));
       expect(reviewState.isCreate, false);
       expect(reviewState.isUpdated, false);
       expect(reviewState.status, ReviewStatus.read);
