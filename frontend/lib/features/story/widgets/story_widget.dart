@@ -8,28 +8,28 @@ class StoryEditWidget extends StatelessWidget {
   final StoryState state;
   @override
   Widget build(BuildContext context) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          height: 5,
-        ),
-        StoryTitleEdit(
-          titleController: state.titleController,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        StoryCreatorEdit(
-          creatorController: state.creatorController,
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        MediumPicker(
-          mediumController: state.mediumController,
-        ),
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 5,
+          ),
+          StoryTitleEdit(
+            titleController: state.titleController,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          StoryCreatorEdit(
+            creatorController: state.creatorController,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          MediumPicker(
+            mediumController: state.mediumController,
+          ),
+        ],
+      );
 }
 
 class StoryWidget extends StatelessWidget {
@@ -37,31 +37,31 @@ class StoryWidget extends StatelessWidget {
   final Story? story;
   @override
   Widget build(BuildContext context) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '${story?.title}',
-              style: context.headlineMedium,
-              semanticsLabel: 'Title',
-            ),
-            Text(
-              '(${story?.medium.name})',
-              style: context.headlineSmall,
-            ),
-          ],
-        ),
-        Text(
-          "by ${story?.creator ?? ""}",
-          style: context.headlineSmall!.copyWith(
-            fontStyle: FontStyle.italic,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${story?.title}',
+                style: context.headlineMedium,
+                semanticsLabel: 'Title',
+              ),
+              Text(
+                '(${story?.medium.name})',
+                style: context.headlineSmall,
+              ),
+            ],
           ),
-          semanticsLabel: 'Creator',
-        ),
-      ],
-    );
+          Text(
+            "by ${story?.creator ?? ""}",
+            style: context.headlineSmall!.copyWith(
+              fontStyle: FontStyle.italic,
+            ),
+            semanticsLabel: 'Creator',
+          ),
+        ],
+      );
 }
 
 class StoryTitleEdit extends StatelessWidget {
@@ -72,15 +72,15 @@ class StoryTitleEdit extends StatelessWidget {
   final TextEditingController titleController;
   @override
   Widget build(BuildContext context) => TextField(
-      textInputAction: TextInputAction.next,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Title',
-        hintText: 'Review title',
-      ),
-      style: context.titleMedium,
-      controller: titleController,
-    );
+        textInputAction: TextInputAction.next,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Title',
+          hintText: 'Review title',
+        ),
+        style: context.titleMedium,
+        controller: titleController,
+      );
 }
 
 class StoryCreatorEdit extends StatelessWidget {
@@ -92,13 +92,13 @@ class StoryCreatorEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextField(
-      textInputAction: TextInputAction.next,
-      decoration: const InputDecoration(
-        border: OutlineInputBorder(),
-        labelText: 'Creator',
-        hintText: 'Creator Name',
-      ),
-      style: context.titleMedium,
-      controller: creatorController,
-    );
+        textInputAction: TextInputAction.next,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          labelText: 'Creator',
+          hintText: 'Creator Name',
+        ),
+        style: context.titleMedium,
+        controller: creatorController,
+      );
 }

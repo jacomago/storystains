@@ -88,7 +88,7 @@ class ReviewEmotionState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
-    } 
+    }
 
     _isLoading = false;
     notifyListeners();
@@ -114,7 +114,7 @@ class ReviewEmotionState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
-    } 
+    }
 
     _isLoading = false;
 

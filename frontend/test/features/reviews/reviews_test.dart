@@ -79,9 +79,10 @@ void main() {
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async =>
           reviewsResp.reviews.sublist(0, AppConfig.defaultLimit));
-      when(mockService.fetch(offset: AppConfig.defaultLimit))
-          .thenAnswer((realInvocation) async => reviewsResp.reviews
-              .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit));
+      when(mockService.fetch(offset: AppConfig.defaultLimit)).thenAnswer(
+        (realInvocation) async => reviewsResp.reviews
+            .sublist(AppConfig.defaultLimit, 2 * AppConfig.defaultLimit),
+      );
 
       final reviewState = ReviewsState(mockService);
 

@@ -114,7 +114,9 @@ void main() {
       final review = testReview();
       when(mockService.delete(review, reviewEmotion.position)).thenAnswer(
         (realInvocation) async => Response<dynamic>(
-            requestOptions: RequestOptions(path: ''), statusCode: 200,),
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 200,
+        ),
       );
 
       await reviewEmotionState.delete(review);

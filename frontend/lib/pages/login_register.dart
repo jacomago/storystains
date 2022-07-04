@@ -43,69 +43,71 @@ class LoginOrRegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: const StainsAppBar(
-        title: AppBarTitle('Login/Register'),
-      ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(60),
-          child: Consumer<AuthState>(
-            builder: (_, auth, __) =>
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Center(
-                child: SvgPicture.asset(
-                  'assets/logo/logo.svg',
-                  height: 110,
-                ),
+        resizeToAvoidBottomInset: false,
+        appBar: const StainsAppBar(
+          title: AppBarTitle('Login/Register'),
+        ),
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(60),
+            child: Consumer<AuthState>(
+              builder: (_, auth, __) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: SvgPicture.asset(
+                      'assets/logo/logo.svg',
+                      height: 110,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Username',
+                      hintText: 'Enter your Username',
+                    ),
+                    controller: _usernameController,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                      hintText: 'Enter your secure password',
+                    ),
+                    controller: _passwordController,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _onLogin(context),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: context.colors.secondary,
+                      minimumSize: const Size(120, 40),
+                      elevation: 0,
+                    ),
+                    onPressed: () => _onLogin(context),
+                    child: Text(
+                      auth.isLogin ? 'Login' : 'Register',
+                      style: context.button!
+                          .copyWith(color: context.colors.onPrimary),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  OutlinedButton(
+                    onPressed: auth.switchLoginRegister,
+                    child: Text(
+                      auth.isLogin ? 'Register?' : 'Login?',
+                      style: context.button,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 20),
-              TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Username',
-                  hintText: 'Enter your Username',
-                ),
-                controller: _usernameController,
-                textInputAction: TextInputAction.next,
-              ),
-              const SizedBox(height: 20),
-              TextField(
-                obscureText: true,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  hintText: 'Enter your secure password',
-                ),
-                controller: _passwordController,
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) => _onLogin(context),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: context.colors.secondary,
-                  minimumSize: const Size(120, 40),
-                  elevation: 0,
-                ),
-                onPressed: () => _onLogin(context),
-                child: Text(
-                  auth.isLogin ? 'Login' : 'Register',
-                  style:
-                      context.button!.copyWith(color: context.colors.onPrimary),
-                ),
-              ),
-              const SizedBox(height: 5),
-              OutlinedButton(
-                onPressed: auth.switchLoginRegister,
-                child: Text(
-                  auth.isLogin ? 'Register?' : 'Login?',
-                  style: context.button,
-                ),
-              ),
-            ]),
+            ),
           ),
         ),
-      ),
-    );
+      );
 }

@@ -7,7 +7,7 @@ class ReviewNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-      create: (_) => ReviewState(ReviewService()),
-      child: const ReviewWidget(),
-    );
+        create: (_) => ReviewState(ReviewService()),
+        child: const ReviewWidget(),
+      );
 }

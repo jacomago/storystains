@@ -64,8 +64,9 @@ class ReviewWidget extends StatelessWidget {
     review.edit();
   }
 
-  bool canEdit(ReviewState state, AuthState authState) => !state.isCreate &&
-        (state.review != null && authState.sameUser(state.review!.user));
+  bool canEdit(ReviewState state, AuthState authState) =>
+      !state.isCreate &&
+      (state.review != null && authState.sameUser(state.review!.user));
 
   void _goCopy(ReviewState state) {
     UnimplementedError();
@@ -73,7 +74,7 @@ class ReviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Consumer2<ReviewState, AuthState>(
-      builder: (context, state, authState, _) => Scaffold(
+        builder: (context, state, authState, _) => Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
             title: const AppBarTitle('Review'),
@@ -81,8 +82,7 @@ class ReviewWidget extends StatelessWidget {
                 ? [
                     PopupMenuButton<Text>(
                       icon: Icon(Icons.adaptive.more),
-                      itemBuilder: (context) =>
-                          <PopupMenuItem<Text>>[
+                      itemBuilder: (context) => <PopupMenuItem<Text>>[
                         PopupMenuItem(
                           child: Text(
                             'Delete',
@@ -143,24 +143,25 @@ class ReviewWidget extends StatelessWidget {
           ),
           floatingActionButton: _buildFloatingButton(context, state, authState),
         ),
-    );
+      );
 
   Widget _buildFloatingButton(
     BuildContext context,
     ReviewState state,
     AuthState authState,
-  ) => state.isEdit
-        ? CustomFloatingButton(
-            onPressed: () => editReview(context),
-            icon: Icons.send_rounded,
-          )
-        : canEdit(state, authState)
-            ? CustomFloatingButton(
-                onPressed: () async => _goEdit(state),
-                icon: Icons.edit_note,
-              )
-            : CustomFloatingButton(
-                onPressed: () async => _goCopy(state),
-                icon: Icons.copy,
-              );
+  ) =>
+      state.isEdit
+          ? CustomFloatingButton(
+              onPressed: () => editReview(context),
+              icon: Icons.send_rounded,
+            )
+          : canEdit(state, authState)
+              ? CustomFloatingButton(
+                  onPressed: () async => _goEdit(state),
+                  icon: Icons.edit_note,
+                )
+              : CustomFloatingButton(
+                  onPressed: () async => _goCopy(state),
+                  icon: Icons.copy,
+                );
 }

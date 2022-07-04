@@ -49,52 +49,55 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: const StainsAppBar(
-        title: AppBarTitle(
-          'User Account',
-        ),
-      ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(60),
-          child: Consumer<AuthState>(
-            builder: (_, auth, __) =>
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Center(
-                child: SvgPicture.asset(
-                  'assets/logo/logo.svg',
-                  height: 110,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Hello ${auth.user?.username}',
-                style: context.bodyMedium,
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                style:
-                    ElevatedButton.styleFrom(primary: context.colors.secondary),
-                onPressed: () => _onLogout(context),
-                child: Text(
-                  'Log out',
-                  style:
-                      context.button!.copyWith(color: context.colors.onPrimary),
-                ),
-              ),
-              const SizedBox(height: 10),
-              OutlinedButton(
-                onPressed: () => _onDelete(context),
-                child: Text(
-                  'Delete User',
-                  style: context.button!
-                      .copyWith(color: context.colors.onErrorContainer),
-                ),
-              ),
-            ]),
+        resizeToAvoidBottomInset: false,
+        appBar: const StainsAppBar(
+          title: AppBarTitle(
+            'User Account',
           ),
         ),
-      ),
-    );
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(60),
+            child: Consumer<AuthState>(
+              builder: (_, auth, __) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: SvgPicture.asset(
+                      'assets/logo/logo.svg',
+                      height: 110,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Hello ${auth.user?.username}',
+                    style: context.bodyMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: context.colors.secondary,
+                    ),
+                    onPressed: () => _onLogout(context),
+                    child: Text(
+                      'Log out',
+                      style: context.button!
+                          .copyWith(color: context.colors.onPrimary),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  OutlinedButton(
+                    onPressed: () => _onDelete(context),
+                    child: Text(
+                      'Delete User',
+                      style: context.button!
+                          .copyWith(color: context.colors.onErrorContainer),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 }

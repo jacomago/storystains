@@ -7,27 +7,27 @@ class NotFoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: const StainsAppBar(
-        title: AppBarTitle('404'),
-      ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(60),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Center(
-                child: SvgPicture.asset(
-                  'assets/logo/logo.svg',
-                  height: 110,
+        resizeToAvoidBottomInset: false,
+        appBar: const StainsAppBar(
+          title: AppBarTitle('404'),
+        ),
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.all(60),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: SvgPicture.asset(
+                    'assets/logo/logo.svg',
+                    height: 110,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Text('Page Not Found'),
-            ],
+                const SizedBox(height: 20),
+                const Text('Page Not Found'),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
 }

@@ -123,7 +123,9 @@ void main() {
 
       when(mockService.delete(review.user.username, review.slug)).thenAnswer(
         (realInvocation) async => Response<dynamic>(
-            requestOptions: RequestOptions(path: ''), statusCode: 200,),
+          requestOptions: RequestOptions(path: ''),
+          statusCode: 200,
+        ),
       );
 
       await reviewState.delete();

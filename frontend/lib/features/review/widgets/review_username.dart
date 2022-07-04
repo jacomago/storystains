@@ -6,14 +6,14 @@ class ReviewUsername extends StatelessWidget {
   final String username;
   @override
   Widget build(BuildContext context) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '@$username',
-          style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-          overflow: TextOverflow.fade,
-          semanticsLabel: 'Username',
-        ),
-      ],
-    );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '@$username',
+            style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+            overflow: TextOverflow.fade,
+            semanticsLabel: 'Username',
+          ),
+        ],
+      );
 }

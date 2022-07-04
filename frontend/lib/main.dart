@@ -39,12 +39,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: AppConfig.appTitle,
-      theme: ThemeData(
-        colorScheme: lightColorScheme,
-        textTheme: GoogleFonts.libreBaskervilleTextTheme(),
-      ),
-      onGenerateRoute: RouteConfiguration.onGenerateRoute,
-    );
+        debugShowCheckedModeBanner: false,
+        title: AppConfig.appTitle,
+        theme: ThemeData(
+          colorScheme: lightColorScheme,
+          textTheme: GoogleFonts.libreBaskervilleTextTheme(),
+        ),
+        onGenerateRoute: RouteConfiguration.onGenerateRoute,
+      );
 }
