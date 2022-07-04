@@ -44,6 +44,8 @@ class StoryTitleEdit extends StatelessWidget {
     Key? key,
     required this.titleController,
   }) : super(key: key);
+
+  /// contoller of title
   final TextEditingController titleController;
   @override
   Widget build(BuildContext context) => TextField(
@@ -65,6 +67,8 @@ class StoryCreatorEdit extends StatelessWidget {
     Key? key,
     required this.creatorController,
   }) : super(key: key);
+
+  /// controller for changes to creator
   final TextEditingController creatorController;
 
   @override

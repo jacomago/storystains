@@ -11,15 +11,14 @@ part 'story_model.g.dart';
 
 /// Story representaion
 class Story {
-  @JsonKey(
-    fromJson: _mediumFromName,
-    toJson: _mediumToName,
-  )
-
   /// title of a story
   final String title;
 
   /// Medium of a story such as [Medium] ('Book')
+  @JsonKey(
+    fromJson: _mediumFromName,
+    toJson: _mediumToName,
+  )
   final Medium medium;
 
   /// Creator of a story such as 'Frank Herbert'

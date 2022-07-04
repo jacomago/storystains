@@ -9,7 +9,9 @@ import '../review_emotion/review_emotion.dart';
 
 import 'review_emotions_state.dart';
 
+/// List of r[ReviewEmotion] widget
 class ReviewEmotionsList extends StatelessWidget {
+  /// List of review emotions widget
   const ReviewEmotionsList({Key? key}) : super(key: key);
 
   void _updateEmotion(

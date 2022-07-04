@@ -10,19 +10,27 @@ part 'review_emotion_model.g.dart';
 @JsonSerializable()
 @immutable
 class ReviewEmotion {
+  /// Review emotion main model notes
   final String notes;
+
+  /// Review emotion main model emotion
   final Emotion emotion;
+
+  /// Review emotion main model position
   final int position;
 
+  /// Review emotion main model
   const ReviewEmotion({
     required this.notes,
     required this.emotion,
     required this.position,
   });
 
+  /// Review emotion main model from json
   factory ReviewEmotion.fromJson(Map<String, dynamic> json) =>
       _$ReviewEmotionFromJson(json);
 
+  /// Review emotion main model to json
   Map<String, dynamic> toJson() => _$ReviewEmotionToJson(this);
 
   @override
@@ -88,6 +96,8 @@ class NewReviewEmotion {
 @JsonSerializable()
 class ReviewEmotionResp {
   @JsonKey(name: 'review_emotion')
+
+  /// Review emotion main model
   ReviewEmotion reviewEmotion;
 
   /// response representation of [ReviewEmotion]

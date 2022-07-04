@@ -37,7 +37,6 @@ const lightColorScheme = ColorScheme(
 );
 
 /// Dark color scheme
-//TODO use
 const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
   primary: Color(0xFFFFB692),

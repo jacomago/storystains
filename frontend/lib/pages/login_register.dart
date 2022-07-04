@@ -7,13 +7,15 @@ import '../common/utils/snackbar.dart';
 import '../common/widget/widget.dart';
 import '../features/auth/auth.dart';
 
+/// Page for logging in or regsitering user
 class LoginOrRegisterPage extends StatelessWidget {
+  /// Page for logging in or regsitering user
   LoginOrRegisterPage({Key? key}) : super(key: key);
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void afterLoging(BuildContext context, AuthState auth) {
+  void _afterLoging(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated) {
       Navigator.of(context).pop();
       context.snackbar(
@@ -48,7 +50,7 @@ class LoginOrRegisterPage extends StatelessWidget {
     }
 
     await auth.loginRegister(username, password).then((value) {
-      afterLoging(context, auth);
+      _afterLoging(context, auth);
     });
   }
 

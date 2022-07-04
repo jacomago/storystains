@@ -14,7 +14,7 @@ class AuthService {
   /// Wrapper around [RestClient.loginUser]
   Future<UserResp> login(String username, String password) async =>
       await ServiceLocator.sl.get<RestClient>().loginUser(
-            Login(user: LoginUser(username: username, password: password)),
+            AddUser(user: NewUser(username: username, password: password)),
           );
 
   /// Wrapper around [RestClient.deleteUser]

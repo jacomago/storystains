@@ -87,7 +87,7 @@ abstract class RestClient {
 
   /// login [User] via api
   @retrofit.POST('/login')
-  Future<UserResp> loginUser(@retrofit.Body() Login login);
+  Future<UserResp> loginUser(@retrofit.Body() AddUser login);
 
   /// Delete [User] via the api
   @retrofit.DELETE('/users')

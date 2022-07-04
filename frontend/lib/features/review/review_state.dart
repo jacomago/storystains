@@ -5,12 +5,50 @@ import '../../common/utils/error.dart';
 import '../story/story.dart';
 import 'review.dart';
 
-enum ReviewEvent { read, update, delete }
+/// Events on [Review]
+enum ReviewEvent {
+  /// read from api
+  read,
 
-enum ReviewStatus { initial, read, updated, deleted, failed }
+  /// update to ai
+  update,
 
-enum ReviewStateType { edit, create, read }
+  /// delete via api
+  delete
+}
 
+/// status of state
+enum ReviewStatus {
+  /// load
+  initial,
+
+  /// read from url
+  read,
+
+  /// updated to api
+  updated,
+
+  /// deleted from api
+  deleted,
+
+  /// failed action
+  failed
+}
+
+/// state type
+enum ReviewStateType {
+  /// Editing the review
+  edit,
+
+  /// creating a new review (not in api)
+  create,
+
+  /// reading from url
+  read
+}
+
+///
+/// State of editing or showing a [Review]
 class ReviewState extends ChangeNotifier {
   final ReviewService _service;
 
@@ -19,27 +57,48 @@ class ReviewState extends ChangeNotifier {
   ReviewStatus _status = ReviewStatus.initial;
   ReviewStateType? _stateType;
   bool _isLoading = false;
-  String? _token;
   String _error = '';
 
+  /// current fromapi
   Review? get review => _review;
+
+  /// event
   ReviewEvent? get event => _event;
+
+  /// status
   ReviewStatus get status => _status;
+
+  /// type of state
   ReviewStateType? get stateType => _stateType;
-  String? get token => _token;
+
+  /// error message
   String get error => _error;
 
+  /// if in create mode
   bool get isCreate => _stateType == ReviewStateType.create;
+
+  /// if inedit mode
   bool get isEdit => _stateType != ReviewStateType.read;
 
+  /// if laoding from api
   bool get isLoading => _isLoading;
+
+  /// if updated
   bool get isUpdated => _status == ReviewStatus.updated;
+
+  /// if delted
   bool get isDeleted => _status == ReviewStatus.deleted;
+
+  /// if failed
   bool get isFailed => _status == ReviewStatus.failed;
 
+  /// controller for editing story
   late StoryState storyContoller;
+
+  /// controller for editing body
   late TextEditingController bodyController;
 
+  /// State of editing or showing a [Review]
   ReviewState(this._service, {Review? review, ReviewRoutePath? path}) {
     _event = null;
     _status = ReviewStatus.initial;
@@ -58,16 +117,19 @@ class ReviewState extends ChangeNotifier {
     }
   }
 
+  /// switch to edit mode
   void edit() {
     _stateType = ReviewStateType.edit;
     notifyListeners();
   }
 
+  /// switch out of edit mode
   void unEdit() {
     _stateType = ReviewStateType.read;
     notifyListeners();
   }
 
+  /// load from apif
   Future<void> _init(ReviewRoutePath path) async {
     _startLoading();
 
@@ -99,6 +161,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// update to api
   Future<void> update(Story story, String body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
@@ -128,6 +191,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// delte review
   Future<void> delete() async {
     _event = ReviewEvent.delete;
     _isLoading = true;
@@ -144,7 +208,6 @@ class ReviewState extends ChangeNotifier {
       _error = '';
       _event = null;
       _review = null;
-      _token = null;
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
