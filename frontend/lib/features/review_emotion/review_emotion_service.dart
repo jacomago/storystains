@@ -4,7 +4,8 @@ import 'package:storystains/features/review/review_model.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
 
 class ReviewEmotionService {
-  Future create(Review review, ReviewEmotion reviewEmotion) async {
+  Future<ReviewEmotionResp> create(
+      Review review, ReviewEmotion reviewEmotion) async {
     return await sl.get<RestClient>().createReviewEmotion(
           review.user.username,
           review.slug,
@@ -18,7 +19,7 @@ class ReviewEmotionService {
         );
   }
 
-  Future update(
+  Future<ReviewEmotionResp> update(
     Review review,
     int position,
     ReviewEmotion reviewEmotion,
@@ -37,7 +38,7 @@ class ReviewEmotionService {
         );
   }
 
-  Future read(
+  Future<ReviewEmotionResp> read(
     String username,
     String slug,
     int position,
@@ -47,7 +48,7 @@ class ReviewEmotionService {
         .readReviewEmotion(username, slug, position);
   }
 
-  Future delete(
+  Future<void> delete(
     Review review,
     int position,
   ) async {

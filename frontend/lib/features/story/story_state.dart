@@ -56,7 +56,7 @@ class StoryState extends ChangeNotifier {
         creator: creatorController.text,
       );
 
-  Future update() async {
+  Future<void> update() async {
     _event = StoryEvent.update;
     _isLoading = true;
 
@@ -65,17 +65,12 @@ class StoryState extends ChangeNotifier {
     try {
       final data = await _service.create(value!);
 
-      if (data is WrappedStory) {
-        _story = data.story;
+      _story = data.story;
 
-        _status = StoryStatus.updated;
-        titleController = TextEditingController(text: data.story.title);
-        creatorController = TextEditingController(text: data.story.creator);
-        mediumController = ValueNotifier(data.story.medium);
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = StoryStatus.updated;
+      titleController = TextEditingController(text: data.story.title);
+      creatorController = TextEditingController(text: data.story.creator);
+      mediumController = ValueNotifier(data.story.medium);
     } on DioError catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);

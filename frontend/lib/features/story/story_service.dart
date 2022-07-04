@@ -5,7 +5,7 @@ import 'package:storystains/features/story/story.dart';
 import 'story_model.dart';
 
 class StoryService {
-  Future create(Story story) async {
+  Future<WrappedStory> create(Story story) async {
     return await sl.get<RestClient>().createStory(
           WrappedStory(story: story),
         );

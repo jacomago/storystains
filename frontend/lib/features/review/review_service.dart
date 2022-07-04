@@ -5,7 +5,7 @@ import 'package:storystains/features/story/story.dart';
 import 'review_model.dart';
 
 class ReviewService {
-  Future create(Story story, String body) async {
+  Future<ReviewResp> create(Story story, String body) async {
     return await sl.get<RestClient>().createReview(
           CreateReview(
             review: NewReview(
@@ -16,7 +16,8 @@ class ReviewService {
         );
   }
 
-  Future update(String username, String slug, Story story, String body) async {
+  Future<ReviewResp> update(
+      String username, String slug, Story story, String body) async {
     return await sl.get<RestClient>().updateReview(
           username,
           slug,
@@ -29,11 +30,11 @@ class ReviewService {
         );
   }
 
-  Future read(String username, String slug) async {
+  Future<ReviewResp> read(String username, String slug) async {
     return await sl.get<RestClient>().readReview(username, slug);
   }
 
-  Future delete(String username, String slug) async {
+  Future<void> delete(String username, String slug) async {
     return await sl.get<RestClient>().deleteReview(username, slug);
   }
 }

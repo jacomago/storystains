@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-
 class ApiException implements Exception {
   final String? _message;
   final String? _prefix;
@@ -13,46 +11,26 @@ class ApiException implements Exception {
 }
 
 class FetchDataException extends ApiException {
-  FetchDataException([message]) : super(message, 'Connection Error: ');
+  FetchDataException([String? message]) : super(message, 'Connection Error: ');
 }
 
 class BadRequestException extends ApiException {
-  BadRequestException([message]) : super(message, 'Bad Request: ');
+  BadRequestException([String? message]) : super(message, 'Bad Request: ');
 }
 
 class UnauthorisedException extends ApiException {
-  UnauthorisedException([message]) : super(message, 'Unauthorised: ');
+  UnauthorisedException([String? message]) : super(message, 'Unauthorised: ');
 }
 
 class ForbiddenException extends ApiException {
-  ForbiddenException([message]) : super(message, 'Forbidden: ');
+  ForbiddenException([String? message]) : super(message, 'Forbidden: ');
 }
 
 class NotFoundException extends ApiException {
-  NotFoundException([message]) : super(message, 'Not Found: ');
+  NotFoundException([String? message]) : super(message, 'Not Found: ');
 }
 
 class InternalErrorException extends ApiException {
-  InternalErrorException([message]) : super(message, 'Internal server error: ');
-}
-
-class StatusCodeException {
-  static ApiException exception(Response response) {
-    switch (response.statusCode) {
-      case 401:
-        {
-          return UnauthorisedException(response.statusMessage);
-        }
-      case 400:
-        {
-          return BadRequestException(response.statusMessage);
-        }
-      case 500:
-        {
-          return InternalErrorException(response.statusMessage);
-        }
-    }
-
-    return FetchDataException(response.statusMessage);
-  }
+  InternalErrorException([String? message])
+      : super(message, 'Internal server error: ');
 }

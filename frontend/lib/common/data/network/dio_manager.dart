@@ -18,7 +18,7 @@ class DioManager {
     _cancelTokens.add(token);
   }
 
-  cancelAll([dynamic reason]) {
+  void cancelAll([dynamic reason]) {
     for (var token in _cancelTokens) {
       token.cancel(reason);
     }

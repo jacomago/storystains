@@ -9,7 +9,8 @@ class AuthStorage {
   static const aOptions = AndroidOptions(
     encryptedSharedPreferences: true,
   );
-  static logout() async {
+
+  static Future<void> logout() async {
     final storage = sl.get<FlutterSecureStorage>();
     await storage.delete(
       key: key,
@@ -27,7 +28,7 @@ class AuthStorage {
 
     return userString == null
         ? null
-        : User.fromJson(jsonDecode(userString)).token;
+        : User.fromJson(jsonDecode(userString) as Map<String, dynamic>).token;
   }
 
   static Future<bool> tokenExists() async {
@@ -46,10 +47,12 @@ class AuthStorage {
       aOptions: aOptions,
     );
 
-    return userString == null ? null : User.fromJson(jsonDecode(userString));
+    return userString == null
+        ? null
+        : User.fromJson(jsonDecode(userString) as Map<String, dynamic>);
   }
 
-  static login(User user) async {
+  static Future<void> login(User user) async {
     final storage = sl.get<FlutterSecureStorage>();
     await storage.write(
       key: key,

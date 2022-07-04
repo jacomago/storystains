@@ -46,7 +46,8 @@ class AuthInterceptors extends Interceptor {
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) async {
+  void onResponse(
+      Response<dynamic> response, ResponseInterceptorHandler handler) async {
     final uri = response.requestOptions.uri;
     if (AppConfig.baseUrl.startsWith("${uri.scheme}://${uri.host}") &&
         response.statusCode == 401) {

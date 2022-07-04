@@ -58,12 +58,12 @@ class ReviewState extends ChangeNotifier {
     }
   }
 
-  edit() {
+  void edit() {
     _stateType = ReviewStateType.edit;
     notifyListeners();
   }
 
-  unEdit() {
+  void unEdit() {
     _stateType = ReviewStateType.read;
     notifyListeners();
   }
@@ -74,17 +74,12 @@ class ReviewState extends ChangeNotifier {
     try {
       final data = await _service.read(path.username, path.slug);
 
-      if (data is ReviewResp) {
-        _review = data.review;
+      _review = data.review;
 
-        storyContoller = StoryState(StoryService(), story: review?.story);
-        bodyController = TextEditingController(text: _review?.body);
-        _status = ReviewStatus.read;
-        _stateType = ReviewStateType.read;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      storyContoller = StoryState(StoryService(), story: review?.story);
+      bodyController = TextEditingController(text: _review?.body);
+      _status = ReviewStatus.read;
+      _stateType = ReviewStateType.read;
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
@@ -122,15 +117,10 @@ class ReviewState extends ChangeNotifier {
               body,
             );
 
-      if (data is ReviewResp) {
-        _review = data.review;
+      _review = data.review;
 
-        _status = ReviewStatus.updated;
-        _stateType = ReviewStateType.read;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = ReviewStatus.updated;
+      _stateType = ReviewStateType.read;
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);

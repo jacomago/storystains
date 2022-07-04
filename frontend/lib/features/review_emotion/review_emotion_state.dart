@@ -83,14 +83,9 @@ class ReviewEmotionState extends ChangeNotifier {
               updateReviewEmotion,
             );
 
-      if (data is ReviewEmotionResp) {
-        _reviewEmotion = data.reviewEmotion;
+      _reviewEmotion = data.reviewEmotion;
 
-        _status = ReviewEmotionStatus.updated;
-      } else {
-        final e = StatusCodeException.exception(data);
-        throw e;
-      }
+      _status = ReviewEmotionStatus.updated;
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);

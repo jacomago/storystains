@@ -20,7 +20,7 @@ class ReviewEmotionsState extends ChangeNotifier {
       _isEditItem ? _items[_currentIndex!] : null;
   bool get isEmpty => _isEmpty;
 
-  get currentEmotion => _currentEmotion;
+  Emotion? get currentEmotion => _currentEmotion;
 
   ReviewEmotion item(int index) => _items[index];
 
@@ -28,20 +28,20 @@ class ReviewEmotionsState extends ChangeNotifier {
     _items = items;
   }
 
-  Future create(Emotion emotion) async {
+  Future<void> create(Emotion emotion) async {
     _isNewItem = true;
     _currentEmotion = emotion;
     notifyListeners();
   }
 
-  Future edit(int index, Emotion emotion) async {
+  Future<void> edit(int index, Emotion emotion) async {
     _isEditItem = true;
     _currentEmotion = emotion;
     _currentIndex = index;
     notifyListeners();
   }
 
-  Future cancelCreate() async {
+  Future<void> cancelCreate() async {
     _isNewItem = false;
     _isEditItem = false;
     _currentIndex = null;
@@ -49,7 +49,7 @@ class ReviewEmotionsState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future confirmCreation(ReviewEmotion reviewEmotion) async {
+  Future<void> confirmCreation(ReviewEmotion reviewEmotion) async {
     if (_isNewItem) {
       _items.add(reviewEmotion);
     } else {
@@ -59,12 +59,12 @@ class ReviewEmotionsState extends ChangeNotifier {
     await cancelCreate();
   }
 
-  Future confirmEdit(ReviewEmotion reviewEmotion) async {
+  Future<void> confirmEdit(ReviewEmotion reviewEmotion) async {
     _items.sort(((a, b) => a.position.compareTo(b.position)));
     await cancelCreate();
   }
 
-  Future confirmDelete() async {
+  Future<void> confirmDelete() async {
     if (!_isNewItem) {
       _items.removeAt(_currentIndex!);
     }
