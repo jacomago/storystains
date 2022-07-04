@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/features/emotions/emotion_model.dart';
+import '../../common/constant/app_config.dart';
+import 'emotion_model.dart';
 
 import 'emotion_service.dart';
 
@@ -24,7 +24,7 @@ class EmotionsState extends ChangeNotifier {
   Emotion item(int index) => _items[index];
 
   Emotion get emotionDefault => _items.isEmpty
-      ? Emotion(description: '', name: "Default", iconUrl: "")
+      ? const Emotion(description: '', name: 'Default', iconUrl: '')
       : _items[0];
 
   EmotionsState(this._service) {
@@ -54,7 +54,7 @@ class EmotionsState extends ChangeNotifier {
       '${AppConfig.imagesBaseUrl}${emotion.iconUrl}';
 
   Future<void> _precache() async {
-    for (Emotion e in _items) {
+    for (var e in _items) {
       await precachePicture(
         NetworkPicture(
           SvgPicture.svgByteDecoderBuilder,

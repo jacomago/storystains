@@ -1,17 +1,19 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'emotion_model.g.dart';
 
 @JsonSerializable()
+@immutable
 class Emotion {
-  String name;
+  final String name;
   @JsonKey(name: 'icon_url')
-  String iconUrl;
-  String description;
+  final String iconUrl;
+  final String description;
 
-  Emotion({
+  const Emotion({
     required this.name,
     required this.iconUrl,
     required this.description,
@@ -23,14 +25,10 @@ class Emotion {
   Map<String, dynamic> toJson() => _$EmotionToJson(this);
 
   @override
-  String toString() {
-    return json.encode(toJson());
-  }
+  String toString() => json.encode(toJson());
 
   @override
-  bool operator ==(Object other) {
-    return other is Emotion && name == other.name;
-  }
+  bool operator ==(Object other) => other is Emotion && name == other.name;
 
   @override
   int get hashCode => name.hashCode;

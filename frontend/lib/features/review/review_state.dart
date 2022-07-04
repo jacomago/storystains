@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/features/review/review.dart';
-import 'package:storystains/features/story/story.dart';
+
+import '../../common/utils/error.dart';
+import '../story/story.dart';
+import 'review.dart';
 
 enum ReviewEvent { read, update, delete }
 
@@ -82,8 +83,6 @@ class ReviewState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewStatus.failed;
     }
 
     notifyListeners();
@@ -123,8 +122,6 @@ class ReviewState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewStatus.failed;
     }
 
     _isLoading = false;
@@ -151,9 +148,6 @@ class ReviewState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;

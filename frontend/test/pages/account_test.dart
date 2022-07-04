@@ -16,14 +16,12 @@ Widget wrapWithMaterial(Widget w, AuthState authState) =>
 
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("account page", () {
+  group('account page', () {
     testWidgets('Account values', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final widg = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return const AccountPage();
-        }),
+        Builder(builder: (context) => const AccountPage()),
         AuthState(AuthService()),
       );
 
@@ -38,9 +36,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final widg = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return const AccountPage();
-        }),
+        Builder(builder: (context) => const AccountPage()),
         AuthState(AuthService()),
       );
 
@@ -56,7 +52,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Delete user failed"),
+        find.widgetWithText(SnackBar, 'Delete user failed'),
         findsOneWidget,
       );
     });
@@ -65,9 +61,7 @@ void main() {
       ServiceLocator.setup();
 
       final widg = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return const AccountPage();
-        }),
+        Builder(builder: (context) => const AccountPage()),
         AuthState(AuthService()),
       );
 
@@ -83,7 +77,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Logout succeded"),
+        find.widgetWithText(SnackBar, 'Logout succeded'),
         findsOneWidget,
       );
     });

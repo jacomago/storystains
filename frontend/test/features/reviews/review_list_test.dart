@@ -32,7 +32,7 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
 @GenerateMocks([ReviewsService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Refresh Reviews Page", () {
+  group('Refresh Reviews Page', () {
     testWidgets('fail network', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
@@ -65,7 +65,7 @@ void main() {
     testWidgets('some data', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final review = testReview(slug: "randomtitle");
+      final review = testReview(slug: 'randomtitle');
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async => [review]);
@@ -81,12 +81,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(review.story.title), findsOneWidget);
-      expect(find.text("@${review.user.username}"), findsOneWidget);
+      expect(find.text('@${review.user.username}'), findsOneWidget);
     });
     testWidgets('refresh', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final review =
-          testReview(slug: "randomtitle", username: "randomusername");
+          testReview(slug: 'randomtitle', username: 'randomusername');
 
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenAnswer((realInvocation) async => []);
@@ -105,14 +105,14 @@ void main() {
       when(mockService.fetch(offset: AppConfig.defaultLimit))
           .thenAnswer((realInvocation) async => []);
 
-      expect(find.text("Refresh"), findsOneWidget);
-      await tester.tap(find.widgetWithText(OutlinedButton, "Refresh"));
+      expect(find.text('Refresh'), findsOneWidget);
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Refresh'));
       await tester.pumpAndSettle();
 
       verify(mockService.fetch());
 
       expect(find.text(review.story.title), findsOneWidget);
-      expect(find.text("@${review.user.username}"), findsOneWidget);
+      expect(find.text('@${review.user.username}'), findsOneWidget);
     });
   });
 }

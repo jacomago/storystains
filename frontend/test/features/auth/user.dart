@@ -4,10 +4,10 @@ import 'package:storystains/features/auth/auth.dart';
 import 'auth_test.mocks.dart';
 
 User testUser({String? token, String? username}) =>
-    User(token: token ?? "token", username: username ?? "username");
+    User(token: token ?? 'token', username: username ?? 'username');
 
 UserProfile testUserProfile({String? username}) =>
-    UserProfile(username: username ?? "username");
+    UserProfile(username: username ?? 'username');
 
 Future<AuthState> loggedInState({String? username}) async {
   final user = testUser(username: username);

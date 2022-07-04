@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:storystains/features/mediums/medium_model.dart';
+import 'medium_model.dart';
 
 import 'medium_service.dart';
 

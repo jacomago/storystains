@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:storystains/common/utils/service_locator.dart';
-import 'package:storystains/features/auth/auth.dart';
+import '../../common/utils/service_locator.dart';
+import 'auth.dart';
 
 class AuthStorage {
   static const key = 'user';

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/features/mediums/medium.dart';
-import 'package:storystains/features/story/story.dart';
+import '../../../common/utils/utils.dart';
+import '../../mediums/medium.dart';
+import '../story.dart';
 
 class StoryEditWidget extends StatelessWidget {
   const StoryEditWidget({Key? key, required this.state}) : super(key: key);
   final StoryState state;
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(
@@ -32,28 +30,25 @@ class StoryEditWidget extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class StoryWidget extends StatelessWidget {
   const StoryWidget({Key? key, required this.story}) : super(key: key);
   final Story? story;
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "${story?.title}",
+              '${story?.title}',
               style: context.headlineMedium,
               semanticsLabel: 'Title',
             ),
             Text(
-              "(${story?.medium.name})",
+              '(${story?.medium.name})',
               style: context.headlineSmall,
             ),
           ],
@@ -67,7 +62,6 @@ class StoryWidget extends StatelessWidget {
         ),
       ],
     );
-  }
 }
 
 class StoryTitleEdit extends StatelessWidget {
@@ -77,8 +71,7 @@ class StoryTitleEdit extends StatelessWidget {
   }) : super(key: key);
   final TextEditingController titleController;
   @override
-  Widget build(BuildContext context) {
-    return TextField(
+  Widget build(BuildContext context) => TextField(
       textInputAction: TextInputAction.next,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
@@ -88,7 +81,6 @@ class StoryTitleEdit extends StatelessWidget {
       style: context.titleMedium,
       controller: titleController,
     );
-  }
 }
 
 class StoryCreatorEdit extends StatelessWidget {
@@ -99,8 +91,7 @@ class StoryCreatorEdit extends StatelessWidget {
   final TextEditingController creatorController;
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
+  Widget build(BuildContext context) => TextField(
       textInputAction: TextInputAction.next,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
@@ -110,5 +101,4 @@ class StoryCreatorEdit extends StatelessWidget {
       style: context.titleMedium,
       controller: creatorController,
     );
-  }
 }

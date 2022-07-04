@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/auth/auth.dart';
-import 'package:storystains/features/review/review.dart';
-import 'package:storystains/common/utils/utils.dart';
-import 'package:storystains/features/review_emotions/review_emotions.dart';
-import 'package:storystains/features/story/story.dart';
 
+import '../../../common/utils/utils.dart';
+import '../../../common/widget/widget.dart';
+import '../../auth/auth.dart';
+import '../../review_emotions/review_emotions.dart';
+import '../../story/story.dart';
+import '../review.dart';
 import 'review_body.dart';
 
 class ReviewWidget extends StatelessWidget {
@@ -19,7 +19,7 @@ class ReviewWidget extends StatelessWidget {
       context.snackbar(msg);
     } else if (state.isDeleted) {
       context.pop();
-      const msg = "Deleted Review";
+      const msg = 'Deleted Review';
       context.snackbar(msg);
     } else {
       if (state.isFailed) {
@@ -64,20 +64,16 @@ class ReviewWidget extends StatelessWidget {
     review.edit();
   }
 
-  bool canEdit(ReviewState state, AuthState authState) {
-    return !state.isCreate &&
+  bool canEdit(ReviewState state, AuthState authState) => !state.isCreate &&
         (state.review != null && authState.sameUser(state.review!.user));
-  }
 
   void _goCopy(ReviewState state) {
     UnimplementedError();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer2<ReviewState, AuthState>(
-      builder: (context, state, authState, _) {
-        return Scaffold(
+  Widget build(BuildContext context) => Consumer2<ReviewState, AuthState>(
+      builder: (context, state, authState, _) => Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
             title: const AppBarTitle('Review'),
@@ -85,11 +81,11 @@ class ReviewWidget extends StatelessWidget {
                 ? [
                     PopupMenuButton<Text>(
                       icon: Icon(Icons.adaptive.more),
-                      itemBuilder: (BuildContext context) =>
+                      itemBuilder: (context) =>
                           <PopupMenuItem<Text>>[
                         PopupMenuItem(
                           child: Text(
-                            "Delete",
+                            'Delete',
                             style: context.labelSmall!
                                 .copyWith(color: context.colors.error),
                           ),
@@ -146,17 +142,14 @@ class ReviewWidget extends StatelessWidget {
             ),
           ),
           floatingActionButton: _buildFloatingButton(context, state, authState),
-        );
-      },
+        ),
     );
-  }
 
   Widget _buildFloatingButton(
     BuildContext context,
     ReviewState state,
     AuthState authState,
-  ) {
-    return state.isEdit
+  ) => state.isEdit
         ? CustomFloatingButton(
             onPressed: () => editReview(context),
             icon: Icons.send_rounded,
@@ -170,5 +163,4 @@ class ReviewWidget extends StatelessWidget {
                 onPressed: () async => _goCopy(state),
                 icon: Icons.copy,
               );
-  }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/utils/extensions.dart';
-import 'package:storystains/common/utils/snackbar.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/auth/auth.dart';
+import '../common/utils/extensions.dart';
+import '../common/utils/snackbar.dart';
+import '../common/widget/widget.dart';
+import '../features/auth/auth.dart';
 
 class LoginOrRegisterPage extends StatelessWidget {
   LoginOrRegisterPage({Key? key}) : super(key: key);
@@ -42,8 +42,7 @@ class LoginOrRegisterPage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const StainsAppBar(
         title: AppBarTitle('Login/Register'),
@@ -109,5 +108,4 @@ class LoginOrRegisterPage extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:storystains/common/utils/utils.dart';
+import '../../common/utils/utils.dart';
 
 import 'auth.dart';
 
@@ -48,9 +48,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool sameUser(UserProfile other) {
-    return _user?.username == other.username;
-  }
+  bool sameUser(UserProfile other) => _user?.username == other.username;
 
   Future<void> init() async {
     final user = await AuthStorage.getUser();
@@ -91,9 +89,6 @@ class AuthState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = AuthStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;
@@ -119,9 +114,6 @@ class AuthState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = AuthStatus.failed;
-      _error = e.toString();
     }
 
     _isLoading = false;

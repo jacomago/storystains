@@ -8,9 +8,9 @@ Review testReview({
   String? username,
 }) =>
     Review(
-      body: "body$slug",
+      body: 'body$slug',
       createdAt: DateTime.now(),
-      slug: slug ?? "title",
+      slug: slug ?? 'title',
       story: testStory(title: slug),
       updatedAt: DateTime.now(),
       emotions: [],

@@ -1,6 +1,8 @@
-import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/common/utils/service_locator.dart';
-import 'package:storystains/features/emotions/emotion_model.dart';
+import 'package:dio/dio.dart';
+
+import '../../common/data/network/rest_client.dart';
+import '../../common/utils/service_locator.dart';
+import 'emotion_model.dart';
 
 class EmotionsService {
   Future<List<Emotion>?> fetch() async {
@@ -8,7 +10,7 @@ class EmotionsService {
       final res = await sl.get<RestClient>().getEmotions();
 
       return res.emotions;
-    } catch (e) {
+    } on DioError catch (_) {
       return null;
     }
   }

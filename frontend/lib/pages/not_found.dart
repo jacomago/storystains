@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:storystains/common/widget/widget.dart';
+import '../common/widget/widget.dart';
 
 class NotFoundPage extends StatelessWidget {
   const NotFoundPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: const StainsAppBar(
         title: AppBarTitle('404'),
@@ -31,5 +30,4 @@ class NotFoundPage extends StatelessWidget {
         ),
       ),
     );
-  }
 }

@@ -51,63 +51,60 @@ class Timeline extends StatelessWidget {
   final PaintingStyle style;
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: padding,
-      separatorBuilder: (_, __) => SizedBox(height: itemGap),
-      physics: physics,
-      shrinkWrap: shrinkWrap,
-      itemCount: itemCount,
-      controller: controller,
-      reverse: reverse,
-      primary: primary,
-      itemBuilder: (context, index) {
-        final child = children[index];
+  Widget build(BuildContext context) => ListView.separated(
+        padding: padding,
+        separatorBuilder: (_, __) => SizedBox(height: itemGap),
+        physics: physics,
+        shrinkWrap: shrinkWrap,
+        itemCount: itemCount,
+        controller: controller,
+        reverse: reverse,
+        primary: primary,
+        itemBuilder: (context, index) {
+          final child = children[index];
 
-        Widget? indicator;
-        if (indicators != null) {
-          indicator = indicators![index];
-        }
+          Widget? indicator;
+          if (indicators != null) {
+            indicator = indicators![index];
+          }
 
-        final isFirst = index == 0;
-        final isLast = index == itemCount - 1;
+          final isFirst = index == 0;
+          final isLast = index == itemCount - 1;
 
-        final timelineTile = <Widget>[
-          CustomPaint(
-            foregroundPainter: _TimelinePainter(
-              hideDefaultIndicator: indicator != null,
-              lineColor: lineColor,
-              indicatorColor: indicatorColor,
-              indicatorSize: indicatorSize,
-              indicatorStyle: indicatorStyle,
-              isFirst: isFirst,
-              isLast: isLast,
-              lineGap: lineGap,
-              strokeCap: strokeCap,
-              strokeWidth: strokeWidth,
-              style: style,
-              itemGap: itemGap,
+          final timelineTile = <Widget>[
+            CustomPaint(
+              foregroundPainter: _TimelinePainter(
+                hideDefaultIndicator: indicator != null,
+                lineColor: lineColor,
+                indicatorColor: indicatorColor,
+                indicatorSize: indicatorSize,
+                indicatorStyle: indicatorStyle,
+                isFirst: isFirst,
+                isLast: isLast,
+                lineGap: lineGap,
+                strokeCap: strokeCap,
+                strokeWidth: strokeWidth,
+                style: style,
+                itemGap: itemGap,
+              ),
+              child: SizedBox(
+                height: double.infinity,
+                width: indicatorSize,
+                child: indicator,
+              ),
             ),
-            child: SizedBox(
-              height: double.infinity,
-              width: indicatorSize,
-              child: indicator,
-            ),
-          ),
-          SizedBox(width: gutterSpacing),
-          Expanded(child: child),
-        ];
+            SizedBox(width: gutterSpacing),
+            Expanded(child: child),
+          ];
 
-        return IntrinsicHeight(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children:
-                isLeftAligned ? timelineTile : timelineTile.reversed.toList(),
-          ),
-        );
-      },
-    );
-  }
+          return IntrinsicHeight(
+            child: Row(
+              children:
+                  isLeftAligned ? timelineTile : timelineTile.reversed.toList(),
+            ),
+          );
+        },
+      );
 }
 
 class _TimelinePainter extends CustomPainter {
@@ -168,14 +165,12 @@ class _TimelinePainter extends CustomPainter {
     if (!isLast) canvas.drawLine(centerBottom, bottom, linePaint);
 
     if (!hideDefaultIndicator) {
-      final Offset offsetCenter = size.centerLeft(Offset(indicatorRadius, 0));
+      final offsetCenter = size.centerLeft(Offset(indicatorRadius, 0));
 
       canvas.drawCircle(offsetCenter, indicatorRadius, circlePaint);
     }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }

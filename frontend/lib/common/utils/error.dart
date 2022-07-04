@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:storystains/common/data/network/api_exception.dart';
+import '../data/network/api_exception.dart';
 
 String errorMessage(DioError error) {
   if (error.type == DioErrorType.connectTimeout) {
-    return "Connection timed out";
+    return 'Connection timed out';
   } else if (error.type == DioErrorType.response) {
     switch (error.response?.statusCode) {
       case 400:
@@ -25,6 +25,6 @@ String errorMessage(DioError error) {
         ).toString();
     }
   } else {
-    return "Unkown Error";
+    return 'Unkown Error';
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/features/review/review.dart';
+import 'review.dart';
 
 import 'review_model.dart';
 
@@ -8,16 +8,13 @@ class ReviewRoute {
     String routeName,
     Review review,
     Widget Function(Review) builder,
-  ) {
-    return MaterialPageRoute<Review>(
-      settings: RouteSettings(
-        name: '$routeName/${review.user.username}/${review.slug}',
-      ),
-      builder: (BuildContext context) {
-        return builder(review);
-      },
-    );
-  }
+  ) =>
+      MaterialPageRoute<Review>(
+        settings: RouteSettings(
+          name: '$routeName/${review.user.username}/${review.slug}',
+        ),
+        builder: (context) => builder(review),
+      );
 }
 
 class ReviewRoutePath {

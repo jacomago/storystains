@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/features/review/review.dart';
-import 'package:storystains/pages/account.dart';
-import 'package:storystains/pages/home.dart';
-import 'package:storystains/pages/login_register.dart';
-import 'package:storystains/pages/not_found.dart';
-import 'package:storystains/pages/review_detail.dart';
-import 'package:storystains/pages/review_new.dart';
+import '../features/review/review.dart';
+import '../pages/account.dart';
+import '../pages/home.dart';
+import '../pages/login_register.dart';
+import '../pages/not_found.dart';
+import '../pages/review_detail.dart';
+import '../pages/review_new.dart';
 
 class Routes {
   static const String root = '/';

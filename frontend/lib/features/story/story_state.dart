@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/features/mediums/medium.dart';
-import 'package:storystains/features/story/story.dart';
+import '../../common/utils/error.dart';
+import '../mediums/medium.dart';
+import 'story.dart';
 
 enum StoryEvent {
   update,
@@ -44,9 +44,10 @@ class StoryState extends ChangeNotifier {
 
     _story = story;
 
-    titleController = TextEditingController(text: story?.title ?? "");
-    creatorController = TextEditingController(text: story?.creator ?? "");
-    mediumController = ValueNotifier(story?.medium ?? Medium(name: 'Book'));
+    titleController = TextEditingController(text: story?.title ?? '');
+    creatorController = TextEditingController(text: story?.creator ?? '');
+    mediumController =
+        ValueNotifier(story?.medium ?? const Medium(name: 'Book'));
   }
 
   Story? get value => Story(
@@ -73,8 +74,6 @@ class StoryState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = StoryStatus.failed;
     }
 
     _isLoading = false;

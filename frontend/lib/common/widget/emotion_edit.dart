@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:storystains/common/utils/utils.dart';
 
-import 'package:storystains/features/emotions/emotion.dart';
+import '../../features/emotions/emotion.dart';
+import '../utils/utils.dart';
 
 class EmotionEdit extends StatelessWidget {
   final Emotion emotion;
@@ -18,23 +18,19 @@ class EmotionEdit extends StatelessWidget {
   final double? height;
   final double? width;
   @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async => {
-        showDialog<Emotion>(
-          context: context,
-          builder: (context) {
-            return EmotionDialog(initialEmotion: emotion);
-          },
-        ).then(handler),
-      },
-      child: EmotionImageText(
-        emotion: emotion,
-        height: height,
-        width: width,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: () async => {
+          showDialog<Emotion>(
+            context: context,
+            builder: (context) => EmotionDialog(initialEmotion: emotion),
+          ).then(handler),
+        },
+        child: EmotionImageText(
+          emotion: emotion,
+          height: height,
+          width: width,
+        ),
+      );
 }
 
 class EmotionImageText extends StatelessWidget {
@@ -49,35 +45,31 @@ class EmotionImageText extends StatelessWidget {
   final double? height;
   final double? width;
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: SizedBox(
-        width: width,
-        height: height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: EmotionImage(
-                emotion: emotion,
-                width: width,
-                height: height,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: Column(
+            children: [
+              Expanded(
+                child: EmotionImage(
+                  emotion: emotion,
+                  width: width,
+                  height: height,
+                ),
               ),
-            ),
-            Text(
-              emotion.name,
-              style: context.bodySmall,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.fade,
-              maxLines: 1,
-            ),
-          ],
+              Text(
+                emotion.name,
+                style: context.bodySmall,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.fade,
+                maxLines: 1,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
 class EmotionImage extends StatelessWidget {
@@ -91,12 +83,10 @@ class EmotionImage extends StatelessWidget {
   final double? width;
   final double? height;
   @override
-  Widget build(BuildContext context) {
-    return SvgPicture.network(
-      EmotionsState.iconFullUrl(emotion),
-      width: width,
-      height: height,
-      color: context.colors.onPrimaryContainer,
-    );
-  }
+  Widget build(BuildContext context) => SvgPicture.network(
+        EmotionsState.iconFullUrl(emotion),
+        width: width,
+        height: height,
+        color: context.colors.onPrimaryContainer,
+      );
 }

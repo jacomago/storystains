@@ -26,7 +26,7 @@ Widget wrapWithMaterial(Widget w, {MediumsState? mediumState}) => MultiProvider(
 @GenerateMocks([MediumsService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Edit review emotion", () {
+  group('Edit review emotion', () {
     testWidgets('set title', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final state = StoryState(StoryService());
@@ -40,9 +40,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final titleField = find.bySemanticsLabel('Title');
-      await tester.enterText(titleField, "/");
+      await tester.enterText(titleField, '/');
 
-      expect(state.value!.title, "/");
+      expect(state.value!.title, '/');
     });
     testWidgets('set creator', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -57,9 +57,9 @@ void main() {
       await tester.pumpAndSettle();
 
       final creatorField = find.bySemanticsLabel('Creator');
-      await tester.enterText(creatorField, "/");
+      await tester.enterText(creatorField, '/');
 
-      expect(state.value!.creator, "/");
+      expect(state.value!.creator, '/');
     });
     testWidgets('set medium', (tester) async {
       SharedPreferences.setMockInitialValues({});

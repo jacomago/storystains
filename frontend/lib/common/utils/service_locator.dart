@@ -1,9 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/common/data/network/dio_manager.dart';
-import 'package:storystains/common/data/network/rest_client.dart';
-import 'package:storystains/features/auth/auth.dart';
+
+import '../../features/auth/auth.dart';
+import '../constant/app_config.dart';
+import '../data/network/dio_manager.dart';
+import '../data/network/rest_client.dart';
 
 // Service Locator
 final sl = GetIt.instance;

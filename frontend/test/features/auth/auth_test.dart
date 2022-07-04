@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/common/utils/utils.dart';
 import 'package:storystains/features/auth/auth.dart';
-import 'package:mockito/annotations.dart';
 
 import '../../common/errors.dart';
-import 'user.dart';
 import 'auth_test.mocks.dart';
+import 'user.dart';
 
 // In none widget tests secure storage doesn't work
 // So we must mock it for this test
@@ -72,14 +72,12 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     sl.registerSingleton<FlutterSecureStorage>(FakeSecureStorage());
   });
-  tearDown(() {
-    sl.reset();
-  });
-  group("login", () {
+  tearDown(sl.reset);
+  group('login', () {
     test('After logging in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
 
-      const password = "password";
+      const password = 'password';
       final user = testUser();
       final userResp = UserResp(user: user);
 
@@ -102,20 +100,20 @@ void main() {
 
       expect(authState.isAuthenticated, false);
 
-      when(mockService.login("", ""))
-          .thenThrow(testApiError(400, "Invalid info."));
+      when(mockService.login('', ''))
+          .thenThrow(testApiError(400, 'Invalid info.'));
 
-      await authState.loginRegister("", "");
+      await authState.loginRegister('', '');
 
-      verify(mockService.login("", ""));
+      verify(mockService.login('', ''));
       expect(authState.isAuthenticated, false);
-      expect(authState.error, "Bad Request: Invalid info.");
+      expect(authState.error, 'Bad Request: Invalid info.');
     });
   });
-  group("signup", () {
+  group('signup', () {
     test('After signup in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
-      const password = "password";
+      const password = 'password';
       final user = testUser();
       final userResp = UserResp(user: user);
 
@@ -139,21 +137,21 @@ void main() {
 
       expect(authState.isAuthenticated, false);
 
-      when(mockService.register("", ""))
-          .thenThrow(testApiError(400, "Invalid info."));
+      when(mockService.register('', ''))
+          .thenThrow(testApiError(400, 'Invalid info.'));
       authState.switchLoginRegister();
 
-      await authState.loginRegister("", "");
+      await authState.loginRegister('', '');
 
-      verify(mockService.register("", ""));
+      verify(mockService.register('', ''));
       expect(authState.isAuthenticated, false);
-      expect(authState.error, "Bad Request: Invalid info.");
+      expect(authState.error, 'Bad Request: Invalid info.');
     });
   });
-  group("logout", () {
+  group('logout', () {
     test('After logout not isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
-      const password = "password";
+      const password = 'password';
       final user = testUser();
       final userResp = UserResp(user: user);
 
@@ -175,10 +173,10 @@ void main() {
       expect(authState.isAuthenticated, false);
     });
   });
-  group("delete", () {
+  group('delete', () {
     test('After logout not isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
-      const password = "password";
+      const password = 'password';
       final user = testUser();
       final userResp = UserResp(user: user);
 

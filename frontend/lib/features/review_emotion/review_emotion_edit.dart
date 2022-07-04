@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/review/review_state.dart';
-import 'package:storystains/features/review_emotion/review_emotion.dart';
-import 'package:storystains/common/utils/utils.dart';
+
+import '../../common/utils/utils.dart';
+import '../../common/widget/widget.dart';
+import '../review/review_state.dart';
+import 'review_emotion.dart';
 
 class ReviewEmotionEdit extends StatelessWidget {
   const ReviewEmotionEdit({
@@ -25,7 +26,7 @@ class ReviewEmotionEdit extends StatelessWidget {
       okHandler(state.reviewEmotion!);
     } else if (state.isDeleted) {
       deleteHandler();
-      const msg = "Deleted ReviewEmotion";
+      const msg = 'Deleted ReviewEmotion';
       context.snackbar(msg);
     } else {
       if (state.isFailed) {
@@ -59,17 +60,15 @@ class ReviewEmotionEdit extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer2<ReviewEmotionState, ReviewState>(
-      builder: (context, state, review, _) {
-        return SizedBox(
+  Widget build(BuildContext context) =>
+      Consumer2<ReviewEmotionState, ReviewState>(
+        builder: (context, state, review, _) => SizedBox(
           height: 190,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(
-                flex: 1,
                 child: EmotionEdit(
                   emotion: state.emotionController.value,
                   height: 100,
@@ -112,7 +111,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                               deleteReviewEmotion(context);
                             },
                             child: Text(
-                              "Delete",
+                              'Delete',
                               style: context.button!.copyWith(
                                 color: context.colors.onErrorContainer,
                               ),
@@ -129,7 +128,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                   editReviewEmotion(context);
                                 },
                                 child: Text(
-                                  "OK",
+                                  'OK',
                                   style: context.button!.copyWith(
                                     color: context.colors.onPrimary,
                                   ),
@@ -140,7 +139,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                   cancelCreation(context);
                                 },
                                 child: Text(
-                                  "Cancel",
+                                  'Cancel',
                                   style: context.button,
                                 ),
                               ),
@@ -154,8 +153,6 @@ class ReviewEmotionEdit extends StatelessWidget {
               ),
             ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }

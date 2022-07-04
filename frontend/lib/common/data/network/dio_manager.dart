@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:storystains/common/constant/app_config.dart';
+import '../../constant/app_config.dart';
 
 import 'interceptors.dart';
 

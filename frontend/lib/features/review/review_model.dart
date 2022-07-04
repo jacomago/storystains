@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:storystains/features/review_emotion/review_emotion_model.dart';
-import 'package:storystains/features/auth/auth_model.dart';
-import 'package:storystains/features/story/story.dart';
+
+import '../auth/auth_model.dart';
+import '../review_emotion/review_emotion_model.dart';
+import '../story/story.dart';
 
 part 'review_model.g.dart';
 
@@ -39,9 +40,7 @@ class Review {
   Map<String, dynamic> toJson() => _$ReviewToJson(this);
 
   @override
-  String toString() {
-    return json.encode(toJson());
-  }
+  String toString() => json.encode(toJson());
 }
 
 @JsonSerializable()

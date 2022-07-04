@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:storystains/common/constant/app_config.dart';
-import 'package:storystains/features/review/review_model.dart';
+import '../../common/constant/app_config.dart';
+import '../review/review_model.dart';
 
 import 'reviews_service.dart';
 

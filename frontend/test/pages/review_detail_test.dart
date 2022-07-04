@@ -36,7 +36,7 @@ Widget wrapWithMaterial(
 
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Read Review", () {
+  group('Read Review', () {
     testWidgets('fields exist', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final review = testReview();
@@ -56,7 +56,7 @@ void main() {
 
       expect(find.text(review.body), findsOneWidget);
 
-      expect(find.text("@${review.user.username}"), findsOneWidget);
+      expect(find.text('@${review.user.username}'), findsOneWidget);
       expect(
         find.text(DateFormat.yMMMMEEEEd().format(review.updatedAt)),
         findsOneWidget,

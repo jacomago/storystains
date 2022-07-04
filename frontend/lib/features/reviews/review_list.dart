@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:storystains/common/widget/widget.dart';
-import 'package:storystains/features/review/review_route.dart';
-import 'package:storystains/features/review/widgets/review_date.dart';
-import 'package:storystains/features/review/widgets/review_username.dart';
-import 'package:storystains/features/review/review_model.dart';
-import 'package:storystains/pages/review_detail.dart';
-import 'package:storystains/routes/routes.dart';
 
+import '../../common/utils/extensions.dart';
+import '../../common/widget/widget.dart';
+import '../../pages/review_detail.dart';
+import '../../routes/routes.dart';
+import '../review/review_model.dart';
+import '../review/review_route.dart';
+import '../review/widgets/review_date.dart';
+import '../review/widgets/review_username.dart';
 import 'reviews_state.dart';
-import 'package:storystains/common/utils/extensions.dart';
 
 class ReviewList extends StatelessWidget {
   const ReviewList({Key? key}) : super(key: key);
@@ -21,8 +21,7 @@ class ReviewList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ReviewsState>(
+  Widget build(BuildContext context) => Consumer<ReviewsState>(
       builder: (_, reviews, __) {
         if (reviews.isFailed) {
           return LoadMessage(
@@ -48,9 +47,9 @@ class ReviewList extends StatelessWidget {
             itemPositionsListener: reviews.itemPositionsListener,
             physics: const AlwaysScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              bool isItem = index < reviews.count;
-              bool isLastIndex = index == reviews.count;
-              bool isLoadingMore = isLastIndex && reviews.isLoadingMore;
+              var isItem = index < reviews.count;
+              var isLastIndex = index == reviews.count;
+              var isLoadingMore = isLastIndex && reviews.isLoadingMore;
 
               // Review Item
               if (isItem) {
@@ -68,7 +67,6 @@ class ReviewList extends StatelessWidget {
         );
       },
     );
-  }
 
   void _tapItem(BuildContext context, Review review) {
     Navigator.of(context)
@@ -84,8 +82,7 @@ class ReviewList extends StatelessWidget {
         .then((value) => _afterPush(context));
   }
 
-  Widget _buildReviewItem(BuildContext context, Review review) {
-    return Column(
+  Widget _buildReviewItem(BuildContext context, Review review) => Column(
       children: [
         GestureDetector(
           onTap: () => _tapItem(context, review),
@@ -113,7 +110,7 @@ class ReviewList extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 0),
+                  padding: const EdgeInsets.symmetric(),
                   child: Divider(
                     color: context.colors.secondary,
                   ),
@@ -124,10 +121,8 @@ class ReviewList extends StatelessWidget {
         ),
       ],
     );
-  }
 
-  Widget _buildTitle(BuildContext context, String title) {
-    return Column(
+  Widget _buildTitle(BuildContext context, String title) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 4),
@@ -139,5 +134,4 @@ class ReviewList extends StatelessWidget {
         const SizedBox(height: 4),
       ],
     );
-  }
 }

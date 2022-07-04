@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -8,7 +10,6 @@ import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
 
-import 'dart:io' as io;
 import '../../common/errors.dart';
 import '../../common/image_mock_http.dart';
 import '../emotions/emotion.dart';
@@ -54,7 +55,7 @@ Widget wrapWithMaterial(
 @GenerateMocks([ReviewEmotionService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("Edit review emotion", () {
+  group('Edit review emotion', () {
     setUp(() {
       // Only needs to be done once since the HttpClient generated
       // by this override is cached as a static singleton.
@@ -80,17 +81,17 @@ void main() {
     });
     testWidgets('test cancel button', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      bool ok = false;
+      var ok = false;
       okHandler(_) {
         ok = true;
       }
 
-      bool cancel = false;
+      var cancel = false;
       cancelHandler() {
         cancel = true;
       }
 
-      bool delete = false;
+      var delete = false;
       deleteHandler() {
         delete = true;
       }
@@ -106,7 +107,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(OutlinedButton, "Cancel"));
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Cancel'));
       await tester.pump();
 
       expect(ok, false);
@@ -115,17 +116,17 @@ void main() {
     });
     testWidgets('test create', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      bool ok = false;
+      var ok = false;
       okHandler(_) {
         ok = true;
       }
 
-      bool cancel = false;
+      var cancel = false;
       cancelHandler() {
         cancel = true;
       }
 
-      bool delete = false;
+      var delete = false;
       deleteHandler() {
         delete = true;
       }
@@ -153,7 +154,7 @@ void main() {
 
       final reviewEmotion = testReviewEmotion(
         position: 10,
-        notes: "Random Notes",
+        notes: 'Random Notes',
         emotion: emotion,
       );
 
@@ -166,7 +167,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final notes = find.bySemanticsLabel("Notes");
+      final notes = find.bySemanticsLabel('Notes');
       await tester.enterText(notes.first, reviewEmotion.notes);
 
       when(service.create(review, reviewEmotion)).thenAnswer(
@@ -176,7 +177,7 @@ void main() {
       );
 
       await tester.pump();
-      final okButton = find.widgetWithText(ElevatedButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, 'OK');
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -184,7 +185,7 @@ void main() {
 
       verify(service.create(review, reviewEmotion));
       expect(
-        find.widgetWithText(SnackBar, "Created ReviewEmotion"),
+        find.widgetWithText(SnackBar, 'Created ReviewEmotion'),
         findsOneWidget,
       );
 
@@ -194,8 +195,8 @@ void main() {
     });
     testWidgets('test update', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      bool ok = false;
-      bool cancel = false;
+      var ok = false;
+      var cancel = false;
       okHandler(_) {
         ok = true;
       }
@@ -204,14 +205,14 @@ void main() {
         cancel = true;
       }
 
-      bool delete = false;
+      var delete = false;
       deleteHandler() {
         delete = true;
       }
 
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review: review);
-      final emotion = testEmotion(name: "randomemotion");
+      final emotion = testEmotion(name: 'randomemotion');
       final service = MockReviewEmotionService();
       final reviewEmotion = testReviewEmotion();
 
@@ -234,7 +235,7 @@ void main() {
 
       final newReviewEmotion = testReviewEmotion(
         position: 10,
-        notes: "Random Notes",
+        notes: 'Random Notes',
         emotion: emotion,
       );
 
@@ -247,7 +248,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final notes = find.bySemanticsLabel("Notes");
+      final notes = find.bySemanticsLabel('Notes');
       await tester.enterText(notes.first, newReviewEmotion.notes);
 
       when(service.update(
@@ -261,7 +262,7 @@ void main() {
       );
 
       await tester.pump();
-      final okButton = find.widgetWithText(ElevatedButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, 'OK');
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -273,7 +274,7 @@ void main() {
         newReviewEmotion,
       ));
       expect(
-        find.widgetWithText(SnackBar, "Updated ReviewEmotion"),
+        find.widgetWithText(SnackBar, 'Updated ReviewEmotion'),
         findsOneWidget,
       );
 
@@ -283,8 +284,8 @@ void main() {
     });
     testWidgets('test error message', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      bool ok = false;
-      bool cancel = false;
+      var ok = false;
+      var cancel = false;
       okHandler(_) {
         ok = true;
       }
@@ -293,7 +294,7 @@ void main() {
         cancel = true;
       }
 
-      bool delete = false;
+      var delete = false;
       deleteHandler() {
         delete = true;
       }
@@ -305,7 +306,7 @@ void main() {
 
       final reviewEmotion = testReviewEmotion(
         position: 10,
-        notes: "Random Notes",
+        notes: 'Random Notes',
         emotion: emotion,
       );
 
@@ -331,7 +332,7 @@ void main() {
           .thenThrow(testApiError(400, 'Error message.'));
 
       await tester.pump();
-      final okButton = find.widgetWithText(ElevatedButton, "OK");
+      final okButton = find.widgetWithText(ElevatedButton, 'OK');
       expect(okButton, findsOneWidget);
 
       await tester.tap(okButton.first);
@@ -340,7 +341,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Bad Request: Error message."),
+        find.widgetWithText(SnackBar, 'Bad Request: Error message.'),
         findsOneWidget,
       );
 
@@ -350,9 +351,9 @@ void main() {
     });
     testWidgets('test delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
-      bool ok = false;
-      bool cancel = false;
-      bool delete = false;
+      var ok = false;
+      var cancel = false;
+      var delete = false;
       deleteHandler() {
         delete = true;
       }
@@ -367,7 +368,7 @@ void main() {
 
       final review = testReview();
       final reviewState = ReviewState(ReviewService(), review: review);
-      final emotion = testEmotion(name: "randomemotion");
+      final emotion = testEmotion(name: 'randomemotion');
       final service = MockReviewEmotionService();
       final reviewEmotion = testReviewEmotion();
 
@@ -395,7 +396,7 @@ void main() {
       );
 
       await tester.pump();
-      final deleteButton = find.widgetWithText(ElevatedButton, "Delete");
+      final deleteButton = find.widgetWithText(ElevatedButton, 'Delete');
       expect(deleteButton, findsOneWidget);
 
       await tester.tap(deleteButton.first);
@@ -406,7 +407,7 @@ void main() {
         reviewEmotion.position,
       ));
       expect(
-        find.widgetWithText(SnackBar, "Deleted ReviewEmotion"),
+        find.widgetWithText(SnackBar, 'Deleted ReviewEmotion'),
         findsOneWidget,
       );
 

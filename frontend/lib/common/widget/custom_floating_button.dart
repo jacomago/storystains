@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/utils.dart';
+import '../utils/utils.dart';
 
 class CustomFloatingButton extends StatelessWidget {
   final IconData icon;
@@ -12,14 +12,12 @@ class CustomFloatingButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: onPressed,
-      backgroundColor: context.colors.secondary,
-      child: Icon(
-        icon,
-        color: context.colors.onPrimary,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => FloatingActionButton(
+        onPressed: onPressed,
+        backgroundColor: context.colors.secondary,
+        child: Icon(
+          icon,
+          color: context.colors.onPrimary,
+        ),
+      );
 }

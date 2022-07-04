@@ -5,9 +5,7 @@ class ApiException implements Exception {
   ApiException([this._message, this._prefix]);
 
   @override
-  String toString() {
-    return '$_prefix$_message';
-  }
+  String toString() => '$_prefix$_message';
 }
 
 class FetchDataException extends ApiException {

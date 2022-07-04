@@ -1,11 +1,12 @@
+import 'dart:io' as io;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/mediums/medium.dart';
-import 'package:mockito/annotations.dart';
 
-import 'dart:io' as io;
 import '../../common/image_mock_http.dart';
 import 'medium.dart';
 import 'mediums_test.mocks.dart';
@@ -18,7 +19,7 @@ void main() {
     // by this override is cached as a static singleton.
     io.HttpOverrides.global = TestHttpOverrides();
   });
-  group("mediums state tests", () {
+  group('mediums state tests', () {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
       final medium = testMedium();
@@ -47,9 +48,9 @@ void main() {
     test('init test', () async {
       SharedPreferences.setMockInitialValues({});
 
-      final List<Medium> mediums = List.generate(
+      final mediums = List<Medium>.generate(
         2,
-        (index) => testMedium(name: "name$index"),
+        (index) => testMedium(name: 'name$index'),
       );
 
       final mockService = MockMediumsService();

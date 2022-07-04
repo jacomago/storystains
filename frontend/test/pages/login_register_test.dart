@@ -15,14 +15,12 @@ Widget wrapWithMaterial(Widget w, AuthState authState) =>
 
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("login", () {
+  group('login', () {
     testWidgets('Log in values', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final widg = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return LoginOrRegisterPage();
-        }),
+        Builder(builder: (context) => LoginOrRegisterPage()),
         AuthState(AuthService()),
       );
 
@@ -31,47 +29,43 @@ void main() {
       expect(find.bySemanticsLabel('Password'), findsOneWidget);
       expect(find.bySemanticsLabel('Username'), findsOneWidget);
 
-      expect(find.widgetWithText(OutlinedButton, "Register?"), findsOneWidget);
-      expect(find.widgetWithText(ElevatedButton, "Login"), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Register?'), findsOneWidget);
+      expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
     });
 
-    testWidgets("Swap Login Register ", (tester) async {
+    testWidgets('Swap Login Register ', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
       final page = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return LoginOrRegisterPage();
-        }),
+        Builder(builder: (context) => LoginOrRegisterPage()),
         authState,
       );
 
       await tester.pumpWidget(page);
 
-      var swapButton = find.widgetWithText(OutlinedButton, "Register?");
+      var swapButton = find.widgetWithText(OutlinedButton, 'Register?');
       expect(swapButton, findsOneWidget);
 
       await tester.ensureVisible(swapButton);
       await tester.tap(swapButton.first);
       await tester.pump();
 
-      swapButton = find.widgetWithText(OutlinedButton, "Login?");
+      swapButton = find.widgetWithText(OutlinedButton, 'Login?');
       expect(swapButton, findsOneWidget);
     });
-    testWidgets("Login Failure empty user pass", (tester) async {
+    testWidgets('Login Failure empty user pass', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
       final page = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return LoginOrRegisterPage();
-        }),
+        Builder(builder: (context) => LoginOrRegisterPage()),
         authState,
       );
 
       await tester.pumpWidget(page);
 
-      var loginButton = find.widgetWithText(ElevatedButton, "Login");
+      var loginButton = find.widgetWithText(ElevatedButton, 'Login');
       expect(loginButton, findsOneWidget);
 
       await tester.ensureVisible(loginButton);
@@ -81,7 +75,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Wrong username or password."),
+        find.widgetWithText(SnackBar, 'Wrong username or password.'),
         findsOneWidget,
       );
     });
@@ -89,9 +83,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final widg = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return LoginOrRegisterPage();
-        }),
+        Builder(builder: (context) => LoginOrRegisterPage()),
         AuthState(
           AuthService(),
         ),
@@ -99,10 +91,10 @@ void main() {
 
       await tester.pumpWidget(widg);
 
-      await tester.enterText(find.bySemanticsLabel('Password'), "password");
-      await tester.enterText(find.bySemanticsLabel('Username'), "username");
+      await tester.enterText(find.bySemanticsLabel('Password'), 'password');
+      await tester.enterText(find.bySemanticsLabel('Username'), 'username');
 
-      var loginButton = find.widgetWithText(ElevatedButton, "Login");
+      var loginButton = find.widgetWithText(ElevatedButton, 'Login');
       expect(loginButton, findsOneWidget);
 
       await tester.ensureVisible(loginButton);
@@ -110,33 +102,31 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Sign in failed. Please try again."),
+        find.widgetWithText(SnackBar, 'Sign in failed. Please try again.'),
         findsOneWidget,
       );
     });
-    testWidgets("Register network fail", (tester) async {
+    testWidgets('Register network fail', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authState = AuthState(AuthService());
       final page = wrapWithMaterial(
-        Builder(builder: (BuildContext context) {
-          return LoginOrRegisterPage();
-        }),
+        Builder(builder: (context) => LoginOrRegisterPage()),
         authState,
       );
 
       await tester.pumpWidget(page);
 
-      var swapButton = find.widgetWithText(OutlinedButton, "Register?");
+      var swapButton = find.widgetWithText(OutlinedButton, 'Register?');
 
       await tester.ensureVisible(swapButton);
       await tester.tap(swapButton.first);
       await tester.pump();
 
-      await tester.enterText(find.bySemanticsLabel('Password'), "password");
-      await tester.enterText(find.bySemanticsLabel('Username'), "username");
+      await tester.enterText(find.bySemanticsLabel('Password'), 'password');
+      await tester.enterText(find.bySemanticsLabel('Username'), 'username');
 
-      var loginButton = find.widgetWithText(ElevatedButton, "Register");
+      var loginButton = find.widgetWithText(ElevatedButton, 'Register');
       expect(loginButton, findsOneWidget);
 
       await tester.ensureVisible(loginButton);
@@ -144,7 +134,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, "Sign in failed. Please try again."),
+        find.widgetWithText(SnackBar, 'Sign in failed. Please try again.'),
         findsOneWidget,
       );
     });

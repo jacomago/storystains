@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/utils.dart';
+import '../utils/utils.dart';
 
 class MarkdownEdit extends StatelessWidget {
   final TextEditingController bodyController;
@@ -13,22 +13,19 @@ class MarkdownEdit extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return TextField(
-      textInputAction: TextInputAction.newline,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        labelText: title,
-        alignLabelWithHint: true,
-        hintText: hint,
-      ),
-      style: context.bodySmall,
-      controller: bodyController,
-      minLines: 5,
-      maxLines: 50,
-      textAlign: TextAlign.start,
-      textAlignVertical: TextAlignVertical.top,
-      keyboardType: TextInputType.multiline,
-    );
-  }
+  Widget build(BuildContext context) => TextField(
+        textInputAction: TextInputAction.newline,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: title,
+          alignLabelWithHint: true,
+          hintText: hint,
+        ),
+        style: context.bodySmall,
+        controller: bodyController,
+        minLines: 5,
+        maxLines: 50,
+        textAlignVertical: TextAlignVertical.top,
+        keyboardType: TextInputType.multiline,
+      );
 }

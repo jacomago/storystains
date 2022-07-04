@@ -1,14 +1,16 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'medium_model.g.dart';
 
 @JsonSerializable()
+@immutable
 class Medium {
-  String name;
+  final String name;
 
-  Medium({
+  const Medium({
     required this.name,
   });
 
@@ -17,19 +19,15 @@ class Medium {
   Map<String, dynamic> toJson() => _$MediumToJson(this);
 
   @override
-  String toString() {
-    return json.encode(toJson());
-  }
+  String toString() => json.encode(toJson());
 
   @override
-  bool operator ==(Object other) {
-    return other is Medium && name == other.name;
-  }
+  bool operator ==(Object other) => other is Medium && name == other.name;
 
   @override
   int get hashCode => name.hashCode;
 
-  static Medium mediumDefault = Medium(name: "Book");
+  static Medium mediumDefault = const Medium(name: 'Book');
 }
 
 @JsonSerializable()

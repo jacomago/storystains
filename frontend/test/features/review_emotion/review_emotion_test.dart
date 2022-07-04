@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mockito/annotations.dart';
 import 'package:storystains/features/review_emotion/review_emotion.dart';
 
 import '../../common/errors.dart';
@@ -20,7 +20,7 @@ void updateControllers(ReviewEmotionState state, ReviewEmotion reviewEmotion) {
 @GenerateMocks([ReviewEmotionService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
-  group("create", () {
+  group('create', () {
     test('After create in isUpdated', () async {
       SharedPreferences.setMockInitialValues({});
       final reviewEmotion = testReviewEmotion();
@@ -61,14 +61,14 @@ void main() {
       when(mockService.create(
         review,
         reviewEmotion,
-      )).thenThrow(testApiError(400, "Cannot be empty."));
+      )).thenThrow(testApiError(400, 'Cannot be empty.'));
 
       updateControllers(reviewEmotionState, reviewEmotion);
       await reviewEmotionState.update(review);
 
       verify(mockService.create(review, testReviewEmotion()));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.error, "Bad Request: Cannot be empty.");
+      expect(reviewEmotionState.error, 'Bad Request: Cannot be empty.');
     });
 
     test('error message on unauthorised info', () async {
@@ -86,7 +86,7 @@ void main() {
       when(mockService.create(
         review,
         reviewEmotion,
-      )).thenThrow(testApiError(401, "User not logged in."));
+      )).thenThrow(testApiError(401, 'User not logged in.'));
 
       updateControllers(reviewEmotionState, reviewEmotion);
       await reviewEmotionState.update(
@@ -95,10 +95,10 @@ void main() {
 
       verify(mockService.create(review, reviewEmotion));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.error, "Unauthorised: User not logged in.");
+      expect(reviewEmotionState.error, 'Unauthorised: User not logged in.');
     });
   });
-  group("delete", () {
+  group('delete', () {
     test('After delete in initial', () async {
       SharedPreferences.setMockInitialValues({});
       final reviewEmotion = testReviewEmotion();
@@ -114,7 +114,7 @@ void main() {
       final review = testReview();
       when(mockService.delete(review, reviewEmotion.position)).thenAnswer(
         (realInvocation) async => Response<dynamic>(
-            requestOptions: RequestOptions(path: ""), statusCode: 200),
+            requestOptions: RequestOptions(path: ''), statusCode: 200,),
       );
 
       await reviewEmotionState.delete(review);
@@ -136,13 +136,13 @@ void main() {
 
       final review = testReview();
       when(mockService.delete(review, reviewEmotion.position))
-          .thenThrow(testApiError(400, "Cannot be empty."));
+          .thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await reviewEmotionState.delete(review);
 
       verify(mockService.delete(review, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.error, "Bad Request: Cannot be empty.");
+      expect(reviewEmotionState.error, 'Bad Request: Cannot be empty.');
     });
 
     test('error message on unauthorised info', () async {
@@ -159,16 +159,16 @@ void main() {
 
       final review = testReview();
       when(mockService.delete(review, reviewEmotion.position))
-          .thenThrow(testApiError(401, "User not logged in."));
+          .thenThrow(testApiError(401, 'User not logged in.'));
 
       await reviewEmotionState.delete(review);
 
       verify(mockService.delete(review, reviewEmotion.position));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.error, "Unauthorised: User not logged in.");
+      expect(reviewEmotionState.error, 'Unauthorised: User not logged in.');
     });
   });
-  group("update", () {
+  group('update', () {
     test('After update in isUpdated', () async {
       SharedPreferences.setMockInitialValues({});
       final reviewEmotion = testReviewEmotion();
@@ -206,13 +206,13 @@ void main() {
 
       final review = testReview();
       when(mockService.update(review, reviewEmotion.position, reviewEmotion))
-          .thenThrow(testApiError(400, "Cannot be empty."));
+          .thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await reviewEmotionState.update(review);
 
       verify(mockService.update(review, reviewEmotion.position, reviewEmotion));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.error, "Bad Request: Cannot be empty.");
+      expect(reviewEmotionState.error, 'Bad Request: Cannot be empty.');
     });
 
     test('error message on unauthorised info', () async {
@@ -229,17 +229,17 @@ void main() {
 
       final review = testReview();
       when(mockService.update(review, reviewEmotion.position, reviewEmotion))
-          .thenThrow(testApiError(401, "User not logged in."));
+          .thenThrow(testApiError(401, 'User not logged in.'));
 
       await reviewEmotionState.update(review);
 
       verify(mockService.update(review, reviewEmotion.position, reviewEmotion));
       expect(reviewEmotionState.isUpdated, false);
-      expect(reviewEmotionState.error, "Unauthorised: User not logged in.");
+      expect(reviewEmotionState.error, 'Unauthorised: User not logged in.');
     });
   });
 
-  group("get", () {
+  group('get', () {
     test('After get is there', () async {
       SharedPreferences.setMockInitialValues({});
       final reviewEmotion = testReviewEmotion();

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:storystains/features/review/review_model.dart';
+import '../review/review_model.dart';
 
 part 'reviews_model.g.dart';
 

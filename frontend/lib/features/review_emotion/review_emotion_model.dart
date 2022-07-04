@@ -1,7 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:storystains/features/emotions/emotion_model.dart';
+import '../emotions/emotion_model.dart';
 
 part 'review_emotion_model.g.dart';
 
@@ -11,12 +12,13 @@ class ReviewEmotionArguement {
 }
 
 @JsonSerializable()
+@immutable
 class ReviewEmotion {
-  String notes;
-  Emotion emotion;
-  int position;
+  final String notes;
+  final Emotion emotion;
+  final int position;
 
-  ReviewEmotion({
+  const ReviewEmotion({
     required this.notes,
     required this.emotion,
     required this.position,
@@ -28,17 +30,14 @@ class ReviewEmotion {
   Map<String, dynamic> toJson() => _$ReviewEmotionToJson(this);
 
   @override
-  String toString() {
-    return json.encode(toJson());
-  }
+  String toString() => json.encode(toJson());
 
   @override
-  bool operator ==(Object other) {
-    return other is ReviewEmotion &&
-        notes == other.notes &&
-        emotion == other.emotion &&
-        position == other.position;
-  }
+  bool operator ==(Object other) =>
+      other is ReviewEmotion &&
+      notes == other.notes &&
+      emotion == other.emotion &&
+      position == other.position;
 
   @override
   int get hashCode => notes.hashCode + emotion.hashCode + position.hashCode;

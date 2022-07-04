@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:storystains/common/utils/error.dart';
-import 'package:storystains/features/emotions/emotion_model.dart';
-import 'package:storystains/features/review/review_model.dart';
-import 'package:storystains/features/review_emotion/review_emotion_model.dart';
+import '../../common/utils/error.dart';
+import '../emotions/emotion_model.dart';
+import '../review/review_model.dart';
+import 'review_emotion_model.dart';
 
 import 'review_emotion_service.dart';
 
@@ -88,9 +88,7 @@ class ReviewEmotionState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewEmotionStatus.failed;
-    }
+    } 
 
     _isLoading = false;
     notifyListeners();
@@ -116,10 +114,7 @@ class ReviewEmotionState extends ChangeNotifier {
     } on DioError catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
-    } catch (e) {
-      _status = ReviewEmotionStatus.failed;
-      _error = e.toString();
-    }
+    } 
 
     _isLoading = false;
 
