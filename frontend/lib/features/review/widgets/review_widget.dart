@@ -10,10 +10,12 @@ import '../../story/story.dart';
 import '../review.dart';
 import 'review_body.dart';
 
+/// Widget to display or edit a [Review]
 class ReviewWidget extends StatelessWidget {
+  /// Widget to display or edit a [Review]
   const ReviewWidget({Key? key}) : super(key: key);
 
-  void afterSend(BuildContext context, ReviewState state) {
+  void _afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
       context.pop(state.review);
       context.snackbar(AppLocalizations.of(context)!
@@ -31,7 +33,7 @@ class ReviewWidget extends StatelessWidget {
     }
   }
 
-  void editReview(BuildContext context) async {
+  void _editReview(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewState>();
@@ -50,15 +52,15 @@ class ReviewWidget extends StatelessWidget {
       return;
     }
 
-    await state.update(story, body).then((value) => afterSend(context, state));
+    await state.update(story, body).then((value) => _afterSend(context, state));
   }
 
-  void deleteReview(BuildContext context) async {
+  void _deleteReview(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewState>();
 
-    await state.delete().then((value) => afterSend(context, state));
+    await state.delete().then((value) => _afterSend(context, state));
   }
 
   void _goEdit(
@@ -67,7 +69,7 @@ class ReviewWidget extends StatelessWidget {
     review.edit();
   }
 
-  bool canEdit(ReviewState state, AuthState authState) =>
+  bool _canEdit(ReviewState state, AuthState authState) =>
       !state.isCreate &&
       (state.review != null && authState.sameUser(state.review!.user));
 
@@ -81,7 +83,7 @@ class ReviewWidget extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
             title: AppBarTitle(AppLocalizations.of(context)!.review),
-            moreActions: canEdit(state, authState)
+            moreActions: _canEdit(state, authState)
                 ? [
                     PopupMenuButton<Text>(
                       icon: Icon(Icons.adaptive.more),
@@ -93,7 +95,7 @@ class ReviewWidget extends StatelessWidget {
                                 .copyWith(color: context.colors.error),
                           ),
                           onTap: () {
-                            deleteReview(context);
+                            _deleteReview(context);
                           },
                         ),
                       ],
@@ -155,10 +157,10 @@ class ReviewWidget extends StatelessWidget {
   ) =>
       state.isEdit
           ? CustomFloatingButton(
-              onPressed: () => editReview(context),
+              onPressed: () => _editReview(context),
               icon: Icons.send_rounded,
             )
-          : canEdit(state, authState)
+          : _canEdit(state, authState)
               ? CustomFloatingButton(
                   onPressed: () async => _goEdit(state),
                   icon: Icons.edit_note,

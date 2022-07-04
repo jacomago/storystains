@@ -8,6 +8,8 @@ import '../../../common/utils/utils.dart';
 class ReviewDate extends StatelessWidget {
   /// Widget showing a date and formatting
   const ReviewDate({Key? key, required this.date}) : super(key: key);
+
+  /// Date to display
   final DateTime date;
   @override
   Widget build(BuildContext context) => Column(
