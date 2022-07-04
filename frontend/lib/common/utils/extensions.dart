@@ -64,12 +64,7 @@ extension TypographyUtils on BuildContext {
       );
 }
 
-extension BreakpointUtils on BoxConstraints {
-  bool get isTablet => maxWidth > 730;
-  bool get isDesktop => maxWidth > 1200;
-  bool get isMobile => !isTablet && !isDesktop;
-}
-
+/// Helper to create a [Duration] from a [String]
 extension DurationString on String {
   /// Assumes a string (roughly) of the format '\d{1,2}:\d{2}'
   Duration toDuration() {
@@ -93,7 +88,9 @@ extension DurationString on String {
   }
 }
 
+/// Helper to create a pretty string from a [Duration]
 extension HumanizedDuration on Duration {
+  /// Helper to create a pretty string from a [Duration]
   String toHumanizedString() {
     final seconds = '${inSeconds % 60}'.padLeft(2, '0');
     var minutes = '${inMinutes % 60}';

@@ -37,8 +37,8 @@ linter:
     # doc comments
     - slash_for_doc_comments
     - comment_references
-    # - package_api_docs
-    # - public_member_api_docs
+    - package_api_docs
+    - public_member_api_docs
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     - prefer_single_quotes  # Uncomment to enable the `prefer_single_quotes` rule
     - prefer_collection_literals

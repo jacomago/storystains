@@ -12,22 +12,25 @@ import '../../constant/app_config.dart';
 
 part 'rest_client.g.dart';
 
+/// The main rest client for the api
 @retrofit.RestApi(baseUrl: AppConfig.baseUrl)
 abstract class RestClient {
+  /// Factory method to create the rest client
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
-  // add new user in database
+  /// Add new [User] via api
   @retrofit.POST('/signup')
   Future<UserResp> addUser(@retrofit.Body() AddUser addUser);
 
-  // add new review in database
+  /// Add new [Review] via api
   @retrofit.POST('/reviews')
   Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
 
-  // add new story in database
+  /// Add new [Story] via api
   @retrofit.POST('/stories')
   Future<WrappedStory> createStory(@retrofit.Body() WrappedStory newStory);
 
+  /// Update [Review] in api
   @retrofit.PUT('/reviews/{username}/{slug}')
   Future<ReviewResp> updateReview(
     @retrofit.Path() String username,
@@ -35,19 +38,21 @@ abstract class RestClient {
     @retrofit.Body() CreateReview updatedReview,
   );
 
+  /// Get the info of the [Review]
   @retrofit.GET('/reviews/{username}/{slug}')
   Future<ReviewResp> readReview(
     @retrofit.Path() String username,
     @retrofit.Path() String slug,
   );
 
+  /// Delete the [Review]
   @retrofit.DELETE('/reviews/{username}/{slug}')
   Future<void> deleteReview(
     @retrofit.Path() String username,
     @retrofit.Path() String slug,
   );
 
-  // add new review in database
+  /// Create new [ReviewEmotion] via the api
   @retrofit.POST('/reviews/{username}/{slug}/emotions')
   Future<ReviewEmotionResp> createReviewEmotion(
     @retrofit.Path() String username,
@@ -55,6 +60,7 @@ abstract class RestClient {
     @retrofit.Body() CreateReviewEmotion newReviewEmotion,
   );
 
+  /// Update the [ReviewEmotion]
   @retrofit.PUT('/reviews/{username}/{slug}/emotions/{position}')
   Future<ReviewEmotionResp> updateReviewEmotion(
     @retrofit.Path() String username,
@@ -63,6 +69,7 @@ abstract class RestClient {
     @retrofit.Body() CreateReviewEmotion updatedReviewEmotion,
   );
 
+  /// Get a particular [ReviewEmotion]
   @retrofit.GET('/reviews/{username}/{slug}/emotions/{position}')
   Future<ReviewEmotionResp> readReviewEmotion(
     @retrofit.Path() String username,
@@ -70,6 +77,7 @@ abstract class RestClient {
     @retrofit.Path() int position,
   );
 
+  /// Delete a [ReviewEmotion]
   @retrofit.DELETE('/reviews/{username}/{slug}/emotions/{position}')
   Future<void> deleteReviewEmotion(
     @retrofit.Path() String username,
@@ -77,30 +85,30 @@ abstract class RestClient {
     @retrofit.Path() int position,
   );
 
-  // login user in database
+  /// login [User] via api
   @retrofit.POST('/login')
   Future<UserResp> loginUser(@retrofit.Body() Login login);
 
-  // login user in database
+  /// Delete [User] via the api
   @retrofit.DELETE('/users')
   Future<void> deleteUser();
 
-  // get reviews
+  /// Get list of latest [Review]
   @retrofit.GET('/reviews')
   Future<ReviewsResp> getReviews({
     @retrofit.Query('limit') int limit = 10,
     @retrofit.Query('offset') int offset = 0,
   });
 
-  // get emotions
+  /// get all [Emotion]'s available
   @retrofit.GET('/emotions')
   Future<EmotionsResp> getEmotions();
 
-  // get emotions
+  /// get all [Medium]'s available
   @retrofit.GET('/mediums')
   Future<MediumsResp> getMediums();
 
-  //get current user
+  /// get current [User] detials
   @retrofit.GET('user')
   Future<UserResp> getCurrentUser();
 }

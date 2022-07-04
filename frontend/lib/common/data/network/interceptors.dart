@@ -7,6 +7,7 @@ import '../../constant/app_config.dart';
 import '../../utils/service_locator.dart';
 import 'dio_manager.dart';
 
+/// Dio interceptors of requets
 final interceptors = [
   CancelInterceptors(),
   AuthInterceptors(),
@@ -18,6 +19,7 @@ final interceptors = [
   ),
 ];
 
+/// Interceptor for cancelling requests
 class CancelInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
@@ -29,6 +31,9 @@ class CancelInterceptors extends Interceptor {
   }
 }
 
+/// Interceptor for passing in authorization token
+/// And removing when receiving a 401
+/// Using the [AuthState] from the [ServiceLocator]
 class AuthInterceptors extends Interceptor {
   @override
   Future<void> onRequest(

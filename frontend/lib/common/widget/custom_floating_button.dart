@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import '../utils/utils.dart';
 
+/// Custom floating button for keeping theming consistent
 class CustomFloatingButton extends StatelessWidget {
+  /// Icon on floating button
   final IconData icon;
+
+  /// Action after on press
   final VoidCallback? onPressed;
 
+  /// Custom floating button for keeping theming consistent
   const CustomFloatingButton({
     Key? key,
     required this.icon,

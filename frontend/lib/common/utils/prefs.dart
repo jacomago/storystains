@@ -2,6 +2,7 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Wrapper methods around [SharedPreferences]
 class Prefs {
   static SharedPreferences? _prefs;
 

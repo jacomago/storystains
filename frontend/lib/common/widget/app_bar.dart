@@ -6,15 +6,20 @@ import '../../routes/routes.dart';
 import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 
+/// Custom App bar for the Application
 class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
+  /// Custom App bar for the Application
   const StainsAppBar({
     Key? key,
     required this.title,
     this.moreActions = const [],
   }) : super(key: key);
+  /// Extra actions beyond the defaults
   final List<Widget> moreActions;
+  /// Title to show on the top
   final Widget? title;
 
+  /// Height of the app bar, default 56.0
   final Size appBarHeight = const Size.fromHeight(56.0);
 
   @override

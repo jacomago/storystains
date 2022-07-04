@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 import '../../features/review_emotion/review_emotion.dart';
 import 'widget.dart';
 
+/// List of Card like presented snippets of a [ReviewEmotion]
 class CardReviewEmotionsList extends StatelessWidget {
+  /// List of Card like presented snippets of a [ReviewEmotion]
   const CardReviewEmotionsList({Key? key, required this.items})
       : super(key: key);
+
+  /// List of [ReviewEmotion]s to present
   final List<ReviewEmotion> items;
 
   @override

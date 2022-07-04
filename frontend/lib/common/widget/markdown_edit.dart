@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import '../utils/utils.dart';
 
+/// Wrapper around Text field when editing a long text with
+/// markdown
 class MarkdownEdit extends StatelessWidget {
+  /// controller of the text
   final TextEditingController bodyController;
+
+  /// title of the widget
   final String title;
+
+  ///Hint text on empty widget
   final String hint;
+
+  /// Wrapper around Text field when editing a long text with
+  /// markdown
   const MarkdownEdit({
     Key? key,
     required this.bodyController,

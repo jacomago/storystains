@@ -4,10 +4,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../features/emotions/emotion.dart';
 import '../utils/utils.dart';
 
+/// A widget for showing and selecting an emotion on click
 class EmotionEdit extends StatelessWidget {
+  /// Currently selected emotion
   final Emotion emotion;
+
+  /// Handler after choosing an emotion
   final void Function(Emotion?) handler;
 
+  /// A widget for showing and selecting an emotion on click
   const EmotionEdit({
     Key? key,
     required this.emotion,
@@ -15,7 +20,11 @@ class EmotionEdit extends StatelessWidget {
     this.height,
     this.width,
   }) : super(key: key);
+
+  /// Height of the image of the emotion
   final double? height;
+
+  /// Width of the image of the emotion
   final double? width;
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -33,8 +42,12 @@ class EmotionEdit extends StatelessWidget {
       );
 }
 
+/// Display an [Emotion] including Image and Text
 class EmotionImageText extends StatelessWidget {
+  /// The emotion to display
   final Emotion emotion;
+
+  /// Display an Emotion including Image and Text
   const EmotionImageText({
     Key? key,
     required this.emotion,
@@ -42,7 +55,10 @@ class EmotionImageText extends StatelessWidget {
     this.width,
   }) : super(key: key);
 
+  /// Height of the image of the emotion
   final double? height;
+
+  /// Width of the image of the emotion
   final double? width;
   @override
   Widget build(BuildContext context) => Padding(
@@ -72,16 +88,24 @@ class EmotionImageText extends StatelessWidget {
       );
 }
 
+/// How to display just the emotions image
 class EmotionImage extends StatelessWidget {
+  /// How to display just the emotions image
   const EmotionImage({
     Key? key,
     required this.emotion,
     this.width,
     this.height,
   }) : super(key: key);
+
+  /// The emotion to display
   final Emotion emotion;
-  final double? width;
+
+  /// Height of the image of the emotion
   final double? height;
+
+  /// Width of the image of the emotion
+  final double? width;
   @override
   Widget build(BuildContext context) => SvgPicture.network(
         emotion.iconFullUrl(),

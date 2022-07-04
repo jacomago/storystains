@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../utils/utils.dart';
 
+/// Widget to change a percentage
 class PositionEdit extends StatelessWidget {
+  /// The controller of the int
   final ValueNotifier<int> positionController;
 
+  /// Widget to change a percentage
   const PositionEdit({Key? key, required this.positionController})
       : super(key: key);
 

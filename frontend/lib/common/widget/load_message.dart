@@ -4,10 +4,15 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 
+/// Message to display when still loading data
 class LoadMessage extends StatelessWidget {
+  /// The message
   final String message;
+
+  /// What to do on refresh
   final void Function() onRefresh;
 
+  /// Message to display when still loading data
   const LoadMessage(
     this.message, {
     Key? key,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Timeline widget 
 class Timeline extends StatelessWidget {
   const Timeline({
     Key? key,

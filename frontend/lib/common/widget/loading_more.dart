@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Display loading sign when still loading
 class LoadingMore extends StatelessWidget {
+  /// Display loading sign when still loading
   const LoadingMore({Key? key}) : super(key: key);
 
   @override

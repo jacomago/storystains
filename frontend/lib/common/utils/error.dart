@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import '../data/network/api_exception.dart';
 
+/// Method to convert an [DioError] message to an nicer message from the
+/// [ApiException] creator
 String errorMessage(DioError error) {
   if (error.type == DioErrorType.connectTimeout) {
     return 'Connection timed out';
