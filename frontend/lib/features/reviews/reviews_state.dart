@@ -12,7 +12,6 @@ class ReviewsState extends ChangeNotifier {
   int _offset = 0;
   String _query = '';
   List<Review> _items = [];
-  String _error = '';
 
   bool _isEmpty = false;
   bool _isFailed = false;
@@ -57,8 +56,7 @@ class ReviewsState extends ChangeNotifier {
         _query = '';
         _items = [...items];
       }
-    } on DioError catch (e) {
-      _error = e.message;
+    } on DioError catch (_) {
       _isFailed = true;
     }
 
