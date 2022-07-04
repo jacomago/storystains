@@ -6,6 +6,7 @@ import '../review/review_model.dart';
 
 import 'reviews_service.dart';
 
+/// State for a [Review]s and covers intractions with the Api
 class ReviewsState extends ChangeNotifier {
   final ReviewsService _service;
 
@@ -18,25 +19,49 @@ class ReviewsState extends ChangeNotifier {
   bool _isLoading = false;
   bool _hasReachedMax = false;
 
+  /// Current offset sending to api
   int get offset => _offset;
+
+  /// Count of items
   int get count => _items.length;
+
+  /// Query to pass to list
   String get query => _query;
+
+  /// the current items
   List<Review> get items => _items;
 
+  /// If list is empty
   bool get isEmpty => _isEmpty;
+
+  /// If getting list failed
   bool get isFailed => _isFailed;
+
+  /// If loading from the api
   bool get isLoading => _isLoading;
+
+  /// If has reache dthe amx [Review]s from the api
   bool get hasReachedMax => _hasReachedMax;
 
+  /// If on the first page
   bool get isFirstPage => _offset == 0;
+
+  /// If loading the first selection of results
   bool get isLoadingFirst => _isLoading && isFirstPage;
+
+  /// If still loading more items
   bool get isLoadingMore => _isLoading && _offset > 0;
 
+  /// Get an item from the list
   Review item(int index) => _items[index];
 
+  /// Scroll controller
   ItemScrollController itemScrollController = ItemScrollController();
+
+  /// Position in the list controller
   ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
 
+  /// State for a [Review]s and covers intractions with the Api
   ReviewsState(this._service) {
     _init();
     _trigger();
@@ -64,6 +89,7 @@ class ReviewsState extends ChangeNotifier {
     _stopLoading();
   }
 
+  /// Refresh the list
   Future<void> refresh([String? query]) async {
     _startLoading();
 
@@ -85,6 +111,7 @@ class ReviewsState extends ChangeNotifier {
     _stopLoading();
   }
 
+  /// Fetch more data from the api
   Future<void> fetch() async {
     if (!_isLoading) {
       _startLoading();

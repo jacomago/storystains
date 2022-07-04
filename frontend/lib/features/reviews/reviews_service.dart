@@ -5,6 +5,7 @@ import '../review/review_model.dart';
 
 /// Wrapper around [RestClient] methods on List of [Review]
 class ReviewsService {
+  /// Wrapper around [RestClient.getReviews]
   Future<List<Review>?> fetch({String query = '', int offset = 0}) async {
     final res = await ServiceLocator.sl
         .get<RestClient>()
