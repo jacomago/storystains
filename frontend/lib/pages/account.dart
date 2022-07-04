@@ -7,10 +7,12 @@ import '../common/utils/utils.dart';
 import '../common/widget/widget.dart';
 import '../features/auth/auth_state.dart';
 
+/// Display a users account Profile with personal actions
 class AccountPage extends StatelessWidget {
+  /// Display a users account Profile with personal actions
   const AccountPage({Key? key}) : super(key: key);
 
-  void afterDelete(BuildContext context, AuthState auth) {
+  void _afterDelete(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {
       context.snackbar(AppLocalizations.of(context)!
           .actionFailed(AppLocalizations.of(context)!.deleteObject(
@@ -31,11 +33,11 @@ class AccountPage extends StatelessWidget {
     final auth = context.read<AuthState>();
 
     await auth.delete().then((value) {
-      afterDelete(context, auth);
+      _afterDelete(context, auth);
     });
   }
 
-  void afterLogout(BuildContext context, AuthState auth) {
+  void _afterLogout(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {
       context.snackbar(AppLocalizations.of(context)!
           .actionFailed(AppLocalizations.of(context)!.logout));
@@ -52,7 +54,7 @@ class AccountPage extends StatelessWidget {
     final auth = context.read<AuthState>();
 
     await auth.logout().then((value) {
-      afterLogout(context, auth);
+      _afterLogout(context, auth);
     });
   }
 

@@ -4,8 +4,12 @@ import '../../../common/utils/utils.dart';
 import '../../mediums/medium.dart';
 import '../story.dart';
 
+/// Widget for editing a [Story]
 class StoryEditWidget extends StatelessWidget {
+  /// Widget for editing a [Story]
   const StoryEditWidget({Key? key, required this.state}) : super(key: key);
+
+  /// State of the [Story]
   final StoryState state;
   @override
   Widget build(BuildContext context) => Column(
@@ -33,8 +37,55 @@ class StoryEditWidget extends StatelessWidget {
       );
 }
 
+/// Widget for editing a [Story] title
+class StoryTitleEdit extends StatelessWidget {
+  /// Widget for editing a [Story] title
+  const StoryTitleEdit({
+    Key? key,
+    required this.titleController,
+  }) : super(key: key);
+  final TextEditingController titleController;
+  @override
+  Widget build(BuildContext context) => TextField(
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: AppLocalizations.of(context)!.title,
+          hintText: AppLocalizations.of(context)!.title,
+        ),
+        style: context.titleMedium,
+        controller: titleController,
+      );
+}
+
+/// Widget for editing a [Story] creator
+class StoryCreatorEdit extends StatelessWidget {
+  /// Widget for editing a [Story]
+  const StoryCreatorEdit({
+    Key? key,
+    required this.creatorController,
+  }) : super(key: key);
+  final TextEditingController creatorController;
+
+  @override
+  Widget build(BuildContext context) => TextField(
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: AppLocalizations.of(context)!.creator,
+          hintText: AppLocalizations.of(context)!.creatorHint,
+        ),
+        style: context.titleMedium,
+        controller: creatorController,
+      );
+}
+
+/// Widget for displaying a [Story] without editing
 class StoryWidget extends StatelessWidget {
+  /// Widget for displaying a [Story] without editing
   const StoryWidget({Key? key, required this.story}) : super(key: key);
+
+  ///The [Story] to display
   final Story? story;
   @override
   Widget build(BuildContext context) => Column(
@@ -62,44 +113,5 @@ class StoryWidget extends StatelessWidget {
             semanticsLabel: AppLocalizations.of(context)!.creator,
           ),
         ],
-      );
-}
-
-class StoryTitleEdit extends StatelessWidget {
-  const StoryTitleEdit({
-    Key? key,
-    required this.titleController,
-  }) : super(key: key);
-  final TextEditingController titleController;
-  @override
-  Widget build(BuildContext context) => TextField(
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: AppLocalizations.of(context)!.title,
-          hintText: AppLocalizations.of(context)!.title,
-        ),
-        style: context.titleMedium,
-        controller: titleController,
-      );
-}
-
-class StoryCreatorEdit extends StatelessWidget {
-  const StoryCreatorEdit({
-    Key? key,
-    required this.creatorController,
-  }) : super(key: key);
-  final TextEditingController creatorController;
-
-  @override
-  Widget build(BuildContext context) => TextField(
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: AppLocalizations.of(context)!.creator,
-          hintText: AppLocalizations.of(context)!.creatorHint,
-        ),
-        style: context.titleMedium,
-        controller: creatorController,
       );
 }

@@ -8,7 +8,9 @@ import '../features/auth/auth.dart';
 import '../features/reviews/reviews.dart';
 import '../routes/routes.dart';
 
+/// The home page of the app
 class Home extends StatelessWidget {
+  /// The home page of the app
   const Home({Key? key}) : super(key: key);
 
   @override
@@ -18,7 +20,9 @@ class Home extends StatelessWidget {
       );
 }
 
+/// The home page of the app
 class HomePage extends StatelessWidget {
+  /// The home page of the app
   const HomePage({Key? key}) : super(key: key);
 
   Future<void> _goNewReview(
@@ -33,6 +37,7 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  /// build a special widget for the title in the AppBar
   static Widget buildAppTitle(BuildContext context) => SvgPicture.asset(
         'assets/images/titletext.svg',
         color: context.colors.onSurface,

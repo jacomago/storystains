@@ -4,7 +4,9 @@ import 'package:flutter_svg/svg.dart';
 
 import '../common/widget/widget.dart';
 
+/// page if not found by url
 class NotFoundPage extends StatelessWidget {
+  /// page if not found by url
   const NotFoundPage({Key? key}) : super(key: key);
 
   @override

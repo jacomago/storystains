@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../features/review/review.dart';
 
+/// Wrapper around [ReviewWidget] for creating new reviews
 class ReviewNew extends StatelessWidget {
+  /// Wrapper around [ReviewWidget] for creating new reviews
   const ReviewNew({Key? key}) : super(key: key);
 
   @override

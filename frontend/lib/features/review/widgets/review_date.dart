@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 
 import '../../../common/utils/utils.dart';
 
+/// Widget showing a date and formatting
 class ReviewDate extends StatelessWidget {
+  /// Widget showing a date and formatting
   const ReviewDate({Key? key, required this.date}) : super(key: key);
   final DateTime date;
   @override

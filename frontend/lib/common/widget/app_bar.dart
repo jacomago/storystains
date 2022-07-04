@@ -14,8 +14,10 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.moreActions = const [],
   }) : super(key: key);
+
   /// Extra actions beyond the defaults
   final List<Widget> moreActions;
+
   /// Title to show on the top
   final Widget? title;
 

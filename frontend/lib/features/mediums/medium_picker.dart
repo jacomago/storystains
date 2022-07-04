@@ -3,11 +3,15 @@ import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
 import 'medium.dart';
 
+/// Widget for picking a [Medium]
 class MediumPicker extends StatelessWidget {
+  /// Widget for picking a [Medium]
   const MediumPicker({
     Key? key,
     required this.mediumController,
   }) : super(key: key);
+
+  /// controller of  [Medium]
   final ValueNotifier<Medium> mediumController;
 
   @override
