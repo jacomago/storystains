@@ -7,7 +7,9 @@ import '../../common/widget/widget.dart';
 import '../review/review_state.dart';
 import 'review_emotion.dart';
 
+/// Widget for editing [ReviewEmotion] on a review
 class ReviewEmotionEdit extends StatelessWidget {
+  /// Widget for editing [ReviewEmotion] on a review
   const ReviewEmotionEdit({
     Key? key,
     required this.cancelHandler,
@@ -15,11 +17,16 @@ class ReviewEmotionEdit extends StatelessWidget {
     required this.deleteHandler,
   }) : super(key: key);
 
+  /// Hadler for cancel button
   final Function cancelHandler;
+
+  /// Handler for OK button
   final void Function(ReviewEmotion) okHandler;
+
+  /// Handler for delete button
   final Function deleteHandler;
 
-  void afterSend(BuildContext context, ReviewEmotionState state) {
+  void _afterSend(BuildContext context, ReviewEmotionState state) {
     if (state.isUpdated) {
       final msg =
           state.isCreate ? 'Created ReviewEmotion' : 'Updated ReviewEmotion';
@@ -40,24 +47,24 @@ class ReviewEmotionEdit extends StatelessWidget {
     }
   }
 
-  void cancelCreation(BuildContext context) async {
+  void _cancelCreation(BuildContext context) async {
     cancelHandler();
   }
 
-  void editReviewEmotion(BuildContext context) async {
+  void _editReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
-    await state.update(review).then((value) => afterSend(context, state));
+    await state.update(review).then((value) => _afterSend(context, state));
   }
 
-  void deleteReviewEmotion(BuildContext context) async {
+  void _deleteReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
-    await state.delete(review).then((value) => afterSend(context, state));
+    await state.delete(review).then((value) => _afterSend(context, state));
   }
 
   @override
@@ -111,7 +118,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                               primary: context.colors.errorContainer,
                             ),
                             onPressed: () {
-                              deleteReviewEmotion(context);
+                              _deleteReviewEmotion(context);
                             },
                             child: Text(
                               AppLocalizations.of(context)!.delete,
@@ -128,7 +135,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                   primary: context.colors.secondary,
                                 ),
                                 onPressed: () {
-                                  editReviewEmotion(context);
+                                  _editReviewEmotion(context);
                                 },
                                 child: Text(
                                   AppLocalizations.of(context)!.ok,
@@ -139,7 +146,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                               ),
                               OutlinedButton(
                                 onPressed: () {
-                                  cancelCreation(context);
+                                  _cancelCreation(context);
                                 },
                                 child: Text(
                                   AppLocalizations.of(context)!.cancel,

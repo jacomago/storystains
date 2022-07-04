@@ -4,13 +4,19 @@ import '../../common/utils/utils.dart';
 import '../../common/widget/widget.dart';
 import 'emotion.dart';
 
+/// Dialog window to pick an emotion and return it
 class EmotionDialog extends StatefulWidget {
+  /// Dialog window to pick an emotion and return it
   const EmotionDialog({
     Key? key,
     required this.initialEmotion,
     this.restorationId,
   }) : super(key: key);
+
+  /// Id for restoration
   final String? restorationId;
+
+  /// Current emotion chosen
   final Emotion initialEmotion;
 
   @override

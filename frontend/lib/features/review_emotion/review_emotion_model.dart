@@ -6,11 +6,7 @@ import '../emotions/emotion_model.dart';
 
 part 'review_emotion_model.g.dart';
 
-class ReviewEmotionArguement {
-  final ReviewEmotion reviewEmotion;
-  ReviewEmotionArguement(this.reviewEmotion);
-}
-
+/// Review emotion main model
 @JsonSerializable()
 @immutable
 class ReviewEmotion {
@@ -43,46 +39,64 @@ class ReviewEmotion {
   int get hashCode => notes.hashCode + emotion.hashCode + position.hashCode;
 }
 
+/// request representation of [ReviewEmotion]
 @JsonSerializable()
 class CreateReviewEmotion {
+  /// request representation of [ReviewEmotion]
   @JsonKey(name: 'review_emotion')
   NewReviewEmotion reviewEmotion;
 
+  /// request representation of [ReviewEmotion]
   CreateReviewEmotion({required this.reviewEmotion});
 
+  /// request representation of [ReviewEmotion] from json
   factory CreateReviewEmotion.fromJson(Map<String, dynamic> json) =>
       _$CreateReviewEmotionFromJson(json);
 
+  /// request representation of [ReviewEmotion] to json
   Map<String, dynamic> toJson() => _$CreateReviewEmotionToJson(this);
 }
 
+/// request representation of [ReviewEmotion]
 @JsonSerializable()
 class NewReviewEmotion {
+  /// request representation of [Emotion]
   String emotion;
+
+  /// request representation of [ReviewEmotion.position]
   int position;
+
+  /// request representation of [ReviewEmotion.notes]
   String notes;
 
+  /// request representation of [ReviewEmotion]
   NewReviewEmotion({
     required this.emotion,
     required this.notes,
     required this.position,
   });
 
+  /// request representation of [ReviewEmotion] from json
   factory NewReviewEmotion.fromJson(Map<String, dynamic> json) =>
       _$NewReviewEmotionFromJson(json);
 
+  /// request representation of [ReviewEmotion] to json
   Map<String, dynamic> toJson() => _$NewReviewEmotionToJson(this);
 }
 
+/// response representation of [ReviewEmotion]
 @JsonSerializable()
 class ReviewEmotionResp {
   @JsonKey(name: 'review_emotion')
   ReviewEmotion reviewEmotion;
 
+  /// response representation of [ReviewEmotion]
   ReviewEmotionResp({required this.reviewEmotion});
 
+  /// response representation of [ReviewEmotion] from json
   factory ReviewEmotionResp.fromJson(Map<String, dynamic> json) =>
       _$ReviewEmotionRespFromJson(json);
 
+  /// response representation of [ReviewEmotion] to json
   Map<String, dynamic> toJson() => _$ReviewEmotionRespToJson(this);
 }

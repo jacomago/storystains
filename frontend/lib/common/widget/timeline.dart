@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Timeline widget
 class Timeline extends StatelessWidget {
+  /// time line widget
   const Timeline({
     Key? key,
     required this.children,
@@ -29,26 +30,64 @@ class Timeline extends StatelessWidget {
         assert(indicators == null || children.length == indicators.length),
         super(key: key);
 
+  /// The widgets on the left
   final List<Widget> children;
+
+  /// gap between children
   final double itemGap;
+
+  /// spacing from indicators to children
   final double gutterSpacing;
+
+  /// indicators
   final List<Widget>? indicators;
+
+  /// Left alignted
   final bool isLeftAligned;
+
+  /// Any extra padding
   final EdgeInsets padding;
+
+  /// Scrolling controller
   final ScrollController? controller;
+
+  /// NUmber of items
   final int itemCount;
+
+  ///Physics for scrolling
   final ScrollPhysics? physics;
+
+  /// Whether to srhink wrap it all
   final bool shrinkWrap;
+
+  /// list view option
   final bool primary;
+
+  /// Whether to reverse the list
   final bool reverse;
 
+  /// color of line between indicators
   final Color lineColor;
+
+  /// gap between lines and indicators
   final double lineGap;
+
+  /// size of indicators
   final double indicatorSize;
+
+  /// color of indicator
   final Color indicatorColor;
+
+  /// How to paint indicator
   final PaintingStyle indicatorStyle;
+
+  /// Stroke cap
   final StrokeCap strokeCap;
+
+  /// Width of stroke
   final double strokeWidth;
+
+  /// stroke painting style
   final PaintingStyle style;
 
   @override

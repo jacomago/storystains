@@ -4,12 +4,49 @@ import '../../common/utils/utils.dart';
 
 import 'auth.dart';
 
-enum AuthEvent { register, login, logout, delete }
+/// Events of authentication
+enum AuthEvent {
+  /// Register
+  register,
 
-enum AuthStatus { initial, authenticated, notauthenticated, deleted, failed }
+  /// Login
+  login,
 
-enum LoginRegister { login, register }
+  /// Logout
+  logout,
 
+  /// Delete
+  delete
+}
+
+/// Status of Auth State
+enum AuthStatus {
+  /// Starting
+  initial,
+
+  /// Authenticated (have a token)
+  authenticated,
+
+  /// Not auth
+  notauthenticated,
+
+  /// user deleted
+  deleted,
+
+  /// Failed action
+  failed
+}
+
+/// wether ready to login or register
+enum LoginRegister {
+  /// to login
+  login,
+
+  /// to register
+  register
+}
+
+/// representation of the users authentiction status
 class AuthState extends ChangeNotifier {
   final AuthService _service;
   late final AuthStorage _storage;
@@ -22,18 +59,37 @@ class AuthState extends ChangeNotifier {
   String _error = '';
   LoginRegister _loginRegister = LoginRegister.login;
 
+  /// Get user with token
   User? get user => _user;
+
+  /// current event
   AuthEvent? get event => _event;
+
+  /// Current status
   AuthStatus get status => _status;
+
+  /// Token for auth
   String? get token => _token;
+
+  /// Any error message
   String get error => _error;
 
+  /// Whether to login or register
   bool get isLogin => _loginRegister == LoginRegister.login;
+
+  /// Still loading
   bool get isLoading => _isLoading;
+
+  /// if authenticated
   bool get isAuthenticated => _status == AuthStatus.authenticated;
+
+  /// if not authenticated
   bool get notAuthenticated => _status == AuthStatus.notauthenticated;
+
+  /// if failed
   bool get isFailed => _status == AuthStatus.failed;
 
+  /// representation of the users authentiction status
   AuthState(this._service, [AuthStorage? storage]) {
     _event = null;
     _status = AuthStatus.initial;
@@ -43,6 +99,7 @@ class AuthState extends ChangeNotifier {
     _storage = storage ?? AuthStorage();
   }
 
+  /// Swtich between loggin in or registering
   void switchLoginRegister() {
     _loginRegister = _loginRegister == LoginRegister.login
         ? LoginRegister.register
@@ -50,8 +107,10 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// if same user as another user profile
   bool sameUser(UserProfile other) => _user?.username == other.username;
 
+  /// load toekn from secure storage on start
   Future<void> init() async {
     final user = await _storage.getUser();
 
@@ -66,6 +125,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Login or register via api
   Future<void> loginRegister(String username, String password) async {
     _event = _loginRegister == LoginRegister.login
         ? AuthEvent.login
@@ -97,6 +157,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// delete the current user
   Future<void> delete() async {
     _event = AuthEvent.delete;
     _isLoading = true;
@@ -122,6 +183,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Logout from the application
   Future<void> logout() async {
     _event = AuthEvent.logout;
     _isLoading = true;

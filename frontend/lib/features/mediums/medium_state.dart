@@ -3,6 +3,7 @@ import 'medium_model.dart';
 
 import 'medium_service.dart';
 
+/// State of loading mediums from api usually at top level for caching
 class MediumsState extends ChangeNotifier {
   final MediumsService _service;
 
@@ -12,17 +13,28 @@ class MediumsState extends ChangeNotifier {
   bool _isFailed = false;
   bool _isLoading = false;
 
+  /// count of mediums
   int get count => _items.length;
+
+  /// all mediums possible
   List<Medium> get items => _items;
 
+  /// if empty amount
   bool get isEmpty => _isEmpty;
+
+  /// if failed to load
   bool get isFailed => _isFailed;
+
+  /// if still loading
   bool get isLoading => _isLoading;
 
+  /// item at index
   Medium item(int index) => _items[index];
 
+  /// default mediums
   Medium get mediumDefault => _items.isEmpty ? Medium.mediumDefault : _items[0];
 
+  /// load mediums
   MediumsState(this._service) {
     _init();
   }

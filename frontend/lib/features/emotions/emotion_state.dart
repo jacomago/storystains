@@ -4,6 +4,7 @@ import 'emotion_model.dart';
 
 import 'emotion_service.dart';
 
+/// State of loading emotions from api usually at top level for caching
 class EmotionsState extends ChangeNotifier {
   final EmotionsService _service;
 
@@ -13,19 +14,30 @@ class EmotionsState extends ChangeNotifier {
   bool _isFailed = false;
   bool _isLoading = false;
 
+  /// count of emotions
   int get count => _items.length;
+
+  /// emotions
   List<Emotion> get items => _items;
 
+  /// if empty list
   bool get isEmpty => _isEmpty;
+
+  /// if failed to fetch api
   bool get isFailed => _isFailed;
+
+  /// if still loading from api
   bool get isLoading => _isLoading;
 
+  /// pick and item
   Emotion item(int index) => _items[index];
 
+  /// default emotion
   Emotion get emotionDefault => _items.isEmpty
       ? const Emotion(description: '', name: 'Default', iconUrl: '')
       : _items[0];
 
+  /// begin load and create state
   EmotionsState(this._service) {
     _init();
   }

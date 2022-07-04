@@ -1,64 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// Extension to quick get font styles from context
 extension TypographyUtils on BuildContext {
+  /// Theme helper
   ThemeData get theme => Theme.of(this);
+
+  /// main text theme
   TextTheme get textTheme =>
       GoogleFonts.libreBaskervilleTextTheme(theme.textTheme);
+
+  /// main  colors
   ColorScheme get colors => theme.colorScheme;
+
+  /// Large display
   TextStyle? get displayLarge => textTheme.displayLarge?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Medium display
   TextStyle? get displayMedium => textTheme.displayMedium?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Small display
   TextStyle? get displaySmall => textTheme.displaySmall?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Large headline
   TextStyle? get headlineLarge => textTheme.headlineLarge?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Medium headline
   TextStyle? get headlineMedium => textTheme.headlineMedium?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Small headline
   TextStyle? get headlineSmall => textTheme.headlineSmall?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Large title
   TextStyle? get titleLarge => textTheme.titleLarge?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Medium title
   TextStyle? get titleMedium => textTheme.titleMedium?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Small title
   TextStyle? get titleSmall => textTheme.titleSmall?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Large label
   TextStyle? get labelLarge => textTheme.labelLarge?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Medium label
   TextStyle? get labelMedium => textTheme.labelMedium?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Small label
   TextStyle? get labelSmall => textTheme.labelSmall?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Large body
   TextStyle? get bodyLarge => textTheme.bodyLarge?.copyWith(
         color: colors.onSurface,
       );
+
+  /// Medium body
   TextStyle? get bodyMedium => textTheme.bodyMedium?.copyWith(
         color: colors.onSurface,
       );
+
+  /// small body
   TextStyle? get bodySmall => textTheme.bodySmall?.copyWith(
         color: colors.onSurface,
       );
+
+  /// button font style
   TextStyle? get button => textTheme.button?.copyWith(
         color: colors.onSurface,
         fontSize: 16,
         fontFamily: 'TT2020E',
       );
+
+  /// caption font style
   TextStyle? get caption => textTheme.caption?.copyWith(
         color: colors.onSurface,
       );
+
+  /// overline font style
   TextStyle? get overline => textTheme.overline?.copyWith(
         color: colors.onSurface,
       );
