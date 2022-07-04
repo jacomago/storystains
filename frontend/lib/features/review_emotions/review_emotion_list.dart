@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
 import '../../common/widget/widget.dart';
@@ -22,7 +23,8 @@ class ReviewEmotionsList extends StatelessWidget {
     final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
-      context.snackbar('Must choose an emotion.');
+      context.snackbar(AppLocalizations.of(context)!
+          .blankStringError(AppLocalizations.of(context)!.emotion));
 
       return;
     }
@@ -36,7 +38,8 @@ class ReviewEmotionsList extends StatelessWidget {
     final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
-      context.snackbar('Must choose an emotion.');
+      context.snackbar(AppLocalizations.of(context)!
+          .blankStringError(AppLocalizations.of(context)!.emotion));
 
       return;
     }
@@ -54,7 +57,7 @@ class ReviewEmotionsList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Emotions:',
+                  AppLocalizations.of(context)!.emotions,
                   style: context.titleMedium,
                 ),
                 OutlinedButton(
@@ -69,7 +72,7 @@ class ReviewEmotionsList extends StatelessWidget {
                     ),
                   },
                   child: Text(
-                    'Add',
+                    AppLocalizations.of(context)!.add,
                     style: context.button,
                   ),
                 ),
@@ -120,14 +123,15 @@ class ReviewEmotionsList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Notes',
+                    AppLocalizations.of(context)!.notes,
                     style: context.labelLarge,
                   ),
                   const SizedBox(
                     width: 10,
                   ),
                   Text(
-                    'Position: ${reviewEmotion.position}',
+                    AppLocalizations.of(context)!
+                        .postionPercentage(reviewEmotion.position),
                     style: context.labelMedium,
                   ),
                 ],

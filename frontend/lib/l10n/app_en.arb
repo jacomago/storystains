@@ -2,5 +2,123 @@
     "appName": "Story Stains",
     "@appName": {
         "description": "The app name."
+    },
+    "title": "Title",
+    "@title": {
+        "description": "Name of story."
+    },
+    "creator": "Creator",
+    "@creator": {
+        "description": "Creator of story."
+    },
+    "creatorHint": "Creator Name",
+    "@creatorHint": {
+        "description": "Hint on writing a new creator."
+    },
+    "emotion": "Emotion",
+    "@emotion": {
+        "description": "A feeling."
+    },
+    "emotions": "Emotions",
+    "@emotions": {
+        "description": "A number of feelings."
+    },
+    "notes": "Notes",
+    "@notes": {
+        "description": "Place to write notes."
+    },
+    "markdownNotes": "You can write Markdown notes here.",
+    "@markdownNotes": {
+        "description": "Hint for place to write notes."
+    },
+    "body": "Body",
+    "@body": {
+        "description": "Place to write body of a review."
+    },
+    "markdownBody": "You can write Markdown text here.",
+    "@markdownBody": {
+        "description": "Hint for the place to write body of a review."
+    },
+    "delete": "Delete",
+    "@delete": {
+        "description": "Remove something."
+    },
+    "ok": "OK",
+    "@ok": {
+        "description": "Confirm to do something."
+    },
+    "add": "Add",
+    "@add": {
+        "description": "Add an additional item."
+    },
+    "cancel": "Cancel",
+    "@cancel": {
+        "description": "Cancel doing something."
+    },
+    "refresh": "Refresh",
+    "@refresh": {
+        "description": "Reload something."
+    },
+    "modifiedDate": "Modified Date",
+    "@modifiedDate": {
+        "description": "Date when an object was last modified."
+    },
+    "username": "Username",
+    "@username": {
+        "description": "Name used for logging in."
+    },
+    "review": "Review",
+    "@review": {
+        "description": "A review of some fictional media."
+    },
+    "updatedReview": "Updated Review",
+    "@updatedReview": {
+        "description": "The review has been changed."
+    },
+    "deletedReview": "Deleted Review",
+    "@deletedReview": {
+        "description": "The review has been deleted."
+    },
+    "pleaseTryAgain": "Please Try Again",
+    "@pleaseTryAgain": {
+        "description": "something went wrong, so command the user to try again politely."
+    },
+    "dataFetchError": "Fetching data failed",
+    "@dataFetchError": {
+        "description": "Fetching the data failed."
+    },
+    "noData": "No Data",
+    "@noData": {
+        "description": "No data was found."
+    },
+    "blankStringError": "{string} can't be blank",
+    "@blankStringError": {
+        "description": "The mentioned string cannot be left blank",
+        "placeholders": {
+            "string": {
+                "type": "String",
+                "example": "Title"
+            }
+        }
+    },
+    "byCreator": "by {name}",
+    "@byCreator": {
+        "description": "Address who created the media.",
+        "placeholders": {
+            "name": {
+                "type": "String",
+                "example": "Frank Herbert"
+            }
+        }
+    },
+    "postionPercentage": "Position: {position}%",
+    "@postionPercentage": {
+        "description": "Position in the review where the emotion has been set.",
+        "placeholders": {
+            "position": {
+                "type": "int",
+                "example": "100"
+            }
+        }
     }
 }

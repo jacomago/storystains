@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/utils/utils.dart';
@@ -15,17 +16,15 @@ class ReviewWidget extends StatelessWidget {
   void afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
       context.pop(state.review);
-      const msg = 'Updated Review';
-      context.snackbar(msg);
+      context.snackbar(AppLocalizations.of(context)!.updatedReview);
     } else if (state.isDeleted) {
       context.pop();
-      const msg = 'Deleted Review';
-      context.snackbar(msg);
+      context.snackbar(AppLocalizations.of(context)!.deletedReview);
     } else {
       if (state.isFailed) {
         context.snackbar(state.error);
       } else {
-        context.snackbar('Review creation failed, please try again.');
+        context.snackbar(AppLocalizations.of(context)!.pleaseTryAgain);
       }
     }
   }
@@ -38,11 +37,13 @@ class ReviewWidget extends StatelessWidget {
     final story = state.storyContoller.value;
 
     if (story == null || story.title.isEmpty) {
-      context.snackbar('Title can\'t be blank');
+      context.snackbar(AppLocalizations.of(context)!
+          .blankStringError(AppLocalizations.of(context)!.title));
 
       return;
     } else if (body.isEmpty) {
-      context.snackbar('Content can\'t be blank');
+      context.snackbar(AppLocalizations.of(context)!
+          .blankStringError(AppLocalizations.of(context)!.body));
 
       return;
     }
@@ -77,7 +78,7 @@ class ReviewWidget extends StatelessWidget {
         builder: (context, state, authState, _) => Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
-            title: const AppBarTitle('Review'),
+            title: AppBarTitle(AppLocalizations.of(context)!.review),
             moreActions: canEdit(state, authState)
                 ? [
                     PopupMenuButton<Text>(
@@ -85,7 +86,7 @@ class ReviewWidget extends StatelessWidget {
                       itemBuilder: (context) => <PopupMenuItem<Text>>[
                         PopupMenuItem(
                           child: Text(
-                            'Delete',
+                            AppLocalizations.of(context)!.delete,
                             style: context.labelSmall!
                                 .copyWith(color: context.colors.error),
                           ),

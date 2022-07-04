@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
+
 import '../../../common/widget/widget.dart';
 import '../review.dart';
 
@@ -12,7 +14,8 @@ class ReviewBody extends StatelessWidget {
         builder: (context, state, _) => state.isEdit
             ? MarkdownEdit(
                 bodyController: state.bodyController,
-                title: 'Body',
+                title: AppLocalizations.of(context)!.body,
+                hint: AppLocalizations.of(context)!.markdownBody,
               )
             : Markdown(
                 physics: const NeverScrollableScrollPhysics(),

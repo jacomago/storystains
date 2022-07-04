@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
 
 class ReviewUsername extends StatelessWidget {
@@ -12,7 +13,7 @@ class ReviewUsername extends StatelessWidget {
             '@$username',
             style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
             overflow: TextOverflow.fade,
-            semanticsLabel: 'Username',
+            semanticsLabel: AppLocalizations.of(context)!.username,
           ),
         ],
       );

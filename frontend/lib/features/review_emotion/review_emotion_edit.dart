@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../common/utils/utils.dart';
@@ -90,7 +91,9 @@ class ReviewEmotionEdit extends StatelessWidget {
                     ),
                     Expanded(
                       child: MarkdownEdit(
+                        title: AppLocalizations.of(context)!.notes,
                         bodyController: state.notesController,
+                        hint: AppLocalizations.of(context)!.markdownNotes,
                       ),
                     ),
                     const SizedBox(
@@ -111,7 +114,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                               deleteReviewEmotion(context);
                             },
                             child: Text(
-                              'Delete',
+                              AppLocalizations.of(context)!.delete,
                               style: context.button!.copyWith(
                                 color: context.colors.onErrorContainer,
                               ),
@@ -128,7 +131,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                   editReviewEmotion(context);
                                 },
                                 child: Text(
-                                  'OK',
+                                  AppLocalizations.of(context)!.ok,
                                   style: context.button!.copyWith(
                                     color: context.colors.onPrimary,
                                   ),
@@ -139,7 +142,7 @@ class ReviewEmotionEdit extends StatelessWidget {
                                   cancelCreation(context);
                                 },
                                 child: Text(
-                                  'Cancel',
+                                  AppLocalizations.of(context)!.cancel,
                                   style: context.button,
                                 ),
                               ),

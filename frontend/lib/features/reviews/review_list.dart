@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -25,13 +26,16 @@ class ReviewList extends StatelessWidget {
         builder: (_, reviews, __) {
           if (reviews.isFailed) {
             return LoadMessage(
-              'Fetching data failed',
+              AppLocalizations.of(context)!.dataFetchError,
               onRefresh: reviews.refresh,
             );
           }
 
           if (reviews.isEmpty) {
-            return LoadMessage('No data', onRefresh: reviews.refresh);
+            return LoadMessage(
+              AppLocalizations.of(context)!.noData,
+              onRefresh: reviews.refresh,
+            );
           }
 
           if (reviews.isLoadingFirst) {

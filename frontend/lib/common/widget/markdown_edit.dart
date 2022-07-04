@@ -8,8 +8,8 @@ class MarkdownEdit extends StatelessWidget {
   const MarkdownEdit({
     Key? key,
     required this.bodyController,
-    this.title = 'Notes',
-    this.hint = 'Write your review (in markdown)',
+    required this.title,
+    required this.hint,
   }) : super(key: key);
 
   @override

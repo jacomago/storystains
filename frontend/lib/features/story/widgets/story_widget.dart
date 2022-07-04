@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
 import '../../mediums/medium.dart';
 import '../story.dart';
@@ -45,7 +46,7 @@ class StoryWidget extends StatelessWidget {
               Text(
                 '${story?.title}',
                 style: context.headlineMedium,
-                semanticsLabel: 'Title',
+                semanticsLabel: AppLocalizations.of(context)!.title,
               ),
               Text(
                 '(${story?.medium.name})',
@@ -54,11 +55,11 @@ class StoryWidget extends StatelessWidget {
             ],
           ),
           Text(
-            "by ${story?.creator ?? ""}",
+            AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
             style: context.headlineSmall!.copyWith(
               fontStyle: FontStyle.italic,
             ),
-            semanticsLabel: 'Creator',
+            semanticsLabel: AppLocalizations.of(context)!.creator,
           ),
         ],
       );
@@ -73,10 +74,10 @@ class StoryTitleEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TextField(
         textInputAction: TextInputAction.next,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Title',
-          hintText: 'Review title',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: AppLocalizations.of(context)!.title,
+          hintText: AppLocalizations.of(context)!.title,
         ),
         style: context.titleMedium,
         controller: titleController,
@@ -93,10 +94,10 @@ class StoryCreatorEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TextField(
         textInputAction: TextInputAction.next,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          labelText: 'Creator',
-          hintText: 'Creator Name',
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: AppLocalizations.of(context)!.creator,
+          hintText: AppLocalizations.of(context)!.creatorHint,
         ),
         style: context.titleMedium,
         controller: creatorController,
