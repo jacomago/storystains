@@ -9,13 +9,10 @@ class AuthService {
             AddUser(user: NewUser(username: username, password: password)),
           );
 
-  Future<UserResp> login(String username, String password) async {
-    final resp = await ServiceLocator.sl.get<RestClient>().loginUser(
-          Login(user: LoginUser(username: username, password: password)),
-        );
-
-    return resp;
-  }
+  Future<UserResp> login(String username, String password) async =>
+      await ServiceLocator.sl.get<RestClient>().loginUser(
+            Login(user: LoginUser(username: username, password: password)),
+          );
 
   Future<void> delete() async {
     await ServiceLocator.sl.get<RestClient>().deleteUser();

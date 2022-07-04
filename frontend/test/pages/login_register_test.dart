@@ -1,11 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/login_register.dart';
+
+import 'login_register_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, AuthState authState) =>
     ChangeNotifierProvider<AuthState>(
@@ -17,6 +22,7 @@ Widget wrapWithMaterial(Widget w, AuthState authState) =>
       ),
     );
 
+@GenerateMocks([AuthService])
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
@@ -93,11 +99,11 @@ void main() {
     testWidgets('Log in network fail', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
+      final authService = MockAuthService();
+      final authState = AuthState(authService);
       final widg = wrapWithMaterial(
         Builder(builder: (context) => LoginOrRegisterPage()),
-        AuthState(
-          AuthService(),
-        ),
+        authState,
       );
 
       await tester.pumpWidget(widg);
@@ -108,6 +114,12 @@ void main() {
       var loginButton = find.widgetWithText(ElevatedButton, 'Login');
       expect(loginButton, findsOneWidget);
 
+      when(authService.login('username', 'password')).thenThrow(
+        DioError(
+          requestOptions: RequestOptions(path: ''),
+          type: DioErrorType.connectTimeout,
+        ),
+      );
       await tester.ensureVisible(loginButton);
       await tester.tap(loginButton.first);
       await tester.pump();
@@ -120,7 +132,8 @@ void main() {
     testWidgets('Register network fail', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final authState = AuthState(AuthService());
+      final authService = MockAuthService();
+      final authState = AuthState(authService);
       final page = wrapWithMaterial(
         Builder(builder: (context) => LoginOrRegisterPage()),
         authState,
@@ -137,8 +150,15 @@ void main() {
       await tester.enterText(find.bySemanticsLabel('Password'), 'password');
       await tester.enterText(find.bySemanticsLabel('Username'), 'username');
 
-      var loginButton = find.widgetWithText(ElevatedButton, 'Register');
+      var loginButton = find.widgetWithText(ElevatedButton, 'Sign up');
       expect(loginButton, findsOneWidget);
+
+      when(authService.register('username', 'password')).thenThrow(
+        DioError(
+          requestOptions: RequestOptions(path: ''),
+          type: DioErrorType.connectTimeout,
+        ),
+      );
 
       await tester.ensureVisible(loginButton);
       await tester.tap(loginButton.first);
