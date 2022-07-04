@@ -96,7 +96,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(review.story.title), findsOneWidget);
-      expect(find.text(review.story.creator), findsOneWidget);
+      expect(find.text('by ${review.story.creator}'), findsOneWidget);
       expect(find.text(review.story.medium.name), findsOneWidget);
       expect(find.text('@${review.user.username}'), findsOneWidget);
     });

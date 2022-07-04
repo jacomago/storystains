@@ -131,6 +131,7 @@ class ReviewList extends StatelessWidget {
         children: [
           const SizedBox(height: 4),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 story.title,
@@ -139,18 +140,19 @@ class ReviewList extends StatelessWidget {
                 overflow: TextOverflow.fade,
               ),
               Text(
-                AppLocalizations.of(context)!.byCreator(story.creator),
-                style:
-                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                overflow: TextOverflow.fade,
-              ),
-              Text(
-                '(${story.medium.name})',
-                style:
-                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                story.medium.name,
+                style: context.titleSmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: context.colors.onSecondaryContainer,
+                ),
                 overflow: TextOverflow.fade,
               ),
             ],
+          ),
+          Text(
+            AppLocalizations.of(context)!.byCreator(story.creator),
+            style: context.titleSmall,
+            overflow: TextOverflow.fade,
           ),
           const SizedBox(height: 4),
         ],
