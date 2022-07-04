@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,7 +45,13 @@ void main() {
     testWidgets('fail network', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
-      final mockService = ReviewsService();
+      final mockService = MockReviewsService();
+      when(mockService.fetch()).thenThrow(
+        DioError(
+          requestOptions: RequestOptions(path: ''),
+          type: DioErrorType.connectTimeout,
+        ),
+      );
       final reviewsState = ReviewsState(
         mockService,
       );
@@ -52,7 +59,7 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
-      expect(find.text('Fetching data failed'), findsOneWidget);
+      expect(find.text('Fetching data failed.'), findsOneWidget);
     });
     testWidgets('no data', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -68,7 +75,7 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewList(), reviewsState));
       await tester.pumpAndSettle();
 
-      expect(find.text('No data'), findsOneWidget);
+      expect(find.text('No Data'), findsOneWidget);
     });
     testWidgets('some data', (tester) async {
       SharedPreferences.setMockInitialValues({});

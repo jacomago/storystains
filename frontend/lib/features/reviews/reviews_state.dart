@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../common/constant/app_config.dart';
@@ -11,6 +12,7 @@ class ReviewsState extends ChangeNotifier {
   int _offset = 0;
   String _query = '';
   List<Review> _items = [];
+  String _error = '';
 
   bool _isEmpty = false;
   bool _isFailed = false;
@@ -44,16 +46,20 @@ class ReviewsState extends ChangeNotifier {
   Future<void> _init() async {
     _startLoading();
 
-    final items = await _service.fetch();
-
-    if (items == null) {
+    try {
+      final items = await _service.fetch();
+      if (items == null) {
+        _isFailed = true;
+      } else if (items.isEmpty) {
+        _isEmpty = true;
+      } else {
+        _offset = AppConfig.defaultLimit;
+        _query = '';
+        _items = [...items];
+      }
+    } on DioError catch (e) {
+      _error = e.message;
       _isFailed = true;
-    } else if (items.isEmpty) {
-      _isEmpty = true;
-    } else {
-      _offset = AppConfig.defaultLimit;
-      _query = '';
-      _items = [...items];
     }
 
     notifyListeners();
@@ -63,14 +69,18 @@ class ReviewsState extends ChangeNotifier {
   Future<void> refresh([String? query]) async {
     _startLoading();
 
-    final items = await _service.fetch();
+    try {
+      final items = await _service.fetch();
 
-    if (items != null && items.isNotEmpty) {
-      _offset = AppConfig.defaultLimit;
-      _query = query ?? '';
-      _items = [...items];
-      _isFailed = false;
-      _isEmpty = false;
+      if (items != null && items.isNotEmpty) {
+        _offset = AppConfig.defaultLimit;
+        _query = query ?? '';
+        _items = [...items];
+        _isFailed = false;
+        _isEmpty = false;
+      }
+    } on DioError catch (_) {
+      _isFailed = true;
     }
 
     notifyListeners();
@@ -81,21 +91,25 @@ class ReviewsState extends ChangeNotifier {
     if (!_isLoading) {
       _startLoading();
 
-      final items = await _service.fetch(query: _query, offset: _offset);
+      try {
+        final items = await _service.fetch(query: _query, offset: _offset);
 
-      if (items != null) {
-        if (items.isEmpty) {
-          _isEmpty = false;
-          _isFailed = false;
-          _hasReachedMax = true;
-        } else {
-          _offset = _offset + AppConfig.defaultLimit;
-          _items = [..._items, ...items];
+        if (items != null) {
+          if (items.isEmpty) {
+            _isEmpty = false;
+            _isFailed = false;
+            _hasReachedMax = true;
+          } else {
+            _offset = _offset + AppConfig.defaultLimit;
+            _items = [..._items, ...items];
 
-          _isEmpty = false;
-          _isFailed = false;
-          _hasReachedMax = false;
+            _isEmpty = false;
+            _isFailed = false;
+            _hasReachedMax = false;
+          }
         }
+      } on DioError catch (_) {
+        _isFailed = true;
       }
 
       notifyListeners();
