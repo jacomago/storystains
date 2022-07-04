@@ -192,7 +192,7 @@ void main() {
 
       await authState.loginRegister(user.username, password);
 
-      when(mockService.delete()).thenAnswer((realInvocation) async => null);
+      when(mockService.delete()).thenAnswer((realInvocation) async => {});
 
       await authState.delete();
       verify(mockService.delete());

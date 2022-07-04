@@ -34,13 +34,13 @@ class AuthState extends ChangeNotifier {
   bool get notAuthenticated => _status == AuthStatus.notauthenticated;
   bool get isFailed => _status == AuthStatus.failed;
 
-  AuthState(this._service) {
+  AuthState(this._service, [AuthStorage? storage]) {
     _event = null;
     _status = AuthStatus.initial;
     _isLoading = false;
     _loginRegister = LoginRegister.login;
     _error = '';
-    _storage = AuthStorage();
+    _storage = storage ?? AuthStorage();
   }
 
   void switchLoginRegister() {
@@ -82,7 +82,7 @@ class AuthState extends ChangeNotifier {
       if (data.user.token.isNotEmpty) {
         _user = data.user;
 
-        _storage.login(_user!);
+        await _storage.login(_user!);
 
         _status = AuthStatus.authenticated;
       } else {

@@ -2,14 +2,14 @@
 // in storystains/test/features/review_emotion/review_emotion_edit_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:storystains/features/review/review_model.dart' as _i4;
+import 'package:storystains/features/review/review_model.dart' as _i5;
 import 'package:storystains/features/review_emotion/review_emotion_model.dart'
-    as _i5;
-import 'package:storystains/features/review_emotion/review_emotion_service.dart'
     as _i2;
+import 'package:storystains/features/review_emotion/review_emotion_service.dart'
+    as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -21,32 +21,43 @@ import 'package:storystains/features/review_emotion/review_emotion_service.dart'
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
+class _FakeReviewEmotionResp_0 extends _i1.Fake
+    implements _i2.ReviewEmotionResp {}
+
 /// A class which mocks [ReviewEmotionService].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockReviewEmotionService extends _i1.Mock
-    implements _i2.ReviewEmotionService {
+    implements _i3.ReviewEmotionService {
   MockReviewEmotionService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<dynamic> create(
-          _i4.Review? review, _i5.ReviewEmotion? reviewEmotion) =>
+  _i4.Future<_i2.ReviewEmotionResp> create(
+          _i5.Review? review, _i2.ReviewEmotion? reviewEmotion) =>
       (super.noSuchMethod(Invocation.method(#create, [review, reviewEmotion]),
-          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+              returnValue: Future<_i2.ReviewEmotionResp>.value(
+                  _FakeReviewEmotionResp_0()))
+          as _i4.Future<_i2.ReviewEmotionResp>);
   @override
-  _i3.Future<dynamic> update(_i4.Review? review, int? position,
-          _i5.ReviewEmotion? reviewEmotion) =>
+  _i4.Future<_i2.ReviewEmotionResp> update(_i5.Review? review, int? position,
+          _i2.ReviewEmotion? reviewEmotion) =>
       (super.noSuchMethod(
-          Invocation.method(#update, [review, position, reviewEmotion]),
-          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+              Invocation.method(#update, [review, position, reviewEmotion]),
+              returnValue: Future<_i2.ReviewEmotionResp>.value(
+                  _FakeReviewEmotionResp_0()))
+          as _i4.Future<_i2.ReviewEmotionResp>);
   @override
-  _i3.Future<dynamic> read(String? username, String? slug, int? position) =>
+  _i4.Future<_i2.ReviewEmotionResp> read(
+          String? username, String? slug, int? position) =>
       (super.noSuchMethod(Invocation.method(#read, [username, slug, position]),
-          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+              returnValue: Future<_i2.ReviewEmotionResp>.value(
+                  _FakeReviewEmotionResp_0()))
+          as _i4.Future<_i2.ReviewEmotionResp>);
   @override
-  _i3.Future<dynamic> delete(_i4.Review? review, int? position) =>
+  _i4.Future<void> delete(_i5.Review? review, int? position) =>
       (super.noSuchMethod(Invocation.method(#delete, [review, position]),
-          returnValue: Future<dynamic>.value()) as _i3.Future<dynamic>);
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i4.Future<void>);
 }

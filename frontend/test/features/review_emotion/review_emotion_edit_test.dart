@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -46,6 +47,8 @@ Widget wrapWithMaterial(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: Scaffold(
           body: w,
         ),
@@ -391,9 +394,7 @@ void main() {
       when(service.delete(
         review,
         reviewEmotion.position,
-      )).thenAnswer(
-        (realInvocation) async => null,
-      );
+      )).thenAnswer((realInvocation) async => {});
 
       await tester.pump();
       final deleteButton = find.widgetWithText(ElevatedButton, 'Delete');

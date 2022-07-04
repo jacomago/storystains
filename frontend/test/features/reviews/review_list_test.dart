@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
@@ -23,6 +25,8 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: Scaffold(
           body: w,
         ),
@@ -31,7 +35,11 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
 
 @GenerateMocks([ReviewsService])
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    ServiceLocator.setup();
+  });
+  tearDown(ServiceLocator.sl.reset);
   group('Refresh Reviews Page', () {
     testWidgets('fail network', (tester) async {
       SharedPreferences.setMockInitialValues({});

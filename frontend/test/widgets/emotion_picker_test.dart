@@ -6,6 +6,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 
 import '../common/image_mock_http.dart';
@@ -29,11 +30,13 @@ Widget wrapWithMaterial(Widget w, EmotionsState? emotionsState) =>
 @GenerateMocks([EmotionsService])
 void main() {
   setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
+  tearDown(ServiceLocator.sl.reset);
   group('Emotions Picker', () {
     setUp(() {
       // Only needs to be done once since the HttpClient generated
       // by this override is cached as a static singleton.
       io.HttpOverrides.global = TestHttpOverrides();
+      ServiceLocator.setup();
     });
 
     testWidgets('no data smoke test', (tester) async {

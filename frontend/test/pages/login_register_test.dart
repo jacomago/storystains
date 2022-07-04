@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/login_register.dart';
 
@@ -9,12 +11,18 @@ Widget wrapWithMaterial(Widget w, AuthState authState) =>
     ChangeNotifierProvider<AuthState>(
       create: (_) => authState,
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: w,
       ),
     );
 
 void main() {
-  setUp(() => {WidgetsFlutterBinding.ensureInitialized()});
+  setUp(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    ServiceLocator.setup();
+  });
+  tearDown(ServiceLocator.sl.reset);
   group('login', () {
     testWidgets('Log in values', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -29,7 +37,7 @@ void main() {
       expect(find.bySemanticsLabel('Password'), findsOneWidget);
       expect(find.bySemanticsLabel('Username'), findsOneWidget);
 
-      expect(find.widgetWithText(OutlinedButton, 'Register?'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Sign up?'), findsOneWidget);
       expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
     });
 
@@ -44,7 +52,7 @@ void main() {
 
       await tester.pumpWidget(page);
 
-      var swapButton = find.widgetWithText(OutlinedButton, 'Register?');
+      var swapButton = find.widgetWithText(OutlinedButton, 'Sign up?');
       expect(swapButton, findsOneWidget);
 
       await tester.ensureVisible(swapButton);
@@ -75,7 +83,10 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Wrong username or password.'),
+        find.widgetWithText(
+          SnackBar,
+          "Username can't be blank or Password can't be blank.",
+        ),
         findsOneWidget,
       );
     });
@@ -102,7 +113,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Sign in failed. Please try again.'),
+        find.widgetWithText(SnackBar, 'Login failed.'),
         findsOneWidget,
       );
     });
@@ -117,7 +128,7 @@ void main() {
 
       await tester.pumpWidget(page);
 
-      var swapButton = find.widgetWithText(OutlinedButton, 'Register?');
+      var swapButton = find.widgetWithText(OutlinedButton, 'Sign up?');
 
       await tester.ensureVisible(swapButton);
       await tester.tap(swapButton.first);
@@ -134,7 +145,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Sign in failed. Please try again.'),
+        find.widgetWithText(SnackBar, 'Login failed.'),
         findsOneWidget,
       );
     });

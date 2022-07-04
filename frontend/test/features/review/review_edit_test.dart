@@ -345,7 +345,7 @@ void main() {
       await tester.pumpAndSettle();
 
       when(mockService.delete(review.user.username, review.slug))
-          .thenAnswer((realInvocation) async => null);
+          .thenAnswer((realInvocation) async => {});
 
       final menuButton = find.byIcon(Icons.adaptive.more);
       expect(menuButton, findsOneWidget);

@@ -1,11 +1,13 @@
 import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/common/widget/emotion_edit.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
@@ -40,6 +42,8 @@ Widget wrapWithMaterial(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: Scaffold(
           body: w,
         ),
@@ -54,7 +58,9 @@ void main() {
       // Only needs to be done once since the HttpClient generated
       // by this override is cached as a static singleton.
       io.HttpOverrides.global = TestHttpOverrides();
+      ServiceLocator.setup();
     });
+    tearDown(ServiceLocator.sl.reset);
 
     testWidgets('no data smoke test', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -108,7 +114,7 @@ void main() {
       for (var re in list) {
         expect(find.text(re.notes), findsOneWidget);
         expect(find.text(re.emotion.name), findsOneWidget);
-        expect(find.text('Position: ${re.position}'), findsOneWidget);
+        expect(find.text('Position: ${re.position}%'), findsOneWidget);
       }
     });
     testWidgets('add', (tester) async {

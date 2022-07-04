@@ -11,8 +11,9 @@ class AuthStorage {
   );
   late final FlutterSecureStorage _secureStorage;
 
-  AuthStorage() {
-    _secureStorage = ServiceLocator.sl.get<FlutterSecureStorage>();
+  AuthStorage([FlutterSecureStorage? secureStorage]) {
+    _secureStorage =
+        secureStorage ?? ServiceLocator.sl.get<FlutterSecureStorage>();
   }
 
   Future<void> logout() async {
