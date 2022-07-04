@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -38,6 +38,8 @@ Widget wrapWithMaterial(
         ),
       ],
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        locale: const Locale('en'),
         home: w,
       ),
     );
@@ -51,8 +53,7 @@ void main() {
     // in this set of tests. The full setup includes the dio
     // http client and so tries to do network requests which don't
     // timeout.
-    ServiceLocator.sl
-        .registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
+    ServiceLocator.setupSecureStorage();
   });
   tearDown(ServiceLocator.sl.reset);
   group('Floating button', () {
@@ -63,11 +64,15 @@ void main() {
 
       final reviewState = ReviewState(ReviewService(), review: review);
       final authState = await loggedInState(username: user.username);
+      final dio = ServiceLocator.setupDio();
+      ServiceLocator.setupRest(dio);
+      ServiceLocator.sl.registerSingleton(authState);
       await tester.pumpWidget(wrapWithMaterial(
         const ReviewWidget(),
         reviewState,
         authState: authState,
       ));
+      await tester.pumpAndSettle();
       // find edit button
       expect(
         find.widgetWithIcon(FloatingActionButton, Icons.edit_note),

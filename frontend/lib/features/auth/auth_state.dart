@@ -82,7 +82,7 @@ class AuthState extends ChangeNotifier {
       if (data.user.token.isNotEmpty) {
         _user = data.user;
 
-        await _storage.login(_user!);
+        _storage.login(_user!);
 
         _status = AuthStatus.authenticated;
       } else {
