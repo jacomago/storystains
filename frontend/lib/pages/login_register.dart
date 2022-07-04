@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../common/utils/extensions.dart';
@@ -15,10 +16,13 @@ class LoginOrRegisterPage extends StatelessWidget {
   void afterLoging(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated) {
       Navigator.of(context).pop();
-      context.snackbar('Signed in as ${auth.user?.username}');
+      context.snackbar(
+        AppLocalizations.of(context)!.greeting(auth.user?.username ?? ''),
+      );
     } else {
       _passwordController.clear();
-      context.snackbar('Sign in failed. Please try again.');
+      context.snackbar(AppLocalizations.of(context)!
+          .actionFailed(AppLocalizations.of(context)!.login));
     }
   }
 
@@ -31,7 +35,14 @@ class LoginOrRegisterPage extends StatelessWidget {
     final empty = username.isEmpty || password.isEmpty;
 
     if (empty) {
-      context.snackbar('Wrong username or password.');
+      context.snackbar(
+        AppLocalizations.of(context)!.or(
+          AppLocalizations.of(context)!
+              .blankStringError(AppLocalizations.of(context)!.username),
+          AppLocalizations.of(context)!
+              .blankStringError(AppLocalizations.of(context)!.password),
+        ),
+      );
 
       return;
     }
@@ -44,8 +55,13 @@ class LoginOrRegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: const StainsAppBar(
-          title: AppBarTitle('Login/Register'),
+        appBar: StainsAppBar(
+          title: AppBarTitle(
+            AppLocalizations.of(context)!.or(
+              AppLocalizations.of(context)!.login,
+              AppLocalizations.of(context)!.signup,
+            ),
+          ),
         ),
         body: Center(
           child: Container(
@@ -62,10 +78,10 @@ class LoginOrRegisterPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Username',
-                      hintText: 'Enter your Username',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.username,
+                      hintText: AppLocalizations.of(context)!.usernameHint,
                     ),
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
@@ -73,10 +89,10 @@ class LoginOrRegisterPage extends StatelessWidget {
                   const SizedBox(height: 20),
                   TextField(
                     obscureText: true,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                      hintText: 'Enter your secure password',
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      labelText: AppLocalizations.of(context)!.password,
+                      hintText: AppLocalizations.of(context)!.passwordHint,
                     ),
                     controller: _passwordController,
                     textInputAction: TextInputAction.done,
@@ -91,7 +107,9 @@ class LoginOrRegisterPage extends StatelessWidget {
                     ),
                     onPressed: () => _onLogin(context),
                     child: Text(
-                      auth.isLogin ? 'Login' : 'Register',
+                      auth.isLogin
+                          ? AppLocalizations.of(context)!.login
+                          : AppLocalizations.of(context)!.signup,
                       style: context.button!
                           .copyWith(color: context.colors.onPrimary),
                     ),
@@ -100,7 +118,11 @@ class LoginOrRegisterPage extends StatelessWidget {
                   OutlinedButton(
                     onPressed: auth.switchLoginRegister,
                     child: Text(
-                      auth.isLogin ? 'Register?' : 'Login?',
+                      auth.isLogin
+                          ? AppLocalizations.of(context)!
+                              .choice(AppLocalizations.of(context)!.signup)
+                          : AppLocalizations.of(context)!
+                              .choice(AppLocalizations.of(context)!.login),
                       style: context.button,
                     ),
                   ),

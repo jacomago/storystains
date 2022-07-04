@@ -71,6 +71,18 @@
     "@username": {
         "description": "Name used for logging in."
     },
+    "usernameHint": "Enter your username.",
+    "@usernameHint": {
+        "description": "Placeholder for where to enter username."
+    },
+    "password": "Password",
+    "@password": {
+        "description": "Name used for logging in."
+    },
+    "passwordHint": "Enter your secure password.",
+    "@passwordHint": {
+        "description": "Placeholder for where to enter password."
+    },
     "review": "Review",
     "@review": {
         "description": "A review of some fictional media."
@@ -149,11 +161,43 @@
     },
     "logout": "Logout",
     "@logout": {
-        "description": "Action to delete object."
+        "description": "Log out of account."
+    },
+    "login": "Login",
+    "@login": {
+        "description": "Sign in to account."
+    },
+    "signup": "Sign up",
+    "@signup": {
+        "description": "Sign up for an account."
     },
     "acount": "User Account",
     "@account": {
         "description": "A users personal details and actions."
+    },
+    "or": "{a} or {b}.",
+    "@or": {
+        "description": "Decide between two options.",
+        "placeholders": {
+            "a": {
+                "type": "String",
+                "example": "Sign in"
+            },
+            "b": {
+                "type": "String",
+                "example": "Sign up"
+            }
+        }
+    },
+    "choice": "{a}?",
+    "@choice": {
+        "description": "Swap to option a.",
+        "placeholders": {
+            "a": {
+                "type": "String",
+                "example": "Sign in"
+            }
+        }
     },
     "actionFailed": "{action} failed.",
     "@actionFailed": {
