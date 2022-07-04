@@ -71,7 +71,7 @@ class ReviewList extends StatelessWidget {
   void _tapItem(BuildContext context, Review review) {
     Navigator.of(context)
         .push(
-          ReviewRoute.route(
+          ReviewRoutePath(review.slug, review.user.username).route(
             Routes.reviewDetail,
             review,
             (r) => ReviewDetail(

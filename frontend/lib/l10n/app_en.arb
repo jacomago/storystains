@@ -1,0 +1,6 @@
+{
+    "appName": "Story Stains",
+    "@appName": {
+        "description": "The app name."
+    }
+}
