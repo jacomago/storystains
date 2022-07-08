@@ -87,12 +87,15 @@ extension TypographyUtils on BuildContext {
         color: colors.onSurface,
       );
 
+  /// Text them for stylised text
+  TextTheme get displayTextTheme => GoogleFonts.specialEliteTextTheme();
+  
   /// button font style
-  TextStyle? get button => GoogleFonts.specialEliteTextTheme().button?.copyWith(
+  TextStyle? get button => displayTextTheme.button?.copyWith(
         color: colors.onSurface,
       );
   /// titleBar font style
-  TextStyle? get titleBar => GoogleFonts.specialEliteTextTheme().titleLarge?.copyWith(
+  TextStyle? get titleBar => displayTextTheme.titleLarge?.copyWith(
         color: colors.onSurface,
         fontSize: 32,
       );
