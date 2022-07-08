@@ -21,7 +21,3 @@ RUN flutter doctor
 
 RUN apt-get clean
 RUN apt-get autoremove
-
-FROM fluttersetup as devtime
-# prebuild 
-RUN cargo build
