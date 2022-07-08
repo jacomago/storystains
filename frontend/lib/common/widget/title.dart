@@ -14,10 +14,6 @@ class AppBarTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
         title,
-        style: TextStyle(
-          fontFamily: 'TT2020E',
-          color: context.colors.onSurface,
-          fontSize: 32,
-        ),
+        style: context.titleBar,
       );
 }
