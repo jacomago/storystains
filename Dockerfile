@@ -33,7 +33,7 @@ RUN mkdir /app/
 COPY ./frontend /app/
 WORKDIR /app/
 ARG FRONT_BASE_URL
-RUN flutter build web --dart-define BASE_URL=${FRONT_BASE_URL}
+RUN flutter build web --web-renderer canvaskit --release --dart-define BASE_URL=${FRONT_BASE_URL}
 
 FROM lukemathwalker/cargo-chef:latest-rust-1.61 as chef
 WORKDIR /app

@@ -7,8 +7,7 @@ extension TypographyUtils on BuildContext {
   ThemeData get theme => Theme.of(this);
 
   /// main text theme
-  TextTheme get textTheme =>
-      GoogleFonts.libreBaskervilleTextTheme(theme.textTheme);
+  TextTheme get textTheme => theme.textTheme;
 
   /// main  colors
   ColorScheme get colors => theme.colorScheme;
@@ -89,10 +88,13 @@ extension TypographyUtils on BuildContext {
       );
 
   /// button font style
-  TextStyle? get button => textTheme.button?.copyWith(
+  TextStyle? get button => GoogleFonts.specialEliteTextTheme().button?.copyWith(
         color: colors.onSurface,
-        fontSize: 16,
-        fontFamily: 'TT2020E',
+      );
+  /// titleBar font style
+  TextStyle? get titleBar => GoogleFonts.specialEliteTextTheme().titleLarge?.copyWith(
+        color: colors.onSurface,
+        fontSize: 32,
       );
 
   /// caption font style
