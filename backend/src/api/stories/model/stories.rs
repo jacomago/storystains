@@ -67,3 +67,14 @@ impl From<Vec<StoredStory>> for StoriesResponse {
         }
     }
 }
+
+/// Story query options
+#[derive(serde::Deserialize, serde::Serialize)]
+pub struct StoryQuery {
+    /// Story title matching string
+    pub title: Option<String>,
+    /// Story title matching medium - must match a medium
+    pub medium: Option<String>,
+    /// Story creator matching string
+    pub creator: Option<String>,
+}

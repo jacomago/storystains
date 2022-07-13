@@ -61,3 +61,17 @@ impl TestStory {
         assert_eq!(response.status(), StatusCode::OK);
     }
 }
+
+pub fn query_list(
+    limit: Option<i32>,
+    title: Option<String>,
+    medium: Option<String>,
+    creator: Option<String>,
+) -> Vec<(String, Option<String>)> {
+    vec![
+        ("limit".to_string(), limit.map(|l| format!("{}", l))),
+        ("title".to_string(), title),
+        ("medium".to_string(), medium),
+        ("creator".to_string(), creator),
+    ]
+}
