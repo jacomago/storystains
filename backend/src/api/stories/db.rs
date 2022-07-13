@@ -17,12 +17,18 @@ pub async fn create_or_update_creator(
         r#"
         WITH new_creator AS (
             INSERT INTO creators (id, name)
-            VALUES ($1, $2) ON CONFLICT DO NOTHING
+            VALUES ($1, $2) ON CONFLICT (name) DO NOTHING
             RETURNING id
+        ), exist_creator AS (
+            SELECT id 
+            FROM creators
+            WHERE name = $2
         )
+        SELECT id 
+        FROM new_creator
+        UNION ALL
         SELECT id
-        FROM creators
-        WHERE name = $2
+        FROM exist_creator
         "#,
         creator_id,
         creator.as_ref(),
@@ -33,7 +39,7 @@ pub async fn create_or_update_creator(
         tracing::error!("Failed to execute query: {:?}", e);
         e
     })?;
-    Ok(updated_creator.id)
+    Ok(updated_creator.id.unwrap())
 }
 
 #[tracing::instrument(name = "Saving new story details", skip(story, pool))]
@@ -61,7 +67,7 @@ pub async fn db_create_story(
     let created_story = sqlx::query_as!(
         StoredStory,
         r#" 
-        with new_story as (
+        WITH new_story AS (
             INSERT INTO stories (id, title, medium_id, creator_id)
             VALUES (
                     $1,
@@ -71,26 +77,50 @@ pub async fn db_create_story(
                         FROM mediums
                         WHERE name = $3
                         LIMIT 1
-                    ), $4
-                ) ON CONFLICT DO NOTHING
+                    ), 
+                    $4
+                ) ON CONFLICT (title, medium_id, creator_id) DO NOTHING
             RETURNING id,
                 title,
-                medium_id,
-                creator_id
+                $3 as medium,
+                (
+                    SELECT name FROM creators WHERE id = $4
+                ) as creator
+        ), old_story AS (
+            SELECT 
+                stories.id,
+                stories.title as title,
+                mediums.name as medium,
+                creators.name as creator
+            FROM 
+                stories,
+                creators,
+                mediums
+            WHERE creators.id = $4
+                AND stories.medium_id = mediums.id
+                AND mediums.name = $3
+                AND stories.title = $2
+        ), all_story AS (
+        SELECT
+            id,
+            title,
+            medium,
+            creator
+        FROM old_story
+        UNION ALL
+        SELECT
+            id,
+            title,
+            medium,
+            creator
+        FROM new_story
         )
         SELECT 
-            stories.id,
-            stories.title as "title!",
-            mediums.name as "medium!",
-            creators.name as "creator!"
-        FROM 
-            stories,
-            creators,
-            mediums
-        WHERE creators.id = $4
-        AND stories.medium_id = mediums.id
-        AND mediums.name = $3
-        AND stories.title = $2
+            id as "id!",
+            title as "title!",
+            medium as "medium!",
+            creator as "creator!"
+        FROM all_story
         "#,
         id,
         story.title.as_ref(),

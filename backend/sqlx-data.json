@@ -250,6 +250,68 @@
     },
     "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = $1\n        "
   },
+  "6136c1e1058ea1b939b57acab6ebf7fc4eb8e1201beffc55db10c2acbe92c24b": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id!",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title!",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "medium!",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "creator!",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": " \n        WITH new_story AS (\n            INSERT INTO stories (id, title, medium_id, creator_id)\n            VALUES (\n                    $1,\n                    $2,\n                    (\n                        SELECT id\n                        FROM mediums\n                        WHERE name = $3\n                        LIMIT 1\n                    ), \n                    $4\n                ) ON CONFLICT (title, medium_id, creator_id) DO NOTHING\n            RETURNING id,\n                title,\n                $3 as medium,\n                (\n                    SELECT name FROM creators WHERE id = $4\n                ) as creator\n        ), old_story AS (\n            SELECT \n                stories.id,\n                stories.title as title,\n                mediums.name as medium,\n                creators.name as creator\n            FROM \n                stories,\n                creators,\n                mediums\n            WHERE creators.id = $4\n                AND stories.medium_id = mediums.id\n                AND mediums.name = $3\n                AND stories.title = $2\n        ), all_story AS (\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM old_story\n        UNION ALL\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM new_story\n        )\n        SELECT \n            id as \"id!\",\n            title as \"title!\",\n            medium as \"medium!\",\n            creator as \"creator!\"\n        FROM all_story\n        "
+  },
+  "67e0d113d44e8ec9667a426f747bad611c5e9cab31f40a7cd49b6919bbf9232f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        WITH new_creator AS (\n            INSERT INTO creators (id, name)\n            VALUES ($1, $2) ON CONFLICT (name) DO NOTHING\n            RETURNING id\n        ), exist_creator AS (\n            SELECT id \n            FROM creators\n            WHERE name = $2\n        )\n        SELECT id \n        FROM new_creator\n        UNION ALL\n        SELECT id\n        FROM exist_creator\n        "
+  },
   "7b0224a2e18604b44f638e14c18e7a2410da4c646ac2284b3864c7237eea2e29": {
     "describe": {
       "columns": [
@@ -494,27 +556,6 @@
     },
     "query": "\n            DELETE \n              FROM  review_emotions\n             WHERE  review_id = (SELECT id\n                                   FROM users,\n                                        reviews\n                                  WHERE slug           = $1\n                                    AND users.user_id  = reviews.user_id\n                                    AND users.username = $3\n                                  LIMIT 1\n                               )\n                AND position = $2\n        "
   },
-  "c423487beae4e25ef94fa50e266cd0522de85d1e69956875ee6c9e60f6f31b9c": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        WITH new_creator AS (\n            INSERT INTO creators (id, name)\n            VALUES ($1, $2) ON CONFLICT DO NOTHING\n            RETURNING id\n        )\n        SELECT id\n        FROM creators\n        WHERE name = $2\n        "
-  },
   "c45d3056a4f83f1b5618b0a2faf148e2738918fcb1104d1b88a32b83ad6b7b43": {
     "describe": {
       "columns": [
@@ -555,47 +596,6 @@
       }
     },
     "query": "\n            SELECT user_id \n            FROM users\n            WHERE user_id = $1\n        "
-  },
-  "cbd44ad88d2d688f9439bff9071678876b34c822c2231c5831b8270915febece": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title!",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "medium!",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "creator!",
-          "ordinal": 3,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text",
-          "Uuid"
-        ]
-      }
-    },
-    "query": " \n        with new_story as (\n            INSERT INTO stories (id, title, medium_id, creator_id)\n            VALUES (\n                    $1,\n                    $2,\n                    (\n                        SELECT id\n                        FROM mediums\n                        WHERE name = $3\n                        LIMIT 1\n                    ), $4\n                ) ON CONFLICT DO NOTHING\n            RETURNING id,\n                title,\n                medium_id,\n                creator_id\n        )\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE creators.id = $4\n        AND stories.medium_id = mediums.id\n        AND mediums.name = $3\n        AND stories.title = $2\n        "
   },
   "d247e9152c41b8a0995b0ced2484cd99c20237bf544fc0a6f756654899026f2f": {
     "describe": {

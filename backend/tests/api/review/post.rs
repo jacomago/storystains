@@ -6,7 +6,7 @@ use crate::{
         route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in,
         route_returns_unauth_when_using_valid_but_non_existant_user,
     },
-    helpers::TestApp,
+    helpers::{TestApp, TestUser},
     story::TestStory,
 };
 
@@ -153,6 +153,31 @@ async fn post_review_returns_json() {
     let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
 
     // Act
+    let response = app.post_review(body.to_string(), &token).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json: Value = response.json().await.expect("expected json response");
+    assert_eq!(json["review"]["body"], "5stars");
+    assert_eq!(json["review"]["story"]["title"], story.title);
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn post_review_same_story_different_user() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
+
+    // Act
+    app.post_review(body.to_string(), &token).await;
+    let other_user = TestUser::generate();
+    let token = other_user.store(&app).await;
+    let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
     let response = app.post_review(body.to_string(), &token).await;
 
     // Assert
