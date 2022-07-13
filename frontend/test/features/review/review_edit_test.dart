@@ -14,6 +14,7 @@ import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
 import '../auth/user.dart';
+import '../story/story.dart';
 import 'review.dart';
 import 'review_edit_test.mocks.dart';
 
@@ -118,6 +119,35 @@ void main() {
         find.widgetWithIcon(FloatingActionButton, Icons.edit_note),
         findsNothing,
       );
+    });
+  });
+  group('test copy', () {
+    testWidgets('copy fields exist', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockReviewService();
+      final review = testReview();
+      final reviewState = ReviewState(mockService, review: review);
+
+      final otherUser = testUser(username: 'otherUser');
+      final authState = await loggedInState(username: otherUser.username);
+      ServiceLocator.sl.registerSingleton(authState);
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+        authState: authState,
+      ));
+      await tester.pumpAndSettle();
+      // set to edit mode
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      final titleField = find.widgetWithText(TextField, review.story.title);
+      expect(titleField, findsOneWidget);
+      expect(find.text(review.story.title), findsOneWidget);
+
+      final bodyField = find.bySemanticsLabel('Body');
+      expect(bodyField, findsOneWidget);
+      expect(find.text(''), findsOneWidget);
     });
   });
   group('test edit', () {
@@ -246,11 +276,7 @@ void main() {
       await tester.pumpAndSettle();
 
       when(mockService.create(
-        Story(
-          creator: '',
-          title: '/',
-          medium: Medium.mediumDefault,
-        ),
+        emptyStory(),
         'body',
       )).thenThrow(testApiError(400, 'Cannot be /.'));
 

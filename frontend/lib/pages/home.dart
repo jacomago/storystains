@@ -28,13 +28,8 @@ class HomePage extends StatelessWidget {
   Future<void> _goNewReview(
     BuildContext context,
     ReviewsState reviewsState,
-    AuthState authState,
   ) async {
-    if (authState.isAuthenticated) {
-      context.push(Routes.reviewNew).then((value) => reviewsState.refresh());
-    } else {
-      context.snackbar('Must be logged in to create a review.');
-    }
+    context.push(Routes.reviewNew).then((value) => reviewsState.refresh());
   }
 
   /// build a special widget for the title in the AppBar
@@ -51,10 +46,12 @@ class HomePage extends StatelessWidget {
             title: buildAppTitle(context),
           ),
           body: const ReviewList(),
-          floatingActionButton: CustomFloatingButton(
-            onPressed: () => _goNewReview(context, reviews, auth),
-            icon: Icons.mode_edit_outline_sharp,
-          ),
+          floatingActionButton: auth.isAuthenticated
+              ? CustomFloatingButton(
+                  onPressed: () => _goNewReview(context, reviews),
+                  icon: Icons.mode_edit_outline_sharp,
+                )
+              : null,
         ),
       );
 }

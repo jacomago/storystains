@@ -10,6 +10,21 @@ import '../../story/story.dart';
 import '../review.dart';
 import 'review_body.dart';
 
+/// Actions currently available
+enum EditAction {
+  /// Send to the api the new update
+  send,
+
+  /// Swap to editing the [Review]
+  edit,
+
+  /// Swap to a new review with the same Story
+  copy,
+
+  /// No action available
+  none
+}
+
 /// Widget to display or edit a [Review]
 class ReviewWidget extends StatelessWidget {
   /// Widget to display or edit a [Review]
@@ -69,12 +84,44 @@ class ReviewWidget extends StatelessWidget {
     review.edit();
   }
 
-  bool _canEdit(ReviewState state, AuthState authState) =>
-      !state.isCreate &&
-      (state.review != null && authState.sameUser(state.review!.user));
+  EditAction _currentAction(ReviewState state, AuthState authState) {
+    if (authState.notAuthenticated) return EditAction.none;
+    if (state.isEdit) return EditAction.send;
+    if (authState.sameUser(state.review!.user)) return EditAction.edit;
 
-  void _goCopy(ReviewState state) {
-    UnimplementedError();
+    return EditAction.copy;
+  }
+
+  List<Widget> _buildDelete(
+    BuildContext context,
+    ReviewState state,
+    AuthState authState,
+  ) =>
+      _currentAction(state, authState) == EditAction.edit
+          ? [
+              PopupMenuButton<Text>(
+                icon: Icon(Icons.adaptive.more),
+                itemBuilder: (context) => <PopupMenuItem<Text>>[
+                  PopupMenuItem(
+                    child: Text(
+                      AppLocalizations.of(context)!.delete,
+                      style: context.labelSmall!
+                          .copyWith(color: context.colors.error),
+                    ),
+                    onTap: () {
+                      _deleteReview(context);
+                    },
+                  ),
+                ],
+              ),
+            ]
+          : [];
+
+  void _goCopy(
+    ReviewState state,
+    AuthState authState,
+  ) async {
+    await state.copy(authState.user!.username);
   }
 
   @override
@@ -83,25 +130,7 @@ class ReviewWidget extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
             title: AppBarTitle(AppLocalizations.of(context)!.review),
-            moreActions: _canEdit(state, authState)
-                ? [
-                    PopupMenuButton<Text>(
-                      icon: Icon(Icons.adaptive.more),
-                      itemBuilder: (context) => <PopupMenuItem<Text>>[
-                        PopupMenuItem(
-                          child: Text(
-                            AppLocalizations.of(context)!.delete,
-                            style: context.labelSmall!
-                                .copyWith(color: context.colors.error),
-                          ),
-                          onTap: () {
-                            _deleteReview(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ]
-                : [],
+            moreActions: _buildDelete(context, state, authState),
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
@@ -150,23 +179,29 @@ class ReviewWidget extends StatelessWidget {
         ),
       );
 
-  Widget _buildFloatingButton(
+  Widget? _buildFloatingButton(
     BuildContext context,
     ReviewState state,
     AuthState authState,
-  ) =>
-      state.isEdit
-          ? CustomFloatingButton(
-              onPressed: () => _editReview(context),
-              icon: Icons.send_rounded,
-            )
-          : _canEdit(state, authState)
-              ? CustomFloatingButton(
-                  onPressed: () async => _goEdit(state),
-                  icon: Icons.edit_note,
-                )
-              : CustomFloatingButton(
-                  onPressed: () async => _goCopy(state),
-                  icon: Icons.copy,
-                );
+  ) {
+    switch (_currentAction(state, authState)) {
+      case EditAction.send:
+        return CustomFloatingButton(
+          onPressed: () => _editReview(context),
+          icon: Icons.send_rounded,
+        );
+      case EditAction.edit:
+        return CustomFloatingButton(
+          onPressed: () async => _goEdit(state),
+          icon: Icons.edit_note,
+        );
+      case EditAction.copy:
+        return CustomFloatingButton(
+          onPressed: () async => _goCopy(state, authState),
+          icon: Icons.copy,
+        );
+      case EditAction.none:
+        return null;
+    }
+  }
 }

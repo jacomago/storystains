@@ -9,6 +9,7 @@ import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
+import '../story/story.dart';
 import 'review.dart';
 import 'review_test.mocks.dart';
 
@@ -80,29 +81,17 @@ void main() {
       expect(reviewState.isCreate, true);
 
       when(mockService.create(
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       )).thenThrow(testApiError(401, 'User not logged in.'));
 
       await reviewState.update(
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       );
 
       verify(mockService.create(
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       ));
       expect(reviewState.isUpdated, false);
@@ -232,31 +221,19 @@ void main() {
       when(mockService.update(
         review.user.username,
         '',
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       )).thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await reviewState.update(
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       );
 
       verify(mockService.update(
         review.user.username,
         '',
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       ));
       expect(reviewState.isUpdated, false);
@@ -280,31 +257,19 @@ void main() {
       when(mockService.update(
         review.user.username,
         '',
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       )).thenThrow(testApiError(401, 'User not logged in.'));
 
       await reviewState.update(
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       );
 
       verify(mockService.update(
         review.user.username,
         '',
-        const Story(
-          title: '',
-          medium: Medium(name: ''),
-          creator: '',
-        ),
+        emptyStory(),
         '',
       ));
       expect(reviewState.isUpdated, false);

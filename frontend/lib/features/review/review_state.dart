@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/utils/error.dart';
+import '../auth/auth.dart';
 import '../story/story.dart';
 import 'review.dart';
 
@@ -10,8 +11,11 @@ enum ReviewEvent {
   /// read from api
   read,
 
-  /// update to ai
+  /// update to api
   update,
+
+  /// copy locally
+  copy,
 
   /// delete via api
   delete
@@ -215,6 +219,34 @@ class ReviewState extends ChangeNotifier {
 
     _isLoading = false;
 
+    notifyListeners();
+  }
+
+  /// copy current review with story
+  Future<void> copy(String username) async {
+    _event = ReviewEvent.copy;
+    _isLoading = true;
+
+    notifyListeners();
+
+    _status = ReviewStatus.initial;
+
+    _stateType = ReviewStateType.create;
+    final review = Review(
+      body: '',
+      createdAt: DateTime.now(),
+      slug: '',
+      story: _review!.story,
+      updatedAt: DateTime.now(),
+      emotions: [],
+      user: UserProfile(username: username),
+    );
+
+    _review = review;
+    storyContoller = StoryState(StoryService(), story: review.story);
+    bodyController = TextEditingController(text: review.body);
+
+    _isLoading = false;
     notifyListeners();
   }
 }
