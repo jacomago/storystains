@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
-use actix_web::{web, HttpResponse, ResponseError};
+use actix_web::{web, HttpResponse};
 
 use anyhow::Context;
-use reqwest::StatusCode;
+
 use serde::Deserialize;
 use sqlx::PgPool;
 
@@ -11,8 +11,7 @@ use crate::{
     api::{
         emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, Emotion},
         reviews::ReviewSlug,
-        shared::error_chain_fmt,
-        shared::put_block::{block_non_creator, BlockError},
+        shared::{put_block::block_non_creator, ApiError},
         users::NewUsername,
         LongFormText, ReviewPath,
     },
@@ -28,50 +27,6 @@ use super::{
         UpdateReviewEmotion,
     },
 };
-
-/// Review Error expresses problems that can happen during the evaluation of the reviews api.
-#[derive(thiserror::Error)]
-pub enum ReviewEmotionError {
-    #[error("{0}")]
-    /// Validation error i.e. empty title
-    ValidationError(String),
-    #[error("{0}")]
-    /// Not Allowed Error i.e. user editing another users review
-    NotAllowedError(String),
-    #[error(transparent)]
-    // TODO make a more general db error and separate from no data
-    /// Nothing found from the database
-    NoDataError(#[from] sqlx::Error),
-    /// Any other error that could happen
-    #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for ReviewEmotionError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl ResponseError for ReviewEmotionError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            ReviewEmotionError::ValidationError(_) => StatusCode::BAD_REQUEST,
-            ReviewEmotionError::NotAllowedError(_) => StatusCode::FORBIDDEN,
-            ReviewEmotionError::NoDataError(_) => StatusCode::NOT_FOUND,
-            ReviewEmotionError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        }
-    }
-}
-
-impl From<BlockError> for ReviewEmotionError {
-    fn from(e: BlockError) -> Self {
-        match e {
-            BlockError::NoDataError(d) => ReviewEmotionError::NoDataError(d),
-            BlockError::NotAllowedError(d) => ReviewEmotionError::NotAllowedError(d),
-        }
-    }
-}
 
 /// Input of format for data of a review's emotion
 #[derive(serde::Deserialize)]
@@ -120,18 +75,17 @@ pub async fn post_review_emotion(
     path: web::Path<ReviewPath>,
     json: web::Json<PostReviewEmotion>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewEmotionError> {
-    let slug =
-        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
-    let username = NewUsername::parse(path.username.to_string())
-        .map_err(ReviewEmotionError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
     let new_review_emotion = json
         .0
         .review_emotion
         .try_into()
-        .map_err(ReviewEmotionError::ValidationError)?;
+        .map_err(ApiError::ValidationError)?;
 
     let mut transaction = pool
         .begin()
@@ -174,16 +128,14 @@ pub struct ReviewEmotionPath {
 pub async fn get_review_emotion(
     path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewEmotionError> {
-    let slug =
-        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
-    let username = NewUsername::parse(path.username.to_string())
-        .map_err(ReviewEmotionError::ValidationError)?;
-    let position =
-        EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let position = EmotionPosition::parse(path.position).map_err(ApiError::ValidationError)?;
     let stored = read_review_emotion(&username, &slug, position, pool.get_ref())
         .await
-        .map_err(ReviewEmotionError::NoDataError)?;
+        .map_err(ApiError::NoDataError)?;
 
     let stored_emotion = read_emotion_by_id_pool(stored.emotion_id, pool.get_ref())
         .await
@@ -242,15 +194,13 @@ pub async fn put_review_emotion(
     path: web::Path<ReviewEmotionPath>,
     json: web::Json<PutReviewEmotion>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewEmotionError> {
-    let slug =
-        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
-    let username = NewUsername::parse(path.username.to_string())
-        .map_err(ReviewEmotionError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
-    let position =
-        EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
+    let position = EmotionPosition::parse(path.position).map_err(ApiError::ValidationError)?;
 
     let mut transaction = pool
         .begin()
@@ -260,7 +210,7 @@ pub async fn put_review_emotion(
         .0
         .review_emotion
         .try_into()
-        .map_err(ReviewEmotionError::ValidationError)?;
+        .map_err(ApiError::ValidationError)?;
     let stored = update_review_emotion(
         &username,
         &slug,
@@ -269,7 +219,7 @@ pub async fn put_review_emotion(
         &mut transaction,
     )
     .await
-    .map_err(ReviewEmotionError::NoDataError)?;
+    .map_err(ApiError::NoDataError)?;
     let stored_emotion = read_emotion_by_id_trans(stored.emotion_id, &mut transaction)
         .await
         .context("Failed to retrieve emotion details from db")?;
@@ -297,16 +247,14 @@ pub async fn delete_review_emotion(
     auth_user: web::ReqData<AuthUser>,
     path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewEmotionError> {
-    let username = NewUsername::parse(path.username.to_string())
-        .map_err(ReviewEmotionError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let username =
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
 
-    let slug =
-        ReviewSlug::parse(path.slug.to_string()).map_err(ReviewEmotionError::ValidationError)?;
-    let position =
-        EmotionPosition::parse(path.position).map_err(ReviewEmotionError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
+    let position = EmotionPosition::parse(path.position).map_err(ApiError::ValidationError)?;
 
     db_delete_review_emotion(&username, &slug, position, &pool)
         .await

@@ -1,11 +1,11 @@
-use actix_web::{http::StatusCode, web, HttpResponse, ResponseError};
+use actix_web::{web, HttpResponse};
 use serde::Deserialize;
 
 use crate::{
     api::{
         review_emotion::delete_review_emotions_by_review,
-        shared::put_block::{block_non_creator, BlockError},
-        shared::{error_chain_fmt, QueryLimits},
+        shared::QueryLimits,
+        shared::{put_block::block_non_creator, ApiError},
         stories::{NewStory, StoryResponseData},
         users::NewUsername,
         LongFormText, UserId,
@@ -26,50 +26,6 @@ use super::{
     },
 };
 
-/// Review Error expresses problems that can happen during the evaluation of the reviews api.
-#[derive(thiserror::Error)]
-pub enum ReviewError {
-    #[error("{0}")]
-    /// Validation error i.e. empty title
-    ValidationError(String),
-    #[error("{0}")]
-    /// Not Allowed Error i.e. user editing another users review
-    NotAllowedError(String),
-    #[error(transparent)]
-    // TODO make a more general db error and separate from no data
-    /// Nothing found from the database
-    NoDataError(#[from] sqlx::Error),
-
-    /// Any other error that could happen
-    #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for ReviewError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl ResponseError for ReviewError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            ReviewError::ValidationError(_) => StatusCode::BAD_REQUEST,
-            ReviewError::NotAllowedError(_) => StatusCode::FORBIDDEN,
-            ReviewError::NoDataError(_) => StatusCode::NOT_FOUND,
-            ReviewError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        }
-    }
-}
-
-impl From<BlockError> for ReviewError {
-    fn from(e: BlockError) -> Self {
-        match e {
-            BlockError::NoDataError(d) => ReviewError::NoDataError(d),
-            BlockError::NotAllowedError(d) => ReviewError::NotAllowedError(d),
-        }
-    }
-}
 /// Review input on Post
 #[derive(serde::Deserialize)]
 pub struct PostReview {
@@ -111,11 +67,11 @@ pub async fn post_review(
     auth_user: web::ReqData<AuthUser>,
     json: web::Json<PostReview>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewError> {
+) -> Result<HttpResponse, ApiError> {
     let user_id = auth_user.into_inner().user_id;
     let new_review = (json.0.review, user_id)
         .try_into()
-        .map_err(ReviewError::ValidationError)?;
+        .map_err(ApiError::ValidationError)?;
     let stored = create_review(&new_review, pool.get_ref())
         .await
         .context("Failed to store new review.")?;
@@ -144,13 +100,13 @@ pub struct ReviewPath {
 pub async fn get_review(
     path: web::Path<ReviewPath>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ReviewError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
     let username =
-        NewUsername::parse(path.username.to_string()).map_err(ReviewError::ValidationError)?;
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
     let stored = read_review(&username, &slug, pool.get_ref())
         .await
-        .map_err(ReviewError::NoDataError)?;
+        .map_err(ApiError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
         review: ReviewResponseData::from(stored),
     }))
@@ -194,20 +150,20 @@ pub async fn put_review(
     auth_user: web::ReqData<AuthUser>,
     json: web::Json<PutReview>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ReviewError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
     let username =
-        NewUsername::parse(path.username.to_string()).map_err(ReviewError::ValidationError)?;
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
     let updated_review = json
         .0
         .review
         .try_into()
-        .map_err(ReviewError::ValidationError)?;
+        .map_err(ApiError::ValidationError)?;
     let stored = update_review(&username, &slug, &updated_review, &pool)
         .await
-        .map_err(ReviewError::NoDataError)?;
+        .map_err(ApiError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
         review: ReviewResponseData::from(stored),
     }))
@@ -224,14 +180,14 @@ pub async fn put_review(
 pub async fn delete_review_by_slug(
     path: web::Path<ReviewPath>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ReviewError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
     let username =
-        NewUsername::parse(path.username.to_string()).map_err(ReviewError::ValidationError)?;
+        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
 
     let review_id = review_id_by_username_and_slug(&username, &slug, pool.get_ref())
         .await
-        .map_err(ReviewError::NoDataError)?;
+        .map_err(ApiError::NoDataError)?;
 
     let mut transaction = pool
         .begin()
@@ -255,7 +211,7 @@ pub async fn delete_review_by_slug(
 pub async fn get_reviews(
     query: web::Query<QueryLimits>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, ReviewError> {
+) -> Result<HttpResponse, ApiError> {
     let limits = query.0.into();
     let reviews = read_reviews(
         &ReviewQueryOptions { user_id: None },
@@ -263,6 +219,6 @@ pub async fn get_reviews(
         pool.get_ref(),
     )
     .await
-    .map_err(ReviewError::NoDataError)?;
+    .map_err(ApiError::NoDataError)?;
     Ok(HttpResponse::Ok().json(ReviewsResponse::from(reviews)))
 }
