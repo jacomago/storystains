@@ -101,7 +101,7 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Logout succeded.'),
+        find.widgetWithText(SnackBar, 'Logout succeeded.'),
         findsOneWidget,
       );
     });
