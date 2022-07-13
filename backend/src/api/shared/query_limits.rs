@@ -2,10 +2,10 @@
 const DEFAULT_LIMIT: u64 = 20;
 
 /// Basic query limits
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, PartialEq)]
 pub struct QueryLimits {
-    limit: Option<u64>,
-    offset: Option<u64>,
+    pub limit: Option<u64>,
+    pub offset: Option<u64>,
 }
 
 /// Query limits without being optional for database level

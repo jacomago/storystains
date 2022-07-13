@@ -2,11 +2,11 @@ use actix_web::{web, HttpResponse};
 use anyhow::Context;
 use sqlx::PgPool;
 
-use crate::api::{shared::ApiError, shared::QueryLimits};
+use crate::api::shared::ApiError;
 
 use super::{
     db::{create_story, read_stories},
-    model::{StoriesResponse, StoryResponse},
+    model::{StoriesResponse, StoryQuery, StoryResponse},
     StoryResponseData,
 };
 
@@ -42,11 +42,10 @@ pub async fn post_story(
 /// API for getting many story via an input query of limit
 #[tracing::instrument(name = "Getting stories", skip(pool, query), fields())]
 pub async fn get_stories(
-    query: web::Query<QueryLimits>,
+    query: web::Query<StoryQuery>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let limits = query.0.into();
-    let stored = read_stories(&limits, pool.get_ref())
+    let stored = read_stories(query.0, pool.get_ref())
         .await
         .map_err(ApiError::NotData)?;
     Ok(HttpResponse::Ok().json(StoriesResponse::from(stored)))

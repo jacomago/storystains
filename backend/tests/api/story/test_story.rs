@@ -62,16 +62,37 @@ impl TestStory {
     }
 }
 
-pub fn query_list(
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TestQuery {
     limit: Option<i32>,
     title: Option<String>,
     medium: Option<String>,
     creator: Option<String>,
-) -> Vec<(String, Option<String>)> {
-    vec![
-        ("limit".to_string(), limit.map(|l| format!("{}", l))),
-        ("title".to_string(), title),
-        ("medium".to_string(), medium),
-        ("creator".to_string(), creator),
-    ]
+}
+
+impl TestQuery {
+    pub fn new() -> Self {
+        TestQuery {
+            limit: None,
+            title: None,
+            medium: None,
+            creator: None,
+        }
+    }
+    pub fn limit(&mut self, limit: i32) -> &mut TestQuery {
+        self.limit = Some(limit);
+        self
+    }
+    pub fn title(&mut self, title: String) -> &mut TestQuery {
+        self.title = Some(title);
+        self
+    }
+    pub fn medium(&mut self, medium: String) -> &mut TestQuery {
+        self.title = Some(medium);
+        self
+    }
+    pub fn creator(&mut self, creator: String) -> &mut TestQuery {
+        self.title = Some(creator);
+        self
+    }
 }
