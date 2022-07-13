@@ -1,7 +1,7 @@
-use actix_web::{web, HttpResponse, };
+use actix_web::{web, HttpResponse};
 use sqlx::PgPool;
 
-use crate::api::shared::{ ApiError};
+use crate::api::shared::ApiError;
 
 use super::{db::retreive_all_mediums, MediumData};
 

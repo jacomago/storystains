@@ -1,12 +1,11 @@
-use actix_web::{error::InternalError, web, HttpResponse, ResponseError};
+use actix_web::{web, HttpResponse};
 
 use anyhow::Context;
-use reqwest::StatusCode;
 use secrecy::Secret;
 use sqlx::PgPool;
 
 use crate::{
-    api::{reviews::delete_reviews_by_user_id, shared::error_chain_fmt},
+    api::{reviews::delete_reviews_by_user_id, shared::ApiError},
     auth::{validate_credentials, AuthClaim, AuthError, AuthUser, Credentials},
     startup::{ExpTokenSeconds, HmacSecret},
 };
@@ -16,23 +15,6 @@ use super::{
     model::{NewPassword, NewUser, NewUsername, UserResponse},
     read_user_by_id,
 };
-
-/// Errors that can happen during login flow
-#[derive(thiserror::Error)]
-pub enum LoginError {
-    /// Auth failure
-    #[error("Authentication failed")]
-    AuthError(#[source] anyhow::Error),
-    /// Other type of error
-    #[error("Something went wrong")]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for LoginError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
 
 /// Input of user for login api
 #[derive(serde::Deserialize)]
@@ -57,7 +39,7 @@ pub async fn login(
     pool: web::Data<PgPool>,
     exp_token_days: web::Data<ExpTokenSeconds>,
     secret: web::Data<HmacSecret>,
-) -> Result<HttpResponse, InternalError<LoginError>> {
+) -> Result<HttpResponse, ApiError> {
     let credentials = Credentials {
         username: json.0.user.username,
         password: json.0.user.password,
@@ -70,7 +52,7 @@ pub async fn login(
         Ok(user_id) => {
             let user = read_user_by_id(&user_id, &pool)
                 .await
-                .map_err(|e| login_error(LoginError::UnexpectedError(e.into())))?;
+                .map_err(|e| anyhow::format_err!(e))?;
             let token = AuthClaim::new(
                 AuthUser {
                     username: user.username.to_string(),
@@ -81,44 +63,10 @@ pub async fn login(
             .token(&secret);
             Ok(HttpResponse::Ok().json(UserResponse::from((user, token))))
         }
-        Err(e) => {
-            let e = match e {
-                AuthError::InvalidCredentials(_) => LoginError::AuthError(e.into()),
-                AuthError::UnexpectedError(_) => LoginError::UnexpectedError(e.into()),
-            };
-            Err(login_error(e))
-        }
-    }
-}
-
-fn login_error(e: LoginError) -> InternalError<LoginError> {
-    let response = HttpResponse::BadRequest().finish();
-    InternalError::from_response(e, response)
-}
-
-/// Errors from Signup flow
-#[derive(thiserror::Error)]
-pub enum SignupError {
-    /// Incorrect username or password
-    #[error("{0}")]
-    ValidationError(String),
-    /// Something else went wrong
-    #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for SignupError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl ResponseError for SignupError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            SignupError::ValidationError(_) => StatusCode::BAD_REQUEST,
-            SignupError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        }
+        Err(e) => match e {
+            AuthError::InvalidCredentials(_) => Err(ApiError::AuthError(e.into())),
+            AuthError::UnexpectedError(_) => Err(ApiError::UnexpectedError(e.into())),
+        },
     }
 }
 
@@ -151,12 +99,8 @@ pub async fn signup(
     pool: web::Data<PgPool>,
     exp_token_days: web::Data<ExpTokenSeconds>,
     secret: web::Data<HmacSecret>,
-) -> Result<HttpResponse, SignupError> {
-    let new_user = json
-        .0
-        .user
-        .try_into()
-        .map_err(SignupError::ValidationError)?;
+) -> Result<HttpResponse, ApiError> {
+    let new_user = json.0.user.try_into().map_err(ApiError::ValidationError)?;
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
@@ -172,34 +116,12 @@ pub async fn signup(
     Ok(HttpResponse::Ok().json(UserResponse::from((stored, token))))
 }
 
-/// Delete User api error
-#[derive(thiserror::Error)]
-pub enum DeleteUserError {
-    /// We only expect the unexpected
-    #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
-}
-
-impl std::fmt::Debug for DeleteUserError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
-    }
-}
-
-impl ResponseError for DeleteUserError {
-    fn status_code(&self) -> StatusCode {
-        match self {
-            DeleteUserError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
-        }
-    }
-}
-
 /// Delete user api handler currently deletes all user's review
 #[tracing::instrument(skip(pool, auth_user), fields())]
 pub async fn delete_user(
     auth_user: web::ReqData<AuthUser>,
     pool: web::Data<PgPool>,
-) -> Result<HttpResponse, DeleteUserError> {
+) -> Result<HttpResponse, ApiError> {
     let user_id = auth_user.into_inner().user_id;
     let mut transaction = pool
         .begin()

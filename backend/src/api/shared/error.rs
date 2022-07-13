@@ -6,6 +6,9 @@ use super::put_block::BlockError;
 /// Api Error expresses problems that can happen during the evaluation of the api.
 #[derive(thiserror::Error)]
 pub enum ApiError {
+    /// Auth failure
+    #[error("Authentication failed")]
+    AuthError(#[source] anyhow::Error),
     #[error("{0}")]
     /// Validation error i.e. empty title
     ValidationError(String),
@@ -31,6 +34,7 @@ impl std::fmt::Debug for ApiError {
 impl ResponseError for ApiError {
     fn status_code(&self) -> StatusCode {
         match self {
+            ApiError::AuthError(_) => StatusCode::BAD_REQUEST,
             ApiError::ValidationError(_) => StatusCode::BAD_REQUEST,
             ApiError::NotAllowedError(_) => StatusCode::FORBIDDEN,
             ApiError::NoDataError(_) => StatusCode::NOT_FOUND,
