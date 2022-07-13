@@ -7,15 +7,15 @@ import '../common/utils/snackbar.dart';
 import '../common/widget/widget.dart';
 import '../features/auth/auth.dart';
 
-/// Page for logging in or regsitering user
+/// Page for logging in or registering user
 class LoginOrRegisterPage extends StatelessWidget {
-  /// Page for logging in or regsitering user
+  /// Page for logging in or registering user
   LoginOrRegisterPage({Key? key}) : super(key: key);
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _afterLoging(BuildContext context, AuthState auth) {
+  void _afterLogin(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated) {
       Navigator.of(context).pop();
       context.snackbar(
@@ -50,7 +50,7 @@ class LoginOrRegisterPage extends StatelessWidget {
     }
 
     await auth.loginRegister(username, password).then((value) {
-      _afterLoging(context, auth);
+      _afterLogin(context, auth);
     });
   }
 
@@ -61,7 +61,7 @@ class LoginOrRegisterPage extends StatelessWidget {
           title: AppBarTitle(
             AppLocalizations.of(context)!.or(
               AppLocalizations.of(context)!.login,
-              AppLocalizations.of(context)!.signup,
+              AppLocalizations.of(context)!.signUp,
             ),
           ),
         ),
@@ -111,7 +111,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                     child: Text(
                       auth.isLogin
                           ? AppLocalizations.of(context)!.login
-                          : AppLocalizations.of(context)!.signup,
+                          : AppLocalizations.of(context)!.signUp,
                       style: context.button!
                           .copyWith(color: context.colors.onPrimary),
                     ),
@@ -122,7 +122,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                     child: Text(
                       auth.isLogin
                           ? AppLocalizations.of(context)!
-                              .choice(AppLocalizations.of(context)!.signup)
+                              .choice(AppLocalizations.of(context)!.signUp)
                           : AppLocalizations.of(context)!
                               .choice(AppLocalizations.of(context)!.login),
                       style: context.button,

@@ -133,7 +133,7 @@ class ReviewEmotionsList extends StatelessWidget {
                   ),
                   Text(
                     AppLocalizations.of(context)!
-                        .postionPercentage(reviewEmotion.position),
+                        .positionPercentage(reviewEmotion.position),
                     style: context.labelMedium,
                   ),
                 ],

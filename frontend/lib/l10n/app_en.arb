@@ -123,8 +123,8 @@
             }
         }
     },
-    "postionPercentage": "Position: {position}%",
-    "@postionPercentage": {
+    "positionPercentage": "Position: {position}%",
+    "@positionPercentage": {
         "description": "Position in the review where the emotion has been set.",
         "placeholders": {
             "position": {
@@ -171,11 +171,11 @@
     "@login": {
         "description": "Sign in to account."
     },
-    "signup": "Sign up",
-    "@signup": {
+    "signUp": "Sign up",
+    "@signUp": {
         "description": "Sign up for an account."
     },
-    "acount": "User Account",
+    "account": "User Account",
     "@account": {
         "description": "A users personal details and actions."
     },
@@ -213,9 +213,9 @@
             }
         }
     },
-    "actionSucceded": "{action} succeded.",
-    "@actionSucceded": {
-        "description": "Action succeded.",
+    "actionSucceeded": "{action} succeeded.",
+    "@actionSucceeded": {
+        "description": "Action succeeded.",
         "placeholders": {
             "action": {
                 "type": "String",

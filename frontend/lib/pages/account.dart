@@ -21,7 +21,7 @@ class AccountPage extends StatelessWidget {
     } else {
       Navigator.of(context).pop();
       context.snackbar(AppLocalizations.of(context)!
-          .actionSucceded(AppLocalizations.of(context)!.deleteObject(
+          .actionSucceeded(AppLocalizations.of(context)!.deleteObject(
         AppLocalizations.of(context)!.user,
       )));
     }
@@ -44,7 +44,7 @@ class AccountPage extends StatelessWidget {
     } else {
       Navigator.of(context).pop();
       context.snackbar(AppLocalizations.of(context)!
-          .actionSucceded(AppLocalizations.of(context)!.logout));
+          .actionSucceeded(AppLocalizations.of(context)!.logout));
     }
   }
 
@@ -63,7 +63,7 @@ class AccountPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: StainsAppBar(
           title: AppBarTitle(
-            AppLocalizations.of(context)!.acount,
+            AppLocalizations.of(context)!.account,
           ),
         ),
         body: Center(
