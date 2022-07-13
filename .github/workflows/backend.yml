@@ -85,9 +85,8 @@ jobs:
         ports:
           - 5432:5432
     env:
-      SQLX_VERSION: 0.5.13
+      SQLX_VERSION: 0.6
       SQLX_FEATURES: postgres,native-tls
-      APP__DATABASE__MAX_CONNECTIONS: 2
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -152,9 +151,8 @@ jobs:
         ports:
           - 5432:5432
     env:
-      SQLX_VERSION: 0.5.13
+      SQLX_VERSION: 0.6
       SQLX_FEATURES: postgres,native-tls
-      APP__DATABASE__MAX_CONNECTIONS: 2
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

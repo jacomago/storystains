@@ -79,7 +79,7 @@ async fn put_review_emotion_stores_new_emotion() {
     .await
     .expect("Failed to fetch saved review emotions.");
 
-    assert_eq!(saved.name, Some("Anger".to_string()));
+    assert_eq!(saved.name, "Anger".to_string());
     assert_eq!(saved.notes, Some(emotion.notes.to_string()));
     app.teardown().await;
 }
@@ -121,7 +121,7 @@ async fn put_review_emotion_stores_new_position() {
     .await
     .expect("Failed to fetch saved review emotions.");
 
-    assert_eq!(saved.position, Some(new_position));
+    assert_eq!(saved.position, new_position);
     assert_eq!(saved.notes, Some(emotion.notes.to_string()));
     app.teardown().await;
 }
@@ -163,8 +163,8 @@ async fn put_review_emotion_stores_new_data() {
     .await
     .expect("Failed to fetch saved review emotions.");
 
-    assert_eq!(saved.position, Some(new_position));
-    assert_eq!(saved.name, Some("Anger".to_string()));
+    assert_eq!(saved.position, new_position);
+    assert_eq!(saved.name, "Anger".to_string());
     assert_eq!(saved.notes, Some(emotion.notes.to_string()));
     app.teardown().await;
 }

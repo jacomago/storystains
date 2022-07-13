@@ -103,17 +103,14 @@ pub fn get_configuration() -> Result<Settings, config::ConfigError> {
         .try_into()
         .expect("Failed to parse APP_ENVIRONMENT.");
 
-    let builder = Config::builder()
+    let settings = Config::builder()
         .add_source(config::File::from(configuration_directory.join("base")).required(true))
         .add_source(
             config::File::from(configuration_directory.join(environment.as_str())).required(true),
         )
-        .add_source(config::Environment::with_prefix("app").separator("__"));
-
-    match builder.build() {
-        Ok(config) => Ok(config.try_deserialize().unwrap()),
-        Err(e) => Err(e),
-    }
+        .add_source(config::Environment::with_prefix("app").separator("__"))
+        .build()?;
+    settings.try_deserialize::<Settings>()
 }
 
 /// The possible runtime environment for our application.
