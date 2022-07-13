@@ -89,11 +89,12 @@ extension TypographyUtils on BuildContext {
 
   /// Text them for stylised text
   TextTheme get displayTextTheme => GoogleFonts.specialEliteTextTheme();
-  
+
   /// button font style
   TextStyle? get button => displayTextTheme.button?.copyWith(
         color: colors.onSurface,
       );
+
   /// titleBar font style
   TextStyle? get titleBar => displayTextTheme.titleLarge?.copyWith(
         color: colors.onSurface,
