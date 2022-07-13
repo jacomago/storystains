@@ -59,4 +59,30 @@ jobs:
         with:
           flags: flutterfront
           token: ${{secrets.CODECOV_TOKEN}}
+  flutter-build-apk:
+    name: Apk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.x'
+          channel: 'any'
+      
+      - name: pub get
+        working-directory: ./frontend
+        run: flutter pub get
+
+      - uses: actions/upload-artifact@v1
+        with:
+          # Name of the command/step.
+          name: release-apk
+          # Path to the release apk.
+          path: build/app/outputs/apk/release/app-release.apk
       
