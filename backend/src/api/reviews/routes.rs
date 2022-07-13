@@ -71,7 +71,7 @@ pub async fn post_review(
     let user_id = auth_user.into_inner().user_id;
     let new_review = (json.0.review, user_id)
         .try_into()
-        .map_err(ApiError::ValidationError)?;
+        .map_err(ApiError::Validation)?;
     let stored = create_review(&new_review, pool.get_ref())
         .await
         .context("Failed to store new review.")?;
@@ -101,12 +101,11 @@ pub async fn get_review(
     path: web::Path<ReviewPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
     let stored = read_review(&username, &slug, pool.get_ref())
         .await
-        .map_err(ApiError::NoDataError)?;
+        .map_err(ApiError::NotData)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
         review: ReviewResponseData::from(stored),
     }))
@@ -151,19 +150,14 @@ pub async fn put_review(
     json: web::Json<PutReview>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
-    let updated_review = json
-        .0
-        .review
-        .try_into()
-        .map_err(ApiError::ValidationError)?;
+    let updated_review = json.0.review.try_into().map_err(ApiError::Validation)?;
     let stored = update_review(&username, &slug, &updated_review, &pool)
         .await
-        .map_err(ApiError::NoDataError)?;
+        .map_err(ApiError::NotData)?;
     Ok(HttpResponse::Ok().json(ReviewResponse {
         review: ReviewResponseData::from(stored),
     }))
@@ -181,13 +175,12 @@ pub async fn delete_review_by_slug(
     path: web::Path<ReviewPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
     let review_id = review_id_by_username_and_slug(&username, &slug, pool.get_ref())
         .await
-        .map_err(ApiError::NoDataError)?;
+        .map_err(ApiError::NotData)?;
 
     let mut transaction = pool
         .begin()
@@ -219,6 +212,6 @@ pub async fn get_reviews(
         pool.get_ref(),
     )
     .await
-    .map_err(ApiError::NoDataError)?;
+    .map_err(ApiError::NotData)?;
     Ok(HttpResponse::Ok().json(ReviewsResponse::from(reviews)))
 }

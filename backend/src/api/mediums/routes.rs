@@ -10,7 +10,7 @@ use super::{db::retreive_all_mediums, MediumData};
 pub async fn get_mediums(pool: web::Data<PgPool>) -> Result<HttpResponse, actix_web::Error> {
     let mediums_data = retreive_all_mediums(pool.get_ref())
         .await
-        .map_err(ApiError::NoDataError)?
+        .map_err(ApiError::NotData)?
         .into_iter()
         .map(MediumData::from)
         .collect::<Vec<MediumData>>();

@@ -11,11 +11,11 @@ use crate::{
 pub enum BlockError {
     #[error("{0}")]
     /// Not Allowed Error i.e. user editing another users review
-    NotAllowedError(String),
+    NotAllowed(String),
     #[error(transparent)]
     // TODO make a more general db error and separate from no data
     /// Nothing found from the database
-    NoDataError(#[from] sqlx::Error),
+    NotData(#[from] sqlx::Error),
 }
 
 impl std::fmt::Debug for BlockError {
@@ -27,8 +27,8 @@ impl std::fmt::Debug for BlockError {
 impl ResponseError for BlockError {
     fn status_code(&self) -> StatusCode {
         match self {
-            BlockError::NotAllowedError(_) => StatusCode::FORBIDDEN,
-            BlockError::NoDataError(_) => StatusCode::NOT_FOUND,
+            BlockError::NotAllowed(_) => StatusCode::FORBIDDEN,
+            BlockError::NotData(_) => StatusCode::NOT_FOUND,
         }
     }
 }
@@ -38,7 +38,7 @@ pub async fn block_non_creator(
     auth_user: &AuthUser,
 ) -> Result<(), BlockError> {
     if username.as_ref() != auth_user.username {
-        return Err(BlockError::NotAllowedError(
+        return Err(BlockError::NotAllowed(
             "Must be the creator of the data.".to_string(),
         ));
     }

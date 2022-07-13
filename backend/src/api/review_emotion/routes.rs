@@ -76,16 +76,15 @@ pub async fn post_review_emotion(
     json: web::Json<PostReviewEmotion>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
     let new_review_emotion = json
         .0
         .review_emotion
         .try_into()
-        .map_err(ApiError::ValidationError)?;
+        .map_err(ApiError::Validation)?;
 
     let mut transaction = pool
         .begin()
@@ -129,13 +128,12 @@ pub async fn get_review_emotion(
     path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
-    let position = EmotionPosition::parse(path.position).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
+    let position = EmotionPosition::parse(path.position).map_err(ApiError::Validation)?;
     let stored = read_review_emotion(&username, &slug, position, pool.get_ref())
         .await
-        .map_err(ApiError::NoDataError)?;
+        .map_err(ApiError::NotData)?;
 
     let stored_emotion = read_emotion_by_id_pool(stored.emotion_id, pool.get_ref())
         .await
@@ -195,12 +193,11 @@ pub async fn put_review_emotion(
     json: web::Json<PutReviewEmotion>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
-    let position = EmotionPosition::parse(path.position).map_err(ApiError::ValidationError)?;
+    let position = EmotionPosition::parse(path.position).map_err(ApiError::Validation)?;
 
     let mut transaction = pool
         .begin()
@@ -210,7 +207,7 @@ pub async fn put_review_emotion(
         .0
         .review_emotion
         .try_into()
-        .map_err(ApiError::ValidationError)?;
+        .map_err(ApiError::Validation)?;
     let stored = update_review_emotion(
         &username,
         &slug,
@@ -219,7 +216,7 @@ pub async fn put_review_emotion(
         &mut transaction,
     )
     .await
-    .map_err(ApiError::NoDataError)?;
+    .map_err(ApiError::NotData)?;
     let stored_emotion = read_emotion_by_id_trans(stored.emotion_id, &mut transaction)
         .await
         .context("Failed to retrieve emotion details from db")?;
@@ -248,13 +245,12 @@ pub async fn delete_review_emotion(
     path: web::Path<ReviewEmotionPath>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let username =
-        NewUsername::parse(path.username.to_string()).map_err(ApiError::ValidationError)?;
+    let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
     block_non_creator(&username, &auth_user.into_inner()).await?;
 
-    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::ValidationError)?;
-    let position = EmotionPosition::parse(path.position).map_err(ApiError::ValidationError)?;
+    let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
+    let position = EmotionPosition::parse(path.position).map_err(ApiError::Validation)?;
 
     db_delete_review_emotion(&username, &slug, position, &pool)
         .await

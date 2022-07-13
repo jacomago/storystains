@@ -10,10 +10,10 @@ use crate::api::shared::ApiError;
 pub async fn emotions_check(pool: web::Data<PgPool>) -> Result<(), ApiError> {
     let stored = retreive_all_emotions(pool.get_ref())
         .await
-        .map_err(ApiError::NoDataError)?;
+        .map_err(ApiError::NotData)?;
     match check_emotions(stored) {
         Ok(_) => Ok(()),
-        Err(e) => Err(ApiError::UnexpectedError(anyhow::anyhow!(
+        Err(e) => Err(ApiError::Unexpected(anyhow::anyhow!(
             "Error occured: {}",
             e
         ))),

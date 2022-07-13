@@ -30,7 +30,7 @@ pub async fn post_story(
     json: web::Json<PostStory>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let new_story = json.0.story.try_into().map_err(ApiError::ValidationError)?;
+    let new_story = json.0.story.try_into().map_err(ApiError::Validation)?;
     let stored = create_story(&new_story, pool.get_ref())
         .await
         .context("Failed to store new story.")?;
@@ -48,6 +48,6 @@ pub async fn get_stories(
     let limits = query.0.into();
     let stored = read_stories(&limits, pool.get_ref())
         .await
-        .map_err(ApiError::NoDataError)?;
+        .map_err(ApiError::NotData)?;
     Ok(HttpResponse::Ok().json(StoriesResponse::from(stored)))
 }

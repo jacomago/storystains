@@ -8,21 +8,21 @@ use super::put_block::BlockError;
 pub enum ApiError {
     /// Auth failure
     #[error("Authentication failed")]
-    AuthError(#[source] anyhow::Error),
+    Auth(#[source] anyhow::Error),
     #[error("{0}")]
     /// Validation error i.e. empty title
-    ValidationError(String),
+    Validation(String),
     #[error("{0}")]
     /// Not Allowed Error i.e. user editing another users review
-    NotAllowedError(String),
+    NotAllowed(String),
     #[error(transparent)]
     // TODO make a more general db error and separate from no data
     /// Nothing found from the database
-    NoDataError(#[from] sqlx::Error),
+    NotData(#[from] sqlx::Error),
 
     /// Any other error that could happen
     #[error(transparent)]
-    UnexpectedError(#[from] anyhow::Error),
+    Unexpected(#[from] anyhow::Error),
 }
 
 impl std::fmt::Debug for ApiError {
@@ -34,11 +34,11 @@ impl std::fmt::Debug for ApiError {
 impl ResponseError for ApiError {
     fn status_code(&self) -> StatusCode {
         match self {
-            ApiError::AuthError(_) => StatusCode::BAD_REQUEST,
-            ApiError::ValidationError(_) => StatusCode::BAD_REQUEST,
-            ApiError::NotAllowedError(_) => StatusCode::FORBIDDEN,
-            ApiError::NoDataError(_) => StatusCode::NOT_FOUND,
-            ApiError::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            ApiError::Auth(_) => StatusCode::BAD_REQUEST,
+            ApiError::Validation(_) => StatusCode::BAD_REQUEST,
+            ApiError::NotAllowed(_) => StatusCode::FORBIDDEN,
+            ApiError::NotData(_) => StatusCode::NOT_FOUND,
+            ApiError::Unexpected(_) => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
@@ -46,8 +46,8 @@ impl ResponseError for ApiError {
 impl From<BlockError> for ApiError {
     fn from(e: BlockError) -> Self {
         match e {
-            BlockError::NoDataError(d) => ApiError::NoDataError(d),
-            BlockError::NotAllowedError(d) => ApiError::NotAllowedError(d),
+            BlockError::NotData(d) => ApiError::NotData(d),
+            BlockError::NotAllowed(d) => ApiError::NotAllowed(d),
         }
     }
 }

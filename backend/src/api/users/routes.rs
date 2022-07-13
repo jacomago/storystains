@@ -64,8 +64,8 @@ pub async fn login(
             Ok(HttpResponse::Ok().json(UserResponse::from((user, token))))
         }
         Err(e) => match e {
-            AuthError::InvalidCredentials(_) => Err(ApiError::AuthError(e.into())),
-            AuthError::UnexpectedError(_) => Err(ApiError::UnexpectedError(e.into())),
+            AuthError::InvalidCredentials(_) => Err(ApiError::Auth(e.into())),
+            AuthError::UnexpectedError(_) => Err(ApiError::Unexpected(e.into())),
         },
     }
 }
@@ -100,7 +100,7 @@ pub async fn signup(
     exp_token_days: web::Data<ExpTokenSeconds>,
     secret: web::Data<HmacSecret>,
 ) -> Result<HttpResponse, ApiError> {
-    let new_user = json.0.user.try_into().map_err(ApiError::ValidationError)?;
+    let new_user = json.0.user.try_into().map_err(ApiError::Validation)?;
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
