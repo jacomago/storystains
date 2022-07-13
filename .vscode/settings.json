@@ -23,4 +23,7 @@
       "password": "password"
     }
   ],
+  "git.branchProtection": [
+    "main"
+  ],
 }

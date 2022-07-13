@@ -10,3 +10,9 @@ Story testStory({
       creator: 'David Lynch',
       medium: const Medium(name: 'Film'),
     );
+
+Story emptyStory() => Story(
+      creator: '',
+      title: '/',
+      medium: Medium.mediumDefault,
+    );

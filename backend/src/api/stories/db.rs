@@ -15,9 +15,14 @@ pub async fn create_or_update_creator(
     let creator_id = Uuid::new_v4();
     let updated_creator = sqlx::query!(
         r#"
-        INSERT INTO creators (id, name)
-        VALUES ($1, $2) ON CONFLICT DO NOTHING
-        RETURNING id
+        WITH new_creator AS (
+            INSERT INTO creators (id, name)
+            VALUES ($1, $2) ON CONFLICT DO NOTHING
+            RETURNING id
+        )
+        SELECT id
+        FROM creators
+        WHERE name = $2
         "#,
         creator_id,
         creator.as_ref(),
@@ -67,23 +72,25 @@ pub async fn db_create_story(
                         WHERE name = $3
                         LIMIT 1
                     ), $4
-                )
+                ) ON CONFLICT DO NOTHING
             RETURNING id,
                 title,
                 medium_id,
                 creator_id
         )
         SELECT 
-            new_story.id,
-            new_story.title as "title!",
+            stories.id,
+            stories.title as "title!",
             mediums.name as "medium!",
             creators.name as "creator!"
         FROM 
-            new_story,
+            stories,
             creators,
             mediums
         WHERE creators.id = $4
-        AND new_story.medium_id = mediums.id
+        AND stories.medium_id = mediums.id
+        AND mediums.name = $3
+        AND stories.title = $2
         "#,
         id,
         story.title.as_ref(),
