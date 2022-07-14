@@ -97,7 +97,7 @@ class ReviewState extends ChangeNotifier {
   bool get isFailed => _status == ReviewStatus.failed;
 
   /// controller for editing story
-  late StoryState storyContoller;
+  late StoryState storyController;
 
   /// controller for editing body
   late TextEditingController bodyController;
@@ -113,7 +113,7 @@ class ReviewState extends ChangeNotifier {
         ? ReviewStateType.create
         : ReviewStateType.read;
     _review = review;
-    storyContoller = StoryState(StoryService(), story: review?.story);
+    storyController = StoryState(StoryService(), story: review?.story);
     bodyController = TextEditingController(text: review?.body);
 
     if (path != null) {
@@ -142,7 +142,7 @@ class ReviewState extends ChangeNotifier {
 
       _review = data.review;
 
-      storyContoller = StoryState(StoryService(), story: review?.story);
+      storyController = StoryState(StoryService(), story: review?.story);
       bodyController = TextEditingController(text: _review?.body);
       _status = ReviewStatus.read;
       _stateType = ReviewStateType.read;
@@ -243,10 +243,23 @@ class ReviewState extends ChangeNotifier {
     );
 
     _review = review;
-    storyContoller = StoryState(StoryService(), story: review.story);
+    storyController = StoryState(StoryService(), story: review.story);
     bodyController = TextEditingController(text: review.body);
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    bodyController.dispose();
+    storyController.dispose();
+    _error = '';
+    _event = null;
+    _stateType = null;
+    _status = ReviewStatus.initial;
+    _review = null;
+    _isLoading = false;
+    super.dispose();
   }
 }

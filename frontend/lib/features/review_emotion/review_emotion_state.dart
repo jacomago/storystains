@@ -174,4 +174,18 @@ class ReviewEmotionState extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    notesController.dispose();
+    emotionController.dispose();
+    positionController.dispose();
+    _error = '';
+    _event = null;
+    _isCreate = false;
+    _status = ReviewEmotionStatus.initial;
+    _reviewEmotion = null;
+    _isLoading = false;
+    super.dispose();
+  }
 }
