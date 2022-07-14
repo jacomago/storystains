@@ -34,10 +34,13 @@ class SearchStoryResults extends StatelessWidget {
       );
 
   Widget _simpleStory(AsyncSnapshot<List<Story>?> snapshot, int index) =>
-      Padding(
-        padding: const EdgeInsets.all(10),
-        child: CardStory(
-          story: snapshot.data![index],
+      GestureDetector(
+        onTap: () => state.pickStory(snapshot.data![index]),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: CardStory(
+            story: snapshot.data![index],
+          ),
         ),
       );
 

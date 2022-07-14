@@ -105,6 +105,12 @@ class StoryState extends ChangeNotifier {
         creator: creatorController.text,
       );
 
+  void _setControllers(Story story) {
+    titleController.text = story.title;
+    creatorController.text = story.creator;
+    mediumController.value = story.medium;
+  }
+
   /// Update the story
   Future<void> update() async {
     _event = StoryEvent.update;
@@ -118,9 +124,7 @@ class StoryState extends ChangeNotifier {
       _story = data.story;
 
       _status = StoryStatus.updated;
-      titleController = TextEditingController(text: data.story.title);
-      creatorController = TextEditingController(text: data.story.creator);
-      mediumController = ValueNotifier(data.story.medium);
+      _setControllers(data.story);
     } on DioError catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
@@ -158,8 +162,14 @@ class StoryState extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Pick a story from the search list to be assigned
+  void pickStory(Story story) {
+    _setControllers(story);
+    _endSearch();
+  }
+
   /// Stop searching for stories
-  Future<void> endSearch() async {
+  void _endSearch() {
     _event = null;
     searchResults.sink.add(null);
     notifyListeners();

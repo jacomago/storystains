@@ -17,7 +17,7 @@ class StoryEditWidget extends StatelessWidget {
   final StoryState state;
   @override
   Widget build(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const SizedBox(
             height: 5,
