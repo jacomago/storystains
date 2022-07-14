@@ -408,6 +408,48 @@
     },
     "query": "\n            DELETE \n              FROM  review_emotions re\n             WHERE  EXISTS (\n                SELECT 1\n                  FROM reviews\n                 WHERE reviews.id      = re.review_id\n                   AND reviews.user_id = $1\n             )\n        "
   },
+  "b3104f8b288984553cd3301502b5a2d724935d0c526dae392e5effbc02dc528c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "medium",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "creator",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text",
+          "Text",
+          "Int8",
+          "Int8"
+        ]
+      }
+    },
+    "query": "\n        SELECT\n            stories.id as \"id\",\n            stories.title as \"title\",\n            mediums.name as \"medium\",\n            creators.name as \"creator\"\n        FROM stories\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE ($1::text IS NULL OR stories.title % $1)\n            AND ($2::text IS NULL OR creators.name % $2)\n            AND ($3::text IS NULL OR mediums.name = $3)\n        LIMIT $4\n        OFFSET $5\n        "
+  },
   "b380e0ae28aa31e8416c01f16e8d69cbb68ff6595591693fc0db686a9d7451d8": {
     "describe": {
       "columns": [
@@ -749,48 +791,6 @@
       }
     },
     "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.title = $1\n            AND stories.creator_id = creators.id\n            AND creators.name = $2\n            AND stories.medium_id = mediums.id\n            AND mediums.name = $3\n        "
-  },
-  "f2753be46ca68b848be939be8f2674aae23286b9ea5c0be629291d2b218c8774": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id!",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title!",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "medium!",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "creator!",
-          "ordinal": 3,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text",
-          "Text",
-          "Int8",
-          "Int8"
-        ]
-      }
-    },
-    "query": "\n        SELECT\n            stories.id as \"id!\",\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM stories\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE ($1::text IS NULL OR to_tsvector('english', stories.title) @@ to_tsquery('english', $1))\n            AND ($2::text IS NULL OR to_tsvector('english', creators.name) @@ to_tsquery('english', $2))\n            AND ($3::text IS NULL OR mediums.name = $3)\n        LIMIT $4\n        OFFSET $5\n        "
   },
   "f5160d3e4d88beada06fb4d7232746effcf398325c36ccd10533b1e2e7e0724b": {
     "describe": {

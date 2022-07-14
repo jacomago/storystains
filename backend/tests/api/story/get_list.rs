@@ -211,9 +211,10 @@ async fn get_stories_by_query_found() {
             .limit(10)
             .medium("Book".to_string())
             .clone(),
+        // Default similarity in postgres is 30%, so 'Geor' would not match
         TestQuery::new()
             .limit(10)
-            .creator("Geor".to_string())
+            .creator("Georg".to_string())
             .clone(),
     ];
 

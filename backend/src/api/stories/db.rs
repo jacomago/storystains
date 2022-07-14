@@ -213,7 +213,7 @@ pub async fn db_read_story_by_id(
 }
 
 #[tracing::instrument(
-    name = "Retreive story details from the database", 
+    name = "Retreive stories from the database", 
     skip(pool, query),
     fields(
         title = %format!("{:?}", query.title),
@@ -234,22 +234,22 @@ pub async fn read_stories(
         StoredStory,
         r#"
         SELECT
-            stories.id as "id!",
-            stories.title as "title!",
-            mediums.name as "medium!",
-            creators.name as "creator!"
+            stories.id as "id",
+            stories.title as "title",
+            mediums.name as "medium",
+            creators.name as "creator"
         FROM stories
             JOIN creators ON stories.creator_id = creators.id
             JOIN mediums ON stories.medium_id = mediums.id
-        WHERE ($1::text IS NULL OR to_tsvector('english', stories.title) @@ to_tsquery('english', $1))
-            AND ($2::text IS NULL OR to_tsvector('english', creators.name) @@ to_tsquery('english', $2))
+        WHERE ($1::text IS NULL OR stories.title % $1)
+            AND ($2::text IS NULL OR creators.name % $2)
             AND ($3::text IS NULL OR mediums.name = $3)
         LIMIT $4
         OFFSET $5
         "#,
         query.title,
-        query.medium,
         query.creator,
+        query.medium,
         limits.limit.as_ref(),
         limits.offset
     )

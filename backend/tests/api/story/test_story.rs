@@ -88,11 +88,11 @@ impl TestQuery {
         self
     }
     pub fn medium(&mut self, medium: String) -> &mut TestQuery {
-        self.title = Some(medium);
+        self.medium = Some(medium);
         self
     }
     pub fn creator(&mut self, creator: String) -> &mut TestQuery {
-        self.title = Some(creator);
+        self.creator = Some(creator);
         self
     }
 }
