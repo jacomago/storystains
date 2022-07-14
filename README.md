@@ -1,5 +1,9 @@
 # Story Stains
 
+[![Backend](https://github.com/jacomago/storystains/actions/workflows/backend.yml/badge.svg)](https://github.com/jacomago/storystains/actions/workflows/backend.yml)
+[![Frontend](https://github.com/jacomago/storystains/actions/workflows/frontend.yml/badge.svg)](https://github.com/jacomago/storystains/actions/workflows/frontend.yml)
+[![codecov](https://codecov.io/gh/jacomago/storystains/branch/main/graph/badge.svg?token=RIHLTO9AAB)](https://codecov.io/gh/jacomago/storystains)
+
 Yet another Goodreads alternative. Focusing on documenting the stain a story leaves behind and why.
 
 Heavily inspired by [zero2prod](https://zero2prod.com) and [RealWorld](https://github.com/gothinkster/realworld) in particular [CodeIdeal's implementation](https://github.com/CodeIdeal/realworld_flutter) and
