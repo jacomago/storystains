@@ -39,19 +39,12 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      ))).thenThrow(testApiError(400, 'Cannot be empty.'));
+      when(mockService.create(emptyStory()))
+          .thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await storyState.update();
 
-      verify(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      )));
+      verify(mockService.create(emptyStory()));
       expect(storyState.isUpdated, false);
       expect(storyState.error, 'Bad Request: Cannot be empty.');
     });
@@ -61,19 +54,12 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      ))).thenThrow(testApiError(401, 'User not logged in.'));
+      when(mockService.create(emptyStory()))
+          .thenThrow(testApiError(401, 'User not logged in.'));
 
       await storyState.update();
 
-      verify(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      )));
+      verify(mockService.create(emptyStory()));
       expect(storyState.isUpdated, false);
       expect(storyState.error, 'Unauthorised: User not logged in.');
     });
@@ -84,9 +70,9 @@ void main() {
       final storiesResp = StoriesResp(stories: []);
 
       final mockService = MockStoryService();
-      final storyState = StoryState(mockService);
+      final storyState = StoryState(mockService, story: testStory());
 
-      when(mockService.search(emptyStory()))
+      when(mockService.search(testStory()))
           .thenAnswer((realInvocation) async => storiesResp);
 
       expectLater(
@@ -96,22 +82,32 @@ void main() {
         ),
       );
       await storyState.search();
-      storyState.dispose();
-      verify(mockService.search(emptyStory()));
-      expect(storyState.searchResults.stream, emitsDone);
+      verify(mockService.search(testStory()));
+    });
+    test('Search empty does not search', () async {
+      SharedPreferences.setMockInitialValues({});
+      final storiesResp = StoriesResp(stories: []);
+
+      final mockService = MockStoryService();
+      final storyState = StoryState(mockService);
+
+      when(mockService.search(emptyStory()))
+          .thenAnswer((realInvocation) async => storiesResp);
+
+      await storyState.search();
+      verifyNever(mockService.search(testStory()));
     });
 
     test('Search returns error', () async {
       SharedPreferences.setMockInitialValues({});
 
       final mockService = MockStoryService();
-      final storyState = StoryState(mockService);
+      final storyState = StoryState(mockService, story: testStory());
 
-      when(mockService.search(emptyStory()))
-          .thenThrow(testApiError(400, 'Bad'));
+      when(mockService.search(testStory())).thenThrow(testApiError(400, 'Bad'));
 
       await storyState.search();
-      verify(mockService.search(emptyStory()));
+      verify(mockService.search(testStory()));
 
       expect(storyState.error, 'Bad Request: Bad');
     });
@@ -124,9 +120,9 @@ void main() {
       ]);
 
       final mockService = MockStoryService();
-      final storyState = StoryState(mockService);
+      final storyState = StoryState(mockService, story: testStory());
 
-      when(mockService.search(emptyStory()))
+      when(mockService.search(testStory()))
           .thenAnswer((realInvocation) async => storiesResp);
       expectLater(
         storyState.searchResults.stream,
@@ -135,7 +131,7 @@ void main() {
         ),
       );
       await storyState.search();
-      verify(mockService.search(emptyStory()));
+      verify(mockService.search(testStory()));
     });
   });
 }
