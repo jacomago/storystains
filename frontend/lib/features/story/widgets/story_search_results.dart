@@ -15,6 +15,7 @@ class SearchStoryResults extends StatelessWidget {
   Widget _storiesList(AsyncSnapshot<List<Story>?> snapshot) => ListView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: snapshot.data!.length,
+        shrinkWrap: true,
         itemBuilder: ((context, index) => _simpleStory(snapshot, index)),
       );
 
