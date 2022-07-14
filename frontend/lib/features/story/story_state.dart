@@ -132,6 +132,14 @@ class StoryState extends ChangeNotifier {
 
   /// Search for similar stories
   Future<void> search() async {
+    final searchValue = value!;
+
+    if (searchValue.title.isEmpty && searchValue.creator.isEmpty) {
+      searchResults.sink.add(null);
+
+      return;
+    }
+
     _event = StoryEvent.search;
     _isLoading = true;
 
