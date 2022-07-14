@@ -38,3 +38,44 @@ class StoryWidget extends StatelessWidget {
         ],
       );
 }
+
+/// Widget for displaying a [Story] without editing
+class CardStory extends StatelessWidget {
+  /// Widget for displaying a [Story] without editing
+  const CardStory({Key? key, required this.story}) : super(key: key);
+
+  ///The [Story] to display
+  final Story story;
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                story.title,
+                style:
+                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                overflow: TextOverflow.fade,
+              ),
+              Text(
+                story.medium.name,
+                style: context.titleSmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: context.colors.onSecondaryContainer,
+                ),
+                overflow: TextOverflow.fade,
+              ),
+            ],
+          ),
+          Text(
+            AppLocalizations.of(context)!.byCreator(story.creator),
+            style: context.titleSmall,
+            overflow: TextOverflow.fade,
+          ),
+          const SizedBox(height: 4),
+        ],
+      );
+}

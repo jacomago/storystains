@@ -97,7 +97,7 @@ class ReviewList extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: _buildStory(context, review.story),
+                    child: CardStory(story: review.story),
                   ),
                   CardReviewEmotionsList(
                     items: review.emotions,
@@ -123,38 +123,6 @@ class ReviewList extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      );
-
-  Widget _buildStory(BuildContext context, Story story) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 4),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                story.title,
-                style:
-                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                overflow: TextOverflow.fade,
-              ),
-              Text(
-                story.medium.name,
-                style: context.titleSmall?.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: context.colors.onSecondaryContainer,
-                ),
-                overflow: TextOverflow.fade,
-              ),
-            ],
-          ),
-          Text(
-            AppLocalizations.of(context)!.byCreator(story.creator),
-            style: context.titleSmall,
-            overflow: TextOverflow.fade,
-          ),
-          const SizedBox(height: 4),
         ],
       );
 }

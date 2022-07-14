@@ -232,5 +232,9 @@
                 "example": "Fred"
             }
         }
+    },
+    "searchResults": "Search Results",
+    "@searchResults": {
+        "description": "Results from a search"
     }
 }
