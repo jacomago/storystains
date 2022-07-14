@@ -19,18 +19,18 @@ class StoryWidget extends StatelessWidget {
             children: [
               Text(
                 '${story?.title}',
-                style: context.headlineMedium,
+                style: context.headlineSmall,
                 semanticsLabel: AppLocalizations.of(context)!.title,
               ),
               Text(
                 '(${story?.medium.name})',
-                style: context.headlineSmall,
+                style: context.titleMedium,
               ),
             ],
           ),
           Text(
             AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
-            style: context.headlineSmall!.copyWith(
+            style: context.titleMedium!.copyWith(
               fontStyle: FontStyle.italic,
             ),
             semanticsLabel: AppLocalizations.of(context)!.creator,
