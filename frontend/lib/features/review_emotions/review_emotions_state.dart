@@ -97,6 +97,8 @@ class ReviewEmotionsState extends ChangeNotifier {
     _items = [];
     _isEmpty = false;
     _isNewItem = false;
+    _isEditItem = false;
+    _currentIndex = null;
     _currentEmotion = null;
     super.dispose();
   }

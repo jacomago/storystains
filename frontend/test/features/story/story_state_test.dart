@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
@@ -39,19 +38,12 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      ))).thenThrow(testApiError(400, 'Cannot be empty.'));
+      when(mockService.create(emptyStory()))
+          .thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await storyState.update();
 
-      verify(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      )));
+      verify(mockService.create(emptyStory()));
       expect(storyState.isUpdated, false);
       expect(storyState.error, 'Bad Request: Cannot be empty.');
     });
@@ -61,21 +53,84 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      ))).thenThrow(testApiError(401, 'User not logged in.'));
+      when(mockService.create(emptyStory()))
+          .thenThrow(testApiError(401, 'User not logged in.'));
 
       await storyState.update();
 
-      verify(mockService.create(Story(
-        title: '',
-        medium: Medium.mediumDefault,
-        creator: '',
-      )));
+      verify(mockService.create(emptyStory()));
       expect(storyState.isUpdated, false);
       expect(storyState.error, 'Unauthorised: User not logged in.');
+    });
+  });
+  group('search', () {
+    test('Search returns empty', () async {
+      SharedPreferences.setMockInitialValues({});
+      final storiesResp = StoriesResp(stories: []);
+
+      final mockService = MockStoryService();
+      final storyState = StoryState(mockService, story: testStory());
+
+      when(mockService.search(testStory()))
+          .thenAnswer((realInvocation) async => storiesResp);
+
+      expectLater(
+        storyState.searchResults.stream,
+        emitsInOrder(
+          [],
+        ),
+      );
+      await storyState.search();
+      verify(mockService.search(testStory()));
+    });
+    test('Search empty does not search', () async {
+      SharedPreferences.setMockInitialValues({});
+      final storiesResp = StoriesResp(stories: []);
+
+      final mockService = MockStoryService();
+      final storyState = StoryState(mockService);
+
+      when(mockService.search(emptyStory()))
+          .thenAnswer((realInvocation) async => storiesResp);
+
+      await storyState.search();
+      verifyNever(mockService.search(testStory()));
+    });
+
+    test('Search returns error', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      final mockService = MockStoryService();
+      final storyState = StoryState(mockService, story: testStory());
+
+      when(mockService.search(testStory())).thenThrow(testApiError(400, 'Bad'));
+
+      await storyState.search();
+      verify(mockService.search(testStory()));
+
+      expect(storyState.error, 'Bad Request: Bad');
+    });
+
+    test('Search returns list', () async {
+      SharedPreferences.setMockInitialValues({});
+      final storiesResp = StoriesResp(stories: [
+        testStory(title: 'Dune'),
+        testStory(title: 'Star Wars'),
+      ]);
+
+      final mockService = MockStoryService();
+      final storyState = StoryState(mockService, story: testStory());
+
+      when(mockService.search(testStory()))
+          .thenAnswer((realInvocation) async => storiesResp);
+      expectLater(
+        storyState.searchResults.stream,
+        emitsInOrder(
+          [storiesResp.stories],
+        ),
+      );
+      await storyState.search();
+      verify(mockService.search(testStory()));
     });
   });
 }

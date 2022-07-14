@@ -174,6 +174,7 @@ class ReviewsState extends ChangeNotifier {
     _isEmpty = false;
     _isFailed = false;
     _isLoading = false;
+    _hasReachedMax = false;
     super.dispose();
   }
 }

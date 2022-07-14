@@ -201,4 +201,14 @@ class AuthState extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  @override
+  void dispose() {
+    _error = '';
+    _event = null;
+    _status = AuthStatus.initial;
+    _user = null;
+    _isLoading = false;
+    super.dispose();
+  }
 }

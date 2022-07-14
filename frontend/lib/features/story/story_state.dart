@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../common/utils/error.dart';
@@ -8,6 +10,9 @@ import 'story.dart';
 enum StoryEvent {
   /// Update the [Story]
   update,
+
+  /// Search for [Story]s
+  search,
 }
 
 /// status of state
@@ -41,6 +46,18 @@ class StoryState extends ChangeNotifier {
   bool _isLoading = false;
   String _error = '';
 
+  /// controller for titel
+  late TextEditingController titleController;
+
+  /// controller for creator
+  late TextEditingController creatorController;
+
+  /// controller for [Medium]
+  late ValueNotifier<Medium> mediumController;
+
+  /// Search Results controller
+  late StreamController<List<Story>?> searchResults;
+
   /// loaded story
   Story? get story => _story;
 
@@ -56,20 +73,14 @@ class StoryState extends ChangeNotifier {
   /// currently loading
   bool get isLoading => _isLoading;
 
+  /// currently searching
+  bool get isSearching => _event == StoryEvent.search;
+
   /// updated story
   bool get isUpdated => _status == StoryStatus.updated;
 
   /// failed event
   bool get isFailed => _status == StoryStatus.failed;
-
-  /// controller for titel
-  late TextEditingController titleController;
-
-  /// controller for creator
-  late TextEditingController creatorController;
-
-  /// controller for [Medium]
-  late ValueNotifier<Medium> mediumController;
 
   /// representation of a story state for editing
   StoryState(this._service, {Story? story}) {
@@ -84,16 +95,23 @@ class StoryState extends ChangeNotifier {
     creatorController = TextEditingController(text: story?.creator ?? '');
     mediumController =
         ValueNotifier(story?.medium ?? const Medium(name: 'Book'));
+    searchResults = StreamController<List<Story>?>.broadcast();
   }
 
-  /// rvalue from controllers
+  /// Value from controllers
   Story? get value => Story(
         title: titleController.text,
         medium: mediumController.value,
         creator: creatorController.text,
       );
 
-  /// update the story
+  void _setControllers(Story story) {
+    titleController.text = story.title;
+    creatorController.text = story.creator;
+    mediumController.value = story.medium;
+  }
+
+  /// Update the story
   Future<void> update() async {
     _event = StoryEvent.update;
     _isLoading = true;
@@ -106,9 +124,7 @@ class StoryState extends ChangeNotifier {
       _story = data.story;
 
       _status = StoryStatus.updated;
-      titleController = TextEditingController(text: data.story.title);
-      creatorController = TextEditingController(text: data.story.creator);
-      mediumController = ValueNotifier(data.story.medium);
+      _setControllers(data.story);
     } on DioError catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
@@ -116,5 +132,60 @@ class StoryState extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  /// Search for similar stories
+  Future<void> search() async {
+    final searchValue = value!;
+
+    if (searchValue.title.isEmpty && searchValue.creator.isEmpty) {
+      searchResults.sink.add(null);
+
+      return;
+    }
+
+    _event = StoryEvent.search;
+    _isLoading = true;
+
+    notifyListeners();
+
+    try {
+      final data = await _service.search(value!);
+
+      searchResults.sink.add(data.stories);
+    } on DioError catch (e) {
+      _status = StoryStatus.failed;
+      _error = errorMessage(e);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  /// Pick a story from the search list to be assigned
+  void pickStory(Story story) {
+    _setControllers(story);
+    _endSearch();
+  }
+
+  /// Stop searching for stories
+  void _endSearch() {
+    _event = null;
+    searchResults.sink.add(null);
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    searchResults.close();
+    titleController.dispose();
+    creatorController.dispose();
+    mediumController.dispose();
+    _story = null;
+    _event = null;
+    _status = StoryStatus.initial;
+    _isLoading = false;
+    _error = '';
+    super.dispose();
   }
 }

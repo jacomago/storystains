@@ -11,8 +11,14 @@ Story testStory({
       medium: const Medium(name: 'Film'),
     );
 
-Story emptyStory() => Story(
+Story errorStory() => Story(
       creator: '',
       title: '/',
+      medium: Medium.mediumDefault,
+    );
+
+Story emptyStory() => Story(
+      creator: '',
+      title: '',
       medium: Medium.mediumDefault,
     );

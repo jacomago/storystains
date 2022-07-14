@@ -61,3 +61,38 @@ impl TestStory {
         assert_eq!(response.status(), StatusCode::OK);
     }
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TestQuery {
+    limit: Option<i32>,
+    title: Option<String>,
+    medium: Option<String>,
+    creator: Option<String>,
+}
+
+impl TestQuery {
+    pub fn new() -> Self {
+        TestQuery {
+            limit: None,
+            title: None,
+            medium: None,
+            creator: None,
+        }
+    }
+    pub fn limit(&mut self, limit: i32) -> &mut TestQuery {
+        self.limit = Some(limit);
+        self
+    }
+    pub fn title(&mut self, title: String) -> &mut TestQuery {
+        self.title = Some(title);
+        self
+    }
+    pub fn medium(&mut self, medium: String) -> &mut TestQuery {
+        self.medium = Some(medium);
+        self
+    }
+    pub fn creator(&mut self, creator: String) -> &mut TestQuery {
+        self.creator = Some(creator);
+        self
+    }
+}

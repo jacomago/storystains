@@ -30,6 +30,17 @@ abstract class RestClient {
   @retrofit.POST('/stories')
   Future<WrappedStory> createStory(@retrofit.Body() WrappedStory newStory);
 
+  /// Get [Story]s from api
+  @retrofit.GET('/stories')
+  // ignore: long-parameter-list
+  Future<StoriesResp> searchStories({
+    @retrofit.Query('creator') String? creator,
+    @retrofit.Query('medium') String? medium,
+    @retrofit.Query('title') String? title,
+    @retrofit.Query('limit') int limit = 10,
+    @retrofit.Query('offset') int offset = 0,
+  });
+
   /// Update [Review] in api
   @retrofit.PUT('/reviews/{username}/{slug}')
   Future<ReviewResp> updateReview(

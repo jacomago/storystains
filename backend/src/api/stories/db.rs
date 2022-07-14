@@ -2,7 +2,7 @@ use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
 use crate::api::shared::{short_form_text::ShortFormText, Limits};
 
-use super::model::{NewStory, StoredStory};
+use super::model::{NewStory, StoredStory, StoryQuery};
 
 #[tracing::instrument(
     name = "Creating or reading creator details from the database",
@@ -213,30 +213,43 @@ pub async fn db_read_story_by_id(
 }
 
 #[tracing::instrument(
-    name = "Retreive story details from the database", 
-    skip(pool),
+    name = "Retreive stories from the database", 
+    skip(pool, query),
     fields(
-        limit = %format!("{:?}", limits.limit),
-        offset = %limits.offset
+        title = %format!("{:?}", query.title),
+        medium = %format!("{:?}", query.medium),
+        creator = %format!("{:?}", query.creator),
+        limit = %format!("{:?}", query.limit),
+        offset = %format!("{:?}", query.offset)
     )
 )]
-pub async fn read_stories(limits: &Limits, pool: &PgPool) -> Result<Vec<StoredStory>, sqlx::Error> {
+pub async fn read_stories(
+    query: StoryQuery,
+    pool: &PgPool,
+) -> Result<Vec<StoredStory>, sqlx::Error> {
+    let limits: Limits = query.query_limits().into();
     // TODO Should be able to do a triple join
     // seems like could be a bug https://github.com/launchbadge/sqlx/issues/1852
     let stories = sqlx::query_as!(
         StoredStory,
         r#"
         SELECT
-            stories.id as "id!",
-            stories.title as "title!",
-            mediums.name as "medium!",
-            creators.name as "creator!"
+            stories.id as "id",
+            stories.title as "title",
+            mediums.name as "medium",
+            creators.name as "creator"
         FROM stories
             JOIN creators ON stories.creator_id = creators.id
             JOIN mediums ON stories.medium_id = mediums.id
-        LIMIT $1
-        OFFSET $2
+        WHERE ($1::text IS NULL OR stories.title % $1)
+            AND ($2::text IS NULL OR creators.name % $2)
+            AND ($3::text IS NULL OR mediums.name = $3)
+        LIMIT $4
+        OFFSET $5
         "#,
+        query.title,
+        query.creator,
+        query.medium,
         limits.limit.as_ref(),
         limits.offset
     )

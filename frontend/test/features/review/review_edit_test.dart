@@ -276,7 +276,7 @@ void main() {
       await tester.pumpAndSettle();
 
       when(mockService.create(
-        emptyStory(),
+        errorStory(),
         'body',
       )).thenThrow(testApiError(400, 'Cannot be /.'));
 

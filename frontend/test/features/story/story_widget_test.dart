@@ -27,14 +27,14 @@ Widget wrapWithMaterial(Widget w, {MediumsState? mediumState}) => MultiProvider(
       ),
     );
 
-@GenerateMocks([MediumsService])
+@GenerateMocks([MediumsService, StoryService])
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized();
     ServiceLocator.setup();
   });
   tearDown(ServiceLocator.sl.reset);
-  group('Edit review emotion', () {
+  group('Edit review story', () {
     testWidgets('set title', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final state = StoryState(StoryService());
@@ -102,6 +102,46 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(state.value!.medium, mediumsResp.mediums[1]);
+    });
+  });
+  group('Search story', () {
+    testWidgets('search title', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final mockService = MockStoryService();
+      final state = StoryState(mockService);
+      final storiesResp = StoriesResp(stories: [
+        testStory(title: 'Dune'),
+        testStory(title: 'Star Wars'),
+      ]);
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          StoryEditWidget(
+            state: state,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final searchStory = Story(
+        creator: '',
+        title: 'Du',
+        medium: Medium.mediumDefault,
+      );
+      when(mockService.search(searchStory))
+          .thenAnswer((realInvocation) async => storiesResp);
+
+      final titleField = find.bySemanticsLabel('Title');
+      await tester.enterText(titleField, 'Du');
+
+      verify(mockService.search(searchStory));
+
+      expect(state.isSearching, true);
+
+      // TODO fix finding the results
+      // expect(find.byType(SearchStoryResults), findsOneWidget);
+      // expect(find.text('Dune'), findsOneWidget);
+      // expect(find.text('Star Wars'), findsOneWidget);
+      // await tester.pumpAndSettle();
     });
   });
 }

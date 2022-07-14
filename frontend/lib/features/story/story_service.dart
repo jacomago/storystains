@@ -11,4 +11,12 @@ class StoryService {
       await ServiceLocator.sl.get<RestClient>().createStory(
             WrappedStory(story: story),
           );
+
+  /// Wrapper method of [RestClient.searchStories]
+  Future<StoriesResp> search(Story story) async =>
+      await ServiceLocator.sl.get<RestClient>().searchStories(
+            title: story.title == '' ? null : story.title,
+            creator: story.creator == '' ? null : story.creator,
+            medium: story.medium.name,
+          );
 }

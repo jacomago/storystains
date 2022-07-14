@@ -81,17 +81,17 @@ void main() {
       expect(reviewState.isCreate, true);
 
       when(mockService.create(
-        emptyStory(),
+        errorStory(),
         '',
       )).thenThrow(testApiError(401, 'User not logged in.'));
 
       await reviewState.update(
-        emptyStory(),
+        errorStory(),
         '',
       );
 
       verify(mockService.create(
-        emptyStory(),
+        errorStory(),
         '',
       ));
       expect(reviewState.isUpdated, false);
@@ -221,19 +221,19 @@ void main() {
       when(mockService.update(
         review.user.username,
         '',
-        emptyStory(),
+        errorStory(),
         '',
       )).thenThrow(testApiError(400, 'Cannot be empty.'));
 
       await reviewState.update(
-        emptyStory(),
+        errorStory(),
         '',
       );
 
       verify(mockService.update(
         review.user.username,
         '',
-        emptyStory(),
+        errorStory(),
         '',
       ));
       expect(reviewState.isUpdated, false);
@@ -257,19 +257,19 @@ void main() {
       when(mockService.update(
         review.user.username,
         '',
-        emptyStory(),
+        errorStory(),
         '',
       )).thenThrow(testApiError(401, 'User not logged in.'));
 
       await reviewState.update(
-        emptyStory(),
+        errorStory(),
         '',
       );
 
       verify(mockService.update(
         review.user.username,
         '',
-        emptyStory(),
+        errorStory(),
         '',
       ));
       expect(reviewState.isUpdated, false);

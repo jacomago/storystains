@@ -1,4 +1,4 @@
-use crate::api::shared::short_form_text::ShortFormText;
+use crate::api::shared::{short_form_text::ShortFormText, QueryLimits};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct StoryResponse {
@@ -65,5 +65,52 @@ impl From<Vec<StoredStory>> for StoriesResponse {
         Self {
             stories: stored.into_iter().map(StoryResponseData::from).collect(),
         }
+    }
+}
+
+/// Story query options
+#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq)]
+pub struct StoryQuery {
+    /// Story title matching string
+    pub title: Option<String>,
+    /// Story title matching medium - must match a medium
+    pub medium: Option<String>,
+    /// Story creator matching string
+    pub creator: Option<String>,
+    /// Standard pagination limits
+    pub limit: Option<u64>,
+    pub offset: Option<u64>,
+}
+
+impl StoryQuery {
+    // due to bug https://github.com/serde-rs/serde/issues/1183
+    // currently cannot use serde(flatten) with non strings
+    pub fn query_limits(&self) -> QueryLimits {
+        QueryLimits {
+            limit: self.limit,
+            offset: self.offset,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::StoryQuery;
+    use actix_web::web::Query;
+
+    #[test]
+    fn test_limit_string() {
+        let text = "limit=10".to_string();
+        assert_eq!(
+            Query::<StoryQuery>::from_query(&text).unwrap().0,
+            StoryQuery {
+                title: None,
+                medium: None,
+                creator: None,
+                limit: Some(10),
+                offset: None
+            }
+        );
     }
 }

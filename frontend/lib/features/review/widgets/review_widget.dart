@@ -53,7 +53,7 @@ class ReviewWidget extends StatelessWidget {
 
     final state = context.read<ReviewState>();
     final body = state.bodyController.value.text;
-    final story = state.storyContoller.value;
+    final story = state.storyController.value;
 
     if (story == null || story.title.isEmpty) {
       context.snackbar(AppLocalizations.of(context)!
@@ -138,7 +138,7 @@ class ReviewWidget extends StatelessWidget {
               child: Column(
                 children: [
                   state.isEdit
-                      ? StoryEditWidget(state: state.storyContoller)
+                      ? StoryEditWidget(state: state.storyController)
                       : StoryWidget(
                           story: state.review?.story,
                         ),

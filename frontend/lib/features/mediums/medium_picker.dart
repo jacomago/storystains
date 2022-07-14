@@ -9,11 +9,14 @@ class MediumPicker extends StatelessWidget {
   const MediumPicker({
     Key? key,
     required this.mediumController,
+    required this.onChanged,
   }) : super(key: key);
 
   /// controller of  [Medium]
   final ValueNotifier<Medium> mediumController;
 
+  /// callback for on changed
+  final ValueChanged<Medium> onChanged;
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<Medium>(
         valueListenable: mediumController,
@@ -23,6 +26,7 @@ class MediumPicker extends StatelessWidget {
           onChanged: (newValue) {
             if (newValue != null) {
               mediumController.value = newValue;
+              onChanged(newValue);
             }
           },
           items: Provider.of<MediumsState>(context)
