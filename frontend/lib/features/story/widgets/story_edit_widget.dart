@@ -9,6 +9,10 @@ class StoryEditWidget extends StatelessWidget {
   /// Widget for editing a [Story]
   const StoryEditWidget({Key? key, required this.state}) : super(key: key);
 
+  void _onChanged() async {
+    await state.search();
+  }
+
   /// State of the [Story]
   final StoryState state;
   @override
@@ -18,68 +22,71 @@ class StoryEditWidget extends StatelessWidget {
           const SizedBox(
             height: 5,
           ),
-          StoryTitleEdit(
-            titleController: state.titleController,
+          StoryTextEdit(
+            textController: state.titleController,
+            onChanged: (_) {
+              _onChanged();
+            },
+            label: AppLocalizations.of(context)!.title,
+            hint: AppLocalizations.of(context)!.title,
           ),
           const SizedBox(
             height: 10,
           ),
-          StoryCreatorEdit(
-            creatorController: state.creatorController,
+          StoryTextEdit(
+            textController: state.creatorController,
+            onChanged: (_) {
+              _onChanged();
+            },
+            label: AppLocalizations.of(context)!.creator,
+            hint: AppLocalizations.of(context)!.creatorHint,
           ),
           const SizedBox(
             height: 10,
           ),
           MediumPicker(
             mediumController: state.mediumController,
+            onChanged: (_) {
+              _onChanged();
+            },
           ),
+          state.isSearching ? SearchStoryResults(state: state) : Row(),
         ],
       );
 }
 
 /// Widget for editing a [Story] title
-class StoryTitleEdit extends StatelessWidget {
+class StoryTextEdit extends StatelessWidget {
   /// Widget for editing a [Story] title
-  const StoryTitleEdit({
+  const StoryTextEdit({
     Key? key,
-    required this.titleController,
+    required this.textController,
+    required this.onChanged,
+    required this.label,
+    required this.hint,
   }) : super(key: key);
+
+  /// Label Text
+  final String label;
+
+  /// Hint Text
+  final String hint;
 
   /// contoller of title
-  final TextEditingController titleController;
+  final TextEditingController textController;
+
+  /// callback for on changed
+  final ValueChanged<String> onChanged;
   @override
   Widget build(BuildContext context) => TextField(
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: AppLocalizations.of(context)!.title,
-          hintText: AppLocalizations.of(context)!.title,
+          labelText: label,
+          hintText: hint,
         ),
         style: context.titleMedium,
-        controller: titleController,
-      );
-}
-
-/// Widget for editing a [Story] creator
-class StoryCreatorEdit extends StatelessWidget {
-  /// Widget for editing a [Story]
-  const StoryCreatorEdit({
-    Key? key,
-    required this.creatorController,
-  }) : super(key: key);
-
-  /// controller for changes to creator
-  final TextEditingController creatorController;
-
-  @override
-  Widget build(BuildContext context) => TextField(
-        textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(),
-          labelText: AppLocalizations.of(context)!.creator,
-          hintText: AppLocalizations.of(context)!.creatorHint,
-        ),
-        style: context.titleMedium,
-        controller: creatorController,
+        controller: textController,
+        onChanged: onChanged,
       );
 }

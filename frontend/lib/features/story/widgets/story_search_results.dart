@@ -32,7 +32,7 @@ class SearchStoryResults extends StatelessWidget {
         stream: state.searchResults.stream,
         builder: ((context, snapshot) {
           if (!snapshot.hasData) {
-            return const LoadingMore();
+            return Row();
           }
 
           return snapshot.connectionState == ConnectionState.waiting

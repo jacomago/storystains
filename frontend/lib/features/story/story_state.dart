@@ -46,6 +46,18 @@ class StoryState extends ChangeNotifier {
   bool _isLoading = false;
   String _error = '';
 
+  /// controller for titel
+  late TextEditingController titleController;
+
+  /// controller for creator
+  late TextEditingController creatorController;
+
+  /// controller for [Medium]
+  late ValueNotifier<Medium> mediumController;
+
+  /// Search Results controller
+  late StreamController<List<Story>?> searchResults;
+
   /// loaded story
   Story? get story => _story;
 
@@ -61,23 +73,14 @@ class StoryState extends ChangeNotifier {
   /// currently loading
   bool get isLoading => _isLoading;
 
+  /// currently searching
+  bool get isSearching => _event == StoryEvent.search;
+
   /// updated story
   bool get isUpdated => _status == StoryStatus.updated;
 
   /// failed event
   bool get isFailed => _status == StoryStatus.failed;
-
-  /// controller for titel
-  late TextEditingController titleController;
-
-  /// controller for creator
-  late TextEditingController creatorController;
-
-  /// controller for [Medium]
-  late ValueNotifier<Medium> mediumController;
-
-  /// Search Results controller
-  late StreamController<List<Story>?> searchResults;
 
   /// representation of a story state for editing
   StoryState(this._service, {Story? story}) {
@@ -144,6 +147,13 @@ class StoryState extends ChangeNotifier {
     }
 
     _isLoading = false;
+    notifyListeners();
+  }
+
+  /// Stop searching for stories
+  Future<void> endSearch() async {
+    _event = null;
+    searchResults.sink.add(null);
     notifyListeners();
   }
 
