@@ -85,20 +85,13 @@ jobs:
         ports:
           - 5432:5432
     env:
-      SQLX_VERSION: 0.6
+      SQLX_VERSION: 0.6.0
       SQLX_FEATURES: postgres,native-tls
+      RUST_BACKTRACE: 1
+      RUST_LOG: info
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -127,6 +120,8 @@ jobs:
             --no-default-features
             --locked
 
+      - name: Cache 
+        uses: Swatinem/rust-cache@v1
       - name: Migrate database
         working-directory: ./backend
         run: |
@@ -151,20 +146,13 @@ jobs:
         ports:
           - 5432:5432
     env:
-      SQLX_VERSION: 0.6
+      SQLX_VERSION: 0.6.0
       SQLX_FEATURES: postgres,native-tls
+      RUST_BACKTRACE: 1
+      RUST_LOG: info
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -180,6 +168,8 @@ jobs:
             ~/.cargo/bin/sqlx
           key: ${{ runner.os }}-sqlx-${{ env.SQLX_VERSION }}
 
+      - name: Cache 
+        uses: Swatinem/rust-cache@v1
       - name: Install sqlx-cli 
         uses: actions-rs/cargo@v1
         if: steps.cache-sqlx.outputs.cache-hit == false

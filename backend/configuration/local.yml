@@ -1,6 +1,6 @@
 application:
   host: 127.0.0.1
-  static_files: "../frontend/build/web/"
+  static_files: "./static/"
   image_files: "./assets/images/"
   exp_token_seconds: 10
   base_url: "http://localhost"
