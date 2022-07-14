@@ -77,7 +77,7 @@ class StoryState extends ChangeNotifier {
   late ValueNotifier<Medium> mediumController;
 
   /// Search Results controller
-  late StreamController<List<Story>?> _search_results;
+  late StreamController<List<Story>?> searchResults;
 
   /// representation of a story state for editing
   StoryState(this._service, {Story? story}) {
@@ -92,6 +92,7 @@ class StoryState extends ChangeNotifier {
     creatorController = TextEditingController(text: story?.creator ?? '');
     mediumController =
         ValueNotifier(story?.medium ?? const Medium(name: 'Book'));
+    searchResults = StreamController<List<Story>?>.broadcast();
   }
 
   /// Value from controllers
@@ -136,7 +137,7 @@ class StoryState extends ChangeNotifier {
     try {
       final data = await _service.search(value!);
 
-      _search_results.sink.add(data.stories);
+      searchResults.sink.add(data.stories);
     } on DioError catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
@@ -148,7 +149,7 @@ class StoryState extends ChangeNotifier {
 
   @override
   void dispose() {
-    _search_results.close();
+    searchResults.close();
     titleController.dispose();
     creatorController.dispose();
     mediumController.dispose();
