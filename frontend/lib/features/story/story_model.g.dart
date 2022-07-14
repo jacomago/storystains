@@ -26,3 +26,14 @@ Map<String, dynamic> _$WrappedStoryToJson(WrappedStory instance) =>
     <String, dynamic>{
       'story': instance.story,
     };
+
+StoriesResp _$StoriesRespFromJson(Map<String, dynamic> json) => StoriesResp(
+      stories: (json['stories'] as List<dynamic>)
+          .map((e) => Story.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$StoriesRespToJson(StoriesResp instance) =>
+    <String, dynamic>{
+      'stories': instance.stories,
+    };

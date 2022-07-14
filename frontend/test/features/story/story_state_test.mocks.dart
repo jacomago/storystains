@@ -19,6 +19,8 @@ import 'package:storystains/features/story/story.dart' as _i2;
 
 class _FakeWrappedStory_0 extends _i1.Fake implements _i2.WrappedStory {}
 
+class _FakeStoriesResp_1 extends _i1.Fake implements _i2.StoriesResp {}
+
 /// A class which mocks [StoryService].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -32,4 +34,9 @@ class MockStoryService extends _i1.Mock implements _i2.StoryService {
           Invocation.method(#create, [story]),
           returnValue: Future<_i2.WrappedStory>.value(_FakeWrappedStory_0()))
       as _i3.Future<_i2.WrappedStory>);
+  @override
+  _i3.Future<_i2.StoriesResp> search(_i2.Story? story) =>
+      (super.noSuchMethod(Invocation.method(#search, [story]),
+              returnValue: Future<_i2.StoriesResp>.value(_FakeStoriesResp_1()))
+          as _i3.Future<_i2.StoriesResp>);
 }

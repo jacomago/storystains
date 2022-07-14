@@ -69,6 +69,30 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<StoriesResp> searchStories(
+      {creator, medium, title, limit = 10, offset = 0}) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'creator': creator,
+      r'medium': medium,
+      r'title': title,
+      r'limit': limit,
+      r'offset': offset
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<StoriesResp>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/stories',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = StoriesResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ReviewResp> updateReview(username, slug, updatedReview) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

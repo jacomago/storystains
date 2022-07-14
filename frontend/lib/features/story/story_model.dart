@@ -70,3 +70,20 @@ class WrappedStory {
   /// Wrapper up story to json for using the api
   Map<String, dynamic> toJson() => _$WrappedStoryToJson(this);
 }
+
+/// Model for rest api of stories in a list
+@JsonSerializable()
+class StoriesResp {
+  /// List of reviews
+  List<Story> stories;
+
+  /// Model for rest api of stories in a list
+  StoriesResp({required this.stories});
+
+  /// Model for rest api of stories in a list from json
+  factory StoriesResp.fromJson(Map<String, dynamic> json) =>
+      _$StoriesRespFromJson(json);
+
+  /// Model for rest api of stories in a list to json
+  Map<String, dynamic> toJson() => _$StoriesRespToJson(this);
+}

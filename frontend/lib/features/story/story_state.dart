@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import '../../common/utils/error.dart';
@@ -8,6 +10,9 @@ import 'story.dart';
 enum StoryEvent {
   /// Update the [Story]
   update,
+
+  /// Search for [Story]s
+  search,
 }
 
 /// status of state
@@ -71,6 +76,9 @@ class StoryState extends ChangeNotifier {
   /// controller for [Medium]
   late ValueNotifier<Medium> mediumController;
 
+  /// Search Results controller
+  late StreamController<List<Story>?> _search_results;
+
   /// representation of a story state for editing
   StoryState(this._service, {Story? story}) {
     _event = null;
@@ -86,14 +94,14 @@ class StoryState extends ChangeNotifier {
         ValueNotifier(story?.medium ?? const Medium(name: 'Book'));
   }
 
-  /// rvalue from controllers
+  /// Value from controllers
   Story? get value => Story(
         title: titleController.text,
         medium: mediumController.value,
         creator: creatorController.text,
       );
 
-  /// update the story
+  /// Update the story
   Future<void> update() async {
     _event = StoryEvent.update;
     _isLoading = true;
@@ -116,5 +124,39 @@ class StoryState extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  /// Search for similar stories
+  Future<void> search() async {
+    _event = StoryEvent.search;
+    _isLoading = true;
+
+    notifyListeners();
+
+    try {
+      final data = await _service.search(value!);
+
+      _search_results.sink.add(data.stories);
+    } on DioError catch (e) {
+      _status = StoryStatus.failed;
+      _error = errorMessage(e);
+    }
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _search_results.close();
+    titleController.dispose();
+    creatorController.dispose();
+    mediumController.dispose();
+    _story = null;
+    _event = null;
+    _status = StoryStatus.initial;
+    _isLoading = false;
+    _error = '';
+    super.dispose();
   }
 }
