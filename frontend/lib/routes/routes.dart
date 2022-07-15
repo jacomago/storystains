@@ -26,14 +26,8 @@ class Routes {
   /// Reviews path
   static const String reviews = '/reviews';
 
-  /// Read review path
-  static const String reviewDetail = '/reviewDetail';
-
-  /// Path for editing a review
-  static const String reviewEdit = '/reviewEdit';
-
   /// Path for creating a review
-  static const String reviewNew = '/reviewNew';
+  static const String reviewNew = '/new_review';
 }
 
 /// Builder of a path for web urls
@@ -76,7 +70,7 @@ class RouteConfiguration {
   /// take priority.
   static List<Path> paths = [
     Path(
-      r'^' + Routes.reviewDetail + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
+      r'^' + Routes.reviews + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
       ['username', 'slug'],
       (context, matchs) => ReviewDetail(
         path: matchs == null

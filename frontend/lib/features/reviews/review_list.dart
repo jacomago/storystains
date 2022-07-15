@@ -77,7 +77,7 @@ class ReviewList extends StatelessWidget {
     Navigator.of(context)
         .push(
           review.route(
-            Routes.reviewDetail,
+            Routes.reviews,
             (r) => ReviewDetail(
               review: r,
             ),
@@ -97,7 +97,7 @@ class ReviewList extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.topLeft,
-                    child: CardStory(story: review.story),
+                    child: StoryItem(story: review.story),
                   ),
                   CardReviewEmotionsList(
                     items: review.emotions,
