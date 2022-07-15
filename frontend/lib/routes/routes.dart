@@ -9,6 +9,7 @@ import '../pages/login_register.dart';
 import '../pages/not_found.dart';
 import '../pages/review_detail.dart';
 import '../pages/review_new.dart';
+import '../pages/story_filter_page.dart';
 import '../pages/user_profile.dart';
 
 /// Routes in the app
@@ -98,6 +99,11 @@ class RouteConfiguration {
       (context, matchs) => const ReviewNew(),
     ),
     Path(
+      r'^' + Routes.reviews,
+      [],
+      (context, matchs) => const StoryFilterPage(),
+    ),
+    Path(
       r'^' + Routes.home,
       [],
       (context, matchs) => const Home(),
@@ -113,7 +119,7 @@ class RouteConfiguration {
       (context, matchs) => const AccountPage(),
     ),
     Path(
-      r'^/' + Routes.root,
+      r'^' + Routes.root,
       [],
       (context, matchs) => const Home(),
     ),

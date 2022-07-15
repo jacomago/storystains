@@ -75,7 +75,33 @@
     },
     "query": "\n            UPDATE review_emotions\n            SET emotion_id  = COALESCE($1, emotion_id),\n                position    = COALESCE($2, position),\n                notes       = COALESCE($3, notes)\n            WHERE review_id = (SELECT id\n                                 FROM users,\n                                      reviews\n                                WHERE slug           = $4\n                                  AND users.user_id  = reviews.user_id\n                                  AND users.username = $6\n                                LIMIT 1\n                               )\n               AND position = $5\n            RETURNING emotion_id,\n                      position, \n                      notes\n        "
   },
-  "0fff2ba1f49255d9ed5818652e960fbc1d9de157f0678ca1f3bf4dd937a3a504": {
+  "1a66539537c71a52ffacfe03719f39c0e6b174a6cecccbfba7750371af8cd19d": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "password_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT user_id, password_hash FROM users\n        WHERE username = $1\n        "
+  },
+  "1d36aad09c090e5a43ff45bedb244543cc49bb1936106822d2ac4c12e9fd2674": {
     "describe": {
       "columns": [
         {
@@ -134,33 +160,7 @@
         ]
       }
     },
-    "query": "\n        SELECT reviews.id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM \n            reviews\n            JOIN stories ON stories.id = reviews.story_id\n            JOIN users ON users.user_id = reviews.user_id\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE   ($3::text IS NULL OR users.username % $3)\n            AND ($4::text IS NULL OR stories.title % $4)\n            AND ($5::text IS NULL OR creators.name % $5)\n            AND ($6::text IS NULL OR mediums.name = $6)\n        ORDER BY updated_at DESC\n        LIMIT $1 \n        OFFSET $2\n        "
-  },
-  "1a66539537c71a52ffacfe03719f39c0e6b174a6cecccbfba7750371af8cd19d": {
-    "describe": {
-      "columns": [
-        {
-          "name": "user_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "password_hash",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        SELECT user_id, password_hash FROM users\n        WHERE username = $1\n        "
+    "query": "\n        SELECT reviews.id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM \n            reviews\n            JOIN stories ON stories.id = reviews.story_id\n            JOIN users ON users.user_id = reviews.user_id\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE   ($3::text IS NULL OR users.username = $3)\n            AND ($4::text IS NULL OR stories.title % $4)\n            AND ($5::text IS NULL OR creators.name % $5)\n            AND ($6::text IS NULL OR mediums.name = $6)\n        ORDER BY updated_at DESC\n        LIMIT $1 \n        OFFSET $2\n        "
   },
   "2c46d9b3160ef9ad68700bb4c6aad60da9de1c0011e9c484acd438f4c18cf32f": {
     "describe": {

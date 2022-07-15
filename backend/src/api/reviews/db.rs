@@ -155,7 +155,7 @@ async fn db_read_reviews(
             JOIN users ON users.user_id = reviews.user_id
             JOIN creators ON stories.creator_id = creators.id
             JOIN mediums ON stories.medium_id = mediums.id
-        WHERE   ($3::text IS NULL OR users.username % $3)
+        WHERE   ($3::text IS NULL OR users.username = $3)
             AND ($4::text IS NULL OR stories.title % $4)
             AND ($5::text IS NULL OR creators.name % $5)
             AND ($6::text IS NULL OR mediums.name = $6)

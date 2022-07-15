@@ -102,7 +102,7 @@ class ReviewsState extends ChangeNotifier {
         query: _query,
       );
 
-      if (items != null && items.isNotEmpty) {
+      if (items != null && (items.isNotEmpty || query != null)) {
         _offset = AppConfig.defaultLimit;
         _items = [...items];
         _isFailed = false;

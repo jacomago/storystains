@@ -9,33 +9,36 @@ import '../features/reviews/reviews.dart';
 import '../features/story/story.dart';
 import '../routes/routes.dart';
 
-/// The home page of the app
+/// A page of reviews filtered by story options
 class StoryFilterPage extends StatelessWidget {
-  /// The home page of the app
-  const StoryFilterPage({Key? key, required this.query}) : super(key: key);
+  /// constructor of the [StoryFilterPage]
+  const StoryFilterPage({Key? key, this.query = const StoryQuery()})
+      : super(key: key);
 
   /// Initial query to filter by
   final StoryQuery query;
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (_) => ReviewsState(
-          ReviewsService(),
-          ReviewQuery(storyQuery: query),
-        ),
-        child: StoryFilter(),
+  Widget build(BuildContext context) => MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (_) => ReviewsState(
+              ReviewsService(),
+              ReviewQuery(storyQuery: query),
+            ),
+          ),
+          ChangeNotifierProvider(
+            create: (_) => StoryState(StoryService(), query: query),
+          ),
+        ],
+        child: const StoryFilter(),
       );
 }
 
-/// The page of a user
+/// Widget for filtering a ReviewList by Story details
 class StoryFilter extends StatelessWidget {
-  /// The page of a user
-  StoryFilter({Key? key, StoryQuery? query})
-      : state = StoryState(StoryService(), query: query),
-        super(key: key);
-
-  /// State used as a StoryQuery controller
-  late final StoryState state;
+  /// Constructor for [StoryFilter]
+  const StoryFilter({Key? key}) : super(key: key);
 
   Future<void> _goNewReview(
     BuildContext context,
@@ -44,28 +47,32 @@ class StoryFilter extends StatelessWidget {
     context.push(Routes.reviewNew).then((value) => context.pop());
   }
 
-  void _onChanged(ReviewsState reviews) async {
-    if (state.value == null) {
-      return;
-    }
+  void _onChanged(ReviewsState reviews, StoryState state) async {
     await reviews.refresh(ReviewQuery(storyQuery: state.query));
   }
 
   @override
-  Widget build(BuildContext context) => Consumer2<ReviewsState, AuthState>(
-        builder: (context, reviews, auth, _) => Scaffold(
+  Widget build(BuildContext context) =>
+      Consumer3<ReviewsState, StoryState, AuthState>(
+        builder: (context, reviews, state, auth, _) => Scaffold(
           appBar: StainsAppBar(
             title: AppBarTitle(AppLocalizations.of(context)!.reviewList),
           ),
           body: Column(
             children: [
-              StoryFormWidget(
-                state: state,
-                onChanged: () {
-                  _onChanged(reviews);
-                },
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: StoryFormWidget(
+                  state: state,
+                  onChanged: () {
+                    _onChanged(reviews, state);
+                  },
+                ),
               ),
-              const ReviewList(),
+              const Divider(),
+              const Flexible(
+                child: ReviewList(),
+              ),
             ],
           ),
           floatingActionButton: auth.isAuthenticated
