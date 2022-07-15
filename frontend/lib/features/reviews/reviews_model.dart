@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../review/review_model.dart';
+import '../story/story.dart';
 
 part 'reviews_model.g.dart';
 
@@ -18,4 +20,17 @@ class ReviewsResp {
 
   /// Model for rest api of reviews in a list to json
   Map<String, dynamic> toJson() => _$ReviewsRespToJson(this);
+}
+
+/// Class for representing query options on searching for reviews
+@immutable
+class ReviewQuery {
+  /// username of user who created review
+  final String? username;
+
+  /// options for searching by story
+  final StoryQuery storyQuery;
+
+  /// Constructor for [ReviewQuery]
+  const ReviewQuery({this.username, this.storyQuery = const StoryQuery()});
 }

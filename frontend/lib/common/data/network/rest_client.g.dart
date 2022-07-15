@@ -256,12 +256,18 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<ReviewsResp> getReviews({limit = 10, offset = 0}) async {
+  Future<ReviewsResp> getReviews(
+      {username, creator, medium, title, limit = 10, offset = 0}) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
+      r'username': username,
+      r'creator': creator,
+      r'medium': medium,
+      r'title': title,
       r'limit': limit,
       r'offset': offset
     };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(

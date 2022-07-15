@@ -110,7 +110,12 @@ abstract class RestClient {
 
   /// Get list of latest [Review]
   @retrofit.GET('/reviews')
+  // ignore: long-parameter-list
   Future<ReviewsResp> getReviews({
+    @retrofit.Query('username') String? username,
+    @retrofit.Query('creator') String? creator,
+    @retrofit.Query('medium') String? medium,
+    @retrofit.Query('title') String? title,
     @retrofit.Query('limit') int limit = 10,
     @retrofit.Query('offset') int offset = 0,
   });

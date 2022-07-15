@@ -4,6 +4,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import '../../common/constant/app_config.dart';
 import '../review/review_model.dart';
 
+import 'reviews_model.dart';
 import 'reviews_service.dart';
 
 /// State for a [Review]s and covers intractions with the Api
@@ -11,7 +12,7 @@ class ReviewsState extends ChangeNotifier {
   final ReviewsService _service;
 
   int _offset = 0;
-  String _query = '';
+  ReviewQuery? _query;
   List<Review> _items = [];
 
   bool _isEmpty = false;
@@ -26,7 +27,7 @@ class ReviewsState extends ChangeNotifier {
   int get count => _items.length;
 
   /// Query to pass to list
-  String get query => _query;
+  ReviewQuery? get query => _query;
 
   /// the current items
   List<Review> get items => _items;
@@ -62,7 +63,8 @@ class ReviewsState extends ChangeNotifier {
   ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
 
   /// State for a [Review]s and covers intractions with the Api
-  ReviewsState(this._service) {
+  ReviewsState(this._service, [ReviewQuery? query]) {
+    _query = query;
     _init();
     _trigger();
   }
@@ -78,7 +80,7 @@ class ReviewsState extends ChangeNotifier {
         _isEmpty = true;
       } else {
         _offset = AppConfig.defaultLimit;
-        _query = '';
+        _query = null;
         _items = [...items];
       }
     } on DioError catch (_) {
@@ -98,7 +100,6 @@ class ReviewsState extends ChangeNotifier {
 
       if (items != null && items.isNotEmpty) {
         _offset = AppConfig.defaultLimit;
-        _query = query ?? '';
         _items = [...items];
         _isFailed = false;
         _isEmpty = false;
