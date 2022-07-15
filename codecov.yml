@@ -1,0 +1,22 @@
+coverage:
+  status:
+    project:
+      default: off
+      frontend:
+        target: auto
+        flags: 
+          - flutterfront
+      backend:
+        target: auto
+        flags: 
+          - backend
+
+flags:
+  # filter the folder(s) you wish to measure by that flag
+  backend:
+    # only include files in the backend folder
+    paths: #note, accepts globs, not regexes
+      - backend/
+  frontend:
+    paths:
+      - frontend/
