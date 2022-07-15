@@ -51,6 +51,11 @@ impl TestStory {
         }
     }
 
+    pub fn medium(&mut self, medium: String) -> &mut Self {
+        self.medium = medium;
+        self
+    }
+
     pub async fn store(&self, app: &TestApp, token: &str) {
         let body = self.create_json();
         // Act

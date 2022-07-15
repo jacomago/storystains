@@ -3,9 +3,9 @@ mod query;
 mod test_app;
 mod test_user;
 
+pub use query::TestQuery;
 pub use test_app::TestApp;
 pub use test_user::TestUser;
-pub use query::TestQuery;
 
 use fake::{faker, Fake};
 use once_cell::sync::Lazy;

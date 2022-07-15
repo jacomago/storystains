@@ -3,9 +3,12 @@ use futures_lite::stream;
 use reqwest::StatusCode;
 use serde_json::Value;
 
-use crate::{helpers::{TestApp, TestQuery}, story::test_story::TestStory};
+use crate::{
+    helpers::{TestApp, TestQuery},
+    story::test_story::TestStory,
+};
 
-use super::{story_relative_url_prefix, TestStoryQuery};
+use super::story_relative_url_prefix;
 
 impl TestApp {
     pub async fn get_stories(&self, query: &TestQuery) -> reqwest::Response {
@@ -206,10 +209,7 @@ async fn get_stories_by_query_found() {
 
     // Test story only generates english words, so can use french to not get a hit
     let queries = vec![
-        TestQuery::new()
-            .limit(10)
-            .title("Meta".to_string())
-            .clone(),
+        TestQuery::new().limit(10).title("Meta".to_string()).clone(),
         TestQuery::new()
             .limit(10)
             .medium("Book".to_string())
