@@ -26,6 +26,10 @@ jobs:
         working-directory: ./frontend
         run: flutter pub get
 
+      - name: build runner
+        working-directory: ./frontend
+        run: flutter pub run build_runner build
+
       - name: analyze
         working-directory: ./frontend
         run: flutter analyze
@@ -49,6 +53,10 @@ jobs:
       - name: pub get
         working-directory: ./frontend
         run: flutter pub get
+
+      - name: build runner
+        working-directory: ./frontend
+        run: flutter pub run build_runner build
 
       - name: test with coverage
         working-directory: ./frontend
@@ -78,6 +86,10 @@ jobs:
       - name: pub get
         working-directory: ./frontend
         run: flutter pub get
+
+      - name: build runner
+        working-directory: ./frontend
+        run: flutter pub run build_runner build
 
       - name: build
         working-directory: ./frontend
