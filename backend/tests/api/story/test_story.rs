@@ -63,35 +63,17 @@ impl TestStory {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 pub struct TestStoryQuery {
-    limit: Option<i32>,
-    title: Option<String>,
-    medium: Option<String>,
-    creator: Option<String>,
+    pub title: Option<String>,
+    pub medium: Option<String>,
+    pub creator: Option<String>,
 }
 
 impl TestStoryQuery {
     pub fn new() -> Self {
         TestStoryQuery {
-            limit: None,
             title: None,
             medium: None,
             creator: None,
         }
-    }
-    pub fn limit(&mut self, limit: i32) -> &mut TestStoryQuery {
-        self.limit = Some(limit);
-        self
-    }
-    pub fn title(&mut self, title: String) -> &mut TestStoryQuery {
-        self.title = Some(title);
-        self
-    }
-    pub fn medium(&mut self, medium: String) -> &mut TestStoryQuery {
-        self.medium = Some(medium);
-        self
-    }
-    pub fn creator(&mut self, creator: String) -> &mut TestStoryQuery {
-        self.creator = Some(creator);
-        self
     }
 }
