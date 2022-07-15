@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
+import '../../../pages/story_filter_page.dart';
+import '../../../routes/routes.dart';
 import '../story.dart';
+import '../story_route.dart';
 
 /// Widget for displaying a [Story] without editing
 class StoryWidget extends StatelessWidget {
@@ -44,6 +47,31 @@ class StoryItem extends StatelessWidget {
   /// Widget for displaying a [Story] without editing
   const StoryItem({Key? key, required this.story}) : super(key: key);
 
+  void _navigate(StoryQuery query, BuildContext context) {
+    Navigator.of(context)
+        .push(
+          query.route(
+            Routes.reviews,
+            (q) => StoryFilterPage(
+              query: q,
+            ),
+          ),
+        )
+        .then((value) => context.pop());
+  }
+
+  void _onTapTitle(BuildContext context) {
+    _navigate(StoryQuery(title: story.title), context);
+  }
+
+  void _onTapCreator(BuildContext context) {
+    _navigate(StoryQuery(creator: story.creator), context);
+  }
+
+  void _onTapMedium(BuildContext context) {
+    _navigate(StoryQuery(medium: story.medium), context);
+  }
+
   ///The [Story] to display
   final Story story;
   @override
@@ -54,26 +82,35 @@ class StoryItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                story.title,
-                style:
-                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                overflow: TextOverflow.fade,
-              ),
-              Text(
-                story.medium.name,
-                style: context.titleSmall?.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: context.colors.onSecondaryContainer,
+              GestureDetector(
+                onTap: () => _onTapTitle(context),
+                child: Text(
+                  story.title,
+                  style: context.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.fade,
                 ),
-                overflow: TextOverflow.fade,
+              ),
+              GestureDetector(
+                onTap: () => _onTapMedium(context),
+                child: Text(
+                  story.medium.name,
+                  style: context.titleSmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: context.colors.onSecondaryContainer,
+                  ),
+                  overflow: TextOverflow.fade,
+                ),
               ),
             ],
           ),
-          Text(
-            AppLocalizations.of(context)!.byCreator(story.creator),
-            style: context.titleSmall,
-            overflow: TextOverflow.fade,
+          GestureDetector(
+            onTap: () => _onTapCreator(context),
+            child: Text(
+              AppLocalizations.of(context)!.byCreator(story.creator),
+              style: context.titleSmall,
+              overflow: TextOverflow.fade,
+            ),
           ),
           const SizedBox(height: 4),
         ],

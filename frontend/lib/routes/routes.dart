@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_classes_with_only_static_members
 
 import 'package:flutter/material.dart';
+import '../features/mediums/medium_model.dart';
 import '../features/review/review.dart';
+import '../features/story/story.dart';
 import '../features/user/user.dart';
 import '../pages/account.dart';
 import '../pages/home.dart';
@@ -86,6 +88,27 @@ class RouteConfiguration {
                 matchs[0],
               ),
       ),
+    ),
+    Path(
+      r'^' + Routes.reviews + r'/\?(?<query>[\w=&]+)$',
+      ['query'],
+      (context, matchs) {
+        final url = Uri.splitQueryString(matchs![0]);
+
+        return StoryFilterPage(
+          query: StoryQuery(
+            title: url['title'] == null || url['title']!.isEmpty
+                ? null
+                : url['title'],
+            creator: url['creator'] == null || url['creator']!.isEmpty
+                ? null
+                : url['creator'],
+            medium: url.containsKey('medium') && url['medium']!.isNotEmpty
+                ? Medium(name: url['medium']!)
+                : null,
+          ),
+        );
+      },
     ),
     Path(
       r'^' + Routes.userProfile + r'/(?<username>[\w-]+)',
