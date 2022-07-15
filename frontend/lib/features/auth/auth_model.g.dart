@@ -16,15 +16,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'username': instance.username,
     };
 
-UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => UserProfile(
-      username: json['username'] as String,
-    );
-
-Map<String, dynamic> _$UserProfileToJson(UserProfile instance) =>
-    <String, dynamic>{
-      'username': instance.username,
-    };
-
 AddUser _$AddUserFromJson(Map<String, dynamic> json) => AddUser(
       user: NewUser.fromJson(json['user'] as Map<String, dynamic>),
     );

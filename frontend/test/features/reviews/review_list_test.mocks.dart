@@ -6,6 +6,7 @@ import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:storystains/features/review/review_model.dart' as _i4;
+import 'package:storystains/features/reviews/reviews_model.dart' as _i5;
 import 'package:storystains/features/reviews/reviews_service.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -27,7 +28,8 @@ class MockReviewsService extends _i1.Mock implements _i2.ReviewsService {
   }
 
   @override
-  _i3.Future<List<_i4.Review>?> fetch({String? query = r'', int? offset = 0}) =>
+  _i3.Future<List<_i4.Review>?> fetch(
+          {_i5.ReviewQuery? query, int? offset = 0}) =>
       (super.noSuchMethod(
               Invocation.method(#fetch, [], {#query: query, #offset: offset}),
               returnValue: Future<List<_i4.Review>?>.value())

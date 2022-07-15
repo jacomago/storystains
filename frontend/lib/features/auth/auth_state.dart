@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../../common/utils/utils.dart';
 
+import '../user/user_model.dart';
 import 'auth.dart';
 
 /// Events of authentication
@@ -61,6 +62,10 @@ class AuthState extends ChangeNotifier {
 
   /// Get user with token
   User? get user => _user;
+
+  /// Get user profile of logged in user
+  UserProfile? get userProfile =>
+      _user == null ? null : UserProfile(username: _user!.username);
 
   /// current event
   AuthEvent? get event => _event;

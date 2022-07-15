@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import '../features/review/review.dart';
+import '../features/user/user.dart';
 import '../pages/account.dart';
 import '../pages/home.dart';
 import '../pages/login_register.dart';
 import '../pages/not_found.dart';
 import '../pages/review_detail.dart';
 import '../pages/review_new.dart';
+import '../pages/user_profile.dart';
 
 /// Routes in the app
 class Routes {
@@ -22,6 +24,9 @@ class Routes {
 
   /// Account path
   static const String account = '/account';
+
+  /// User Profile path
+  static const String userProfile = '/user';
 
   /// Reviews path
   static const String reviews = '/reviews';
@@ -80,6 +85,12 @@ class RouteConfiguration {
                 matchs[0],
               ),
       ),
+    ),
+    Path(
+      r'^' + Routes.userProfile + r'/(?<username>[\w-]+)',
+      ['username'],
+      (context, matchs) =>
+          UserProfilePage(user: UserProfile(username: matchs![0])),
     ),
     Path(
       r'^' + Routes.reviewNew,

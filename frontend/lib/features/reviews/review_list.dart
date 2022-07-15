@@ -109,7 +109,7 @@ class ReviewList extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ReviewUsername(username: review.user.username),
+                      ReviewUsername(user: review.user),
                       ReviewDate(date: review.updatedAt),
                     ],
                   ),

@@ -150,9 +150,7 @@ class ReviewWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ReviewUsername(
-                        username: state.review?.user.username ??
-                            authState.user?.username ??
-                            '',
+                        user: state.review?.user ?? authState.userProfile!,
                       ),
                       ReviewDate(
                         date: state.review?.updatedAt ?? DateTime.now(),

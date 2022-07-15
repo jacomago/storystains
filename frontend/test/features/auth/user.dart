@@ -1,5 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:storystains/features/auth/auth.dart';
+import 'package:storystains/features/user/user.dart';
 
 import 'auth_test.mocks.dart';
 
