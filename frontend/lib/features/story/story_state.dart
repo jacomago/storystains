@@ -109,13 +109,9 @@ class StoryState extends ChangeNotifier {
 
   /// Query from controllers
   StoryQuery get query => StoryQuery(
-        title: titleController.text == TextEditingValue.empty.text
-            ? null
-            : titleController.text,
+        title: titleController.text.isEmpty ? null : titleController.text,
         medium: mediumController.value,
-        creator: creatorController.text == TextEditingValue.empty.text
-            ? null
-            : creatorController.text,
+        creator: creatorController.text.isEmpty ? null : creatorController.text,
       );
 
   void _setControllers(Story story) {
@@ -149,9 +145,9 @@ class StoryState extends ChangeNotifier {
 
   /// Search for similar stories
   Future<void> search() async {
-    final searchValue = value!;
+    final searchValue = query;
 
-    if (searchValue.title.isEmpty && searchValue.creator.isEmpty) {
+    if (searchValue.title == null && searchValue.creator == null) {
       searchResults.sink.add(null);
 
       return;

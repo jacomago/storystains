@@ -86,11 +86,13 @@ class ReviewWidget extends StatelessWidget {
   }
 
   EditAction _currentAction(ReviewState state, AuthState authState) {
-    if (authState.notAuthenticated || state.review == null) {
+    if (authState.notAuthenticated) {
       return EditAction.none;
     }
     if (state.isEdit) return EditAction.send;
-    if (authState.sameUser(state.review!.user)) return EditAction.edit;
+    if (state.review != null && authState.sameUser(state.review!.user)) {
+      return EditAction.edit;
+    }
 
     return EditAction.copy;
   }
