@@ -24,7 +24,7 @@ extension PageRoute on Review {
   ) =>
       MaterialPageRoute<Review>(
         settings: RouteSettings(
-          name: '$routeName/$this.username/$this.slug',
+          name: '$routeName/${user.username}/$slug',
         ),
         builder: (context) => builder(this),
       );

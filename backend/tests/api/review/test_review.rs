@@ -1,6 +1,5 @@
 use chrono::{DateTime, Utc};
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::{
@@ -17,12 +16,12 @@ pub fn review_relative_url_prefix() -> String {
     "/reviews".to_string()
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewResponse {
     pub review: TestReview,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReview {
     story: TestStory,
     body: String,
@@ -33,7 +32,7 @@ pub struct TestReview {
     user: TestUserProfile,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestUserProfile {
     username: String,
 }

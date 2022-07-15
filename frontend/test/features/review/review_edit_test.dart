@@ -270,6 +270,7 @@ void main() {
 
       final titleField = find.bySemanticsLabel('Title');
       await tester.enterText(titleField, '/');
+      await tester.enterText(find.bySemanticsLabel('Creator'), '/');
 
       final bodyField = find.bySemanticsLabel('Body');
       await tester.enterText(bodyField, 'body');
@@ -281,11 +282,13 @@ void main() {
       )).thenThrow(testApiError(400, 'Cannot be /.'));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byIcon(Icons.send_rounded), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pump();
       await tester.pump();
       await tester.pump();
 
+      verify(mockService.create(errorStory(), 'body'));
       expect(
         find.widgetWithText(SnackBar, 'Bad Request: Cannot be /.'),
         findsOneWidget,

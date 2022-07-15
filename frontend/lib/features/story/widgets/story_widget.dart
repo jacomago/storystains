@@ -40,9 +40,9 @@ class StoryWidget extends StatelessWidget {
 }
 
 /// Widget for displaying a [Story] without editing
-class CardStory extends StatelessWidget {
+class StoryItem extends StatelessWidget {
   /// Widget for displaying a [Story] without editing
-  const CardStory({Key? key, required this.story}) : super(key: key);
+  const StoryItem({Key? key, required this.story}) : super(key: key);
 
   ///The [Story] to display
   final Story story;

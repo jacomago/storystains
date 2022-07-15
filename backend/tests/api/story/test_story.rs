@@ -1,6 +1,5 @@
 use fake::{faker, Fake};
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::helpers::TestApp;
@@ -9,11 +8,11 @@ pub fn story_relative_url_prefix() -> String {
     "/stories".to_string()
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestStoryResponse {
     pub story: TestStory,
 }
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 pub struct TestStory {
     pub title: String,
     pub creator: String,
@@ -52,6 +51,11 @@ impl TestStory {
         }
     }
 
+    pub fn medium(&mut self, medium: String) -> &mut Self {
+        self.medium = medium;
+        self
+    }
+
     pub async fn store(&self, app: &TestApp, token: &str) {
         let body = self.create_json();
         // Act
@@ -62,37 +66,19 @@ impl TestStory {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct TestQuery {
-    limit: Option<i32>,
-    title: Option<String>,
-    medium: Option<String>,
-    creator: Option<String>,
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
+pub struct TestStoryQuery {
+    pub title: Option<String>,
+    pub medium: Option<String>,
+    pub creator: Option<String>,
 }
 
-impl TestQuery {
+impl TestStoryQuery {
     pub fn new() -> Self {
-        TestQuery {
-            limit: None,
+        TestStoryQuery {
             title: None,
             medium: None,
             creator: None,
         }
-    }
-    pub fn limit(&mut self, limit: i32) -> &mut TestQuery {
-        self.limit = Some(limit);
-        self
-    }
-    pub fn title(&mut self, title: String) -> &mut TestQuery {
-        self.title = Some(title);
-        self
-    }
-    pub fn medium(&mut self, medium: String) -> &mut TestQuery {
-        self.medium = Some(medium);
-        self
-    }
-    pub fn creator(&mut self, creator: String) -> &mut TestQuery {
-        self.creator = Some(creator);
-        self
     }
 }

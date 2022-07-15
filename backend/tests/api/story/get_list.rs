@@ -3,9 +3,12 @@ use futures_lite::stream;
 use reqwest::StatusCode;
 use serde_json::Value;
 
-use crate::{helpers::TestApp, story::test_story::TestStory};
+use crate::{
+    helpers::{TestApp, TestQuery},
+    story::test_story::TestStory,
+};
 
-use super::{story_relative_url_prefix, TestQuery};
+use super::story_relative_url_prefix;
 
 impl TestApp {
     pub async fn get_stories(&self, query: &TestQuery) -> reqwest::Response {

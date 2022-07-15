@@ -13,14 +13,14 @@ class MediumPicker extends StatelessWidget {
   }) : super(key: key);
 
   /// controller of  [Medium]
-  final ValueNotifier<Medium> mediumController;
+  final ValueNotifier<Medium?> mediumController;
 
   /// callback for on changed
-  final ValueChanged<Medium> onChanged;
+  final ValueChanged<Medium?> onChanged;
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder<Medium>(
+  Widget build(BuildContext context) => ValueListenableBuilder<Medium?>(
         valueListenable: mediumController,
-        builder: (context, v, _) => DropdownButton<Medium>(
+        builder: (context, v, _) => DropdownButton<Medium?>(
           style: context.titleMedium,
           value: v,
           onChanged: (newValue) {
@@ -31,7 +31,7 @@ class MediumPicker extends StatelessWidget {
           },
           items: Provider.of<MediumsState>(context)
               .items
-              .map((e) => DropdownMenuItem<Medium>(
+              .map((e) => DropdownMenuItem<Medium?>(
                     value: e,
                     child: Text(
                       e.name,

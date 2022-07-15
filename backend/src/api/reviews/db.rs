@@ -127,8 +127,9 @@ pub async fn read_review(
 
 #[tracing::instrument(
     name = "Retreive review details from the database", 
-    skip(pool, query_options),
+    skip(pool),
     fields(
+        query_options = %format!("{:?}", query_options),
         limit = %format!("{:?}", limits.limit),
         offset = %limits.offset
     )
@@ -138,27 +139,36 @@ async fn db_read_reviews(
     limits: &Limits,
     pool: &PgPool,
 ) -> Result<Vec<StoredReview>, sqlx::Error> {
-    let user_id: Option<Uuid> = query_options.user_id.map(|u| u.try_into().unwrap());
     let reviews = sqlx::query_as!(
         StoredReview,
         r#"
-        SELECT id,
+        SELECT reviews.id,
             story_id,
             slug,
             body,
             created_at,
             updated_at,
             reviews.user_id
-        FROM reviews,
-            users
-        WHERE reviews.user_id = COALESCE($3, reviews.user_id)
-            AND reviews.user_id = users.user_id
+        FROM 
+            reviews
+            JOIN stories ON stories.id = reviews.story_id
+            JOIN users ON users.user_id = reviews.user_id
+            JOIN creators ON stories.creator_id = creators.id
+            JOIN mediums ON stories.medium_id = mediums.id
+        WHERE   ($3::text IS NULL OR users.username = $3)
+            AND ($4::text IS NULL OR stories.title % $4)
+            AND ($5::text IS NULL OR creators.name % $5)
+            AND ($6::text IS NULL OR mediums.name = $6)
         ORDER BY updated_at DESC
-        LIMIT $1 OFFSET $2
+        LIMIT $1 
+        OFFSET $2
         "#,
         limits.limit,
         limits.offset,
-        user_id
+        query_options.username,
+        query_options.story_query.title,
+        query_options.story_query.creator,
+        query_options.story_query.medium,
     )
     .fetch_all(pool)
     .await

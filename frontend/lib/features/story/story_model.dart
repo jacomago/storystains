@@ -87,3 +87,33 @@ class StoriesResp {
   /// Model for rest api of stories in a list to json
   Map<String, dynamic> toJson() => _$StoriesRespToJson(this);
 }
+
+/// Class for representing query options on searching by story
+@immutable
+class StoryQuery {
+  /// title of a story
+  final String? title;
+
+  /// Medium of a story such as [Medium] ('Book')´
+  final Medium? medium;
+
+  /// creator of a story
+  final String? creator;
+
+  /// Constructor of [StoryQuery]
+  const StoryQuery({this.title, this.medium, this.creator});
+
+  @override
+  String toString() =>
+      'StoryQuery: title: $title, creator: $creator, medium: ${medium?.name}';
+
+  @override
+  bool operator ==(Object other) =>
+      other is StoryQuery &&
+      title == other.title &&
+      creator == other.creator &&
+      medium == other.medium;
+
+  @override
+  int get hashCode => title.hashCode + creator.hashCode + medium.hashCode;
+}

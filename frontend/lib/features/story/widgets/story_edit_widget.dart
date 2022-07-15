@@ -7,7 +7,10 @@ import '../story.dart';
 /// Widget for editing a [Story]
 class StoryEditWidget extends StatelessWidget {
   /// Widget for editing a [Story]
-  const StoryEditWidget({Key? key, required this.state}) : super(key: key);
+  const StoryEditWidget({
+    Key? key,
+    required this.state,
+  }) : super(key: key);
 
   void _onChanged() async {
     await state.search();
@@ -15,6 +18,35 @@ class StoryEditWidget extends StatelessWidget {
 
   /// State of the [Story]
   final StoryState state;
+
+  @override
+  Widget build(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          StoryFormWidget(
+            state: state,
+            onChanged: _onChanged,
+          ),
+          state.isSearching ? SearchStoryResults(state: state) : Container(),
+        ],
+      );
+}
+
+/// Widget for editing a [Story]
+class StoryFormWidget extends StatelessWidget {
+  /// Widget for editing a [Story]
+  const StoryFormWidget({
+    Key? key,
+    required this.state,
+    required this.onChanged,
+  }) : super(key: key);
+
+  /// State of the [Story]
+  final StoryState state;
+
+  /// What to do on change of inputs
+  final Function onChanged;
+
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -25,7 +57,7 @@ class StoryEditWidget extends StatelessWidget {
           StoryTextEdit(
             textController: state.titleController,
             onChanged: (_) {
-              _onChanged();
+              onChanged();
             },
             label: AppLocalizations.of(context)!.title,
             hint: AppLocalizations.of(context)!.title,
@@ -36,7 +68,7 @@ class StoryEditWidget extends StatelessWidget {
           StoryTextEdit(
             textController: state.creatorController,
             onChanged: (_) {
-              _onChanged();
+              onChanged();
             },
             label: AppLocalizations.of(context)!.creator,
             hint: AppLocalizations.of(context)!.creatorHint,
@@ -47,10 +79,9 @@ class StoryEditWidget extends StatelessWidget {
           MediumPicker(
             mediumController: state.mediumController,
             onChanged: (_) {
-              _onChanged();
+              onChanged();
             },
           ),
-          state.isSearching ? SearchStoryResults(state: state) : Row(),
         ],
       );
 }

@@ -38,7 +38,7 @@ class SearchStoryResults extends StatelessWidget {
         onTap: () => state.pickStory(snapshot.data![index]),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: CardStory(
+          child: StoryItem(
             story: snapshot.data![index],
           ),
         ),

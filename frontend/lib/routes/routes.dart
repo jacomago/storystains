@@ -2,12 +2,15 @@
 
 import 'package:flutter/material.dart';
 import '../features/review/review.dart';
+import '../features/user/user.dart';
 import '../pages/account.dart';
 import '../pages/home.dart';
 import '../pages/login_register.dart';
 import '../pages/not_found.dart';
 import '../pages/review_detail.dart';
 import '../pages/review_new.dart';
+import '../pages/story_filter_page.dart';
+import '../pages/user_profile.dart';
 
 /// Routes in the app
 class Routes {
@@ -23,17 +26,14 @@ class Routes {
   /// Account path
   static const String account = '/account';
 
+  /// User Profile path
+  static const String userProfile = '/user';
+
   /// Reviews path
   static const String reviews = '/reviews';
 
-  /// Read review path
-  static const String reviewDetail = '/reviewDetail';
-
-  /// Path for editing a review
-  static const String reviewEdit = '/reviewEdit';
-
   /// Path for creating a review
-  static const String reviewNew = '/reviewNew';
+  static const String reviewNew = '/new_review';
 }
 
 /// Builder of a path for web urls
@@ -76,7 +76,7 @@ class RouteConfiguration {
   /// take priority.
   static List<Path> paths = [
     Path(
-      r'^' + Routes.reviewDetail + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
+      r'^' + Routes.reviews + r'/(?<username>[\w-]+)/(?<slug>[\w-]+)$',
       ['username', 'slug'],
       (context, matchs) => ReviewDetail(
         path: matchs == null
@@ -88,9 +88,20 @@ class RouteConfiguration {
       ),
     ),
     Path(
+      r'^' + Routes.userProfile + r'/(?<username>[\w-]+)',
+      ['username'],
+      (context, matchs) =>
+          UserProfilePage(user: UserProfile(username: matchs![0])),
+    ),
+    Path(
       r'^' + Routes.reviewNew,
       [],
       (context, matchs) => const ReviewNew(),
+    ),
+    Path(
+      r'^' + Routes.reviews,
+      [],
+      (context, matchs) => const StoryFilterPage(),
     ),
     Path(
       r'^' + Routes.home,

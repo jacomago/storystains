@@ -46,3 +46,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /coverage/
+
+# ignore generated files
+*.mocks.dart
+*.g.dart

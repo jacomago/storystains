@@ -10,6 +10,7 @@ use crate::cors::cors;
 use crate::telemetry::get_metrics;
 use actix_files::Files;
 use actix_web::dev::{self, Server};
+use actix_web::middleware::{NormalizePath, TrailingSlash};
 use actix_web::web::Data;
 use actix_web::{http, web, App, HttpServer};
 use actix_web_httpauth::middleware::HttpAuthentication;
@@ -92,6 +93,7 @@ async fn run(
             .wrap(TracingLogger::default())
             .wrap(metrics.clone())
             .wrap(cors(&frontend_origin))
+            .wrap(NormalizePath::new(TrailingSlash::Trim))
             .configure(routes)
             .service(
                 Files::new("/emotions/", format!("{}/emotions", &settings.image_files))

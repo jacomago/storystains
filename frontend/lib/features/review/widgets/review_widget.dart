@@ -7,6 +7,7 @@ import '../../../common/widget/widget.dart';
 import '../../auth/auth.dart';
 import '../../review_emotions/review_emotions.dart';
 import '../../story/story.dart';
+import '../../user/user_model.dart';
 import '../review.dart';
 import 'review_body.dart';
 
@@ -55,7 +56,7 @@ class ReviewWidget extends StatelessWidget {
     final body = state.bodyController.value.text;
     final story = state.storyController.value;
 
-    if (story == null || story.title.isEmpty) {
+    if (story.title.isEmpty || story.creator.isEmpty) {
       context.snackbar(AppLocalizations.of(context)!
           .blankStringError(AppLocalizations.of(context)!.title));
 
@@ -85,9 +86,13 @@ class ReviewWidget extends StatelessWidget {
   }
 
   EditAction _currentAction(ReviewState state, AuthState authState) {
-    if (authState.notAuthenticated) return EditAction.none;
+    if (authState.notAuthenticated) {
+      return EditAction.none;
+    }
     if (state.isEdit) return EditAction.send;
-    if (authState.sameUser(state.review!.user)) return EditAction.edit;
+    if (state.review != null && authState.sameUser(state.review!.user)) {
+      return EditAction.edit;
+    }
 
     return EditAction.copy;
   }
@@ -150,9 +155,9 @@ class ReviewWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ReviewUsername(
-                        username: state.review?.user.username ??
-                            authState.user?.username ??
-                            '',
+                        user: state.review?.user ??
+                            authState.userProfile ??
+                            UserProfile(username: ''),
                       ),
                       ReviewDate(
                         date: state.review?.updatedAt ?? DateTime.now(),

@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/utils/error.dart';
-import '../auth/auth.dart';
 import '../story/story.dart';
+import '../user/user_model.dart';
 import 'review.dart';
 
 /// Events on [Review]

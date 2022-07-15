@@ -18,14 +18,6 @@ abstract class RestClient {
   /// Factory method to create the rest client
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
-  /// Add new [User] via api
-  @retrofit.POST('/signup')
-  Future<UserResp> addUser(@retrofit.Body() AddUser addUser);
-
-  /// Add new [Review] via api
-  @retrofit.POST('/reviews')
-  Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
-
   /// Add new [Story] via api
   @retrofit.POST('/stories')
   Future<WrappedStory> createStory(@retrofit.Body() WrappedStory newStory);
@@ -40,6 +32,10 @@ abstract class RestClient {
     @retrofit.Query('limit') int limit = 10,
     @retrofit.Query('offset') int offset = 0,
   });
+
+  /// Add new [Review] via api
+  @retrofit.POST('/reviews')
+  Future<ReviewResp> createReview(@retrofit.Body() CreateReview newReview);
 
   /// Update [Review] in api
   @retrofit.PUT('/reviews/{username}/{slug}')
@@ -96,6 +92,10 @@ abstract class RestClient {
     @retrofit.Path() int position,
   );
 
+  /// Add new [User] via api
+  @retrofit.POST('/signup')
+  Future<UserResp> addUser(@retrofit.Body() AddUser addUser);
+
   /// login [User] via api
   @retrofit.POST('/login')
   Future<UserResp> loginUser(@retrofit.Body() AddUser login);
@@ -104,9 +104,18 @@ abstract class RestClient {
   @retrofit.DELETE('/users')
   Future<void> deleteUser();
 
+  /// get current [User] detials
+  @retrofit.GET('user')
+  Future<UserResp> getCurrentUser();
+
   /// Get list of latest [Review]
   @retrofit.GET('/reviews')
+  // ignore: long-parameter-list
   Future<ReviewsResp> getReviews({
+    @retrofit.Query('username') String? username,
+    @retrofit.Query('creator') String? creator,
+    @retrofit.Query('medium') String? medium,
+    @retrofit.Query('title') String? title,
     @retrofit.Query('limit') int limit = 10,
     @retrofit.Query('offset') int offset = 0,
   });
@@ -118,8 +127,4 @@ abstract class RestClient {
   /// get all [Medium]'s available
   @retrofit.GET('/mediums')
   Future<MediumsResp> getMediums();
-
-  /// get current [User] detials
-  @retrofit.GET('user')
-  Future<UserResp> getCurrentUser();
 }

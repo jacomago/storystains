@@ -71,7 +71,7 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService, story: testStory());
 
-      when(mockService.search(testStory()))
+      when(mockService.search(testStoryQuery()))
           .thenAnswer((realInvocation) async => storiesResp);
 
       expectLater(
@@ -81,7 +81,7 @@ void main() {
         ),
       );
       await storyState.search();
-      verify(mockService.search(testStory()));
+      verify(mockService.search(testStoryQuery()));
     });
     test('Search empty does not search', () async {
       SharedPreferences.setMockInitialValues({});
@@ -90,11 +90,11 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService);
 
-      when(mockService.search(emptyStory()))
+      when(mockService.search(const StoryQuery()))
           .thenAnswer((realInvocation) async => storiesResp);
 
       await storyState.search();
-      verifyNever(mockService.search(testStory()));
+      verifyNever(mockService.search(testStoryQuery()));
     });
 
     test('Search returns error', () async {
@@ -103,10 +103,11 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService, story: testStory());
 
-      when(mockService.search(testStory())).thenThrow(testApiError(400, 'Bad'));
+      when(mockService.search(testStoryQuery()))
+          .thenThrow(testApiError(400, 'Bad'));
 
       await storyState.search();
-      verify(mockService.search(testStory()));
+      verify(mockService.search(testStoryQuery()));
 
       expect(storyState.error, 'Bad Request: Bad');
     });
@@ -121,7 +122,7 @@ void main() {
       final mockService = MockStoryService();
       final storyState = StoryState(mockService, story: testStory());
 
-      when(mockService.search(testStory()))
+      when(mockService.search(testStoryQuery()))
           .thenAnswer((realInvocation) async => storiesResp);
       expectLater(
         storyState.searchResults.stream,
@@ -130,7 +131,7 @@ void main() {
         ),
       );
       await storyState.search();
-      verify(mockService.search(testStory()));
+      verify(mockService.search(testStoryQuery()));
     });
   });
 }

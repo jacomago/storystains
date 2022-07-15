@@ -50,7 +50,7 @@ void main() {
       final titleField = find.bySemanticsLabel('Title');
       await tester.enterText(titleField, '/');
 
-      expect(state.value!.title, '/');
+      expect(state.value.title, '/');
     });
     testWidgets('set creator', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -67,7 +67,7 @@ void main() {
       final creatorField = find.bySemanticsLabel('Creator');
       await tester.enterText(creatorField, '/');
 
-      expect(state.value!.creator, '/');
+      expect(state.value.creator, '/');
     });
     testWidgets('set medium', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -101,7 +101,7 @@ void main() {
       await tester.tap(mediumSelect.last);
       await tester.pumpAndSettle();
 
-      expect(state.value!.medium, mediumsResp.mediums[1]);
+      expect(state.value.medium, mediumsResp.mediums[1]);
     });
   });
   group('Search story', () {
@@ -122,10 +122,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final searchStory = Story(
-        creator: '',
+      const searchStory = StoryQuery(
         title: 'Du',
-        medium: Medium.mediumDefault,
       );
       when(mockService.search(searchStory))
           .thenAnswer((realInvocation) async => storiesResp);

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:json_annotation/json_annotation.dart';
 
-import '../auth/auth_model.dart';
 import '../review_emotion/review_emotion_model.dart';
 import '../story/story.dart';
+import '../user/user_model.dart';
 
 part 'review_model.g.dart';
 
