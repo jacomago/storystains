@@ -93,8 +93,9 @@ class ReviewsState extends ChangeNotifier {
   }
 
   /// Refresh the list
-  Future<void> refresh([String? query]) async {
+  Future<void> refresh([ReviewQuery? query]) async {
     _startLoading();
+    _query = query;
 
     try {
       final items = await _service.fetch(

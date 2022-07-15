@@ -53,7 +53,7 @@ class StoryState extends ChangeNotifier {
   late TextEditingController creatorController;
 
   /// controller for [Medium]
-  late ValueNotifier<Medium> mediumController;
+  late ValueNotifier<Medium?> mediumController;
 
   /// Search Results controller
   late StreamController<List<Story>?> searchResults;
@@ -83,7 +83,7 @@ class StoryState extends ChangeNotifier {
   bool get isFailed => _status == StoryStatus.failed;
 
   /// representation of a story state for editing
-  StoryState(this._service, {Story? story}) {
+  StoryState(this._service, {Story? story, StoryQuery? query}) {
     _event = null;
     _status = StoryStatus.initial;
     _isLoading = false;
@@ -91,18 +91,31 @@ class StoryState extends ChangeNotifier {
 
     _story = story;
 
-    titleController = TextEditingController(text: story?.title ?? '');
-    creatorController = TextEditingController(text: story?.creator ?? '');
-    mediumController =
-        ValueNotifier(story?.medium ?? const Medium(name: 'Book'));
+    titleController = TextEditingController(text: story?.title ?? query?.title);
+    creatorController =
+        TextEditingController(text: story?.creator ?? query?.creator);
+    mediumController = ValueNotifier(story?.medium ?? query?.medium);
     searchResults = StreamController<List<Story>?>.broadcast();
   }
 
   /// Value from controllers
-  Story? get value => Story(
-        title: titleController.text,
+  Story? get value => mediumController.value == null
+      ? null
+      : Story(
+          title: titleController.text,
+          medium: mediumController.value!,
+          creator: creatorController.text,
+        );
+
+  /// Query from controllers
+  StoryQuery get query => StoryQuery(
+        title: titleController.text == TextEditingValue.empty.text
+            ? null
+            : titleController.text,
         medium: mediumController.value,
-        creator: creatorController.text,
+        creator: creatorController.text == TextEditingValue.empty.text
+            ? null
+            : creatorController.text,
       );
 
   void _setControllers(Story story) {
@@ -150,7 +163,7 @@ class StoryState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await _service.search(value!);
+      final data = await _service.search(query);
 
       searchResults.sink.add(data.stories);
     } on DioError catch (e) {

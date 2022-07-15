@@ -13,7 +13,9 @@ class UserWidget extends StatelessWidget {
   /// The page of a user
   const UserWidget({Key? key, required this.user}) : super(key: key);
 
+  /// User whose profile it is
   final UserProfile user;
+
   Future<void> _goNewReview(
     BuildContext context,
     ReviewsState reviewsState,

@@ -13,10 +13,10 @@ class StoryService {
           );
 
   /// Wrapper method of [RestClient.searchStories]
-  Future<StoriesResp> search(Story story) async =>
+  Future<StoriesResp> search(StoryQuery story) async =>
       await ServiceLocator.sl.get<RestClient>().searchStories(
-            title: story.title == '' ? null : story.title,
-            creator: story.creator == '' ? null : story.creator,
-            medium: story.medium.name,
+            title: story.title,
+            creator: story.creator,
+            medium: story.medium?.name,
           );
 }
