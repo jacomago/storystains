@@ -18,6 +18,8 @@ class UserProfilePage extends StatelessWidget {
           ReviewsService(),
           ReviewQuery(username: user.username),
         ),
-        child: const UserWidget(),
+        child: UserWidget(
+          user: user,
+        ),
       );
 }

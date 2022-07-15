@@ -113,7 +113,7 @@ class RouteConfiguration {
       (context, matchs) => const AccountPage(),
     ),
     Path(
-      r'^' + Routes.root,
+      r'^/' + Routes.root,
       [],
       (context, matchs) => const Home(),
     ),

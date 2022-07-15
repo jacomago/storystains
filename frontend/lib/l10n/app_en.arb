@@ -103,6 +103,10 @@
     "@pageNotFound": {
         "description": "Response for a 404 error."
     },
+    "goBackHome": "Go Back Home",
+    "@goBackHome": {
+        "description": "Go back to home page."
+    },
     "blankStringError": "{string} can't be blank",
     "@blankStringError": {
         "description": "The mentioned string cannot be left blank",

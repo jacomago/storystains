@@ -7,6 +7,7 @@ import '../../../common/widget/widget.dart';
 import '../../auth/auth.dart';
 import '../../review_emotions/review_emotions.dart';
 import '../../story/story.dart';
+import '../../user/user_model.dart';
 import '../review.dart';
 import 'review_body.dart';
 
@@ -85,7 +86,9 @@ class ReviewWidget extends StatelessWidget {
   }
 
   EditAction _currentAction(ReviewState state, AuthState authState) {
-    if (authState.notAuthenticated) return EditAction.none;
+    if (authState.notAuthenticated || state.review == null) {
+      return EditAction.none;
+    }
     if (state.isEdit) return EditAction.send;
     if (authState.sameUser(state.review!.user)) return EditAction.edit;
 
@@ -150,7 +153,9 @@ class ReviewWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ReviewUsername(
-                        user: state.review?.user ?? authState.userProfile!,
+                        user: state.review?.user ??
+                            authState.userProfile ??
+                            UserProfile(username: ''),
                       ),
                       ReviewDate(
                         date: state.review?.updatedAt ?? DateTime.now(),

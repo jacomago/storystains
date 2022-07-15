@@ -11,7 +11,7 @@ extension PageRoute on UserProfile {
   ) =>
       MaterialPageRoute<UserProfile>(
         settings: RouteSettings(
-          name: '$routeName/$this.username',
+          name: '$routeName/$username',
         ),
         builder: (context) => builder(this),
       );

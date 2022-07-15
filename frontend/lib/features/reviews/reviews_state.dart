@@ -73,14 +73,15 @@ class ReviewsState extends ChangeNotifier {
     _startLoading();
 
     try {
-      final items = await _service.fetch();
+      final items = await _service.fetch(
+        query: _query,
+      );
       if (items == null) {
         _isFailed = true;
       } else if (items.isEmpty) {
         _isEmpty = true;
       } else {
         _offset = AppConfig.defaultLimit;
-        _query = null;
         _items = [...items];
       }
     } on DioError catch (_) {
@@ -96,7 +97,9 @@ class ReviewsState extends ChangeNotifier {
     _startLoading();
 
     try {
-      final items = await _service.fetch();
+      final items = await _service.fetch(
+        query: _query,
+      );
 
       if (items != null && items.isNotEmpty) {
         _offset = AppConfig.defaultLimit;

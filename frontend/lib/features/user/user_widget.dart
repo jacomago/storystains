@@ -6,12 +6,14 @@ import '../../common/widget/widget.dart';
 import '../../routes/routes.dart';
 import '../auth/auth.dart';
 import '../reviews/reviews.dart';
+import 'user.dart';
 
 /// The page of a user
 class UserWidget extends StatelessWidget {
   /// The page of a user
-  const UserWidget({Key? key}) : super(key: key);
+  const UserWidget({Key? key, required this.user}) : super(key: key);
 
+  final UserProfile user;
   Future<void> _goNewReview(
     BuildContext context,
     ReviewsState reviewsState,
@@ -23,7 +25,7 @@ class UserWidget extends StatelessWidget {
   Widget build(BuildContext context) => Consumer2<ReviewsState, AuthState>(
         builder: (context, reviews, auth, _) => Scaffold(
           appBar: StainsAppBar(
-            title: AppBarTitle(reviews.query!.username!),
+            title: AppBarTitle(user.username),
           ),
           body: const ReviewList(),
           floatingActionButton: auth.isAuthenticated

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../common/utils/utils.dart';
 import '../common/widget/widget.dart';
+import '../routes/routes.dart';
 
 /// page if not found by url
 class NotFoundPage extends StatelessWidget {
@@ -28,7 +30,18 @@ class NotFoundPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(AppLocalizations.of(context)!.pageNotFound),
+                Text(
+                  AppLocalizations.of(context)!.pageNotFound,
+                  style: context.titleLarge,
+                ),
+                const SizedBox(height: 20),
+                OutlinedButton(
+                  onPressed: () => context.push(Routes.home),
+                  child: Text(
+                    AppLocalizations.of(context)!.goBackHome,
+                    style: context.button,
+                  ),
+                ),
               ],
             ),
           ),
