@@ -4,7 +4,6 @@ use serde::Deserialize;
 use crate::{
     api::{
         review_emotion::delete_review_emotions_by_review,
-        shared::QueryLimits,
         shared::{put_block::block_non_creator, ApiError},
         stories::{NewStory, StoryResponseData},
         users::NewUsername,
@@ -21,8 +20,8 @@ use super::{
         update_review,
     },
     model::{
-        NewReview, ReviewQueryOptions, ReviewResponse, ReviewResponseData, ReviewSlug,
-        ReviewsResponse, UpdateReview,
+        NewReview, ReviewQuery, ReviewResponse, ReviewResponseData, ReviewSlug, ReviewsResponse,
+        UpdateReview,
     },
 };
 
@@ -202,16 +201,12 @@ pub async fn delete_review_by_slug(
 /// API for getting many review via an input query of offset and limit
 #[tracing::instrument(name = "Getting reviews", skip(pool, query), fields())]
 pub async fn get_reviews(
-    query: web::Query<QueryLimits>,
+    query: web::Query<ReviewQuery>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
-    let limits = query.0.into();
-    let reviews = read_reviews(
-        &ReviewQueryOptions { user_id: None },
-        &limits,
-        pool.get_ref(),
-    )
-    .await
-    .map_err(ApiError::NotData)?;
+    let limits = query.0.query_limits().into();
+    let reviews = read_reviews(&query.0.query_options(), &limits, pool.get_ref())
+        .await
+        .map_err(ApiError::NotData)?;
     Ok(HttpResponse::Ok().json(ReviewsResponse::from(reviews)))
 }

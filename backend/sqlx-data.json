@@ -252,6 +252,68 @@
     },
     "query": " \n        WITH new_story AS (\n            INSERT INTO stories (id, title, medium_id, creator_id)\n            VALUES (\n                    $1,\n                    $2,\n                    (\n                        SELECT id\n                        FROM mediums\n                        WHERE name = $3\n                        LIMIT 1\n                    ), \n                    $4\n                ) ON CONFLICT (title, medium_id, creator_id) DO NOTHING\n            RETURNING id,\n                title,\n                $3 as medium,\n                (\n                    SELECT name FROM creators WHERE id = $4\n                ) as creator\n        ), old_story AS (\n            SELECT \n                stories.id,\n                stories.title as title,\n                mediums.name as medium,\n                creators.name as creator\n            FROM \n                stories,\n                creators,\n                mediums\n            WHERE creators.id = $4\n                AND stories.medium_id = mediums.id\n                AND mediums.name = $3\n                AND stories.title = $2\n        ), all_story AS (\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM old_story\n        UNION ALL\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM new_story\n        )\n        SELECT \n            id as \"id!\",\n            title as \"title!\",\n            medium as \"medium!\",\n            creator as \"creator!\"\n        FROM all_story\n        "
   },
+  "675387067008e4e738c2508c14b2dfec7f089699be3c7ba87f81a451357b88d8": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "story_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8",
+          "Text",
+          "Text",
+          "Text",
+          "Text",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n        SELECT reviews.id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM \n            reviews\n            JOIN stories ON stories.id = reviews.story_id\n            JOIN users ON users.user_id = reviews.user_id\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE   ($3::text IS NULL OR users.username % $3)\n            AND ($4::text IS NULL OR stories.title % $4)\n            AND ($5::text IS NULL OR creators.name % $5)\n            AND ($6::text IS NULL OR mediums.name = $6)\n            AND ($7::timestamptz IS NULL OR EXTRACT('day' FROM reviews.updated_at - $7) <= 1)\n        ORDER BY updated_at DESC\n        LIMIT $1 \n        OFFSET $2\n        "
+  },
   "67e0d113d44e8ec9667a426f747bad611c5e9cab31f40a7cd49b6919bbf9232f": {
     "describe": {
       "columns": [
@@ -486,64 +548,6 @@
       }
     },
     "query": " \n            INSERT INTO review_emotions(\n                id,\n                review_id,\n                emotion_id,\n                position,\n                notes\n            )\n            VALUES (\n                $1,\n                (\n                    SELECT id\n                      FROM users,\n                           reviews\n                     WHERE slug           = $3\n                       AND users.user_id  = reviews.user_id\n                       AND users.username = $2\n                     LIMIT 1\n                ), \n                $4, \n                $5,\n                $6 \n            )\n            RETURNING emotion_id, position, notes\n        "
-  },
-  "befcf3fbec2b4da4aac07ea9f1de8b2bce3e8e47a787b8c223f1f2ec780dad76": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "story_id",
-          "ordinal": 1,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "slug",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 6,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8",
-          "Uuid"
-        ]
-      }
-    },
-    "query": "\n        SELECT id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM reviews,\n            users\n        WHERE reviews.user_id = COALESCE($3, reviews.user_id)\n            AND reviews.user_id = users.user_id\n        ORDER BY updated_at DESC\n        LIMIT $1 OFFSET $2\n        "
   },
   "c410ceada60020f7471e7247a8bcd27ffc3af878ba0558df5b9301d5f4305bf6": {
     "describe": {

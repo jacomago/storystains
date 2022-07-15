@@ -216,9 +216,9 @@ pub async fn db_read_story_by_id(
     name = "Retreive stories from the database", 
     skip(pool, query),
     fields(
-        title = %format!("{:?}", query.title),
-        medium = %format!("{:?}", query.medium),
-        creator = %format!("{:?}", query.creator),
+        title = %format!("{:?}", query.options.title),
+        medium = %format!("{:?}", query.options.medium),
+        creator = %format!("{:?}", query.options.creator),
         limit = %format!("{:?}", query.limit),
         offset = %format!("{:?}", query.offset)
     )
@@ -247,9 +247,9 @@ pub async fn read_stories(
         LIMIT $4
         OFFSET $5
         "#,
-        query.title,
-        query.creator,
-        query.medium,
+        query.options.title,
+        query.options.creator,
+        query.options.medium,
         limits.limit.as_ref(),
         limits.offset
     )
