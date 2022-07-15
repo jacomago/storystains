@@ -1,7 +1,6 @@
 use chrono::{Duration, Utc};
 use jwt::{DecodingKey, EncodingKey};
 use secrecy::ExposeSecret;
-use serde::{Deserialize, Serialize};
 
 use jsonwebtoken as jwt;
 use uuid::Uuid;
@@ -11,7 +10,7 @@ use crate::startup::{ExpTokenSeconds, HmacSecret};
 use super::model::AuthUser;
 
 /// Claim is structure of the jwt token before encryption
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct AuthClaim {
     /// timestamp
     pub exp: i64,

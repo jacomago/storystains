@@ -1,4 +1,3 @@
-use serde::{Deserialize, Serialize};
 use sqlx::types::Uuid;
 
 #[derive(Clone, Debug, PartialEq)]
@@ -8,7 +7,7 @@ pub struct StoredMedium {
 }
 
 /// Representation of structure of an medium in the api
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, PartialEq)]
 pub struct MediumData {
     pub name: String,
 }

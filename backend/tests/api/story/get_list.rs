@@ -5,10 +5,10 @@ use serde_json::Value;
 
 use crate::{helpers::TestApp, story::test_story::TestStory};
 
-use super::{story_relative_url_prefix, TestQuery};
+use super::{story_relative_url_prefix, TestStoryQuery};
 
 impl TestApp {
-    pub async fn get_stories(&self, query: &TestQuery) -> reqwest::Response {
+    pub async fn get_stories(&self, query: &TestStoryQuery) -> reqwest::Response {
         self.api_client
             .get(&format!("{}{}", &self.address, story_relative_url_prefix()))
             .query(&query)
@@ -17,7 +17,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_stories_json(&self, query: &TestQuery) -> String {
+    pub async fn get_stories_json(&self, query: &TestStoryQuery) -> String {
         self.get_stories(query).await.text().await.unwrap()
     }
 }
@@ -28,7 +28,7 @@ async fn get_stories_returns_empty_list() {
     let app = TestApp::spawn_app().await;
 
     // Act
-    let response = app.get_stories(TestQuery::new().limit(10)).await;
+    let response = app.get_stories(TestStoryQuery::new().limit(10)).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -47,7 +47,7 @@ async fn get_stories_returns_allows_empty_query() {
     let app = TestApp::spawn_app().await;
 
     // Act
-    let json_page = app.get_stories_json(&TestQuery::new()).await;
+    let json_page = app.get_stories_json(&TestStoryQuery::new()).await;
 
     // Assert
     let json: Value = serde_json::from_str(&json_page).unwrap();
@@ -63,7 +63,7 @@ async fn get_stories_returns_bad_request_for_invalid_query() {
     let app = TestApp::spawn_app().await;
 
     // Act
-    let response = app.get_stories(TestQuery::new().limit(-10)).await;
+    let response = app.get_stories(TestStoryQuery::new().limit(-10)).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::BAD_REQUEST);
@@ -83,7 +83,7 @@ async fn get_stories_returns_stories() {
         .for_each(|s| s.store(&app, &token))
         .await;
 
-    let response = app.get_stories(TestQuery::new().limit(10)).await;
+    let response = app.get_stories(TestStoryQuery::new().limit(10)).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -115,7 +115,7 @@ async fn get_stories_obeys_limit() {
         .for_each(|s| s.store(&app, &token))
         .await;
 
-    let response = app.get_stories(TestQuery::new().limit(1)).await;
+    let response = app.get_stories(TestStoryQuery::new().limit(1)).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -147,15 +147,15 @@ async fn get_stories_by_query_not_found() {
 
     // Test story only generates english words, so can use french to not get a hit
     let queries = [
-        TestQuery::new()
+        TestStoryQuery::new()
             .limit(10)
             .title("Parlez".to_string())
             .clone(),
-        TestQuery::new()
+        TestStoryQuery::new()
             .limit(10)
             .medium("Film".to_string())
             .clone(),
-        TestQuery::new()
+        TestStoryQuery::new()
             .limit(10)
             .creator("Parlez".to_string())
             .clone(),
@@ -206,13 +206,16 @@ async fn get_stories_by_query_found() {
 
     // Test story only generates english words, so can use french to not get a hit
     let queries = vec![
-        TestQuery::new().limit(10).title("Meta".to_string()).clone(),
-        TestQuery::new()
+        TestStoryQuery::new()
+            .limit(10)
+            .title("Meta".to_string())
+            .clone(),
+        TestStoryQuery::new()
             .limit(10)
             .medium("Book".to_string())
             .clone(),
         // Default similarity in postgres is 30%, so 'Geor' would not match
-        TestQuery::new()
+        TestStoryQuery::new()
             .limit(10)
             .creator("Georg".to_string())
             .clone(),

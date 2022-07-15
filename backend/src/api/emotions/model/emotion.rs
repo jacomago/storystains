@@ -1,4 +1,3 @@
-use serde::{Deserialize, Serialize};
 use slug::slugify;
 use strum::{EnumProperty, IntoEnumIterator};
 use strum_macros::{Display, EnumIter, EnumProperty, EnumString};
@@ -7,7 +6,7 @@ use strum_macros::{Display, EnumIter, EnumProperty, EnumString};
 #[derive(
     Debug,
     PartialEq,
-    Serialize,
+    serde::Serialize,
     EnumIter,
     EnumString,
     Display,
@@ -81,7 +80,7 @@ pub fn emotions() -> Vec<Emotion> {
     Emotion::iter().collect()
 }
 
-#[derive(Clone, Debug, Serialize, PartialEq)]
+#[derive(Clone, Debug, serde::Serialize, PartialEq)]
 pub struct StoredEmotion {
     pub id: i32,
     pub name: String,
@@ -90,7 +89,7 @@ pub struct StoredEmotion {
 }
 
 /// Representation of structure of an emotion in the api
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, PartialEq)]
 pub struct EmotionData {
     /// Name of the emotion
     pub name: String,

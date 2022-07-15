@@ -145,3 +145,39 @@ async fn get_reviews_returns_reviews_singular_multi_user() {
 
     app.teardown().await;
 }
+
+#[tokio::test]
+async fn get_reviews_filtered_user() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    let token = app.test_user.login(&app).await;
+
+    // Act
+    let other_user = TestUser::generate();
+    let other_token = other_user.store(&app).await;
+
+    let first_story = TestStory::generate();
+    let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
+    app.post_review(body.to_string(), &token).await;
+    let second_story = TestStory::generate();
+    let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
+    app.post_review(body.to_string(), &other_token).await;
+
+    let response = app.get_reviews(Some(10), Some(0)).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json_page = response.text().await.unwrap();
+    let json: Value = serde_json::from_str(&json_page).unwrap();
+    assert!(json["reviews"].is_array());
+    assert_eq!(json["reviews"].as_array().unwrap().len(), 2);
+
+    assert_eq!(json["reviews"][0]["story"]["title"], second_story.title);
+    assert_eq!(json["reviews"][0]["body"], "4 stars");
+
+    assert_eq!(json["reviews"][1]["story"]["title"], first_story.title);
+    assert_eq!(json["reviews"][1]["body"], "5stars");
+
+    app.teardown().await;
+}

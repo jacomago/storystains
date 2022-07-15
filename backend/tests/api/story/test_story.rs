@@ -1,6 +1,5 @@
 use fake::{faker, Fake};
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::helpers::TestApp;
@@ -9,11 +8,11 @@ pub fn story_relative_url_prefix() -> String {
     "/stories".to_string()
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestStoryResponse {
     pub story: TestStory,
 }
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
 pub struct TestStory {
     pub title: String,
     pub creator: String,
@@ -62,36 +61,36 @@ impl TestStory {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct TestQuery {
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
+pub struct TestStoryQuery {
     limit: Option<i32>,
     title: Option<String>,
     medium: Option<String>,
     creator: Option<String>,
 }
 
-impl TestQuery {
+impl TestStoryQuery {
     pub fn new() -> Self {
-        TestQuery {
+        TestStoryQuery {
             limit: None,
             title: None,
             medium: None,
             creator: None,
         }
     }
-    pub fn limit(&mut self, limit: i32) -> &mut TestQuery {
+    pub fn limit(&mut self, limit: i32) -> &mut TestStoryQuery {
         self.limit = Some(limit);
         self
     }
-    pub fn title(&mut self, title: String) -> &mut TestQuery {
+    pub fn title(&mut self, title: String) -> &mut TestStoryQuery {
         self.title = Some(title);
         self
     }
-    pub fn medium(&mut self, medium: String) -> &mut TestQuery {
+    pub fn medium(&mut self, medium: String) -> &mut TestStoryQuery {
         self.medium = Some(medium);
         self
     }
-    pub fn creator(&mut self, creator: String) -> &mut TestQuery {
+    pub fn creator(&mut self, creator: String) -> &mut TestStoryQuery {
         self.creator = Some(creator);
         self
     }

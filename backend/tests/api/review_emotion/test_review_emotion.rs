@@ -4,7 +4,6 @@ use crate::{
 };
 use rand::Rng;
 use reqwest::StatusCode;
-use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use storystains::api::{emotions, EmotionData};
 
@@ -19,12 +18,12 @@ pub fn review_emotion_relative_url(username: &str, slug: &str, position: &i32) -
     )
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewEmotionResponse {
     pub review_emotion: TestReviewEmotion,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewEmotion {
     pub emotion: EmotionData,
     pub position: i32,
