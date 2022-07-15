@@ -102,4 +102,18 @@ class StoryQuery {
 
   /// Constructor of [StoryQuery]
   const StoryQuery({this.title, this.medium, this.creator});
+
+  @override
+  String toString() =>
+      'StoryQuery: title: $title, creator: $creator, medium: ${medium?.name}';
+
+  @override
+  bool operator ==(Object other) =>
+      other is StoryQuery &&
+      title == other.title &&
+      creator == other.creator &&
+      medium == other.medium;
+
+  @override
+  int get hashCode => title.hashCode + creator.hashCode + medium.hashCode;
 }

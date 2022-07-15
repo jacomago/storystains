@@ -12,7 +12,7 @@ Story testStory({
     );
 
 Story errorStory() => Story(
-      creator: '',
+      creator: '/',
       title: '/',
       medium: Medium.mediumDefault,
     );
@@ -21,4 +21,13 @@ Story emptyStory() => Story(
       creator: '',
       title: '',
       medium: Medium.mediumDefault,
+    );
+
+StoryQuery testStoryQuery({
+  String? title,
+}) =>
+    StoryQuery(
+      title: title ?? 'Dune',
+      creator: 'David Lynch',
+      medium: const Medium(name: 'Film'),
     );

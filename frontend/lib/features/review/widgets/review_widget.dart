@@ -56,7 +56,7 @@ class ReviewWidget extends StatelessWidget {
     final body = state.bodyController.value.text;
     final story = state.storyController.value;
 
-    if (story == null || story.title.isEmpty) {
+    if (story.title.isEmpty || story.creator.isEmpty) {
       context.snackbar(AppLocalizations.of(context)!
           .blankStringError(AppLocalizations.of(context)!.title));
 

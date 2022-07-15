@@ -99,13 +99,11 @@ class StoryState extends ChangeNotifier {
   }
 
   /// Value from controllers
-  Story? get value => mediumController.value == null
-      ? null
-      : Story(
-          title: titleController.text,
-          medium: mediumController.value!,
-          creator: creatorController.text,
-        );
+  Story get value => Story(
+        title: titleController.text,
+        medium: mediumController.value ?? Medium.mediumDefault,
+        creator: creatorController.text,
+      );
 
   /// Query from controllers
   StoryQuery get query => StoryQuery(
@@ -128,7 +126,7 @@ class StoryState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final data = await _service.create(value!);
+      final data = await _service.create(value);
 
       _story = data.story;
 

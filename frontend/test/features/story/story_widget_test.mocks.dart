@@ -52,7 +52,7 @@ class MockStoryService extends _i1.Mock implements _i2.StoryService {
           returnValue: Future<_i2.WrappedStory>.value(_FakeWrappedStory_0()))
       as _i4.Future<_i2.WrappedStory>);
   @override
-  _i4.Future<_i2.StoriesResp> search(_i2.Story? story) =>
+  _i4.Future<_i2.StoriesResp> search(_i2.StoryQuery? story) =>
       (super.noSuchMethod(Invocation.method(#search, [story]),
               returnValue: Future<_i2.StoriesResp>.value(_FakeStoriesResp_1()))
           as _i4.Future<_i2.StoriesResp>);
