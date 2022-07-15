@@ -159,7 +159,6 @@ async fn db_read_reviews(
             AND ($4::text IS NULL OR stories.title % $4)
             AND ($5::text IS NULL OR creators.name % $5)
             AND ($6::text IS NULL OR mediums.name = $6)
-            AND ($7::timestamptz IS NULL OR EXTRACT('day' FROM reviews.updated_at - $7) <= 1)
         ORDER BY updated_at DESC
         LIMIT $1 
         OFFSET $2
@@ -170,7 +169,6 @@ async fn db_read_reviews(
         query_options.story_query.title,
         query_options.story_query.creator,
         query_options.story_query.medium,
-        query_options.timestamp
     )
     .fetch_all(pool)
     .await

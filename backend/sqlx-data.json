@@ -75,6 +75,67 @@
     },
     "query": "\n            UPDATE review_emotions\n            SET emotion_id  = COALESCE($1, emotion_id),\n                position    = COALESCE($2, position),\n                notes       = COALESCE($3, notes)\n            WHERE review_id = (SELECT id\n                                 FROM users,\n                                      reviews\n                                WHERE slug           = $4\n                                  AND users.user_id  = reviews.user_id\n                                  AND users.username = $6\n                                LIMIT 1\n                               )\n               AND position = $5\n            RETURNING emotion_id,\n                      position, \n                      notes\n        "
   },
+  "0fff2ba1f49255d9ed5818652e960fbc1d9de157f0678ca1f3bf4dd937a3a504": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "story_id",
+          "ordinal": 1,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "slug",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "body",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "created_at",
+          "ordinal": 4,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "updated_at",
+          "ordinal": 5,
+          "type_info": "Timestamptz"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 6,
+          "type_info": "Uuid"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8",
+          "Text",
+          "Text",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT reviews.id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM \n            reviews\n            JOIN stories ON stories.id = reviews.story_id\n            JOIN users ON users.user_id = reviews.user_id\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE   ($3::text IS NULL OR users.username % $3)\n            AND ($4::text IS NULL OR stories.title % $4)\n            AND ($5::text IS NULL OR creators.name % $5)\n            AND ($6::text IS NULL OR mediums.name = $6)\n        ORDER BY updated_at DESC\n        LIMIT $1 \n        OFFSET $2\n        "
+  },
   "1a66539537c71a52ffacfe03719f39c0e6b174a6cecccbfba7750371af8cd19d": {
     "describe": {
       "columns": [
@@ -251,68 +312,6 @@
       }
     },
     "query": " \n        WITH new_story AS (\n            INSERT INTO stories (id, title, medium_id, creator_id)\n            VALUES (\n                    $1,\n                    $2,\n                    (\n                        SELECT id\n                        FROM mediums\n                        WHERE name = $3\n                        LIMIT 1\n                    ), \n                    $4\n                ) ON CONFLICT (title, medium_id, creator_id) DO NOTHING\n            RETURNING id,\n                title,\n                $3 as medium,\n                (\n                    SELECT name FROM creators WHERE id = $4\n                ) as creator\n        ), old_story AS (\n            SELECT \n                stories.id,\n                stories.title as title,\n                mediums.name as medium,\n                creators.name as creator\n            FROM \n                stories,\n                creators,\n                mediums\n            WHERE creators.id = $4\n                AND stories.medium_id = mediums.id\n                AND mediums.name = $3\n                AND stories.title = $2\n        ), all_story AS (\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM old_story\n        UNION ALL\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM new_story\n        )\n        SELECT \n            id as \"id!\",\n            title as \"title!\",\n            medium as \"medium!\",\n            creator as \"creator!\"\n        FROM all_story\n        "
-  },
-  "675387067008e4e738c2508c14b2dfec7f089699be3c7ba87f81a451357b88d8": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "story_id",
-          "ordinal": 1,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "slug",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "body",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "created_at",
-          "ordinal": 4,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "updated_at",
-          "ordinal": 5,
-          "type_info": "Timestamptz"
-        },
-        {
-          "name": "user_id",
-          "ordinal": 6,
-          "type_info": "Uuid"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Int8",
-          "Int8",
-          "Text",
-          "Text",
-          "Text",
-          "Text",
-          "Timestamptz"
-        ]
-      }
-    },
-    "query": "\n        SELECT reviews.id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM \n            reviews\n            JOIN stories ON stories.id = reviews.story_id\n            JOIN users ON users.user_id = reviews.user_id\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE   ($3::text IS NULL OR users.username % $3)\n            AND ($4::text IS NULL OR stories.title % $4)\n            AND ($5::text IS NULL OR creators.name % $5)\n            AND ($6::text IS NULL OR mediums.name = $6)\n            AND ($7::timestamptz IS NULL OR EXTRACT('day' FROM reviews.updated_at - $7) <= 1)\n        ORDER BY updated_at DESC\n        LIMIT $1 \n        OFFSET $2\n        "
   },
   "67e0d113d44e8ec9667a426f747bad611c5e9cab31f40a7cd49b6919bbf9232f": {
     "describe": {

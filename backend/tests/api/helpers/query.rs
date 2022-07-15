@@ -12,6 +12,7 @@ pub struct TestQuery {
     timestamp: Option<DateTime<Utc>>,
 }
 
+// TODO use a macro or something for this builder pattern
 impl TestQuery {
     pub fn new() -> Self {
         TestQuery {
@@ -44,10 +45,6 @@ impl TestQuery {
     }
     pub fn username(&mut self, username: String) -> &mut TestQuery {
         self.username = Some(username);
-        self
-    }
-    pub fn timestamp(&mut self, timestamp: DateTime<Utc>) -> &mut TestQuery {
-        self.timestamp = Some(timestamp);
         self
     }
 }

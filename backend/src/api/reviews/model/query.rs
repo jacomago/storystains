@@ -1,5 +1,3 @@
-use chrono::{DateTime, Utc};
-
 use crate::api::{shared::QueryLimits, stories::StoryQueryOptions};
 
 /// Review Query Options
@@ -7,7 +5,6 @@ use crate::api::{shared::QueryLimits, stories::StoryQueryOptions};
 pub struct ReviewQueryOptions {
     pub username: Option<String>,
     pub story_query: StoryQueryOptions,
-    pub timestamp: Option<DateTime<Utc>>,
 }
 
 /// Review Query
@@ -20,8 +17,6 @@ pub struct ReviewQuery {
     /// Standard pagination limits
     pub limit: Option<u64>,
     pub offset: Option<u64>,
-    /// Date to filter by
-    pub timestamp: Option<DateTime<Utc>>,
 }
 
 impl ReviewQuery {
@@ -38,7 +33,6 @@ impl ReviewQuery {
         ReviewQueryOptions {
             username: self.username.clone(),
             story_query: self.story_query.clone(),
-            timestamp: self.timestamp,
         }
     }
 }
