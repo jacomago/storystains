@@ -18,40 +18,6 @@ class _RestClient implements RestClient {
   String? baseUrl;
 
   @override
-  Future<UserResp> addUser(addUser) async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(addUser.toJson());
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<UserResp>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/signup',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = UserResp.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
-  Future<ReviewResp> createReview(newReview) async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(newReview.toJson());
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ReviewResp>(
-            Options(method: 'POST', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/reviews',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ReviewResp.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
   Future<WrappedStory> createStory(newStory) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -89,6 +55,23 @@ class _RestClient implements RestClient {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = StoriesResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ReviewResp> createReview(newReview) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(newReview.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ReviewResp>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/reviews',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ReviewResp.fromJson(_result.data!);
     return value;
   }
 
@@ -209,6 +192,23 @@ class _RestClient implements RestClient {
   }
 
   @override
+  Future<UserResp> addUser(addUser) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(addUser.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<UserResp>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, '/signup',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = UserResp.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<UserResp> loginUser(login) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -237,6 +237,22 @@ class _RestClient implements RestClient {
                 queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     return null;
+  }
+
+  @override
+  Future<UserResp> getCurrentUser() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<UserResp>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = UserResp.fromJson(_result.data!);
+    return value;
   }
 
   @override
@@ -287,22 +303,6 @@ class _RestClient implements RestClient {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = MediumsResp.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
-  Future<UserResp> getCurrentUser() async {
-    const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<UserResp>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = UserResp.fromJson(_result.data!);
     return value;
   }
 
