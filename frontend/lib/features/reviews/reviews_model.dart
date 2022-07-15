@@ -33,4 +33,17 @@ class ReviewQuery {
 
   /// Constructor for [ReviewQuery]
   const ReviewQuery({this.username, this.storyQuery = const StoryQuery()});
+
+  @override
+  String toString() =>
+      'ReviewQuery: username: $username, storyQuery: $storyQuery';
+
+  @override
+  bool operator ==(Object other) =>
+      other is ReviewQuery &&
+      username == other.username &&
+      storyQuery == other.storyQuery;
+
+  @override
+  int get hashCode => username.hashCode + storyQuery.hashCode;
 }
