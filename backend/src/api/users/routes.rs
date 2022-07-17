@@ -13,7 +13,7 @@ use crate::{
 use super::{
     create_user, delete_user_by_id,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
-    read_user_by_id, UserId,
+    read_user_by_id,
 };
 
 /// Input of user for login api
@@ -54,7 +54,7 @@ pub async fn login(
                 .map_err(|e| anyhow::format_err!(e))?;
             session.renew();
             session
-                .insert_user_id(*user_id)
+                .insert_user(AuthUser::from(user.clone()))
                 .map_err(|e| (AuthError::UnexpectedError(e.into())))?;
             Ok(HttpResponse::Ok().json(UserResponse::from(user)))
         }
@@ -98,16 +98,15 @@ pub async fn signup(
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
-    let user_id: UserId = stored.user_id.into();
     session.renew();
     session
-        .insert_user_id(*user_id)
+        .insert_user(AuthUser::from(stored.clone()))
         .map_err(|e| (AuthError::UnexpectedError(e.into())))?;
     Ok(HttpResponse::Ok().json(UserResponse::from(stored)))
 }
 
 pub async fn log_out(session: TypedSession) -> Result<HttpResponse, actix_web::Error> {
-    if session.get_user_id().map_err(e500)?.is_none() {
+    if session.get_user().map_err(e500)?.is_none() {
         Ok(HttpResponse::Ok().finish())
     } else {
         session.log_out();
@@ -116,10 +115,11 @@ pub async fn log_out(session: TypedSession) -> Result<HttpResponse, actix_web::E
 }
 
 /// Delete user api handler currently deletes all user's review
-#[tracing::instrument(skip(pool, auth_user), fields())]
+#[tracing::instrument(skip(pool, auth_user, session), fields())]
 pub async fn delete_user(
     auth_user: web::ReqData<AuthUser>,
     pool: web::Data<PgPool>,
+    session: TypedSession,
 ) -> Result<HttpResponse, ApiError> {
     let user_id = auth_user.into_inner().user_id;
     let mut transaction = pool
@@ -137,5 +137,6 @@ pub async fn delete_user(
         .await
         .context("Failed to commit SQL transaction to delete user and data.")?;
 
+    session.log_out();
     Ok(HttpResponse::Ok().finish())
 }

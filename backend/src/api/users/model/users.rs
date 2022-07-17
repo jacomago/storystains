@@ -1,8 +1,11 @@
 use super::{NewPassword, NewUsername};
 
-#[derive(Debug)]
+/// Stored User represents the main information of the user from the database
+#[derive(Debug, Clone)]
 pub struct StoredUser {
+    /// User id of the user
     pub user_id: sqlx::types::Uuid,
+    /// User name of the user
     pub username: String,
 }
 

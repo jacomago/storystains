@@ -3,7 +3,8 @@ use actix_session::SessionExt;
 use actix_web::dev::Payload;
 use actix_web::{FromRequest, HttpRequest};
 use std::future::{ready, Ready};
-use uuid::Uuid;
+
+use crate::auth::AuthUser;
 
 impl FromRequest for TypedSession {
     // This is a complicated way of saying
@@ -35,12 +36,12 @@ impl TypedSession {
     }
 
     /// Insert a user id into the session
-    pub fn insert_user_id(&self, user_id: Uuid) -> Result<(), actix_session::SessionInsertError> {
-        self.0.insert(Self::USER_ID_KEY, user_id)
+    pub fn insert_user(&self, user: AuthUser) -> Result<(), actix_session::SessionInsertError> {
+        self.0.insert(Self::USER_ID_KEY, user)
     }
 
     /// Retrieve the user id from the session
-    pub fn get_user_id(&self) -> Result<Option<Uuid>, actix_session::SessionGetError> {
+    pub fn get_user(&self) -> Result<Option<AuthUser>, actix_session::SessionGetError> {
         self.0.get(Self::USER_ID_KEY)
     }
 

@@ -6,7 +6,7 @@ use actix_web::{
 };
 use actix_web_lab::middleware::Next;
 
-use crate::{api::UserId, session_state::TypedSession};
+use crate::session_state::TypedSession;
 
 use super::AuthError;
 
@@ -37,9 +37,9 @@ pub async fn reject_anonymous_users(
         let (http_request, payload) = req.parts_mut();
         TypedSession::from_request(http_request, payload).await
     }?;
-    match session.get_user_id().map_err(e500)? {
-        Some(user_id) => {
-            req.extensions_mut().insert(UserId(user_id));
+    match session.get_user().map_err(e500)? {
+        Some(user) => {
+            req.extensions_mut().insert(user);
             next.call(req).await
         }
         None => Err(actix_web::Error::from(AuthError::InvalidCredentials(
