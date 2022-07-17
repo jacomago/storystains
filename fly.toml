@@ -13,6 +13,7 @@ APP__DATABASE__REQUIRE_SSL = "false"
 # Need the following to be secrets:
 # APP__APPLICATION__HMAC_SECRET
 # APP__DATABASE__PASSWORD
+# APP__REDIS_URI
 
 # DATABASE_URL??
 [experimental]
