@@ -2,7 +2,7 @@ use std::ops::Deref;
 /// Format of an id of a user to stay consistent across application
 /// with multiple Uuid implementations
 #[derive(Copy, Clone, Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
-pub struct UserId(uuid::Uuid);
+pub struct UserId(pub uuid::Uuid);
 
 impl UserId {
     /// Generates a new UserId

@@ -6,13 +6,14 @@ processes = []
 
 [env]
 APP__APPLICATION__BASE_URL = "https://storystains.fly.dev"
-APP__FRONTEND_ORIGIN = "https://storystains.fly.dev"
+APP__FRONTEND__ORIGIN = "https://storystains.fly.dev"
 APP__DATABASE__HOST = "top2.nearest.of.storystains-db.internal"
 APP__DATABASE__USERNAME = "storystains"
 APP__DATABASE__REQUIRE_SSL = "false"
 # Need the following to be secrets:
 # APP__APPLICATION__HMAC_SECRET
 # APP__DATABASE__PASSWORD
+# APP__REDIS_URI
 
 # DATABASE_URL??
 [experimental]

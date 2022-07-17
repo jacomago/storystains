@@ -25,11 +25,17 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn delete_user(&self, token: &str) -> reqwest::Response {
+    pub async fn delete_user(&self) -> reqwest::Response {
         self.api_client
             .delete(&format!("{}/users", &self.address))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
+            .send()
+            .await
+            .expect("Failed to execute request.")
+    }
+    pub async fn post_logout(&self) -> reqwest::Response {
+        self.api_client
+            .post(&format!("{}/users/logout", &self.address))
             .send()
             .await
             .expect("Failed to execute request.")
@@ -63,10 +69,10 @@ async fn login_returns_bad_request_for_deleted_user() {
 
     // create new user
     let user = TestUser::generate();
-    // take token
-    let token = user.store(&app).await;
+    // store user
+    user.store(&app).await;
     // delete user
-    app.delete_user(&token).await;
+    app.delete_user().await;
 
     // Act
     let response = app.post_login(user.to_json()).await;
@@ -95,7 +101,6 @@ async fn login_returns_user_details_after_correct_request() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], app.test_user.username);
-    assert!(json["user"]["token"].is_string());
 
     app.teardown().await;
 }
@@ -149,7 +154,6 @@ async fn signup_return_user_details_after_correct_request() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], username);
-    assert!(json["user"]["token"].is_string());
 
     app.teardown().await;
 }
@@ -161,13 +165,13 @@ async fn delete_user_deletes_user() {
 
     // create new user
     let user = TestUser::generate();
-    // take token
-    let token = user.store(&app).await;
+    // store user
+    user.store(&app).await;
     // delete user
-    app.delete_user(&token).await;
+    app.delete_user().await;
 
     // Act
-    app.delete_user(&token).await;
+    app.delete_user().await;
 
     let saved = sqlx::query!(
         "SELECT user_id FROM users WHERE username = $1",

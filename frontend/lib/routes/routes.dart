@@ -117,7 +117,7 @@ class RouteConfiguration {
           UserProfilePage(user: UserProfile(username: matchs![0])),
     ),
     Path(
-      r'^' + Routes.reviewNew,
+      r'^' + Routes.reviewNew + r'$',
       [],
       (context, matchs) => const ReviewNew(),
     ),
@@ -127,22 +127,22 @@ class RouteConfiguration {
       (context, matchs) => const StoryFilterPage(),
     ),
     Path(
-      r'^' + Routes.home,
+      r'^' + Routes.home + r'$',
       [],
       (context, matchs) => const Home(),
     ),
     Path(
-      r'^' + Routes.login,
+      r'^' + Routes.login + r'$',
       [],
       (context, matchs) => LoginOrRegisterPage(),
     ),
     Path(
-      r'^' + Routes.account,
+      r'^' + Routes.account + r'$',
       [],
       (context, matchs) => const AccountPage(),
     ),
     Path(
-      r'^' + Routes.root,
+      r'^' + Routes.root + r'$',
       [],
       (context, matchs) => const Home(),
     ),

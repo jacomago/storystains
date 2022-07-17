@@ -1,6 +1,6 @@
 use crate::api::{
     emotions::{Emotion, EmotionData, StoredEmotion},
-    LongFormText,
+    shared::long_form_text::LongFormText,
 };
 
 use super::EmotionPosition;

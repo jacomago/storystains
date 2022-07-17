@@ -17,7 +17,6 @@ impl TestApp {
         slug: &str,
         position: i32,
         body: String,
-        token: &str,
     ) -> reqwest::Response {
         self.api_client
             .put(&format!(
@@ -26,7 +25,6 @@ impl TestApp {
                 &review_emotion_relative_url(username, slug, &position),
             ))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -47,13 +45,13 @@ async fn put_review_emotion_returns_unauth_when_not_logged_in() {
 async fn put_review_emotion_stores_new_emotion() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
     let body = json!({"review_emotion": {"emotion":"Anger" }});
     let response = app
         .put_emotion(
@@ -61,7 +59,6 @@ async fn put_review_emotion_stores_new_emotion() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &token,
         )
         .await;
 
@@ -88,13 +85,13 @@ async fn put_review_emotion_stores_new_emotion() {
 async fn put_review_emotion_stores_new_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
     let new_position = if emotion.position == 57 { 56 } else { 57 };
     let body = json!({"review_emotion": {"position":new_position }});
     let response = app
@@ -103,7 +100,6 @@ async fn put_review_emotion_stores_new_position() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &token,
         )
         .await;
 
@@ -130,13 +126,13 @@ async fn put_review_emotion_stores_new_position() {
 async fn put_review_emotion_stores_new_data() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
     let new_position = if emotion.position == 57 { 56 } else { 57 };
     let body = json!({"review_emotion": {"emotion":"Anger" , "position": new_position}});
     let response = app
@@ -145,7 +141,6 @@ async fn put_review_emotion_stores_new_data() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &token,
         )
         .await;
 
@@ -173,18 +168,18 @@ async fn put_review_emotion_stores_new_data() {
 async fn put_review_emotion_stores_new_data_with_many_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
 
     let new_position = if emotion.position == 57 { 56 } else { 57 };
 
@@ -196,7 +191,6 @@ async fn put_review_emotion_stores_new_data_with_many_emotions() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &token,
         )
         .await;
 
@@ -226,11 +220,11 @@ async fn put_review_emotion_stores_new_data_with_many_emotions() {
 async fn put_review_emotion_returns_not_found_for_non_existant_review() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let emotion = TestReviewEmotion::generate(None);
     let body = json!({"review_emotion": {"emotion":"Anger" }});
     let response = app
@@ -239,7 +233,6 @@ async fn put_review_emotion_returns_not_found_for_non_existant_review() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &token,
         )
         .await;
 
@@ -252,19 +245,13 @@ async fn put_review_emotion_returns_not_found_for_non_existant_review() {
 async fn put_review_emotion_returns_bad_request_for_invalid_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let response = app
-        .put_emotion(
-            &app.test_user.username,
-            review.slug(),
-            -1,
-            "".to_string(),
-            &token,
-        )
+        .put_emotion(&app.test_user.username, review.slug(), -1, "".to_string())
         .await;
 
     // Assert
@@ -276,13 +263,13 @@ async fn put_review_emotion_returns_bad_request_for_invalid_position() {
 async fn put_review_emotion_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
 
     let test_cases = vec![
         (
@@ -302,7 +289,6 @@ async fn put_review_emotion_returns_a_400_when_fields_are_present_but_invalid() 
                 review.slug(),
                 emotion.position,
                 body.to_string(),
-                &token,
             )
             .await;
 
@@ -321,13 +307,13 @@ async fn put_review_emotion_returns_a_400_when_fields_are_present_but_invalid() 
 async fn put_review_emotion_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
 
     let body = json!({"review_emotion": {"emotion":"Anger" }});
 
@@ -338,7 +324,6 @@ async fn put_review_emotion_returns_json() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &token,
         )
         .await;
 
@@ -355,18 +340,18 @@ async fn put_review_emotion_returns_json() {
 async fn put_review_emotion_only_allows_creator_to_modify() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
 
     let body = json!({"review_emotion": {"emotion":"Anger" }});
 
     let new_user = TestUser::generate();
-    let new_token = new_user.store(&app).await;
+    new_user.store(&app).await;
 
     // Act
     let response = app
@@ -375,7 +360,6 @@ async fn put_review_emotion_only_allows_creator_to_modify() {
             review.slug(),
             emotion.position,
             body.to_string(),
-            &new_token,
         )
         .await;
 

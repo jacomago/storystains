@@ -14,7 +14,7 @@ impl TestApp {
     pub async fn post_emotion(
         &self,
         username: &str,
-        token: &str,
+
         review_slug: &str,
         body: String,
     ) -> reqwest::Response {
@@ -25,7 +25,6 @@ impl TestApp {
                 &review_emotion_relative_url_prefix(username, review_slug),
             ))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -63,11 +62,11 @@ async fn post_review_emotion_to_review_unauth_when_logged_out() {
 async fn post_review_emotion_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let test_cases = vec![
         (
             json!({"review_emotion": {"emotion": "Joy"} }),
@@ -88,7 +87,6 @@ async fn post_review_emotion_returns_a_400_when_data_is_missing() {
         let response = app
             .post_emotion(
                 &app.test_user.username,
-                &token,
                 review.slug(),
                 invalid_body.to_string(),
             )
@@ -110,11 +108,11 @@ async fn post_review_emotion_returns_a_400_when_data_is_missing() {
 async fn post_review_emotion_persists_the_new_review() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let body = json!({
         "review_emotion": {
             "emotion": "Joy",
@@ -123,12 +121,7 @@ async fn post_review_emotion_persists_the_new_review() {
         }
     });
     let response = app
-        .post_emotion(
-            &app.test_user.username,
-            &token,
-            review.slug(),
-            body.to_string(),
-        )
+        .post_emotion(&app.test_user.username, review.slug(), body.to_string())
         .await;
 
     // Assert
@@ -149,11 +142,11 @@ async fn post_review_emotion_persists_the_new_review() {
 async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let test_cases = vec![
         (
@@ -168,12 +161,7 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
     for (body, description) in test_cases {
         // Act
         let response = app
-            .post_emotion(
-                &app.test_user.username,
-                &token,
-                review.slug(),
-                body.to_string(),
-            )
+            .post_emotion(&app.test_user.username, review.slug(), body.to_string())
             .await;
 
         // Assert
@@ -191,10 +179,10 @@ async fn post_review_emotion_returns_a_400_when_fields_are_present_but_invalid()
 async fn post_review_emotion_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let body = json!({
         "review_emotion": {
@@ -206,12 +194,7 @@ async fn post_review_emotion_returns_json() {
 
     // Act
     let response = app
-        .post_emotion(
-            &app.test_user.username,
-            &token,
-            review.slug(),
-            body.to_string(),
-        )
+        .post_emotion(&app.test_user.username, review.slug(), body.to_string())
         .await;
 
     // Assert
@@ -229,10 +212,10 @@ async fn post_review_emotion_returns_json() {
 async fn post_every_emotion_succeeds() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let test_cases: Vec<Value> = emotions()
         .iter()
@@ -252,12 +235,7 @@ async fn post_every_emotion_succeeds() {
     for body in test_cases {
         // Act
         let response = app
-            .post_emotion(
-                &app.test_user.username,
-                &token,
-                review.slug(),
-                body.to_string(),
-            )
+            .post_emotion(&app.test_user.username, review.slug(), body.to_string())
             .await;
 
         // Assert

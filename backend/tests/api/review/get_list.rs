@@ -82,15 +82,15 @@ async fn get_reviews_returns_bad_request_for_invalid_query() {
 async fn get_reviews_returns_reviews() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let first_story = TestStory::generate();
     let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
     let second_story = TestStory::generate();
     let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
 
     let response = app.get_reviews(TestQuery::new().limit(10).offset(0)).await;
 
@@ -116,7 +116,7 @@ async fn get_reviews_returns_reviews() {
 async fn get_reviews_returns_reviews_singular_multi_user() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let other_user = TestUser::generate();
@@ -124,10 +124,10 @@ async fn get_reviews_returns_reviews_singular_multi_user() {
 
     let first_story = TestStory::generate();
     let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
     let second_story = TestStory::generate();
     let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
 
     let response = app.get_reviews(TestQuery::new().limit(10).offset(0)).await;
 
@@ -152,18 +152,18 @@ async fn get_reviews_returns_reviews_singular_multi_user() {
 async fn get_reviews_filtered_user() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
-    let other_user = TestUser::generate();
-    let other_token = other_user.store(&app).await;
-
     let first_story = TestStory::generate();
     let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
+
+    let other_user = TestUser::generate();
+    other_user.store(&app).await;
     let second_story = TestStory::generate();
     let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
-    app.post_review(body.to_string(), &other_token).await;
+    app.post_review(body.to_string()).await;
 
     let response = app
         .get_reviews(
@@ -192,15 +192,15 @@ async fn get_reviews_filtered_user() {
 async fn get_reviews_filtered_story() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let first_story = TestStory::generate();
     let body = json!({"review": {"story": first_story.create_inner_json(), "body":"5stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
     let second_story = TestStory::generate().medium("Film".to_string()).clone();
     let body = json!({"review": {"story": second_story.create_inner_json(), "body":"4 stars" }});
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
 
     let queries = [
         TestQuery::new()

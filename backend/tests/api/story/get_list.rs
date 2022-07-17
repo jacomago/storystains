@@ -78,13 +78,11 @@ async fn get_stories_returns_bad_request_for_invalid_query() {
 async fn get_stories_returns_stories() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let stories: Vec<TestStory> = (0..3).map(|_| TestStory::generate()).collect();
-    stream::iter(&stories)
-        .for_each(|s| s.store(&app, &token))
-        .await;
+    stream::iter(&stories).for_each(|s| s.store(&app)).await;
 
     let response = app.get_stories(TestQuery::new().limit(10)).await;
 
@@ -110,13 +108,11 @@ async fn get_stories_returns_stories() {
 async fn get_stories_obeys_limit() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let stories: Vec<TestStory> = (0..3).map(|_| TestStory::generate()).collect();
-    stream::iter(&stories)
-        .for_each(|s| s.store(&app, &token))
-        .await;
+    stream::iter(&stories).for_each(|s| s.store(&app)).await;
 
     let response = app.get_stories(TestQuery::new().limit(1)).await;
 
@@ -140,13 +136,11 @@ async fn get_stories_obeys_limit() {
 async fn get_stories_by_query_not_found() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let stories: Vec<TestStory> = (0..3).map(|_| TestStory::generate()).collect();
-    stream::iter(&stories)
-        .for_each(|s| s.store(&app, &token))
-        .await;
+    stream::iter(&stories).for_each(|s| s.store(&app)).await;
 
     // Test story only generates english words, so can use french to not get a hit
     let queries = [
@@ -182,7 +176,7 @@ async fn get_stories_by_query_not_found() {
 async fn get_stories_by_query_found() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let stories: Vec<TestStory> = vec![
@@ -203,9 +197,7 @@ async fn get_stories_by_query_found() {
         },
     ];
 
-    stream::iter(&stories)
-        .for_each(|s| s.store(&app, &token))
-        .await;
+    stream::iter(&stories).for_each(|s| s.store(&app)).await;
 
     // Test story only generates english words, so can use french to not get a hit
     let queries = vec![

@@ -12,11 +12,10 @@ use crate::{
 use super::story_relative_url_prefix;
 
 impl TestApp {
-    pub async fn post_story(&self, body: String, token: &str) -> reqwest::Response {
+    pub async fn post_story(&self, body: String) -> reqwest::Response {
         self.api_client
             .post(&format!("{}{}", &self.address, story_relative_url_prefix()))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -50,11 +49,11 @@ async fn post_story_returns_unauth_when_using_valid_but_non_existant_user() {
 async fn post_story_persists_the_new_story() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let body = json!({"story": {"title": "Dune", "medium":"Book", "creator":"Frank Herbert" }});
-    let response = app.post_story(body.to_string(), &token).await;
+    let response = app.post_story(body.to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -91,7 +90,7 @@ async fn post_story_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = TestApp::spawn_app().await;
 
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
     let test_cases = vec![
         (
             json!({ "story": {"title": "Dune"} }),
@@ -109,7 +108,7 @@ async fn post_story_returns_a_400_when_data_is_missing() {
 
     for (invalid_body, error_message) in test_cases {
         // Act
-        let response = app.post_story(invalid_body.to_string(), &token).await;
+        let response = app.post_story(invalid_body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -127,7 +126,7 @@ async fn post_story_returns_a_400_when_data_is_missing() {
 async fn post_story_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let test_cases = vec![
         (
@@ -145,7 +144,7 @@ async fn post_story_returns_a_400_when_fields_are_present_but_invalid() {
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.post_story(body.to_string(), &token).await;
+        let response = app.post_story(body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -162,12 +161,12 @@ async fn post_story_returns_a_400_when_fields_are_present_but_invalid() {
 async fn post_story_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let body = json!({"story": {"title": "Dune", "medium":"Film", "creator":"David Lynch" }});
 
     // Act
-    let response = app.post_story(body.to_string(), &token).await;
+    let response = app.post_story(body.to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);

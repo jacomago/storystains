@@ -3,17 +3,10 @@ use reqwest::{Method, Response, StatusCode};
 use crate::helpers::{TestApp, TestUser};
 
 impl TestApp {
-    pub async fn method_route(
-        &self,
-        route: String,
-        method: Method,
-        body: String,
-        token: &str,
-    ) -> Response {
+    pub async fn method_route(&self, route: String, method: Method, body: String) -> Response {
         self.api_client
             .request(method, &format!("{}{}", self.address, route))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -27,10 +20,11 @@ where
 {
     // Arrange
     let app = TestApp::spawn_app().await;
+    app.test_user.logout(&app).await;
 
     // Act
     let response = app
-        .method_route(route(&app.test_user.username), method, "".to_string(), "")
+        .method_route(route(&app.test_user.username), method, "".to_string())
         .await;
 
     // Assert
@@ -48,17 +42,11 @@ pub async fn route_returns_unauth_when_logged_out<T>(
 {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
-    app.test_user.logout().await;
+    app.test_user.logout(&app).await;
 
     // Act
     let response = app
-        .method_route(
-            route(&app.test_user.username),
-            method,
-            body.to_string(),
-            &token,
-        )
+        .method_route(route(&app.test_user.username), method, body.to_string())
         .await;
 
     // Assert
@@ -78,19 +66,14 @@ pub async fn route_returns_unauth_when_using_valid_but_non_existant_user<T>(
 
     // create new user
     let user = TestUser::generate();
-    // take token
-    let token = user.store(&app).await;
+    // store user
+    user.store(&app).await;
     // delete user
-    app.delete_user(&token).await;
+    app.delete_user().await;
 
     // Act
     let response = app
-        .method_route(
-            route(&app.test_user.username),
-            method,
-            body.to_string(),
-            &token,
-        )
+        .method_route(route(&app.test_user.username), method, body.to_string())
         .await;
 
     // Assert

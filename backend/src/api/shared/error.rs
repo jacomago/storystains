@@ -1,6 +1,8 @@
 use actix_web::ResponseError;
 use reqwest::StatusCode;
 
+use crate::auth::AuthError;
+
 use super::put_block::BlockError;
 
 /// Api Error expresses problems that can happen during the evaluation of the api.
@@ -48,6 +50,14 @@ impl From<BlockError> for ApiError {
         match e {
             BlockError::NotData(d) => ApiError::NotData(d),
             BlockError::NotAllowed(d) => ApiError::NotAllowed(d),
+        }
+    }
+}
+impl From<AuthError> for ApiError {
+    fn from(e: AuthError) -> Self {
+        match e {
+            AuthError::InvalidCredentials(e) => ApiError::Auth(e),
+            AuthError::UnexpectedError(e) => ApiError::Unexpected(e),
         }
     }
 }

@@ -1,6 +1,6 @@
 use secrecy::Secret;
 
-use crate::api::UserId;
+use crate::api::{StoredUser, UserId};
 
 /// Credentials for authentication
 pub struct Credentials {
@@ -17,4 +17,13 @@ pub struct AuthUser {
     pub username: String,
     /// User id
     pub user_id: UserId,
+}
+
+impl From<StoredUser> for AuthUser {
+    fn from(user: StoredUser) -> Self {
+        Self {
+            username: user.username,
+            user_id: UserId(user.user_id),
+        }
+    }
 }

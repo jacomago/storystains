@@ -32,7 +32,7 @@ impl ResponseError for BlockError {
         }
     }
 }
-// TODO convert to middleware and/or don't read from db
+// TODO convert to middleware
 pub async fn block_non_creator(
     username: &NewUsername,
     auth_user: &AuthUser,

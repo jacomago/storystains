@@ -41,7 +41,6 @@ impl TestApp {
             c.database.max_connections = 4;
             // Use a random OS port
             c.application.port = 0;
-            c.application.exp_token_seconds = user.exp_seconds;
             c
         };
 
@@ -57,6 +56,7 @@ impl TestApp {
 
         let api_client = reqwest::Client::builder()
             .redirect(reqwest::redirect::Policy::none())
+            .cookie_store(true)
             .build()
             .unwrap();
 

@@ -48,33 +48,22 @@ impl TestReviewEmotion {
         }
     }
 
-    pub async fn store(&self, app: &TestApp, token: &str, review_slug: &str) {
+    pub async fn store(&self, app: &TestApp, review_slug: &str) {
         let body = self.create_json();
         // Act
         let response = app
-            .post_emotion(
-                &app.test_user.username,
-                token,
-                review_slug,
-                body.to_string(),
-            )
+            .post_emotion(&app.test_user.username, review_slug, body.to_string())
             .await;
 
         // Assert
         assert_eq!(response.status(), StatusCode::OK);
     }
 
-    pub async fn store_by_user(
-        &self,
-        app: &TestApp,
-        user: &TestUser,
-        token: &str,
-        review_slug: &str,
-    ) {
+    pub async fn store_by_user(&self, app: &TestApp, user: &TestUser, review_slug: &str) {
         let body = self.create_json();
         // Act
         let response = app
-            .post_emotion(&user.username, token, review_slug, body.to_string())
+            .post_emotion(&user.username, review_slug, body.to_string())
             .await;
 
         // Assert

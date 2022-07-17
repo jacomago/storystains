@@ -37,13 +37,13 @@ impl TestApp {
 async fn get_review_logged_in_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
 
     let json_page = app
         .get_emotion_json(&app.test_user.username, review.slug(), emotion.position)
@@ -58,15 +58,15 @@ async fn get_review_logged_in_returns_json() {
 async fn get_review_logged_out_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
 
-    app.test_user.logout().await;
+    app.test_user.logout(&app).await;
 
     let json_page = app
         .get_emotion_json(&app.test_user.username, review.slug(), emotion.position)
@@ -81,11 +81,11 @@ async fn get_review_logged_out_returns_json() {
 async fn get_review_returns_not_found_for_non_existant_emotion() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let response = app
         .get_emotion(&app.test_user.username, review.slug(), 1)
         .await;
@@ -100,11 +100,11 @@ async fn get_review_returns_not_found_for_non_existant_emotion() {
 async fn get_review_returns_bad_request_for_invalid_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let response = app
         .get_emotion(&app.test_user.username, review.slug(), 101)
         .await;

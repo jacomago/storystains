@@ -15,7 +15,6 @@ impl TestApp {
         username: &str,
         slug: &str,
         position: i32,
-        token: &str,
     ) -> reqwest::Response {
         self.api_client
             .delete(&format!(
@@ -23,7 +22,6 @@ impl TestApp {
                 &self.address,
                 &review_emotion_relative_url(username, slug, &position),
             ))
-            .bearer_auth(token)
             .send()
             .await
             .expect("Failed to execute request.")
@@ -43,13 +41,13 @@ async fn delete_review_emotion_returns_unauth_when_not_logged_in() {
 async fn delete_review_emotion_returns_bad_request_for_invalid_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let response = app
-        .delete_emotion(&app.test_user.username, review.slug(), 101, &token)
+        .delete_emotion(&app.test_user.username, review.slug(), 101)
         .await;
 
     // Assert
@@ -62,20 +60,15 @@ async fn delete_review_emotion_returns_bad_request_for_invalid_position() {
 async fn delete_review_emotion_returns_a_200_for_valid_position() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let emotion = TestReviewEmotion::generate(None);
-    emotion.store(&app, &token, review.slug()).await;
+    emotion.store(&app, review.slug()).await;
     let response = app
-        .delete_emotion(
-            &app.test_user.username,
-            review.slug(),
-            emotion.position,
-            &token,
-        )
+        .delete_emotion(&app.test_user.username, review.slug(), emotion.position)
         .await;
 
     // Assert
@@ -95,14 +88,14 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
 async fn delete_review_deletes_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    review.store_emotions(&app, &token).await;
+    review.store(&app).await;
+    review.store_emotions(&app).await;
     let response = app
-        .delete_review(&app.test_user.username, review.slug(), &token)
+        .delete_review(&app.test_user.username, review.slug())
         .await;
 
     // Assert
@@ -122,13 +115,13 @@ async fn delete_review_deletes_emotions() {
 async fn delete_user_deletes_review_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    review.store_emotions(&app, &token).await;
-    let response = app.delete_user(&token).await;
+    review.store(&app).await;
+    review.store_emotions(&app).await;
+    let response = app.delete_user().await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -148,21 +141,19 @@ async fn delete_user_deletes_review_emotions() {
 async fn delete_user_doesnt_delete_others_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    review.store_emotions(&app, &token).await;
+    review.store(&app).await;
+    review.store_emotions(&app).await;
 
     let other_user = TestUser::generate();
-    let other_token = other_user.store(&app).await;
+    other_user.store(&app).await;
     let other_review = TestReview::generate(&other_user);
-    other_review.store(&app, &other_token).await;
-    other_review
-        .store_emotions_by_user(&app, &other_user, &other_token)
-        .await;
+    other_review.store(&app).await;
+    other_review.store_emotions_by_user(&app, &other_user).await;
 
     // Act
-    let response = app.delete_user(&token).await;
+    let response = app.delete_user().await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);

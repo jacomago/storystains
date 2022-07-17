@@ -1,28 +1,24 @@
 mod shared;
-pub use shared::long_form_text::*;
 
 mod reviews;
-pub use reviews::routes::*;
 
 mod stories;
-pub use stories::routes::*;
 
 mod review_emotion;
-pub use review_emotion::routes::*;
 
 mod emotions;
 pub use emotions::emotions;
-pub use emotions::routes::*;
 pub use emotions::EmotionData;
 
 mod users;
-pub use users::db::*;
-pub use users::model::UserId;
-pub use users::routes::*;
+pub use users::check_user_exists;
+pub use users::get_stored_credentials;
+pub use users::model::StoredUser;
+pub use users::UserId;
 
 mod health_check;
-pub use health_check::db_check;
-pub use health_check::health_check;
 
 mod mediums;
-pub use mediums::routes::*;
+
+mod routes;
+pub use routes::routes;

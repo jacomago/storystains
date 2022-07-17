@@ -104,6 +104,10 @@ abstract class RestClient {
   @retrofit.DELETE('/users')
   Future<void> deleteUser();
 
+  /// Logout [User] via the api
+  @retrofit.POST('/users/logout')
+  Future<void> logout();
+
   /// get current [User] detials
   @retrofit.GET('user')
   Future<UserResp> getCurrentUser();

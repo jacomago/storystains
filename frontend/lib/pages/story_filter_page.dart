@@ -44,7 +44,7 @@ class StoryFilter extends StatelessWidget {
     BuildContext context,
     ReviewsState reviewsState,
   ) async {
-    context.push(Routes.reviewNew).then((value) => context.pop());
+    context.push(Routes.reviewNew);
   }
 
   void _onChanged(ReviewsState reviews, StoryState state) async {

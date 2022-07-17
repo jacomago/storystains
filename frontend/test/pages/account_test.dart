@@ -1,3 +1,4 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,7 +27,7 @@ Widget wrapWithMaterial(Widget w, AuthState authState) =>
 void main() {
   setUp(() {
     WidgetsFlutterBinding.ensureInitialized;
-    final dio = ServiceLocator.setupDio();
+    final dio = ServiceLocator.setupDio(PersistCookieJar());
     ServiceLocator.setupRest(dio);
     ServiceLocator.setupSecureStorage();
   });
@@ -84,15 +85,20 @@ void main() {
     testWidgets('Account log out', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
+      final authService = MockAuthService();
+      final authState = AuthState(authService);
       final widg = wrapWithMaterial(
         Builder(builder: (context) => const AccountPage()),
-        AuthState(AuthService()),
+        authState,
       );
 
       await tester.pumpWidget(widg);
 
       var button = find.widgetWithText(ElevatedButton, 'Logout');
       expect(button, findsOneWidget);
+
+      // ignore: no-empty-block
+      when(authService.logout()).thenAnswer((realInvocation) async {});
 
       await tester.ensureVisible(button);
       await tester.tap(button.first);

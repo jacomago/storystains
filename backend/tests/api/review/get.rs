@@ -26,11 +26,11 @@ impl TestApp {
 async fn get_review_logged_in_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    review.store_emotions(&app, &token).await;
+    review.store(&app).await;
+    review.store_emotions(&app).await;
 
     let json_page = app
         .get_review_json(&app.test_user.username, review.slug())
@@ -45,13 +45,13 @@ async fn get_review_logged_in_returns_json() {
 async fn get_review_logged_out_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
-    review.store_emotions(&app, &token).await;
+    review.store(&app).await;
+    review.store_emotions(&app).await;
 
-    app.test_user.logout().await;
+    app.test_user.logout(&app).await;
 
     let json_page = app
         .get_review_json(&app.test_user.username, review.slug())

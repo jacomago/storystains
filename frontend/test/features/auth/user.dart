@@ -4,8 +4,7 @@ import 'package:storystains/features/user/user.dart';
 
 import 'auth_test.mocks.dart';
 
-User testUser({String? token, String? username}) =>
-    User(token: token ?? 'token', username: username ?? 'username');
+User testUser({String? username}) => User(username: username ?? 'username');
 
 UserProfile testUserProfile({String? username}) =>
     UserProfile(username: username ?? 'username');

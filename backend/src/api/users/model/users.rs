@@ -1,31 +1,25 @@
 use super::{NewPassword, NewUsername};
 
-#[derive(Debug)]
+/// Stored User represents the main information of the user from the database
+#[derive(Debug, Clone)]
 pub struct StoredUser {
+    /// User id of the user
     pub user_id: sqlx::types::Uuid,
+    /// User name of the user
     pub username: String,
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct UserResponse {
-    user: UserResponseData,
+    user: UserProfileData,
 }
 
-impl From<(StoredUser, String)> for UserResponse {
-    fn from(user_token: (StoredUser, String)) -> Self {
+impl From<StoredUser> for UserResponse {
+    fn from(user: StoredUser) -> Self {
         Self {
-            user: UserResponseData {
-                username: user_token.0.username,
-                token: user_token.1,
-            },
+            user: UserProfileData::from(user),
         }
     }
-}
-
-#[derive(serde::Deserialize, serde::Serialize)]
-pub struct UserResponseData {
-    username: String,
-    token: String,
 }
 
 pub struct NewUser {
