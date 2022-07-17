@@ -22,3 +22,6 @@ pub mod startup;
 
 /// Setup Telemetry for logs
 pub mod telemetry;
+
+/// Session state for cookie maintenance in the Redis instance
+pub mod session_state;

@@ -1,8 +1,5 @@
 application:
   host: 127.0.0.1
-  static_files: "./static/"
-  image_files: "./assets/images/"
-  exp_token_seconds: 10
   base_url: "http://localhost"
   hmac_secret: "E1Ta/KyHHCx8V6GAW1CS2/7IkzTkYEIdDL+FlW8N280="
 database:
@@ -11,4 +8,8 @@ database:
   username: "postgres"
   password: "password"
   max_connections: 10
-frontend_origin: "http://localhost:50547"
+frontend:
+  origin: "http://localhost:50547"
+  static_files: "./static/"
+  image_files: "./assets/images/"
+redis_uri: "redis://127.0.0.1:6379"

@@ -1,14 +1,14 @@
-use actix_web::{dev::ServiceRequest, error::InternalError, web, HttpMessage, HttpResponse};
-use actix_web_httpauth::extractors::bearer::BearerAuth;
-use anyhow::Context;
-use sqlx::PgPool;
-
-use crate::{
-    api::{check_user_exists, UserId},
-    startup::{ExpTokenSeconds, HmacSecret},
+use actix_web::{
+    body::MessageBody,
+    dev::{ServiceRequest, ServiceResponse},
+    error::InternalError,
+    FromRequest, HttpMessage, HttpResponse,
 };
+use actix_web_lab::middleware::Next;
 
-use super::{jwt, AuthError, AuthUser};
+use crate::{api::UserId, session_state::TypedSession};
+
+use super::AuthError;
 
 /// Return an opaque 500 while preserving the error root's cause for logging.
 pub fn e500<T>(e: T) -> actix_web::Error
@@ -28,49 +28,19 @@ impl From<AuthError> for actix_web::Error {
     }
 }
 
-/// Implements bearer authenticaion
-pub async fn bearer_auth(
-    req: ServiceRequest,
-    credentials: BearerAuth,
-) -> Result<ServiceRequest, actix_web::Error> {
-    let key = req
-        .app_data::<web::Data<HmacSecret>>()
-        .context("Error retreiving secret.")
-        .map_err(AuthError::UnexpectedError)?;
-    let exp_seconds = req
-        .app_data::<web::Data<ExpTokenSeconds>>()
-        .context("Error retreiving exp token seconds.")
-        .map_err(AuthError::UnexpectedError)?;
-
-    let leeway = exp_seconds.0 as f64 * 0.1;
-    let token = credentials.token();
-
-    let claim = jwt::decode_token(token, key, leeway as u64);
-
-    match claim {
-        Some(c) => {
-            let pool = req
-                .app_data::<web::Data<PgPool>>()
-                .context("Error retreiving database pool")
-                .map_err(AuthError::UnexpectedError)?;
-
-            let user_id = UserId::new(c.id);
-            let user_exists = check_user_exists(&user_id, pool)
-                .await
-                .context("Error accessing databse")
-                .map_err(AuthError::UnexpectedError)?;
-
-            if user_exists {
-                let _ = req.extensions_mut().insert(AuthUser {
-                    username: c.username,
-                    user_id,
-                });
-                Ok(req)
-            } else {
-                Err(actix_web::Error::from(AuthError::InvalidCredentials(
-                    anyhow::anyhow!("User doesn't exist."),
-                )))
-            }
+/// Rejects anonymous users from auth backed api points
+pub async fn reject_anonymous_users(
+    mut req: ServiceRequest,
+    next: Next<impl MessageBody>,
+) -> Result<ServiceResponse<impl MessageBody>, actix_web::Error> {
+    let session = {
+        let (http_request, payload) = req.parts_mut();
+        TypedSession::from_request(http_request, payload).await
+    }?;
+    match session.get_user_id().map_err(e500)? {
+        Some(user_id) => {
+            req.extensions_mut().insert(UserId(user_id));
+            next.call(req).await
         }
         None => Err(actix_web::Error::from(AuthError::InvalidCredentials(
             anyhow::anyhow!("User not logged in."),

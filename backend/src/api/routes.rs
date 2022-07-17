@@ -1,7 +1,7 @@
 use actix_web::web;
-use actix_web_httpauth::middleware::HttpAuthentication;
+use actix_web_lab::middleware::from_fn;
 
-use crate::auth::bearer_auth;
+use crate::auth::reject_anonymous_users;
 
 use super::{
     emotions::routes::*, health_check::*, mediums::routes::*, review_emotion::routes::*,
@@ -12,10 +12,6 @@ use super::{
 /// Currently creates two duplicate authenticator middlewares for different routes
 /// which isn't elegant
 pub fn routes(cfg: &mut web::ServiceConfig) {
-    // TODO is this a nice hack??
-    let auth_reviews = HttpAuthentication::bearer(bearer_auth);
-    let auth_stories = HttpAuthentication::bearer(bearer_auth);
-    let auth_users = HttpAuthentication::bearer(bearer_auth);
     let _ = cfg.service(
         web::scope("/api")
             .route("/health_check", web::get().to(health_check))
@@ -33,7 +29,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
             )
             .service(
                 web::scope("/reviews")
-                    .wrap(auth_reviews)
+                    .wrap(from_fn(reject_anonymous_users))
                     .route("", web::post().to(post_review))
                     .route("/{username}/{slug}", web::put().to(put_review))
                     .route(
@@ -55,12 +51,12 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
             )
             .service(
                 web::scope("/stories")
-                    .wrap(auth_stories)
+                    .wrap(from_fn(reject_anonymous_users))
                     .route("", web::post().to(post_story)),
             )
             .service(
                 web::scope("/users")
-                    .wrap(auth_users)
+                    .wrap(from_fn(reject_anonymous_users))
                     .route("", web::delete().to(delete_user)),
             ),
     );

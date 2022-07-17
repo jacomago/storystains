@@ -1,14 +1,17 @@
 use crate::api::routes;
-use crate::configuration::{ApplicationSettings, Settings};
+use crate::configuration::{FrontendSettings, Settings};
 use crate::cors::cors;
 use crate::telemetry::get_metrics;
 use actix_files::Files;
+use actix_session::storage::RedisSessionStore;
+use actix_session::SessionMiddleware;
+use actix_web::cookie::Key;
 use actix_web::dev::{self, Server};
 use actix_web::middleware::{NormalizePath, TrailingSlash};
 use actix_web::web::Data;
 use actix_web::{http, App, HttpServer};
 use actix_web_lab::web::spa;
-use secrecy::Secret;
+use secrecy::{ExposeSecret, Secret};
 use sqlx::postgres::PgPoolOptions;
 use sqlx::PgPool;
 use std::net::TcpListener;
@@ -39,8 +42,10 @@ impl Application {
         let server = run(
             listener,
             connection_pool,
-            configuration.frontend_origin,
-            configuration.application,
+            configuration.frontend,
+            configuration.application.base_url,
+            HmacSecret(configuration.application.hmac_secret),
+            configuration.redis_uri,
         )
         .await?;
         Ok(Self { port, server })
@@ -72,12 +77,18 @@ pub struct ExpTokenSeconds(pub u64);
 async fn run(
     listener: TcpListener,
     db_pool: PgPool,
-    frontend_origin: String,
-    settings: ApplicationSettings,
+    frontend: FrontendSettings,
+    base_url: String,
+    hmac_secret: HmacSecret,
+    redis_uri: Secret<String>,
 ) -> Result<Server, anyhow::Error> {
     let db_pool = Data::new(db_pool);
 
-    let base_url = Data::new(ApplicationBaseUrl(settings.base_url));
+    let base_url = Data::new(ApplicationBaseUrl(base_url));
+
+    let secret_key = Key::from(hmac_secret.0.expose_secret().as_bytes());
+    let redis_store = RedisSessionStore::new(redis_uri.expose_secret()).await?;
+
     let metrics_route =
         |req: &dev::ServiceRequest| req.path() == "/metrics" && req.method() == http::Method::GET;
     let metrics = get_metrics(metrics_route);
@@ -85,23 +96,26 @@ async fn run(
         App::new()
             .wrap(TracingLogger::default())
             .wrap(metrics.clone())
-            .wrap(cors(&frontend_origin))
+            .wrap(cors(&frontend.origin))
             .wrap(NormalizePath::new(TrailingSlash::Trim))
+            .wrap(SessionMiddleware::new(
+                redis_store.clone(),
+                secret_key.clone(),
+            ))
             .configure(routes)
             .service(
-                Files::new("/emotions/", format!("{}/emotions", &settings.image_files))
+                Files::new("/emotions/", format!("{}/emotions", &frontend.image_files))
                     .index_file("index.html"),
             )
             .service(
                 spa()
-                    .index_file(format!("{}index.html", &settings.static_files))
-                    .static_resources_location((&settings.static_files).to_string())
+                    .index_file(format!("{}index.html", &frontend.static_files))
+                    .static_resources_location((&frontend.static_files).to_string())
                     .finish(),
             )
             .app_data(db_pool.clone())
             .app_data(base_url.clone())
-            .app_data(Data::new(HmacSecret(settings.hmac_secret.clone())))
-            .app_data(Data::new(ExpTokenSeconds(settings.exp_token_seconds)))
+            .app_data(Data::new(hmac_secret.clone()))
     })
     .listen(listener)?
     .run();

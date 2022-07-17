@@ -12,8 +12,21 @@ pub struct Settings {
     pub database: DatabaseSettings,
     /// Application Settings
     pub application: ApplicationSettings,
+    /// Front End Settings
+    pub frontend: FrontendSettings,
+    /// URI of the Redis instance
+    pub redis_uri: Secret<String>,
+}
+
+/// Settings for the frontend
+#[derive(serde::Deserialize, Clone)]
+pub struct FrontendSettings {
     /// The possible input origin for Cross Origin requests
-    pub frontend_origin: String,
+    pub origin: String,
+    /// Folder where static files are stored
+    pub static_files: String,
+    /// Folder where static images are stored
+    pub image_files: String,
 }
 
 /// Settings for the application
@@ -26,14 +39,8 @@ pub struct ApplicationSettings {
     pub host: String,
     /// Base url
     pub base_url: String,
-    /// Initial Secret for jwt encryption
+    /// Initial Secret for cookie encryption
     pub hmac_secret: Secret<String>,
-    /// Length of expiry in seconds of token
-    pub exp_token_seconds: u64,
-    /// Folder where static files are stored
-    pub static_files: String,
-    /// Folder where static images are stored
-    pub image_files: String,
 }
 
 impl ApplicationSettings {

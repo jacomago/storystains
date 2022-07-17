@@ -6,8 +6,8 @@ use sqlx::PgPool;
 
 use crate::{
     api::{reviews::delete_reviews_by_user_id, shared::ApiError},
-    auth::{validate_credentials, AuthClaim, AuthError, AuthUser, Credentials},
-    startup::{ExpTokenSeconds, HmacSecret},
+    auth::{validate_credentials, AuthError, AuthUser, Credentials},
+    session_state::TypedSession,
 };
 
 use super::{
@@ -31,14 +31,13 @@ pub struct LoginData {
 
 /// Login endpoint handler
 #[tracing::instrument(
-    skip(json, pool, exp_token_days, secret),
+    skip(json, pool, session),
     fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
 )]
 pub async fn login(
     json: web::Json<LoginUser>,
     pool: web::Data<PgPool>,
-    exp_token_days: web::Data<ExpTokenSeconds>,
-    secret: web::Data<HmacSecret>,
+    session: TypedSession,
 ) -> Result<HttpResponse, ApiError> {
     let credentials = Credentials {
         username: json.0.user.username,
@@ -53,15 +52,11 @@ pub async fn login(
             let user = read_user_by_id(&user_id, &pool)
                 .await
                 .map_err(|e| anyhow::format_err!(e))?;
-            let token = AuthClaim::new(
-                AuthUser {
-                    username: user.username.to_string(),
-                    user_id,
-                },
-                &exp_token_days,
-            )
-            .token(&secret);
-            Ok(HttpResponse::Ok().json(UserResponse::from((user, token))))
+            session.renew();
+            session
+                .insert_user_id(*user_id)
+                .map_err(|e| (AuthError::UnexpectedError(e.into())))?;
+            Ok(HttpResponse::Ok().json(UserResponse::from(user)))
         }
         Err(e) => match e {
             AuthError::InvalidCredentials(_) => Err(ApiError::Auth(e.into())),
@@ -93,27 +88,22 @@ impl TryFrom<SignupUserData> for NewUser {
 }
 
 /// Sign up api handler
-#[tracing::instrument(name = "Signup a user", skip(pool, json, exp_token_days, secret))]
+#[tracing::instrument(name = "Signup a user", skip(pool, json, session))]
 pub async fn signup(
     json: web::Json<SignupUser>,
     pool: web::Data<PgPool>,
-    exp_token_days: web::Data<ExpTokenSeconds>,
-    secret: web::Data<HmacSecret>,
+    session: TypedSession,
 ) -> Result<HttpResponse, ApiError> {
     let new_user = json.0.user.try_into().map_err(ApiError::Validation)?;
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
     let user_id: UserId = stored.user_id.into();
-    let token = AuthClaim::new(
-        AuthUser {
-            username: stored.username.to_string(),
-            user_id,
-        },
-        &exp_token_days,
-    )
-    .token(&secret);
-    Ok(HttpResponse::Ok().json(UserResponse::from((stored, token))))
+    session.renew();
+    session
+        .insert_user_id(*user_id)
+        .map_err(|e| (AuthError::UnexpectedError(e.into())))?;
+    Ok(HttpResponse::Ok().json(UserResponse::from(stored)))
 }
 
 /// Delete user api handler currently deletes all user's review
