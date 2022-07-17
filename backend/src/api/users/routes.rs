@@ -13,7 +13,7 @@ use crate::{
 use super::{
     create_user, delete_user_by_id,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
-    read_user_by_id,
+    read_user_by_id, UserId,
 };
 
 /// Input of user for login api
@@ -104,7 +104,7 @@ pub async fn signup(
     let stored = create_user(new_user, &pool)
         .await
         .context("Error storing user")?;
-    let user_id = stored.user_id.into();
+    let user_id: UserId = stored.user_id.into();
     let token = AuthClaim::new(
         AuthUser {
             username: stored.username.to_string(),

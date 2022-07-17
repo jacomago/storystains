@@ -1,9 +1,9 @@
 use actix_web::web;
 use sqlx::PgPool;
 
-use crate::api::emotions::db::retreive_all_emotions;
-use crate::api::emotions::model::check_emotions;
 use crate::api::shared::ApiError;
+
+use super::{db::retreive_all_emotions, model::check_emotions};
 
 /// API for checking all emotions in db are correct to the enum
 #[tracing::instrument(name = "Check emotions against Enum", skip(pool), fields())]

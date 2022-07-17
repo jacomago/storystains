@@ -1,6 +1,6 @@
 use actix_web::HttpResponse;
 
-use crate::api::{emotions::model::emotions, EmotionData};
+use super::{emotions, EmotionData};
 
 /// API for getting a list of all emotions
 #[tracing::instrument(name = "Getting emotions", skip(), fields())]

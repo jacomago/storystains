@@ -2,12 +2,11 @@ use chrono::Utc;
 use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
 use crate::api::{
-    read_user_by_id,
     review_emotion::read_review_emotions,
     reviews::model::StoredReview,
     shared::Limits,
     stories::{create_or_return_story, read_story_by_id, StoryResponseData},
-    users::{model::UserProfileData, NewUsername},
+    users::{db::read_user_by_id, model::UserProfileData, NewUsername},
 };
 
 use super::model::{CompleteReviewData, NewReview, ReviewQueryOptions, ReviewSlug, UpdateReview};
