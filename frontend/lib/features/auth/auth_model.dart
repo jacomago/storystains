@@ -2,18 +2,14 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'auth_model.g.dart';
 
-/// Representation of a user with auth token
+/// Representation of a user
 @JsonSerializable()
 class User {
-  /// Token for auth
-  String token;
-
   /// Username of user
   String username;
 
-  /// Representation of a user with auth token
+  /// Representation of a user constructor
   User({
-    required this.token,
     required this.username,
   });
 

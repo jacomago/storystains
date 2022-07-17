@@ -21,4 +21,13 @@ class AuthService {
   Future<void> delete() async {
     await ServiceLocator.sl.get<RestClient>().deleteUser();
   }
+
+  /// Wrapper around [RestClient.logout]
+  Future<void> logout() async {
+    await ServiceLocator.sl.get<RestClient>().logout();
+  }
+
+  /// Wrapper around [RestClient.getCurrentUser]
+  Future<UserResp> getUser() async =>
+      await ServiceLocator.sl.get<RestClient>().getCurrentUser();
 }

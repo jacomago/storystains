@@ -25,7 +25,7 @@ enum AuthStatus {
   /// Starting
   initial,
 
-  /// Authenticated (have a token)
+  /// Authenticated (have a cookie)
   authenticated,
 
   /// Not auth
@@ -50,17 +50,15 @@ enum LoginRegister {
 /// representation of the users authentiction status
 class AuthState extends ChangeNotifier {
   final AuthService _service;
-  late final AuthStorage _storage;
 
   User? _user;
   AuthEvent? _event;
   AuthStatus _status = AuthStatus.initial;
   bool _isLoading = false;
-  String? _token;
   String _error = '';
   LoginRegister _loginRegister = LoginRegister.login;
 
-  /// Get user with token
+  /// Get current user
   User? get user => _user;
 
   /// Get user profile of logged in user
@@ -72,9 +70,6 @@ class AuthState extends ChangeNotifier {
 
   /// Current status
   AuthStatus get status => _status;
-
-  /// Token for auth
-  String? get token => _token;
 
   /// Any error message
   String get error => _error;
@@ -95,13 +90,14 @@ class AuthState extends ChangeNotifier {
   bool get isFailed => _status == AuthStatus.failed;
 
   /// representation of the users authentiction status
-  AuthState(this._service, [AuthStorage? storage]) {
+  AuthState(
+    this._service,
+  ) {
     _event = null;
     _status = AuthStatus.initial;
     _isLoading = false;
     _loginRegister = LoginRegister.login;
     _error = '';
-    _storage = storage ?? AuthStorage();
   }
 
   /// Swtich between loggin in or registering
@@ -115,18 +111,28 @@ class AuthState extends ChangeNotifier {
   /// if same user as another user profile
   bool sameUser(UserProfile other) => _user?.username == other.username;
 
-  /// load toekn from secure storage on start
+  /// load ton from secure storage on start
   Future<void> init() async {
-    final user = await _storage.getUser();
+    _isLoading = true;
 
-    if (user != null) {
-      _user = user;
-      _token = user.token;
+    notifyListeners();
+
+    try {
+      final data = await _service.getUser();
+
+      if (data.user.username.isNotEmpty) {
+        _user = data.user;
+
+        _status = AuthStatus.authenticated;
+      } else {
+        _status = AuthStatus.notauthenticated;
+      }
+    } on DioError catch (e) {
+      _status = AuthStatus.failed;
+      _error = errorMessage(e);
     }
 
-    _status =
-        _user != null ? AuthStatus.authenticated : AuthStatus.notauthenticated;
-
+    _isLoading = false;
     notifyListeners();
   }
 
@@ -144,10 +150,8 @@ class AuthState extends ChangeNotifier {
           ? await _service.login(username, password)
           : await _service.register(username, password);
 
-      if (data.user.token.isNotEmpty) {
+      if (data.user.username.isNotEmpty) {
         _user = data.user;
-
-        _storage.login(_user!);
 
         _status = AuthStatus.authenticated;
       } else {
@@ -171,20 +175,17 @@ class AuthState extends ChangeNotifier {
 
     try {
       await _service.delete();
-      _storage.logout();
 
       _status = AuthStatus.deleted;
       _error = '';
       _event = null;
       _user = null;
-      _token = null;
       _isLoading = false;
     } on DioError catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
     }
 
-    _isLoading = false;
     notifyListeners();
   }
 
@@ -195,15 +196,20 @@ class AuthState extends ChangeNotifier {
 
     notifyListeners();
 
-    _storage.logout();
+    try {
+      await _service.logout();
 
-    _status = AuthStatus.initial;
-    _error = '';
-    _event = null;
-    _user = null;
-    _token = null;
+      _status = AuthStatus.initial;
+      _error = '';
+      _event = null;
+      _user = null;
+      _isLoading = false;
+    } on DioError catch (e) {
+      _status = AuthStatus.failed;
+      _error = errorMessage(e);
+    }
+
     _isLoading = false;
-
     notifyListeners();
   }
 

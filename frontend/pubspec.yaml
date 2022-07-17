@@ -29,8 +29,8 @@ dependencies:
   intl: ^0.17.0
   flutter_svg: ^1.1.0
   collection: ^1.16.0
-  bottom_drawer: ^0.0.5
-  # currently not secure/in beta on the web
+  dio_cookie_manager: ^2.0.0 
+  cookie_jar: ^3.0.1
   flutter_secure_storage: ^5.0.2
 
 
