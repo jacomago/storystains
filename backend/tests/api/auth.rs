@@ -66,7 +66,7 @@ pub async fn route_returns_unauth_when_using_valid_but_non_existant_user<T>(
 
     // create new user
     let user = TestUser::generate();
-    // take token
+    // store user
     user.store(&app).await;
     // delete user
     app.delete_user().await;

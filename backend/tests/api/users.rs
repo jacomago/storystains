@@ -69,7 +69,7 @@ async fn login_returns_bad_request_for_deleted_user() {
 
     // create new user
     let user = TestUser::generate();
-    // take token
+    // store user
     user.store(&app).await;
     // delete user
     app.delete_user().await;
@@ -101,7 +101,6 @@ async fn login_returns_user_details_after_correct_request() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], app.test_user.username);
-    assert!(json["user"]["token"].is_string());
 
     app.teardown().await;
 }
@@ -155,7 +154,6 @@ async fn signup_return_user_details_after_correct_request() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["user"]["username"], username);
-    assert!(json["user"]["token"].is_string());
 
     app.teardown().await;
 }
@@ -167,7 +165,7 @@ async fn delete_user_deletes_user() {
 
     // create new user
     let user = TestUser::generate();
-    // take token
+    // store user
     user.store(&app).await;
     // delete user
     app.delete_user().await;
