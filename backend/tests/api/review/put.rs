@@ -11,13 +11,7 @@ use crate::{
 use super::review_relative_url;
 
 impl TestApp {
-    pub async fn put_review(
-        &self,
-        username: &str,
-        slug: &str,
-        body: String,
-        token: &str,
-    ) -> reqwest::Response {
+    pub async fn put_review(&self, username: &str, slug: &str, body: String) -> reqwest::Response {
         self.api_client
             .put(&format!(
                 "{}{}",
@@ -25,7 +19,6 @@ impl TestApp {
                 review_relative_url(username, slug)
             ))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -46,20 +39,15 @@ async fn put_review_returns_unauth_when_not_logged_in() {
 async fn put_review_returns_a_200_for_valid_json_data() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let story = TestStory::generate();
     let body = json!({"review": {"story": story.create_inner_json(), "body":"3stars" }});
     let response = app
-        .put_review(
-            &app.test_user.username,
-            review.slug(),
-            body.to_string(),
-            &token,
-        )
+        .put_review(&app.test_user.username, review.slug(), body.to_string())
         .await;
 
     // Assert
@@ -81,7 +69,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
 async fn put_review_returns_not_found_for_non_existant_review() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let response = app
@@ -89,7 +77,6 @@ async fn put_review_returns_not_found_for_non_existant_review() {
             &app.test_user.username,
             "dune",
             json!({"review": {"body":"5stars" }}).to_string(),
-            &token,
         )
         .await;
 
@@ -102,16 +89,11 @@ async fn put_review_returns_not_found_for_non_existant_review() {
 async fn put_review_returns_bad_request_for_invalid_slug() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let response = app
-        .put_review(
-            &app.test_user.username,
-            &"a".repeat(257),
-            "".to_string(),
-            &token,
-        )
+        .put_review(&app.test_user.username, &"a".repeat(257), "".to_string())
         .await;
 
     // Assert
@@ -123,10 +105,10 @@ async fn put_review_returns_bad_request_for_invalid_slug() {
 async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let story = TestStory::generate();
     let test_cases = vec![
@@ -142,12 +124,7 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
     for (body, description) in test_cases {
         // Act
         let response = app
-            .put_review(
-                &app.test_user.username,
-                review.slug(),
-                body.to_string(),
-                &token,
-            )
+            .put_review(&app.test_user.username, review.slug(), body.to_string())
             .await;
 
         // Assert
@@ -165,22 +142,17 @@ async fn put_review_returns_a_400_when_fields_are_present_but_invalid() {
 async fn put_review_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
     let story = TestStory::generate();
 
     let body = json!({"review": { "story": story.create_inner_json(), "body":"3stars" }});
 
     // Act
     let response = app
-        .put_review(
-            &app.test_user.username,
-            review.slug(),
-            body.to_string(),
-            &token,
-        )
+        .put_review(&app.test_user.username, review.slug(), body.to_string())
         .await;
 
     // Assert
@@ -195,24 +167,19 @@ async fn put_review_returns_json() {
 async fn put_review_only_allows_creator_to_modify() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let review = TestReview::generate(&app.test_user);
-    review.store(&app, &token).await;
+    review.store(&app).await;
 
     let body = json!({"review": {"body":"3stars" }});
 
     let new_user = TestUser::generate();
-    let new_token = new_user.store(&app).await;
+    new_user.store(&app).await;
 
     // Act
     let response = app
-        .put_review(
-            &app.test_user.username,
-            review.slug(),
-            body.to_string(),
-            &new_token,
-        )
+        .put_review(&app.test_user.username, review.slug(), body.to_string())
         .await;
 
     // Assert

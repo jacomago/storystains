@@ -56,10 +56,10 @@ impl TestStory {
         self
     }
 
-    pub async fn store(&self, app: &TestApp, token: &str) {
+    pub async fn store(&self, app: &TestApp) {
         let body = self.create_json();
         // Act
-        let response = app.post_story(body.to_string(), token).await;
+        let response = app.post_story(body.to_string()).await;
 
         // Assert
         assert_eq!(response.status(), StatusCode::OK);

@@ -61,25 +61,24 @@ impl TestReview {
         }
     }
 
-    pub async fn store(&self, app: &TestApp, token: &str) {
+    pub async fn store(&self, app: &TestApp) {
         let body = self.create_json();
         // Act
-        let response = app.post_review(body.to_string(), token).await;
+        let response = app.post_review(body.to_string()).await;
 
         // Assert
         assert_eq!(response.status(), StatusCode::OK);
     }
 
-    pub async fn store_emotions(&self, app: &TestApp, token: &str) {
+    pub async fn store_emotions(&self, app: &TestApp) {
         for e in self.emotions.as_ref().unwrap() {
-            e.store_by_user(app, &app.test_user, token, &self.slug)
-                .await;
+            e.store_by_user(app, &app.test_user, &self.slug).await;
         }
     }
 
-    pub async fn store_emotions_by_user(&self, app: &TestApp, user: &TestUser, token: &str) {
+    pub async fn store_emotions_by_user(&self, app: &TestApp, user: &TestUser) {
         for e in self.emotions.as_ref().unwrap() {
-            e.store_by_user(app, user, token, &self.slug).await;
+            e.store_by_user(app, user, &self.slug).await;
         }
     }
 

@@ -13,7 +13,7 @@ use crate::{
 use super::review_relative_url_prefix;
 
 impl TestApp {
-    pub async fn post_review(&self, body: String, token: &str) -> reqwest::Response {
+    pub async fn post_review(&self, body: String) -> reqwest::Response {
         self.api_client
             .post(&format!(
                 "{}{}",
@@ -21,7 +21,6 @@ impl TestApp {
                 review_relative_url_prefix()
             ))
             .header("Content-Type", "application/json")
-            .bearer_auth(token)
             .body(body)
             .send()
             .await
@@ -58,12 +57,12 @@ async fn post_review_returns_unauth_when_using_valid_but_non_existant_user() {
 async fn post_review_persists_the_new_review() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     // Act
     let story = TestStory::generate();
     let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
-    let response = app.post_review(body.to_string(), &token).await;
+    let response = app.post_review(body.to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -84,7 +83,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     // Arrange
     let app = TestApp::spawn_app().await;
 
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
     let story = TestStory::generate();
     let test_cases = vec![
         (
@@ -97,7 +96,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
 
     for (invalid_body, error_message) in test_cases {
         // Act
-        let response = app.post_review(invalid_body.to_string(), &token).await;
+        let response = app.post_review(invalid_body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -115,7 +114,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
 async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let story = TestStory::generate();
     let test_cases = vec![
@@ -130,7 +129,7 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
     ];
     for (body, description) in test_cases {
         // Act
-        let response = app.post_review(body.to_string(), &token).await;
+        let response = app.post_review(body.to_string()).await;
 
         // Assert
         assert_eq!(
@@ -147,13 +146,13 @@ async fn post_review_returns_a_400_when_fields_are_present_but_invalid() {
 async fn post_review_returns_json() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let story = TestStory::generate();
     let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
 
     // Act
-    let response = app.post_review(body.to_string(), &token).await;
+    let response = app.post_review(body.to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -168,17 +167,17 @@ async fn post_review_returns_json() {
 async fn post_review_same_story_different_user() {
     // Arrange
     let app = TestApp::spawn_app().await;
-    let token = app.test_user.login(&app).await;
+    app.test_user.login(&app).await;
 
     let story = TestStory::generate();
     let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
 
     // Act
-    app.post_review(body.to_string(), &token).await;
+    app.post_review(body.to_string()).await;
     let other_user = TestUser::generate();
-    let token = other_user.store(&app).await;
+    other_user.store(&app).await;
     let body = json!({"review": {"story": story.create_inner_json(), "body":"5stars" }});
-    let response = app.post_review(body.to_string(), &token).await;
+    let response = app.post_review(body.to_string()).await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
