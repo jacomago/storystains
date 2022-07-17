@@ -1,7 +1,7 @@
 application:
   host: 127.0.0.1
   base_url: "http://localhost"
-  hmac_secret: "E1Ta/KyHHCx8V6GAW1CS2/7IkzTkYEIdDL+FlW8N280="
+  hmac_secret: "super-long-and-secret-random-key-needed-to-verify-message-integrity"
 database:
   host: "localhost"
   require_ssl: false
