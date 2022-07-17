@@ -48,16 +48,14 @@ class StoryItem extends StatelessWidget {
   const StoryItem({Key? key, required this.story}) : super(key: key);
 
   void _navigate(StoryQuery query, BuildContext context) {
-    Navigator.of(context)
-        .push(
-          query.route(
-            Routes.reviews,
-            (q) => StoryFilterPage(
-              query: q,
-            ),
-          ),
-        )
-        .then((value) => context.pop());
+    Navigator.of(context).push(
+      query.route(
+        Routes.reviews,
+        (q) => StoryFilterPage(
+          query: q,
+        ),
+      ),
+    );
   }
 
   void _onTapTitle(BuildContext context) {
