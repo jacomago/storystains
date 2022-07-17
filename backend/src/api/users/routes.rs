@@ -6,7 +6,7 @@ use sqlx::PgPool;
 
 use crate::{
     api::{reviews::delete_reviews_by_user_id, shared::ApiError},
-    auth::{validate_credentials, AuthError, AuthUser, Credentials},
+    auth::{e500, validate_credentials, AuthError, AuthUser, Credentials},
     session_state::TypedSession,
 };
 
@@ -104,6 +104,15 @@ pub async fn signup(
         .insert_user_id(*user_id)
         .map_err(|e| (AuthError::UnexpectedError(e.into())))?;
     Ok(HttpResponse::Ok().json(UserResponse::from(stored)))
+}
+
+pub async fn log_out(session: TypedSession) -> Result<HttpResponse, actix_web::Error> {
+    if session.get_user_id().map_err(e500)?.is_none() {
+        Ok(HttpResponse::Ok().finish())
+    } else {
+        session.log_out();
+        Ok(HttpResponse::Ok().finish())
+    }
 }
 
 /// Delete user api handler currently deletes all user's review
