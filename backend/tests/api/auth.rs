@@ -20,6 +20,7 @@ where
 {
     // Arrange
     let app = TestApp::spawn_app().await;
+    app.test_user.logout(&app).await;
 
     // Act
     let response = app
@@ -41,7 +42,6 @@ pub async fn route_returns_unauth_when_logged_out<T>(
 {
     // Arrange
     let app = TestApp::spawn_app().await;
-    app.test_user.login(&app).await;
     app.test_user.logout(&app).await;
 
     // Act
