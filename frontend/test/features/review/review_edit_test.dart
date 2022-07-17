@@ -1,3 +1,4 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,7 +55,7 @@ void main() {
     // in this set of tests. The full setup includes the dio
     // http client and so tries to do network requests which don't
     // timeout.
-    final dio = ServiceLocator.setupDio();
+    final dio = ServiceLocator.setupDio(PersistCookieJar());
     ServiceLocator.setupRest(dio);
     ServiceLocator.setupSecureStorage();
   });
