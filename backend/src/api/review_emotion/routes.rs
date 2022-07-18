@@ -157,7 +157,7 @@ pub struct PutReviewEmotionData {
 impl TryFrom<PutReviewEmotionData> for UpdateReviewEmotion {
     type Error = String;
     fn try_from(value: PutReviewEmotionData) -> Result<Self, Self::Error> {
-        let emotion = value.emotion;
+        let emotion = value.emotion.map(EmotionName::parse).transpose()?;
         let notes = value.notes.map(LongFormText::parse).transpose()?;
         let position = value.position.map(EmotionPosition::parse).transpose()?;
         Ok(Self {

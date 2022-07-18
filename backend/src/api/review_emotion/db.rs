@@ -154,7 +154,7 @@ pub async fn update_review_emotion(
     position: EmotionPosition,
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredReviewEmotion, sqlx::Error> {
-    let emotion = review_emotion.emotion.as_ref();
+    let emotion = review_emotion.emotion.as_ref().map(|t| t.as_ref());
     let update_position = review_emotion.position.as_ref().map(|t| t.as_ref());
     let notes = review_emotion.notes.as_ref().map(|t| t.as_ref());
     let stored = sqlx::query_as!(

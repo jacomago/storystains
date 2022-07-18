@@ -12,7 +12,7 @@ pub struct NewReviewEmotion {
 }
 
 pub struct UpdateReviewEmotion {
-    pub emotion: Option<String>,
+    pub emotion: Option<EmotionName>,
     pub position: Option<EmotionPosition>,
     pub notes: Option<LongFormText>,
 }
