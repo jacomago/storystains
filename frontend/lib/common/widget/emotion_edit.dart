@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../features/emotions/emotion.dart';
 import '../../features/emotions/emotion_color.dart';
-import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 
 /// A widget for showing and selecting an emotion on click
