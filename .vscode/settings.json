@@ -26,8 +26,4 @@
   "git.branchProtection": [
     "main"
   ],
-  "cSpell.enabled": true,
-  "cSpell.words": [
-    "Colors"
-  ],
 }
