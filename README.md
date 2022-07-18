@@ -9,95 +9,16 @@ Yet another Goodreads alternative. Focusing on documenting the stain a story lea
 Heavily inspired by [zero2prod](https://zero2prod.com) and [RealWorld](https://github.com/gothinkster/realworld) in particular [CodeIdeal's implementation](https://github.com/CodeIdeal/realworld_flutter) and
 [snamiki1212's actix version](https://github.com/snamiki1212/realworld-v1-rust-actix-web-diesel).
 
-## Backend
+## Requirements
 
-Backend is written in rust using the [actix-web](https://actix.rs/) framework. Use [rustup](https://rustup.rs/) to install.
-
-### Backend commands
-
-Test everything.
-
-```sh
-    cargo test
-```
-
-Check everything.
-
-```sh
-    cargo clippy
-```
-
-Format everything.
-
-```sh
-    cargo fmt
-```
-
-Build release version.
-
-```sh
-    cargo build --release
-```
-
-Update all packages.
-
-```sh
-    cargo update
-```
-
-Run version and recompile on changes
-
-```sh
-    cargo watch -x run
-```
-
-Update sqlx offline [files](/sqlx-data.json) for docker building. (use cargo install sqlx-cli to use)
-
-```sh
-    cargo sqlx prepare -- --lib      
-```
-
-Start up postgres docker container with a [script](/scripts/init_db.sh).
-
-```sh
-    ./scripts/init_db.sh
-```
-
-## Frontend
-
-[Frontend](/frontend) written in Flutter. To install go to [Flutter install](https://docs.flutter.dev/get-started/install), it takes a while ...
-
-### Frontend commands
-
-Test everything.
-
-```sh
-    flutter test
-```
-
-Generate all auto-generated files.
-
-```sh
-    flutter pub run build_runner build --delete-conflicting-outputs
-```
-
-Run debug version in web with a specific port (useful for local testing)
-
-```sh
-    flutter run -d chrome --web-port=50547
-```
-
-Build a web release.
-
-```sh
-    flutter build web --release
-```
-
-Update all packages to latest acceptable with dependencies.
-
-```sh
-    flutter pub upgrade --major-versions
-```
+- Backend
+  - rust  (use [rustup](https://rustup.rs/) to install)
+  - sqlx-cli (for running migrations)
+  - Docker (for running Redis and Postgres)
+- Frontend
+  - flutter (To install go to [Flutter install](https://docs.flutter.dev/get-started/install), it takes a while ...)
+- Deployment
+  - Using [fly](http://fly.io) (since using docker other sites are easy to setup)
 
 ## Putting it all together
 
@@ -109,7 +30,7 @@ Using the [Dockerfile](/Dockerfile) will build a release version of the flutter 
 
 ### Deployment
 
-Currently using [fly.io](http://fly.io) with their postgres instance.
+Currently using [fly.io](http://fly.io) with their Postgres instance and using a Redis instance.
 
 ```sh
     flyctl deploy --remote-only 
