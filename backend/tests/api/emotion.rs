@@ -1,48 +1,8 @@
 use reqwest::StatusCode;
 use serde_json::Value;
+use storystains::api::EMOTION_STRINGS;
 
 use crate::helpers::TestApp;
-pub const EMOTION_STRINGS: [&str; 39] = [
-    "Anger",
-    "Disgust",
-    "Fear",
-    "Joy",
-    "Sadness",
-    "Surprise",
-    "Outrage",
-    "Trapped",
-    "Cruelty",
-    "Betrayl",
-    "What the?",
-    "Horror",
-    "Eww",
-    "Pain Empathy",
-    "You ate it!",
-    "Desperation",
-    "Devastation",
-    "Spooked",
-    "Faint Hope",
-    "Amazement",
-    "Disappointment",
-    "Sternness",
-    "Indignation",
-    "Rage",
-    "Disdain",
-    "Aversion",
-    "Revulsion",
-    "Concern",
-    "Anxiety",
-    "Terror",
-    "Satisfaction",
-    "Amusement",
-    "Laughter",
-    "Dejection",
-    "Melancholy",
-    "Grief",
-    "Alertness",
-    "Wonder",
-    "Shock",
-];
 
 impl TestApp {
     pub async fn get_emotions(&self) -> reqwest::Response {

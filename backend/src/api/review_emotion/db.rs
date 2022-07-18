@@ -125,7 +125,7 @@ pub async fn create_review_emotion(
         id,
         username.as_ref(),
         review_slug.as_ref(),
-        review_emotion.emotion,
+        review_emotion.emotion.as_ref(),
         review_emotion.position.as_ref(),
         review_emotion.notes.as_ref().map(|n| n.as_ref()),
     )

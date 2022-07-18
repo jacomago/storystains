@@ -1,9 +1,9 @@
 use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
+use storystains::api::EMOTION_STRINGS;
 
 use crate::{
     auth::{route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in},
-    emotion::EMOTION_STRINGS,
     helpers::TestApp,
     review::TestReview,
 };

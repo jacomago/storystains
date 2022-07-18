@@ -128,9 +128,9 @@ VALUES (
     ),
     (
         10,
-        'Betrayl',
+        'Betrayal',
         'Combination of Anger and Sadness.',
-        '/emotions/betrayl.svg',
+        '/emotions/betrayal.svg',
         0,
         3,
         3,

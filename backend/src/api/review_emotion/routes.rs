@@ -7,7 +7,7 @@ use sqlx::PgPool;
 
 use crate::{
     api::{
-        emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans},
+        emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, EmotionName},
         reviews::{ReviewPath, ReviewSlug},
         shared::{long_form_text::LongFormText, put_block::block_non_creator, ApiError},
         users::NewUsername,
@@ -42,7 +42,7 @@ pub struct PostReviewEmotion {
 impl TryFrom<PostReviewEmotionData> for NewReviewEmotion {
     type Error = String;
     fn try_from(value: PostReviewEmotionData) -> Result<Self, Self::Error> {
-        let emotion = value.emotion;
+        let emotion = EmotionName::parse(value.emotion)?;
 
         let notes = match &value.notes {
             Some(t) => Some(LongFormText::parse(t.to_string())?),

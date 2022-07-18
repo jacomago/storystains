@@ -36,7 +36,7 @@ async fn get_review_logged_in_returns_json() {
         .get_review_json(&app.test_user.username, review.slug())
         .await;
     let response_review: TestReviewResponse = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(review, response_review.review);
+    assert_eq!(review, TestReview::from(response_review.review));
 
     app.teardown().await;
 }
@@ -57,7 +57,7 @@ async fn get_review_logged_out_returns_json() {
         .get_review_json(&app.test_user.username, review.slug())
         .await;
     let response_review: TestReviewResponse = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(review, response_review.review);
+    assert_eq!(review, TestReview::from(response_review.review));
 
     app.teardown().await;
 }
