@@ -4,7 +4,7 @@ use serde_json::{json, Value};
 
 use crate::{
     helpers::{long_form, TestApp, TestUser},
-    review_emotion::test_review_emotion::TestReviewEmotion,
+    review_emotion::test_review_emotion::{TestReviewEmotion, TestReviewEmotionResponseData},
     story::TestStory,
 };
 
@@ -18,9 +18,37 @@ pub fn review_relative_url_prefix() -> String {
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewResponse {
-    pub review: TestReview,
+    pub review: TestReviewData,
+}
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct TestReviewData {
+    story: TestStory,
+    body: String,
+    slug: String,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+    emotions: Option<Vec<TestReviewEmotionResponseData>>,
+    user: TestUserProfile,
 }
 
+impl From<TestReviewData> for TestReview {
+    fn from(d: TestReviewData) -> Self {
+        TestReview {
+            story: d.story,
+            body: d.body,
+            slug: d.slug,
+            created_at: d.created_at,
+            updated_at: d.updated_at,
+            /// TODO Shouldn't need clone here
+            emotions: d.emotions.map(|o| {
+                o.iter()
+                    .map(|e| TestReviewEmotion::from(e.clone()))
+                    .collect::<Vec<TestReviewEmotion>>()
+            }),
+            user: d.user,
+        }
+    }
+}
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReview {
     story: TestStory,

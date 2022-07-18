@@ -47,8 +47,6 @@ actix-session = { version = "0.7.0", features = ["redis-rs-tls-session"] }
 actix-cors = "0.6.1"
 actix-web-httpauth = "0.6.0"
 actix-files = "0.6.0"
-strum = "0.24"
-strum_macros = "0.24.0"
 futures-lite = "1.12.0"
 
 [dependencies.reqwest]

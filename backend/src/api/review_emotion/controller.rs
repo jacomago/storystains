@@ -13,7 +13,7 @@ use super::{
     name = "Retreive review's emotion details from the database", 
     skip( pool),
     fields(
-        review_jid = %review_id,
+        review_id = %review_id,
     )
 )]
 pub async fn read_review_emotions(

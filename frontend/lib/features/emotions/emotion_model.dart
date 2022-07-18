@@ -21,11 +21,35 @@ class Emotion {
   /// Description of emotion
   final String description;
 
+  /// Amount of Joy
+  final int joy;
+
+  /// Amount of Sadness
+  final int sadness;
+
+  /// Amount of Anger
+  final int anger;
+
+  /// Amount of disgust
+  final int disgust;
+
+  /// Amount of surprise
+  final int surprise;
+
+  /// Amount of Fear
+  final int fear;
+
   /// representation of an emotion
   const Emotion({
     required this.name,
     required this.iconUrl,
     required this.description,
+    required this.joy,
+    required this.sadness,
+    required this.anger,
+    required this.disgust,
+    required this.surprise,
+    required this.fear,
   });
 
   /// base url for getting icons (remove the api from the end of base url)

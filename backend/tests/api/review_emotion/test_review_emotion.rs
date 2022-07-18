@@ -1,11 +1,12 @@
 use crate::{
+    emotion::TestEmotion,
     helpers::{long_form, TestApp, TestUser},
     review::review_relative_url,
 };
 use rand::Rng;
 use reqwest::StatusCode;
 use serde_json::{json, Value};
-use storystains::api::{emotions, EmotionData};
+use storystains::api::EMOTION_STRINGS;
 
 pub fn review_emotion_relative_url_prefix(username: &str, slug: &str) -> String {
     format!("{}/emotions", review_relative_url(username, slug))
@@ -20,12 +21,29 @@ pub fn review_emotion_relative_url(username: &str, slug: &str, position: &i32) -
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewEmotionResponse {
-    pub review_emotion: TestReviewEmotion,
+    pub review_emotion: TestReviewEmotionResponseData,
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize, Clone)]
+pub struct TestReviewEmotionResponseData {
+    pub emotion: TestEmotion,
+    pub position: i32,
+    pub notes: String,
+}
+
+impl From<TestReviewEmotionResponseData> for TestReviewEmotion {
+    fn from(d: TestReviewEmotionResponseData) -> Self {
+        TestReviewEmotion {
+            emotion: d.emotion.name,
+            position: d.position,
+            notes: d.notes,
+        }
+    }
 }
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewEmotion {
-    pub emotion: EmotionData,
+    pub emotion: String,
     pub position: i32,
     pub notes: String,
 }
@@ -33,16 +51,16 @@ pub struct TestReviewEmotion {
 impl TestReviewEmotion {
     fn create_json(&self) -> Value {
         json!({"review_emotion": {
-            "emotion": self.emotion.name,
+            "emotion": self.emotion,
             "position":self.position,
             "notes": self.notes.to_string()
         }})
     }
 
     pub fn generate(position: Option<i32>) -> Self {
-        let v = emotions();
         Self {
-            emotion: v[rand::thread_rng().gen_range(0..v.len())].into(),
+            emotion: EMOTION_STRINGS[rand::thread_rng().gen_range(0..EMOTION_STRINGS.len())]
+                .to_string(),
             position: position.unwrap_or_else(|| rand::thread_rng().gen_range(0..100)),
             notes: long_form(),
         }

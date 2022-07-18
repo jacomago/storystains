@@ -80,7 +80,6 @@ class ReviewEmotionEdit extends StatelessWidget {
                 child: EmotionEdit(
                   emotion: state.emotionController.value,
                   height: 100,
-                  width: 100,
                   handler: (value) => {state.emotionController.value = value!},
                 ),
               ),

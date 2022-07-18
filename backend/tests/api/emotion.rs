@@ -1,5 +1,6 @@
 use reqwest::StatusCode;
 use serde_json::Value;
+use storystains::api::EMOTION_STRINGS;
 
 use crate::helpers::TestApp;
 
@@ -24,6 +25,24 @@ impl TestApp {
     }
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct EmotionsResponse {
+    emotions: Vec<TestEmotion>,
+}
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
+pub struct TestEmotion {
+    pub name: String,
+    pub description: String,
+    pub icon_url: String,
+    pub joy: i32,
+    pub sadness: i32,
+    pub anger: i32,
+    pub disgust: i32,
+    pub surprise: i32,
+    pub fear: i32,
+}
+
 #[tokio::test]
 async fn get_emotions_returns_list() {
     // Arrange
@@ -41,8 +60,11 @@ async fn get_emotions_returns_list() {
     assert!(json["emotions"].is_array());
 
     let emotions = json["emotions"].as_array().unwrap();
-    assert_eq!(emotions.len(), 21);
-    assert!(emotions.iter().any(|x| x["name"] == "Joy"));
+    assert_eq!(emotions.len(), EMOTION_STRINGS.len());
+    // TODO write more efficient version
+    for e in EMOTION_STRINGS {
+        assert!(emotions.iter().any(|x| x["name"] == e));
+    }
     app.teardown().await;
 }
 

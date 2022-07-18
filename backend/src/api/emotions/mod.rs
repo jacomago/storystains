@@ -1,12 +1,10 @@
 mod db;
 mod model;
 pub mod routes;
-pub use routes::*;
-pub mod check;
-pub use check::*;
 pub use db::read_emotion_by_id_pool;
 pub use db::read_emotion_by_id_trans;
-pub use model::emotions;
-pub use model::Emotion;
 pub use model::EmotionData;
+pub use model::EmotionName;
 pub use model::StoredEmotion;
+pub use model::EMOTION_STRINGS;
+pub use routes::*;

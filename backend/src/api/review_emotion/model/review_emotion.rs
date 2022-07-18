@@ -1,18 +1,18 @@
 use crate::api::{
-    emotions::{Emotion, EmotionData, StoredEmotion},
+    emotions::{EmotionData, EmotionName, StoredEmotion},
     shared::long_form_text::LongFormText,
 };
 
 use super::EmotionPosition;
 
 pub struct NewReviewEmotion {
-    pub emotion: Emotion,
+    pub emotion: EmotionName,
     pub position: EmotionPosition,
     pub notes: Option<LongFormText>,
 }
 
 pub struct UpdateReviewEmotion {
-    pub emotion: Option<Emotion>,
+    pub emotion: Option<EmotionName>,
     pub position: Option<EmotionPosition>,
     pub notes: Option<LongFormText>,
 }

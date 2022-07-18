@@ -119,5 +119,6 @@ class StoryTextEdit extends StatelessWidget {
         style: context.titleMedium,
         controller: textController,
         onChanged: onChanged,
+        maxLines: 2,
       );
 }

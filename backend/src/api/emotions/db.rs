@@ -7,7 +7,17 @@ pub async fn retreive_all_emotions(pool: &PgPool) -> Result<Vec<StoredEmotion>, 
     let stored = sqlx::query_as!(
         StoredEmotion,
         r#"
-            SELECT id, name, description, icon_url
+            SELECT 
+                id, 
+                name,
+                description,
+                icon_url,
+                joy,
+                fear,
+                anger,
+                surprise,
+                disgust,
+                sadness
             FROM emotions
         "#
     )
@@ -20,7 +30,10 @@ pub async fn retreive_all_emotions(pool: &PgPool) -> Result<Vec<StoredEmotion>, 
     Ok(stored)
 }
 
-#[tracing::instrument(name = "Get emotion details from the db", skip(transaction))]
+#[tracing::instrument(
+    name = "Get emotion details from id in the db by transaction",
+    skip(transaction)
+)]
 pub async fn read_emotion_by_id_trans(
     id: i32,
     transaction: &mut Transaction<'_, Postgres>,
@@ -28,9 +41,19 @@ pub async fn read_emotion_by_id_trans(
     let stored = sqlx::query_as!(
         StoredEmotion,
         r#"
-            SELECT id, name, description, icon_url
-            FROM emotions
-            WHERE id = $1
+        SELECT 
+            id, 
+            name,
+            description,
+            icon_url,
+            joy,
+            fear,
+            anger,
+            surprise,
+            disgust,
+            sadness
+        FROM emotions
+        WHERE id = $1
         "#,
         id
     )
@@ -43,16 +66,59 @@ pub async fn read_emotion_by_id_trans(
     Ok(stored)
 }
 
-#[tracing::instrument(name = "Get emotion details from the db", skip(pool))]
+#[tracing::instrument(name = "Get emotion details from id in the db by pool", skip(pool))]
 pub async fn read_emotion_by_id_pool(id: i32, pool: &PgPool) -> Result<StoredEmotion, sqlx::Error> {
     let stored = sqlx::query_as!(
         StoredEmotion,
         r#"
-            SELECT id, name, description, icon_url
-            FROM emotions
-            WHERE id = $1
+        SELECT 
+            id, 
+            name,
+            description,
+            icon_url,
+            joy,
+            fear,
+            anger,
+            surprise,
+            disgust,
+            sadness
+        FROM emotions
+        WHERE id = $1
         "#,
         id
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(stored)
+}
+
+#[tracing::instrument(name = "Get emotion details from name in the db by pool", skip(pool))]
+pub async fn read_emotion_by_name_pool(
+    name: &str,
+    pool: &PgPool,
+) -> Result<StoredEmotion, sqlx::Error> {
+    let stored = sqlx::query_as!(
+        StoredEmotion,
+        r#"
+        SELECT 
+            id, 
+            name,
+            description,
+            icon_url,
+            joy,
+            fear,
+            anger,
+            surprise,
+            disgust,
+            sadness
+        FROM emotions
+        WHERE name = $1
+        "#,
+        name
     )
     .fetch_one(pool)
     .await

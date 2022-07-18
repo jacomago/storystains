@@ -75,6 +75,27 @@ class ExtraColors {
   static const paper = Color(0xffded2c9);
 }
 
+/// Emotion Colors
+class EmotionColors {
+  /// Joy color
+  static const joy = Color.fromARGB(255, 243, 243, 58);
+
+  /// Anger color
+  static const anger = Color.fromARGB(255, 240, 74, 48);
+
+  /// Sadness color
+  static const sadness = Color.fromARGB(255, 58, 98, 243);
+
+  /// Fear color
+  static const fear = Color.fromARGB(255, 184, 58, 243);
+
+  /// Disgust color
+  static const disgust = Color.fromARGB(255, 120, 243, 58);
+
+  /// Surprise color
+  static const surprise = Color.fromARGB(255, 242, 42, 202);
+}
+
 /// How to style the home button
 ButtonStyle homeButtonStyle = OutlinedButton.styleFrom(
   padding: const EdgeInsets.symmetric(horizontal: 18),

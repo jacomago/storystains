@@ -62,8 +62,7 @@ pub async fn db_create_story(
 
     let creator_id = create_or_update_creator(&story.creator, transaction).await?;
 
-    // TODO should be able to use joins and not the inner queries
-    // see https://github.com/launchbadge/sqlx/issues/1126
+    // Only want to insert a new story if the same one doesn't already exist
     let created_story = sqlx::query_as!(
         StoredStory,
         r#" 
@@ -228,8 +227,6 @@ pub async fn read_stories(
     pool: &PgPool,
 ) -> Result<Vec<StoredStory>, sqlx::Error> {
     let limits: Limits = query.query_limits().into();
-    // TODO Should be able to do a triple join
-    // seems like could be a bug https://github.com/launchbadge/sqlx/issues/1852
     let stories = sqlx::query_as!(
         StoredStory,
         r#"
