@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../features/emotions/emotion.dart';
+import '../../features/emotions/emotion_color.dart';
+import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 
 /// A widget for showing and selecting an emotion on click
@@ -17,15 +19,12 @@ class EmotionEdit extends StatelessWidget {
     Key? key,
     required this.emotion,
     required this.handler,
-    this.height,
-    this.width,
+    required this.height,
   }) : super(key: key);
 
   /// Height of the image of the emotion
-  final double? height;
+  final double height;
 
-  /// Width of the image of the emotion
-  final double? width;
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () async => {
@@ -37,7 +36,6 @@ class EmotionEdit extends StatelessWidget {
         child: EmotionImageText(
           emotion: emotion,
           height: height,
-          width: width,
         ),
       );
 }
@@ -51,29 +49,22 @@ class EmotionImageText extends StatelessWidget {
   const EmotionImageText({
     Key? key,
     required this.emotion,
-    this.height,
-    this.width,
+    required this.height,
   }) : super(key: key);
 
   /// Height of the image of the emotion
-  final double? height;
+  final double height;
 
-  /// Width of the image of the emotion
-  final double? width;
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.all(10),
         child: SizedBox(
-          width: width,
-          height: height,
+          width: height,
           child: Column(
             children: [
-              Expanded(
-                child: EmotionImage(
-                  emotion: emotion,
-                  width: width,
-                  height: height,
-                ),
+              EmotionImage(
+                emotion: emotion,
+                height: height,
               ),
               Text(
                 emotion.name,
@@ -94,23 +85,29 @@ class EmotionImage extends StatelessWidget {
   const EmotionImage({
     Key? key,
     required this.emotion,
-    this.width,
-    this.height,
+    required this.height,
   }) : super(key: key);
 
   /// The emotion to display
   final Emotion emotion;
 
   /// Height of the image of the emotion
-  final double? height;
+  final double height;
 
-  /// Width of the image of the emotion
-  final double? width;
   @override
-  Widget build(BuildContext context) => SvgPicture.network(
-        emotion.iconFullUrl(),
-        width: width,
+  Widget build(BuildContext context) => Container(
+        width: height,
         height: height,
-        color: context.colors.onPrimaryContainer,
+        constraints: BoxConstraints.tight(Size(height, height)),
+        color: emotion.color(),
+        child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: SvgPicture.network(
+            emotion.iconFullUrl(),
+            width: height,
+            height: height,
+            color: context.colors.onSurface,
+          ),
+        ),
       );
 }

@@ -24,6 +24,7 @@ class StoryWidget extends StatelessWidget {
                 '${story?.title}',
                 style: context.headlineSmall,
                 semanticsLabel: AppLocalizations.of(context)!.title,
+                maxLines: 2,
               ),
               Text(
                 '(${story?.medium.name})',
@@ -42,9 +43,9 @@ class StoryWidget extends StatelessWidget {
       );
 }
 
-/// Widget for displaying a [Story] without editing
+/// Widget for displaying a [Story] in a list
 class StoryItem extends StatelessWidget {
-  /// Widget for displaying a [Story] without editing
+  /// Widget for displaying a [Story] in a list
   const StoryItem({Key? key, required this.story}) : super(key: key);
 
   void _navigate(StoryQuery query, BuildContext context) {

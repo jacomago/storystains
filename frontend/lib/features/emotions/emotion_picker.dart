@@ -33,7 +33,7 @@ class _EmotionDialogState extends State<EmotionDialog> {
             const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         clipBehavior: Clip.antiAlias,
         child: GridView.count(
-          crossAxisCount: 4,
+          crossAxisCount: 6,
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
           children: Provider.of<EmotionsState>(context)
@@ -53,7 +53,6 @@ class _EmotionDialogState extends State<EmotionDialog> {
                           padding: const EdgeInsets.all(20),
                           child: EmotionImage(
                             emotion: e,
-                            width: 50,
                             height: 50,
                           ),
                         ),

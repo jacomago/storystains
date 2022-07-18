@@ -30,7 +30,6 @@ class CardReviewEmotionsList extends StatelessWidget {
   ) =>
       EmotionImageText(
         emotion: reviewEmotion.emotion,
-        width: 60,
         height: 60,
       );
 }

@@ -96,7 +96,7 @@ class ReviewEmotionsList extends StatelessWidget {
                 : Row(),
             Timeline(
               gutterSpacing: 10,
-              indicatorSize: 100,
+              indicatorSize: 110,
               indicators: reviewEmotions.items
                   .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
                   .toList(),
@@ -156,7 +156,6 @@ class ReviewEmotionsList extends StatelessWidget {
   ) =>
       EmotionEdit(
         emotion: reviewEmotion.emotion,
-        width: 100,
         height: 100,
         handler: (value) =>
             _updateEmotion(context, reviewEmotion, index, value),
