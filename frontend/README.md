@@ -2,15 +2,34 @@
 
 A new Flutter project.
 
-## Getting Started
+## Frontend commands
 
-This project is a starting point for a Flutter application.
+Test everything.
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+    flutter test
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Generate all auto-generated files.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+    flutter pub run build_runner build --delete-conflicting-outputs
+```
+
+Run debug version in web with a specific port (useful for local testing)
+
+```sh
+    flutter run -d chrome --web-port=50547
+```
+
+Build a web release.
+
+```sh
+    flutter build web --release
+```
+
+Update all packages to latest acceptable with dependencies.
+
+```sh
+    flutter pub upgrade --major-versions
+```
