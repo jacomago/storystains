@@ -96,7 +96,7 @@ class ReviewEmotionsList extends StatelessWidget {
                 : Row(),
             Timeline(
               gutterSpacing: 10,
-              indicatorSize: 110,
+              indicatorSize: 111,
               indicators: reviewEmotions.items
                   .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
                   .toList(),

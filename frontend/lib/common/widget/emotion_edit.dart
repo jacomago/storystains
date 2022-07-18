@@ -65,6 +65,9 @@ class EmotionImageText extends StatelessWidget {
                 emotion: emotion,
                 height: height,
               ),
+              const SizedBox(
+                height: 1,
+              ),
               Text(
                 emotion.name,
                 style: context.bodySmall,
@@ -97,9 +100,15 @@ class EmotionImage extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         width: height,
         height: height,
+        decoration: BoxDecoration(
+          color: emotion.color(),
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(15),
+            bottomRight: Radius.circular(15),
+          ),
+        ),
         constraints: BoxConstraints.tight(Size(height, height)),
-        color: emotion.color(),
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(5),
           child: SvgPicture.network(
             emotion.iconFullUrl(),
