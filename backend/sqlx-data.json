@@ -1,80 +1,5 @@
 {
   "db": "PostgreSQL",
-  "01c8c00d585a67871c0d5d26063389a6344a585c2fb286d5dedf0863a038dedb": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "description",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "icon_url",
-          "ordinal": 3,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Int4"
-        ]
-      }
-    },
-    "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n            WHERE id = $1\n        "
-  },
-  "0f5ea20e3ce0ffe2910777bf1ec7fc918bbebb5ceaa3f92d922cdd170cc78a72": {
-    "describe": {
-      "columns": [
-        {
-          "name": "emotion_id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        },
-        {
-          "name": "notes",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Int4",
-          "Int4",
-          "Text",
-          "Text",
-          "Int4",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            UPDATE review_emotions\n            SET emotion_id  = COALESCE($1, emotion_id),\n                position    = COALESCE($2, position),\n                notes       = COALESCE($3, notes)\n            WHERE review_id = (SELECT id\n                                 FROM users,\n                                      reviews\n                                WHERE slug           = $4\n                                  AND users.user_id  = reviews.user_id\n                                  AND users.username = $6\n                                LIMIT 1\n                               )\n               AND position = $5\n            RETURNING emotion_id,\n                      position, \n                      notes\n        "
-  },
   "1a66539537c71a52ffacfe03719f39c0e6b174a6cecccbfba7750371af8cd19d": {
     "describe": {
       "columns": [
@@ -212,7 +137,7 @@
     },
     "query": "\n            SELECT id, name\n            FROM mediums\n        "
   },
-  "3f6b86bc5fd6cbbc74917a1e2475522f1d323a79bb2968df23d73072c06c3cf7": {
+  "557d8e39dc26591c2aaaef34e9281ef5c48670a8881c8d23f578a68d017a4a1a": {
     "describe": {
       "columns": [
         {
@@ -234,19 +159,57 @@
           "name": "icon_url",
           "ordinal": 3,
           "type_info": "Text"
+        },
+        {
+          "name": "joy",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "fear",
+          "ordinal": 5,
+          "type_info": "Int4"
+        },
+        {
+          "name": "anger",
+          "ordinal": 6,
+          "type_info": "Int4"
+        },
+        {
+          "name": "surprise",
+          "ordinal": 7,
+          "type_info": "Int4"
+        },
+        {
+          "name": "disgust",
+          "ordinal": 8,
+          "type_info": "Int4"
+        },
+        {
+          "name": "sadness",
+          "ordinal": 9,
+          "type_info": "Int4"
         }
       ],
       "nullable": [
         false,
         false,
         false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
         false
       ],
       "parameters": {
-        "Left": []
+        "Left": [
+          "Text"
+        ]
       }
     },
-    "query": "\n            SELECT id, name, description, icon_url\n            FROM emotions\n        "
+    "query": "\n        SELECT \n            id, \n            name,\n            description,\n            icon_url,\n            joy,\n            fear,\n            anger,\n            surprise,\n            disgust,\n            sadness\n        FROM emotions\n        WHERE name = $1\n        "
   },
   "55a2a58fcbe135ccec901ab34886a344947135a5824b23c1203a01ef2cc05a57": {
     "describe": {
@@ -313,6 +276,80 @@
     },
     "query": " \n        WITH new_story AS (\n            INSERT INTO stories (id, title, medium_id, creator_id)\n            VALUES (\n                    $1,\n                    $2,\n                    (\n                        SELECT id\n                        FROM mediums\n                        WHERE name = $3\n                        LIMIT 1\n                    ), \n                    $4\n                ) ON CONFLICT (title, medium_id, creator_id) DO NOTHING\n            RETURNING id,\n                title,\n                $3 as medium,\n                (\n                    SELECT name FROM creators WHERE id = $4\n                ) as creator\n        ), old_story AS (\n            SELECT \n                stories.id,\n                stories.title as title,\n                mediums.name as medium,\n                creators.name as creator\n            FROM \n                stories,\n                creators,\n                mediums\n            WHERE creators.id = $4\n                AND stories.medium_id = mediums.id\n                AND mediums.name = $3\n                AND stories.title = $2\n        ), all_story AS (\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM old_story\n        UNION ALL\n        SELECT\n            id,\n            title,\n            medium,\n            creator\n        FROM new_story\n        )\n        SELECT \n            id as \"id!\",\n            title as \"title!\",\n            medium as \"medium!\",\n            creator as \"creator!\"\n        FROM all_story\n        "
   },
+  "62693b2d835dffd6d3d2221c20e2168d3c15ae701449c1af1a8f405b7dcca36f": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "description",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon_url",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "joy",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "fear",
+          "ordinal": 5,
+          "type_info": "Int4"
+        },
+        {
+          "name": "anger",
+          "ordinal": 6,
+          "type_info": "Int4"
+        },
+        {
+          "name": "surprise",
+          "ordinal": 7,
+          "type_info": "Int4"
+        },
+        {
+          "name": "disgust",
+          "ordinal": 8,
+          "type_info": "Int4"
+        },
+        {
+          "name": "sadness",
+          "ordinal": 9,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "\n        SELECT \n            id, \n            name,\n            description,\n            icon_url,\n            joy,\n            fear,\n            anger,\n            surprise,\n            disgust,\n            sadness\n        FROM emotions\n        WHERE id = $1\n        "
+  },
   "67e0d113d44e8ec9667a426f747bad611c5e9cab31f40a7cd49b6919bbf9232f": {
     "describe": {
       "columns": [
@@ -333,6 +370,43 @@
       }
     },
     "query": "\n        WITH new_creator AS (\n            INSERT INTO creators (id, name)\n            VALUES ($1, $2) ON CONFLICT (name) DO NOTHING\n            RETURNING id\n        ), exist_creator AS (\n            SELECT id \n            FROM creators\n            WHERE name = $2\n        )\n        SELECT id \n        FROM new_creator\n        UNION ALL\n        SELECT id\n        FROM exist_creator\n        "
+  },
+  "68c0175fe3c59806b1f39b38bed86c9619dfc368f7ec6b0ac3b5c73e4217db19": {
+    "describe": {
+      "columns": [
+        {
+          "name": "emotion_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "position",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "notes",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text",
+          "Text",
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": " \n            INSERT INTO review_emotions(\n                id,\n                review_id,\n                emotion_id,\n                position,\n                notes\n            )\n            VALUES (\n                $1,\n                (\n                    SELECT id\n                      FROM users,\n                           reviews\n                     WHERE slug           = $3\n                       AND users.user_id  = reviews.user_id\n                       AND users.username = $2\n                     LIMIT 1\n                ), \n                (\n                    SELECT id\n                      FROM emotions\n                     WHERE name           = $4\n                     LIMIT 1\n                ),\n                $5,\n                $6 \n            )\n            RETURNING emotion_id, position, notes\n        "
   },
   "7b0224a2e18604b44f638e14c18e7a2410da4c646ac2284b3864c7237eea2e29": {
     "describe": {
@@ -390,6 +464,78 @@
       }
     },
     "query": "\n        SELECT id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM reviews,\n            users\n        WHERE slug = $2\n            AND users.user_id = reviews.user_id\n            AND users.username = $1\n        "
+  },
+  "812b89efada1b25558c9e381d1dc005052bed0fe898c87753071a9a78358ee70": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "description",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "icon_url",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "joy",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "fear",
+          "ordinal": 5,
+          "type_info": "Int4"
+        },
+        {
+          "name": "anger",
+          "ordinal": 6,
+          "type_info": "Int4"
+        },
+        {
+          "name": "surprise",
+          "ordinal": 7,
+          "type_info": "Int4"
+        },
+        {
+          "name": "disgust",
+          "ordinal": 8,
+          "type_info": "Int4"
+        },
+        {
+          "name": "sadness",
+          "ordinal": 9,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "\n            SELECT \n                id, \n                name,\n                description,\n                icon_url,\n                joy,\n                fear,\n                anger,\n                surprise,\n                disgust,\n                sadness\n            FROM emotions\n        "
   },
   "8219707831f28b7fb24d2dc85cdc894c2eb4e7138306a660c536a0b0caa5b1da": {
     "describe": {
@@ -469,6 +615,61 @@
     },
     "query": "\n            DELETE \n              FROM  review_emotions re\n             WHERE  EXISTS (\n                SELECT 1\n                  FROM reviews\n                 WHERE reviews.id      = re.review_id\n                   AND reviews.user_id = $1\n             )\n        "
   },
+  "b075703bbb6537e8b75e618f6d983bcf2f31db81a8b3f71fec9b43f6d50529f4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "bool",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": []
+      }
+    },
+    "query": "SELECT TRUE;"
+  },
+  "b21b754d7fd5ec222c718581513a7a94971f7a965d2bddd3edffe38a32099a01": {
+    "describe": {
+      "columns": [
+        {
+          "name": "emotion_id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "position",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "notes",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        true
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Int4",
+          "Text",
+          "Text",
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            UPDATE review_emotions\n            SET emotion_id  = COALESCE((\n                                    SELECT id\n                                    FROM emotions\n                                    WHERE name = $1\n                                    LIMIT 1\n                                ), emotion_id),\n                position    = COALESCE($2, position),\n                notes       = COALESCE($3, notes)\n            WHERE review_id = (SELECT id\n                                 FROM users,\n                                      reviews\n                                WHERE slug           = $4\n                                  AND users.user_id  = reviews.user_id\n                                  AND users.username = $6\n                                LIMIT 1\n                               )\n               AND position = $5\n            RETURNING emotion_id,\n                      position, \n                      notes\n        "
+  },
   "b3104f8b288984553cd3301502b5a2d724935d0c526dae392e5effbc02dc528c": {
     "describe": {
       "columns": [
@@ -510,43 +711,6 @@
       }
     },
     "query": "\n        SELECT\n            stories.id as \"id\",\n            stories.title as \"title\",\n            mediums.name as \"medium\",\n            creators.name as \"creator\"\n        FROM stories\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE ($1::text IS NULL OR stories.title % $1)\n            AND ($2::text IS NULL OR creators.name % $2)\n            AND ($3::text IS NULL OR mediums.name = $3)\n        LIMIT $4\n        OFFSET $5\n        "
-  },
-  "b380e0ae28aa31e8416c01f16e8d69cbb68ff6595591693fc0db686a9d7451d8": {
-    "describe": {
-      "columns": [
-        {
-          "name": "emotion_id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "position",
-          "ordinal": 1,
-          "type_info": "Int4"
-        },
-        {
-          "name": "notes",
-          "ordinal": 2,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        true
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text",
-          "Int4",
-          "Int4",
-          "Text"
-        ]
-      }
-    },
-    "query": " \n            INSERT INTO review_emotions(\n                id,\n                review_id,\n                emotion_id,\n                position,\n                notes\n            )\n            VALUES (\n                $1,\n                (\n                    SELECT id\n                      FROM users,\n                           reviews\n                     WHERE slug           = $3\n                       AND users.user_id  = reviews.user_id\n                       AND users.username = $2\n                     LIMIT 1\n                ), \n                $4, \n                $5,\n                $6 \n            )\n            RETURNING emotion_id, position, notes\n        "
   },
   "c410ceada60020f7471e7247a8bcd27ffc3af878ba0558df5b9301d5f4305bf6": {
     "describe": {

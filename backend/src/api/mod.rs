@@ -7,8 +7,6 @@ mod stories;
 mod review_emotion;
 
 mod emotions;
-pub use emotions::emotions;
-pub use emotions::EmotionData;
 
 mod users;
 pub use users::check_user_exists;

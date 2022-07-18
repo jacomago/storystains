@@ -49,7 +49,10 @@ async fn get_review_logged_in_returns_json() {
         .get_emotion_json(&app.test_user.username, review.slug(), emotion.position)
         .await;
     let response_emotion: TestReviewEmotionResponse = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(emotion, response_emotion.review_emotion);
+    assert_eq!(
+        emotion,
+        TestReviewEmotion::from(response_emotion.review_emotion)
+    );
 
     app.teardown().await;
 }
@@ -72,7 +75,10 @@ async fn get_review_logged_out_returns_json() {
         .get_emotion_json(&app.test_user.username, review.slug(), emotion.position)
         .await;
     let response_emotion: TestReviewEmotionResponse = serde_json::from_str(&json_page).unwrap();
-    assert_eq!(emotion, response_emotion.review_emotion);
+    assert_eq!(
+        emotion,
+        TestReviewEmotion::from(response_emotion.review_emotion)
+    );
 
     app.teardown().await;
 }

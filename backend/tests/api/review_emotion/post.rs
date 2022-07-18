@@ -1,9 +1,9 @@
 use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
-use storystains::api::emotions;
 
 use crate::{
     auth::{route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in},
+    emotion::EMOTION_STRINGS,
     helpers::TestApp,
     review::TestReview,
 };
@@ -217,7 +217,7 @@ async fn post_every_emotion_succeeds() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app).await;
 
-    let test_cases: Vec<Value> = emotions()
+    let test_cases: Vec<Value> = EMOTION_STRINGS
         .iter()
         .enumerate()
         .map(|(index, emotion)| {

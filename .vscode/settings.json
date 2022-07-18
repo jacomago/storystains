@@ -26,4 +26,5 @@
   "git.branchProtection": [
     "main"
   ],
+  "cSpell.enabled": true,
 }

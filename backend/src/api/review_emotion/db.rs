@@ -111,7 +111,12 @@ pub async fn create_review_emotion(
                        AND users.username = $2
                      LIMIT 1
                 ), 
-                $4, 
+                (
+                    SELECT id
+                      FROM emotions
+                     WHERE name           = $4
+                     LIMIT 1
+                ),
                 $5,
                 $6 
             )
@@ -120,7 +125,7 @@ pub async fn create_review_emotion(
         id,
         username.as_ref(),
         review_slug.as_ref(),
-        review_emotion.emotion as i32,
+        review_emotion.emotion,
         review_emotion.position.as_ref(),
         review_emotion.notes.as_ref().map(|n| n.as_ref()),
     )
@@ -149,14 +154,19 @@ pub async fn update_review_emotion(
     position: EmotionPosition,
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredReviewEmotion, sqlx::Error> {
-    let emotion = review_emotion.emotion.as_ref().map(|t| *t as i32);
+    let emotion = review_emotion.emotion.as_ref();
     let update_position = review_emotion.position.as_ref().map(|t| t.as_ref());
     let notes = review_emotion.notes.as_ref().map(|t| t.as_ref());
     let stored = sqlx::query_as!(
         StoredReviewEmotion,
         r#"
             UPDATE review_emotions
-            SET emotion_id  = COALESCE($1, emotion_id),
+            SET emotion_id  = COALESCE((
+                                    SELECT id
+                                    FROM emotions
+                                    WHERE name = $1
+                                    LIMIT 1
+                                ), emotion_id),
                 position    = COALESCE($2, position),
                 notes       = COALESCE($3, notes)
             WHERE review_id = (SELECT id
