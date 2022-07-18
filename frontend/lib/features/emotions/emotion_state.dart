@@ -34,7 +34,17 @@ class EmotionsState extends ChangeNotifier {
 
   /// default emotion
   Emotion get emotionDefault => _items.isEmpty
-      ? const Emotion(description: '', name: 'Default', iconUrl: '')
+      ? const Emotion(
+          description: '',
+          name: 'Default',
+          iconUrl: '',
+          joy: 0,
+          sadness: 0,
+          anger: 0,
+          disgust: 0,
+          surprise: 0,
+          fear: 0,
+        )
       : _items[0];
 
   /// begin load and create state
