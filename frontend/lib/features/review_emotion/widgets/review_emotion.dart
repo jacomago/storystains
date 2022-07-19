@@ -18,6 +18,7 @@ class ReviewEmotionWidget extends StatelessWidget {
   /// Handler after choosing an emotion
   final void Function(Emotion?) emotionHandler;
 
+  /// Review Emotion to display
   final ReviewEmotion reviewEmotion;
 
   @override
