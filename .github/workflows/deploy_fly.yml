@@ -1,5 +1,6 @@
 name: Fly Deploy
 concurrency: 
+  group: main_deployment
   cancel-in-progress: true
 on:
   push:
