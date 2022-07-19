@@ -40,15 +40,18 @@ class StoryWidget extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => _onTapTitle(context),
-                child: Text(
-                  '${story?.title}',
-                  style: context.headlineSmall,
-                  semanticsLabel: AppLocalizations.of(context)!.title,
-                  overflow: TextOverflow.visible,
-                  maxLines: 2,
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _onTapTitle(context),
+                  child: Text(
+                    '${story?.title}',
+                    style: context.headlineSmall,
+                    semanticsLabel: AppLocalizations.of(context)!.title,
+                    overflow: TextOverflow.visible,
+                    maxLines: 2,
+                  ),
                 ),
               ),
               GestureDetector(
@@ -96,13 +99,15 @@ class StoryItem extends StatelessWidget {
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                story.title,
-                style:
-                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                maxLines: 2,
-                softWrap: false,
+              Expanded(
+                child: Text(
+                  story.title,
+                  style: context.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.bold),
+                  maxLines: 2,
+                ),
               ),
               GestureDetector(
                 onTap: () => _onTapMedium(context),
