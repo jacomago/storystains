@@ -171,11 +171,13 @@ pub async fn put_review(
 )]
 pub async fn delete_review_by_slug(
     path: web::Path<ReviewPath>,
+    auth_user: web::ReqData<AuthUser>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
+    block_non_creator(&username, &auth_user.into_inner()).await?;
     let review_id = review_id_by_username_and_slug(&username, &slug, pool.get_ref())
         .await
         .map_err(ApiError::NotData)?;
