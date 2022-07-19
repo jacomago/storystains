@@ -7,6 +7,8 @@ pub struct StoredUser {
     pub user_id: sqlx::types::Uuid,
     /// User name of the user
     pub username: String,
+    /// If user is admin
+    pub is_admin: bool,
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]

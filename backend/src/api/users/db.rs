@@ -33,7 +33,7 @@ pub async fn read_user_by_id(user_id: &UserId, pool: &PgPool) -> Result<StoredUs
     let row = sqlx::query_as!(
         StoredUser,
         r#"
-        SELECT user_id, username 
+        SELECT user_id, username, is_admin
         FROM users
         WHERE user_id = $1
         "#,
@@ -81,7 +81,7 @@ pub async fn create_user(user: NewUser, pool: &PgPool) -> Result<StoredUser, any
         r#"
             INSERT INTO users (user_id, username, password_hash)
             VALUES ($1, $2, $3)
-            RETURNING user_id, username
+            RETURNING user_id, username, is_admin
         "#,
         id,
         user.username.as_ref(),
