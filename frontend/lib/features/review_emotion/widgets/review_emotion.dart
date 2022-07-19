@@ -27,18 +27,27 @@ class ReviewEmotionWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              _buildEmotionItem(context, reviewEmotion),
-              Text(
-                AppLocalizations.of(context)!
-                    .positionPercentage(reviewEmotion.position),
-                style: context.labelMedium,
+              EmotionEdit(
+                emotion: reviewEmotion.emotion,
+                height: 100,
+                handler: emotionHandler,
               ),
+              _buildPosition(context, reviewEmotion.position),
             ],
           ),
           _buildReviewEmotionItem(context, reviewEmotion),
         ],
       );
 
+  Widget _buildPosition(
+    BuildContext context,
+    int position,
+  ) =>
+      Text(
+        AppLocalizations.of(context)!.positionPercentage(position),
+        style: context.labelMedium,
+      );
+    
   Widget _buildReviewEmotionItem(
     BuildContext context,
     ReviewEmotion reviewEmotion,
@@ -71,15 +80,5 @@ class ReviewEmotionWidget extends StatelessWidget {
             ),
           ],
         ),
-      );
-
-  Widget _buildEmotionItem(
-    BuildContext context,
-    ReviewEmotion reviewEmotion,
-  ) =>
-      EmotionEdit(
-        emotion: reviewEmotion.emotion,
-        height: 100,
-        handler: emotionHandler,
       );
 }

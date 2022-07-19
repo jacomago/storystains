@@ -101,7 +101,7 @@ class ReviewEmotionState extends ChangeNotifier {
     _reviewEmotion = reviewEmotion;
 
     notesController = TextEditingController(text: reviewEmotion?.notes);
-    positionController = ValueNotifier(_isCreate ? 0 : reviewEmotion!.position);
+    positionController = ValueNotifier(_isCreate ? 50 : reviewEmotion!.position);
     emotionController = ValueNotifier(emotion ?? reviewEmotion!.emotion);
   }
 
