@@ -1,5 +1,6 @@
 name: Fly Deploy
 concurrency: 
+  group: main_deployment
   cancel-in-progress: true
 on:
   push:
@@ -51,6 +52,6 @@ jobs:
         - name: setup proxy to fly db
           run: flyctl proxy 5432 -a storystains-db &
         - name: run migrations
-          run: sqlx migrate run
+          run: cd backend && sqlx migrate run && cd ..
         - name: run deploy
           run: flyctl deploy --remote-only
