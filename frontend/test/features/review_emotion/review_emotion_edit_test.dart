@@ -161,7 +161,8 @@ void main() {
         emotion: emotion,
       );
 
-      const sliderIncSize = 4.5;
+      // TODO find a way to measure the increment programatically
+      const sliderIncSize = 6;
       final posChanger = find.byType(Slider);
       expect(posChanger, findsOneWidget);
       await tester.drag(
@@ -170,7 +171,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final notes = find.bySemanticsLabel('Notes');
+      final notes = find.bySemanticsLabel('Notes:');
       await tester.enterText(notes.first, reviewEmotion.notes);
 
       when(service.create(review, reviewEmotion)).thenAnswer(
@@ -242,16 +243,17 @@ void main() {
         emotion: emotion,
       );
 
-      const sliderIncSize = 4.5;
+      // TODO find a way to measure the increment programatically
+      const sliderIncSize = 5.5;
       final posChanger = find.byType(Slider);
       expect(posChanger, findsOneWidget);
       await tester.drag(
         posChanger.first,
-        Offset(sliderIncSize * (newReviewEmotion.position - 50), 0),
+        Offset(sliderIncSize * (newReviewEmotion.position - 49), 0),
       );
       await tester.pumpAndSettle();
 
-      final notes = find.bySemanticsLabel('Notes');
+      final notes = find.bySemanticsLabel('Notes:');
       await tester.enterText(notes.first, newReviewEmotion.notes);
 
       when(service.update(

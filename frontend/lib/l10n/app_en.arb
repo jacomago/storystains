@@ -27,7 +27,7 @@
     "@emotions": {
         "description": "A number of feelings."
     },
-    "notes": "Notes",
+    "notes": "Notes:",
     "@notes": {
         "description": "Place to write notes."
     },
@@ -131,7 +131,7 @@
             }
         }
     },
-    "positionPercentage": "Position: {position}%",
+    "positionPercentage": "{position}%",
     "@positionPercentage": {
         "description": "Position in the review where the emotion has been set.",
         "placeholders": {
@@ -187,7 +187,7 @@
     "@account": {
         "description": "A users personal details and actions."
     },
-    "or": "{a} or {b}.",
+    "or": "{a} or {b}",
     "@or": {
         "description": "Decide between two options.",
         "placeholders": {

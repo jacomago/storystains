@@ -1,12 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
-import '../../common/widget/widget.dart';
 import '../emotions/emotion.dart';
 import '../review_emotion/review_emotion.dart';
 
+import '../review_emotion/widgets/review_emotion.dart';
 import 'review_emotions_state.dart';
 
 /// List of r[ReviewEmotion] widget
@@ -94,70 +93,23 @@ class ReviewEmotionsList extends StatelessWidget {
                     ),
                   )
                 : Row(),
-            Timeline(
-              gutterSpacing: 10,
-              indicatorSize: 111,
-              indicators: reviewEmotions.items
-                  .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
-                  .toList(),
-              children: reviewEmotions.items
-                  .map((e) => _buildReviewEmotionItem(context, e))
-                  .toList(),
-            ),
+            _itemList(reviewEmotions.items, context),
           ],
         ),
       );
 
-  Widget _buildReviewEmotionItem(
+  Widget _itemList(
+    List<ReviewEmotion> reviewEmotions,
     BuildContext context,
-    ReviewEmotion reviewEmotion,
   ) =>
-      GestureDetector(
-        onTap: () => {
-          UnimplementedError('not done'),
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.notes,
-                    style: context.labelLarge,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!
-                        .positionPercentage(reviewEmotion.position),
-                    style: context.labelMedium,
-                  ),
-                ],
-              ),
-              const Divider(),
-              Text(
-                reviewEmotion.notes,
-                textAlign: TextAlign.left,
-                style: context.bodySmall,
-              ),
-            ],
-          ),
+      ListView.separated(
+        separatorBuilder: (_, __) => const SizedBox(height: 4),
+        itemCount: reviewEmotions.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) => ReviewEmotionWidget(
+          reviewEmotion: reviewEmotions[index],
+          emotionHandler: (value) =>
+              _updateEmotion(context, reviewEmotions[index], index, value),
         ),
-      );
-
-  Widget _buildEmotionItem(
-    BuildContext context,
-    ReviewEmotion reviewEmotion,
-    int index,
-  ) =>
-      EmotionEdit(
-        emotion: reviewEmotion.emotion,
-        height: 100,
-        handler: (value) =>
-            _updateEmotion(context, reviewEmotion, index, value),
       );
 }

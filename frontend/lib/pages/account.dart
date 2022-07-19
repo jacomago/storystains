@@ -75,7 +75,7 @@ class AccountPage extends StatelessWidget {
                 children: [
                   Center(
                     child: SvgPicture.asset(
-                      'assets/logo/logo.svg',
+                      'assets/logo/logo_circle_plain.svg',
                       height: 110,
                     ),
                   ),

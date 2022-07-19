@@ -91,7 +91,7 @@ void main() {
       expect(
         find.widgetWithText(
           SnackBar,
-          "Username can't be blank or Password can't be blank.",
+          "Username can't be blank or Password can't be blank",
         ),
         findsOneWidget,
       );
