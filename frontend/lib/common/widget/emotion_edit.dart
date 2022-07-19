@@ -62,60 +62,6 @@ class EmotionImageText extends StatelessWidget {
   /// Which Direction have rounded corners
   final AxisDirection direction;
 
-  @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(10),
-        child: SizedBox(
-          width: height,
-          child: Column(
-            children: [
-              EmotionImage(
-                emotion: emotion,
-                height: height,
-                radius: radius,
-                direction: direction,
-              ),
-              const SizedBox(
-                height: 1,
-              ),
-              FittedBox(
-                child: Text(
-                  emotion.name,
-                  style: context.bodySmall,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.fade,
-                  maxLines: 1,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-}
-
-/// How to display just the emotions image
-class EmotionImage extends StatelessWidget {
-  /// How to display just the emotions image
-  const EmotionImage({
-    Key? key,
-    required this.emotion,
-    required this.height,
-    this.direction = AxisDirection.right,
-    this.radius = 15,
-  }) : super(key: key);
-
-  /// The emotion to display
-  final Emotion emotion;
-
-  /// Height of the image of the emotion
-  final double height;
-
-  /// radius of the corners
-  final double radius;
-
-  /// Which Direction have rounded corners
-  final AxisDirection direction;
-
   BorderRadius _radiusFromDirection() {
     switch (direction) {
       case AxisDirection.right:
@@ -137,22 +83,61 @@ class EmotionImage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
-        width: height,
-        height: height,
-        decoration: BoxDecoration(
-          color: emotion.color(),
-          borderRadius: _radiusFromDirection(),
-        ),
-        constraints: BoxConstraints.tight(Size(height, height)),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.all(5),
         child: Container(
-          padding: const EdgeInsets.all(5),
-          child: SvgPicture.network(
-            emotion.iconFullUrl(),
-            width: height,
-            height: height,
-            color: context.colors.onSurface,
+          decoration: BoxDecoration(
+            color: emotion.color(),
+            borderRadius: _radiusFromDirection(),
           ),
+          child: Column(
+            children: [
+              EmotionImage(
+                emotion: emotion,
+                height: height,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: FittedBox(
+                  child: Text(
+                    emotion.name,
+                    style: context.bodySmall,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+}
+
+/// How to display just the emotions image
+class EmotionImage extends StatelessWidget {
+  /// How to display just the emotions image
+  const EmotionImage({
+    Key? key,
+    required this.emotion,
+    required this.height,
+  }) : super(key: key);
+
+  /// The emotion to display
+  final Emotion emotion;
+
+  /// Height of the image of the emotion
+  final double height;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.all(5),
+        constraints: BoxConstraints.tight(Size(height, height)),
+        child: SvgPicture.network(
+          emotion.iconFullUrl(),
+          width: height,
+          height: height,
+          color: context.colors.onSurface,
         ),
       );
 }
