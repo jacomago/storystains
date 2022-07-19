@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
-import '../../common/widget/widget.dart';
 import '../emotions/emotion.dart';
 import '../review_emotion/review_emotion.dart';
 
+import '../review_emotion/widgets/review_emotion.dart';
 import 'review_emotions_state.dart';
 
 /// List of r[ReviewEmotion] widget
@@ -106,65 +106,10 @@ class ReviewEmotionsList extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(height: 4),
         itemCount: reviewEmotions.length,
         shrinkWrap: true,
-        itemBuilder: (context, index) =>
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(
-            children: [
-              _buildEmotionItem(context, reviewEmotions[index], index),
-              Text(
-                AppLocalizations.of(context)!
-                    .positionPercentage(reviewEmotions[index].position),
-                style: context.labelMedium,
-              ),
-            ],
-          ),
-          _buildReviewEmotionItem(context, reviewEmotions[index]),
-        ]),
-      );
-
-  Widget _buildReviewEmotionItem(
-    BuildContext context,
-    ReviewEmotion reviewEmotion,
-  ) =>
-      Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.notes,
-                  style: context.labelLarge,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            ),
-            Divider(
-              height: 4,
-              color: context.colors.secondaryContainer,
-            ),
-            Text(
-              reviewEmotion.notes,
-              textAlign: TextAlign.left,
-              style: context.bodySmall,
-            ),
-          ],
+        itemBuilder: (context, index) => ReviewEmotionWidget(
+          reviewEmotion: reviewEmotions[index],
+          emotionHandler: (value) =>
+              _updateEmotion(context, reviewEmotions[index], index, value),
         ),
-      );
-
-  Widget _buildEmotionItem(
-    BuildContext context,
-    ReviewEmotion reviewEmotion,
-    int index,
-  ) =>
-      EmotionEdit(
-        emotion: reviewEmotion.emotion,
-        height: 100,
-        handler: (value) =>
-            _updateEmotion(context, reviewEmotion, index, value),
       );
 }
