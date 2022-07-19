@@ -74,14 +74,11 @@ class ReviewEmotionEdit extends StatelessWidget {
           height: 190,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                child: EmotionEdit(
-                  emotion: state.emotionController.value,
-                  height: 100,
-                  handler: (value) => {state.emotionController.value = value!},
-                ),
+              EmotionEdit(
+                emotion: state.emotionController.value,
+                height: 100,
+                handler: (value) => {state.emotionController.value = value!},
               ),
               Flexible(
                 flex: 2,

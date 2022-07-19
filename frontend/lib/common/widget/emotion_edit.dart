@@ -90,6 +90,7 @@ class EmotionImageText extends StatelessWidget {
             color: emotion.color(),
             borderRadius: _radiusFromDirection(),
           ),
+          constraints: BoxConstraints.tightFor(height: height + 25),
           child: Column(
             children: [
               EmotionImage(
