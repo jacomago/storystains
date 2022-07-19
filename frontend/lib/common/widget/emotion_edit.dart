@@ -78,12 +78,14 @@ class EmotionImageText extends StatelessWidget {
               const SizedBox(
                 height: 1,
               ),
-              Text(
-                emotion.name,
-                style: context.bodySmall,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
+              FittedBox(
+                child: Text(
+                  emotion.name,
+                  style: context.bodySmall,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                ),
               ),
             ],
           ),
