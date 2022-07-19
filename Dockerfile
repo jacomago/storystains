@@ -28,7 +28,7 @@ RUN apt-get clean
 RUN apt-get autoremove
 
 FROM frontflutterget as frontpubactions
-# Copy files to container and build
+# Copy files to container
 RUN mkdir /app/
 COPY ./frontend /app/
 WORKDIR /app/
@@ -36,7 +36,7 @@ RUN flutter pub get
 RUN flutter pub run build_runner build
 
 FROM frontpubactions as frontbuild
-# Copy files to container and build
+# build app
 WORKDIR /app/
 ARG FRONT_BASE_URL
 RUN flutter build web --web-renderer canvaskit --release --dart-define BASE_URL=${FRONT_BASE_URL}
