@@ -187,7 +187,7 @@
     "@account": {
         "description": "A users personal details and actions."
     },
-    "or": "{a} or {b}.",
+    "or": "{a} or {b}",
     "@or": {
         "description": "Decide between two options.",
         "placeholders": {
