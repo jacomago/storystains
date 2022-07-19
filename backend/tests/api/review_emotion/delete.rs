@@ -197,7 +197,6 @@ async fn delete_user_deletes_review_emotions() {
 }
 
 #[tokio::test]
-#[ignore = "flaky when run with all other tests at once"]
 async fn delete_user_doesnt_delete_others_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;
@@ -228,7 +227,7 @@ async fn delete_user_doesnt_delete_others_emotions() {
                AND reviews.user_id = users.user_id
                AND users.username  = $1
         "#,
-        other_user.username
+        app.test_user.username
     )
     .fetch_optional(&app.db_pool)
     .await

@@ -183,7 +183,7 @@ async fn delete_user_doesnt_delete_others_reviews() {
              WHERE reviews.user_id = users.user_id
                AND users.username  = $1
         "#,
-        other_user.username
+        app.test_user.username
     )
     .fetch_optional(&app.db_pool)
     .await
