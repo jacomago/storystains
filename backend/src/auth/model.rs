@@ -17,6 +17,8 @@ pub struct AuthUser {
     pub username: String,
     /// User id
     pub user_id: UserId,
+    /// If user is an admin
+    pub is_admin: bool,
 }
 
 impl From<StoredUser> for AuthUser {
@@ -24,6 +26,7 @@ impl From<StoredUser> for AuthUser {
         Self {
             username: user.username,
             user_id: UserId(user.user_id),
+            is_admin: user.is_admin,
         }
     }
 }

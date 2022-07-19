@@ -1,6 +1,7 @@
 use uuid::Uuid;
 
-use super::TestApp;
+use crate::helpers::TestApp;
+
 pub struct TestUser {
     pub user_id: Uuid,
     pub username: String,
@@ -43,6 +44,20 @@ impl TestUser {
         app.post_logout().await;
     }
 
+    pub async fn set_admin(&self, app: &TestApp) {
+        sqlx::query!(
+            r#"
+        UPDATE users
+        SET is_admin = TRUE
+        WHERE username = $1
+    "#,
+            self.username
+        )
+        .execute(&app.db_pool)
+        .await
+        .expect("Query to make admin failed");
+        self.login(app).await;
+    }
     pub async fn store(&self, app: &TestApp) {
         let signup_body = serde_json::json!({
             "user": {

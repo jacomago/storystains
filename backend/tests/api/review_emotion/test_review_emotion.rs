@@ -1,7 +1,8 @@
 use crate::{
     emotion::TestEmotion,
-    helpers::{long_form, TestApp, TestUser},
+    helpers::{long_form, TestApp},
     review::review_relative_url,
+    users::TestUser,
 };
 use rand::Rng;
 use reqwest::StatusCode;

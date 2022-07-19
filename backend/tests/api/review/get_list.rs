@@ -2,8 +2,9 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 
 use crate::{
-    helpers::{TestApp, TestQuery, TestUser},
+    helpers::{TestApp, TestQuery},
     story::TestStory,
+    users::TestUser,
 };
 
 use super::review_relative_url_prefix;

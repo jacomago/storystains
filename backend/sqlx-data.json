@@ -87,7 +87,7 @@
     },
     "query": "\n        SELECT reviews.id,\n            story_id,\n            slug,\n            body,\n            created_at,\n            updated_at,\n            reviews.user_id\n        FROM \n            reviews\n            JOIN stories ON stories.id = reviews.story_id\n            JOIN users ON users.user_id = reviews.user_id\n            JOIN creators ON stories.creator_id = creators.id\n            JOIN mediums ON stories.medium_id = mediums.id\n        WHERE   ($3::text IS NULL OR users.username = $3)\n            AND ($4::text IS NULL OR stories.title % $4)\n            AND ($5::text IS NULL OR creators.name % $5)\n            AND ($6::text IS NULL OR mediums.name = $6)\n        ORDER BY updated_at DESC\n        LIMIT $1 \n        OFFSET $2\n        "
   },
-  "2c46d9b3160ef9ad68700bb4c6aad60da9de1c0011e9c484acd438f4c18cf32f": {
+  "2ee50953a12fb17dd4dea6f9c12024da2a2a8668a098b78042310ffe4abbfbd0": {
     "describe": {
       "columns": [
         {
@@ -99,9 +99,15 @@
           "name": "username",
           "ordinal": 1,
           "type_info": "Text"
+        },
+        {
+          "name": "is_admin",
+          "ordinal": 2,
+          "type_info": "Bool"
         }
       ],
       "nullable": [
+        false,
         false,
         false
       ],
@@ -111,7 +117,7 @@
         ]
       }
     },
-    "query": "\n        SELECT user_id, username \n        FROM users\n        WHERE user_id = $1\n        "
+    "query": "\n        SELECT user_id, username, is_admin\n        FROM users\n        WHERE user_id = $1\n        "
   },
   "2faa0dad05bcc69a05aa13ce112aceed3bf081807e4914eb4abc237df1ecf9d2": {
     "describe": {
@@ -136,6 +142,40 @@
       }
     },
     "query": "\n            SELECT id, name\n            FROM mediums\n        "
+  },
+  "43e1a7fc4773d4b9f83469d0b7036949fb02e159524c2127e4557cfce2b086c0": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "username",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "is_admin",
+          "ordinal": 2,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "\n            INSERT INTO users (user_id, username, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING user_id, username, is_admin\n        "
   },
   "557d8e39dc26591c2aaaef34e9281ef5c48670a8881c8d23f578a68d017a4a1a": {
     "describe": {
@@ -537,34 +577,6 @@
     },
     "query": "\n            SELECT \n                id, \n                name,\n                description,\n                icon_url,\n                joy,\n                fear,\n                anger,\n                surprise,\n                disgust,\n                sadness\n            FROM emotions\n        "
   },
-  "8219707831f28b7fb24d2dc85cdc894c2eb4e7138306a660c536a0b0caa5b1da": {
-    "describe": {
-      "columns": [
-        {
-          "name": "user_id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "username",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Uuid",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n            INSERT INTO users (user_id, username, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING user_id, username\n        "
-  },
   "873beda52d26d7ea506f39bbb8062dc20baab802da0a0f019529a897e8790eaa": {
     "describe": {
       "columns": [
@@ -778,6 +790,38 @@
       }
     },
     "query": "\n            DELETE FROM reviews\n            WHERE user_id = $1\n        "
+  },
+  "d70ed0391bf9fbb1fa792a960c9239ae2d9609c49510e513ac0e17ca13eaf9e4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "username",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "is_admin",
+          "ordinal": 2,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT user_id, username, is_admin\n        FROM users\n        WHERE username = $1\n        "
   },
   "dc69af2964a1204af19b738dec7ea5ec52fa0613fec222ff6ffab695f1a08f97": {
     "describe": {

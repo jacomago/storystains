@@ -2,10 +2,8 @@ use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 
 use crate::{
-    auth::route_returns_unauth_when_not_logged_in,
-    helpers::{TestApp, TestUser},
-    review::test_review::TestReview,
-    story::TestStory,
+    auth::route_returns_unauth_when_not_logged_in, helpers::TestApp,
+    review::test_review::TestReview, story::TestStory, users::TestUser,
 };
 
 use super::review_relative_url;
@@ -176,6 +174,7 @@ async fn put_review_only_allows_creator_to_modify() {
 
     let new_user = TestUser::generate();
     new_user.store(&app).await;
+    new_user.set_admin(&app).await;
 
     // Act
     let response = app

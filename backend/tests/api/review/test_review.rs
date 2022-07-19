@@ -3,9 +3,10 @@ use reqwest::StatusCode;
 use serde_json::{json, Value};
 
 use crate::{
-    helpers::{long_form, TestApp, TestUser},
+    helpers::{long_form, TestApp},
     review_emotion::test_review_emotion::{TestReviewEmotion, TestReviewEmotionResponseData},
     story::TestStory,
+    users::TestUser,
 };
 
 pub fn review_relative_url(username: &str, slug: &str) -> String {

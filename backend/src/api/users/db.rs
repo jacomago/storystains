@@ -3,7 +3,7 @@ use anyhow::Context;
 use secrecy::{ExposeSecret, Secret};
 use sqlx::{types::Uuid, PgPool, Postgres, Transaction};
 
-use super::{model::NewUser, UserId};
+use super::{model::NewUser, NewUsername, UserId};
 
 /// Retreive credentials from the database
 #[tracing::instrument(name = "Get stored credentials", skip(username, pool))]
@@ -33,11 +33,35 @@ pub async fn read_user_by_id(user_id: &UserId, pool: &PgPool) -> Result<StoredUs
     let row = sqlx::query_as!(
         StoredUser,
         r#"
-        SELECT user_id, username 
+        SELECT user_id, username, is_admin
         FROM users
         WHERE user_id = $1
         "#,
         id,
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|e| {
+        tracing::error!("Failed to execute query: {:?}", e);
+        e
+    })?;
+    Ok(row)
+}
+
+/// Retreive User details by ID
+#[tracing::instrument(name = "Read user details from db by username", skip(pool))]
+pub async fn read_user_by_username(
+    username: &NewUsername,
+    pool: &PgPool,
+) -> Result<StoredUser, sqlx::Error> {
+    let row = sqlx::query_as!(
+        StoredUser,
+        r#"
+        SELECT user_id, username, is_admin
+        FROM users
+        WHERE username = $1
+        "#,
+        username.as_ref(),
     )
     .fetch_one(pool)
     .await
@@ -81,7 +105,7 @@ pub async fn create_user(user: NewUser, pool: &PgPool) -> Result<StoredUser, any
         r#"
             INSERT INTO users (user_id, username, password_hash)
             VALUES ($1, $2, $3)
-            RETURNING user_id, username
+            RETURNING user_id, username, is_admin
         "#,
         id,
         user.username.as_ref(),

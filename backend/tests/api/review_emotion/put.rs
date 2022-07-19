@@ -2,10 +2,8 @@ use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 
 use crate::{
-    auth::route_returns_unauth_when_not_logged_in,
-    helpers::{TestApp, TestUser},
-    review::TestReview,
-    review_emotion::test_review_emotion::TestReviewEmotion,
+    auth::route_returns_unauth_when_not_logged_in, helpers::TestApp, review::TestReview,
+    review_emotion::test_review_emotion::TestReviewEmotion, users::TestUser,
 };
 
 use super::test_review_emotion::review_emotion_relative_url;
@@ -337,7 +335,7 @@ async fn put_review_emotion_returns_json() {
 }
 
 #[tokio::test]
-async fn put_review_emotion_only_allows_creator_to_modify() {
+async fn put_review_emotion_only_allows_creator_to_modify_even_if_admin() {
     // Arrange
     let app = TestApp::spawn_app().await;
     app.test_user.login(&app).await;
@@ -352,6 +350,7 @@ async fn put_review_emotion_only_allows_creator_to_modify() {
 
     let new_user = TestUser::generate();
     new_user.store(&app).await;
+    new_user.set_admin(&app).await;
 
     // Act
     let response = app
