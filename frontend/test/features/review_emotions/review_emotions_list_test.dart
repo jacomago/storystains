@@ -132,7 +132,7 @@ void main() {
       for (var re in list) {
         expect(find.text(re.notes), findsOneWidget);
         expect(find.text(re.emotion.name), findsOneWidget);
-        expect(find.text('Position: ${re.position}%'), findsOneWidget);
+        expect(find.text('${re.position}%'), findsOneWidget);
       }
     });
     testWidgets('add', (tester) async {
