@@ -5,15 +5,21 @@ use secrecy::Secret;
 use sqlx::PgPool;
 
 use crate::{
-    api::{reviews::delete_reviews_by_user_id, shared::ApiError},
+    api::{
+        reviews::delete_reviews_by_user_id,
+        shared::{
+            access_control::{access_control_block, ACLOption},
+            ApiError,
+        },
+    },
     auth::{e500, validate_credentials, AuthError, AuthUser, Credentials},
     session_state::TypedSession,
 };
 
 use super::{
-    create_user, delete_user_by_id,
+    create_user, db,
     model::{NewPassword, NewUser, NewUsername, UserResponse},
-    read_user_by_id,
+    read_user_by_id, UserId,
 };
 
 /// Input of user for login api
@@ -114,14 +120,9 @@ pub async fn log_out(session: TypedSession) -> Result<HttpResponse, actix_web::E
     }
 }
 
-/// Delete user api handler currently deletes all user's review
-#[tracing::instrument(skip(pool, auth_user, session), fields())]
-pub async fn delete_user(
-    auth_user: web::ReqData<AuthUser>,
-    pool: web::Data<PgPool>,
-    session: TypedSession,
-) -> Result<HttpResponse, ApiError> {
-    let user_id = auth_user.into_inner().user_id;
+/// Delete user currently deletes all user's review
+#[tracing::instrument(name = "Delete user by id route", skip(pool), fields())]
+pub async fn delete_user_by_id(user_id: UserId, pool: web::Data<PgPool>) -> Result<(), ApiError> {
     let mut transaction = pool
         .begin()
         .await
@@ -129,7 +130,7 @@ pub async fn delete_user(
     delete_reviews_by_user_id(&user_id, &mut transaction)
         .await
         .context("Failed to delete new reviews from the database.")?;
-    delete_user_by_id(&user_id, &mut transaction)
+    db::delete_user_by_id(&user_id, &mut transaction)
         .await
         .context("Failed to delete user from the database")?;
     transaction
@@ -137,6 +138,34 @@ pub async fn delete_user(
         .await
         .context("Failed to commit SQL transaction to delete user and data.")?;
 
+    Ok(())
+}
+
+/// Delete user api handler currently deletes all user's review
+#[tracing::instrument("Delete user by login route", skip(pool, auth_user, session), fields())]
+pub async fn delete_user(
+    auth_user: web::ReqData<AuthUser>,
+    pool: web::Data<PgPool>,
+    session: TypedSession,
+) -> Result<HttpResponse, ApiError> {
+    let user_id = auth_user.into_inner().user_id;
+    delete_user_by_id(user_id, pool).await?;
     session.log_out();
+    Ok(HttpResponse::Ok().finish())
+}
+
+/// Delete user api handler currently deletes all user's review
+#[tracing::instrument("Delete user by username route", skip(pool, auth_user), fields())]
+pub async fn delete_user_by_username(
+    username: web::Path<String>,
+    auth_user: web::ReqData<AuthUser>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, ApiError> {
+    let new_username = NewUsername::parse(username.to_string()).map_err(ApiError::Validation)?;
+    access_control_block(&new_username, &auth_user, ACLOption::OwnerAndAdmin).await?;
+    let user_id = db::read_user_by_username(&new_username, pool.get_ref())
+        .await?
+        .user_id;
+    delete_user_by_id(user_id.into(), pool).await?;
     Ok(HttpResponse::Ok().finish())
 }

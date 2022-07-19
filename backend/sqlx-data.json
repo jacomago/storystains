@@ -791,6 +791,38 @@
     },
     "query": "\n            DELETE FROM reviews\n            WHERE user_id = $1\n        "
   },
+  "d70ed0391bf9fbb1fa792a960c9239ae2d9609c49510e513ac0e17ca13eaf9e4": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "username",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "is_admin",
+          "ordinal": 2,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT user_id, username, is_admin\n        FROM users\n        WHERE username = $1\n        "
+  },
   "dc69af2964a1204af19b738dec7ea5ec52fa0613fec222ff6ffab695f1a08f97": {
     "describe": {
       "columns": [

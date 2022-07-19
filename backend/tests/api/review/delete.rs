@@ -141,7 +141,7 @@ async fn delete_user_deletes_reviews() {
     // Act
     let review = TestReview::generate(&app.test_user);
     review.store(&app).await;
-    let response = app.delete_user().await;
+    let response = app.delete_logged_in_user().await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -170,7 +170,7 @@ async fn delete_user_doesnt_delete_others_reviews() {
     other_review.store(&app).await;
 
     // Act
-    let response = app.delete_user().await;
+    let response = app.delete_logged_in_user().await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);

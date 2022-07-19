@@ -44,7 +44,7 @@ async fn login_returns_bad_request_for_deleted_user() {
     // store user
     user.store(&app).await;
     // delete user
-    app.delete_user().await;
+    app.delete_logged_in_user().await;
 
     // Act
     let response = app.post_login(user.to_json()).await;

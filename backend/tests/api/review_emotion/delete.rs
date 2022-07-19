@@ -181,7 +181,7 @@ async fn delete_user_deletes_review_emotions() {
     let review = TestReview::generate(&app.test_user);
     review.store(&app).await;
     review.store_emotions(&app).await;
-    let response = app.delete_user().await;
+    let response = app.delete_logged_in_user().await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
@@ -213,7 +213,7 @@ async fn delete_user_doesnt_delete_others_emotions() {
     other_review.store_emotions_by_user(&app, &other_user).await;
 
     // Act
-    let response = app.delete_user().await;
+    let response = app.delete_logged_in_user().await;
 
     // Assert
     assert_eq!(response.status(), StatusCode::OK);
