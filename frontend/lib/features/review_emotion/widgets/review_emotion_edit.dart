@@ -67,15 +67,6 @@ class ReviewEmotionEdit extends StatelessWidget {
     await state.delete(review).then((value) => _afterSend(context, state));
   }
 
-  Widget _buildPosition(
-    BuildContext context,
-    int position,
-  ) =>
-      Text(
-        AppLocalizations.of(context)!.positionPercentage(position),
-        style: context.labelMedium,
-      );
-
   @override
   Widget build(BuildContext context) =>
       Consumer2<ReviewEmotionState, ReviewState>(

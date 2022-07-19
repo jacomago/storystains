@@ -47,7 +47,7 @@ class ReviewEmotionWidget extends StatelessWidget {
         AppLocalizations.of(context)!.positionPercentage(position),
         style: context.labelMedium,
       );
-    
+
   Widget _buildReviewEmotionItem(
     BuildContext context,
     ReviewEmotion reviewEmotion,
