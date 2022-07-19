@@ -11,6 +11,27 @@ class StoryWidget extends StatelessWidget {
   /// Widget for displaying a [Story] without editing
   const StoryWidget({Key? key, required this.story}) : super(key: key);
 
+  void _onTapTitle(BuildContext context) {
+    if (story?.title == null) {
+      return;
+    }
+    StoryQuery(title: story!.title).navigate(context);
+  }
+
+  void _onTapCreator(BuildContext context) {
+    if (story?.creator == null) {
+      return;
+    }
+    StoryQuery(creator: story!.creator).navigate(context);
+  }
+
+  void _onTapMedium(BuildContext context) {
+    if (story?.medium == null) {
+      return;
+    }
+    StoryQuery(medium: story!.medium).navigate(context);
+  }
+
   ///The [Story] to display
   final Story? story;
   @override
@@ -20,24 +41,34 @@ class StoryWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${story?.title}',
-                style: context.headlineSmall,
-                semanticsLabel: AppLocalizations.of(context)!.title,
-                maxLines: 2,
+              GestureDetector(
+                onTap: () => _onTapTitle(context),
+                child: Text(
+                  '${story?.title}',
+                  style: context.headlineSmall,
+                  semanticsLabel: AppLocalizations.of(context)!.title,
+                  overflow: TextOverflow.visible,
+                  maxLines: 2,
+                ),
               ),
-              Text(
-                '(${story?.medium.name})',
-                style: context.titleMedium,
+              GestureDetector(
+                onTap: () => _onTapMedium(context),
+                child: Text(
+                  '(${story?.medium.name})',
+                  style: context.titleMedium,
+                ),
               ),
             ],
           ),
-          Text(
-            AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
-            style: context.titleMedium!.copyWith(
-              fontStyle: FontStyle.italic,
+          GestureDetector(
+            onTap: () => _onTapCreator(context),
+            child: Text(
+              AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
+              style: context.titleMedium!.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
+              semanticsLabel: AppLocalizations.of(context)!.creator,
             ),
-            semanticsLabel: AppLocalizations.of(context)!.creator,
           ),
         ],
       );
@@ -48,27 +79,12 @@ class StoryItem extends StatelessWidget {
   /// Widget for displaying a [Story] in a list
   const StoryItem({Key? key, required this.story}) : super(key: key);
 
-  void _navigate(StoryQuery query, BuildContext context) {
-    Navigator.of(context).push(
-      query.route(
-        Routes.reviews,
-        (q) => StoryFilterPage(
-          query: q,
-        ),
-      ),
-    );
-  }
-
-  void _onTapTitle(BuildContext context) {
-    _navigate(StoryQuery(title: story.title), context);
-  }
-
   void _onTapCreator(BuildContext context) {
-    _navigate(StoryQuery(creator: story.creator), context);
+    StoryQuery(creator: story.creator).navigate(context);
   }
 
   void _onTapMedium(BuildContext context) {
-    _navigate(StoryQuery(medium: story.medium), context);
+    StoryQuery(medium: story.medium).navigate(context);
   }
 
   ///The [Story] to display
@@ -81,14 +97,12 @@ class StoryItem extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () => _onTapTitle(context),
-                child: Text(
-                  story.title,
-                  style: context.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.fade,
-                ),
+              Text(
+                story.title,
+                style:
+                    context.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                maxLines: 2,
+                softWrap: false,
               ),
               GestureDetector(
                 onTap: () => _onTapMedium(context),
