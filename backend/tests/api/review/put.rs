@@ -176,6 +176,7 @@ async fn put_review_only_allows_creator_to_modify() {
 
     let new_user = TestUser::generate();
     new_user.store(&app).await;
+    new_user.set_admin(&app).await;
 
     // Act
     let response = app

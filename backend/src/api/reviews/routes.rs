@@ -4,7 +4,11 @@ use serde::Deserialize;
 use crate::{
     api::{
         review_emotion::delete_review_emotions_by_review,
-        shared::{long_form_text::LongFormText, put_block::block_non_creator, ApiError},
+        shared::{
+            access_control::{access_control_block, ACLOption},
+            long_form_text::LongFormText,
+            ApiError,
+        },
         stories::{NewStory, StoryResponseData},
         users::{NewUsername, UserId},
     },
@@ -151,7 +155,7 @@ pub async fn put_review(
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
-    block_non_creator(&username, &auth_user.into_inner()).await?;
+    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerOnly).await?;
     let updated_review = json.0.review.try_into().map_err(ApiError::Validation)?;
     let stored = update_review(&username, &slug, &updated_review, &pool)
         .await
@@ -177,7 +181,7 @@ pub async fn delete_review_by_slug(
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
-    block_non_creator(&username, &auth_user.into_inner()).await?;
+    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerAndAdmin).await?;
     let review_id = review_id_by_username_and_slug(&username, &slug, pool.get_ref())
         .await
         .map_err(ApiError::NotData)?;

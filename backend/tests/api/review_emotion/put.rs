@@ -337,7 +337,7 @@ async fn put_review_emotion_returns_json() {
 }
 
 #[tokio::test]
-async fn put_review_emotion_only_allows_creator_to_modify() {
+async fn put_review_emotion_only_allows_creator_to_modify_even_if_admin() {
     // Arrange
     let app = TestApp::spawn_app().await;
     app.test_user.login(&app).await;
@@ -352,6 +352,7 @@ async fn put_review_emotion_only_allows_creator_to_modify() {
 
     let new_user = TestUser::generate();
     new_user.store(&app).await;
+    new_user.set_admin(&app).await;
 
     // Act
     let response = app

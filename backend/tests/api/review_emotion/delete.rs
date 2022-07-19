@@ -85,6 +85,68 @@ async fn delete_review_emotion_returns_a_200_for_valid_position() {
 }
 
 #[tokio::test]
+async fn delete_review_emotion_blocks_non_owner() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    app.test_user.login(&app).await;
+
+    // Act
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app).await;
+    let emotion = TestReviewEmotion::generate(None);
+    emotion.store(&app, review.slug()).await;
+    let other_user = TestUser::generate();
+    other_user.store(&app).await;
+    let response = app
+        .delete_emotion(&app.test_user.username, review.slug(), emotion.position)
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::FORBIDDEN);
+
+    let saved = sqlx::query!("SELECT emotion_id, position, notes FROM review_emotions",)
+        .fetch_optional(&app.db_pool)
+        .await
+        .expect("Failed to fetch saved review emotions.");
+
+    assert!(saved.is_some());
+
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn delete_review_emotion_allows_admin() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    app.test_user.login(&app).await;
+
+    // Act
+    let review = TestReview::generate(&app.test_user);
+    review.store(&app).await;
+    let emotion = TestReviewEmotion::generate(None);
+    emotion.store(&app, review.slug()).await;
+    let other_user = TestUser::generate();
+    other_user.store(&app).await;
+    other_user.set_admin(&app).await;
+
+    let response = app
+        .delete_emotion(&app.test_user.username, review.slug(), emotion.position)
+        .await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let saved = sqlx::query!("SELECT emotion_id, position, notes FROM review_emotions",)
+        .fetch_optional(&app.db_pool)
+        .await
+        .expect("Failed to fetch saved review emotions.");
+
+    assert!(saved.is_none());
+
+    app.teardown().await;
+}
+
+#[tokio::test]
 async fn delete_review_deletes_emotions() {
     // Arrange
     let app = TestApp::spawn_app().await;

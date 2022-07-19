@@ -6,6 +6,11 @@ use crate::{api::users::NewUsername, auth::AuthUser};
 
 use super::error_chain_fmt;
 
+pub enum ACLOption {
+    OwnerOnly,
+    OwnerAndAdmin,
+}
+
 /// Block Error is to announce error when modifying another users data
 #[derive(thiserror::Error)]
 pub enum BlockError {
@@ -32,15 +37,29 @@ impl ResponseError for BlockError {
         }
     }
 }
-// TODO convert to middleware
-pub async fn block_non_creator(
-    username: &NewUsername,
-    auth_user: &AuthUser,
-) -> Result<(), BlockError> {
-    if username.as_ref() != auth_user.username && !auth_user.is_admin {
+
+fn owner_block(data_owner: &NewUsername, auth_user: &AuthUser) -> Result<(), BlockError> {
+    if data_owner.as_ref() != auth_user.username {
         return Err(BlockError::NotAllowed(
             "Must be the creator of the data.".to_string(),
         ));
     }
     Ok(())
+}
+
+// TODO convert to middleware or guard
+pub async fn access_control_block(
+    data_owner: &NewUsername,
+    auth_user: &AuthUser,
+    acl_option: ACLOption,
+) -> Result<(), BlockError> {
+    match acl_option {
+        ACLOption::OwnerOnly => owner_block(data_owner, auth_user),
+        ACLOption::OwnerAndAdmin => {
+            if auth_user.is_admin {
+                return Ok(());
+            }
+            owner_block(data_owner, auth_user)
+        }
+    }
 }

@@ -3,7 +3,7 @@ use reqwest::StatusCode;
 
 use crate::auth::AuthError;
 
-use super::put_block::BlockError;
+use super::access_control::BlockError;
 
 /// Api Error expresses problems that can happen during the evaluation of the api.
 #[derive(thiserror::Error)]

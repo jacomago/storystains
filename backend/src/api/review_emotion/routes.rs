@@ -9,7 +9,11 @@ use crate::{
     api::{
         emotions::{read_emotion_by_id_pool, read_emotion_by_id_trans, EmotionName},
         reviews::{ReviewPath, ReviewSlug},
-        shared::{long_form_text::LongFormText, put_block::block_non_creator, ApiError},
+        shared::{
+            access_control::{access_control_block, ACLOption},
+            long_form_text::LongFormText,
+            ApiError,
+        },
         users::NewUsername,
     },
     auth::AuthUser,
@@ -76,7 +80,7 @@ pub async fn post_review_emotion(
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
-    block_non_creator(&username, &auth_user.into_inner()).await?;
+    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerOnly).await?;
     let new_review_emotion = json
         .0
         .review_emotion
@@ -189,7 +193,7 @@ pub async fn put_review_emotion(
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
-    block_non_creator(&username, &auth_user.into_inner()).await?;
+    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerOnly).await?;
     let position = EmotionPosition::parse(path.position).map_err(ApiError::Validation)?;
 
     let mut transaction = pool
@@ -240,7 +244,7 @@ pub async fn delete_review_emotion(
 ) -> Result<HttpResponse, ApiError> {
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
-    block_non_creator(&username, &auth_user.into_inner()).await?;
+    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerAndAdmin).await?;
 
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let position = EmotionPosition::parse(path.position).map_err(ApiError::Validation)?;
