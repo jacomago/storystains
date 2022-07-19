@@ -49,10 +49,18 @@ class EmotionImageText extends StatelessWidget {
     Key? key,
     required this.emotion,
     required this.height,
+    this.direction = AxisDirection.right,
+    this.radius = 15,
   }) : super(key: key);
 
   /// Height of the image of the emotion
   final double height;
+
+  /// radius of the corners
+  final double radius;
+
+  /// Which Direction have rounded corners
+  final AxisDirection direction;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -64,6 +72,8 @@ class EmotionImageText extends StatelessWidget {
               EmotionImage(
                 emotion: emotion,
                 height: height,
+                radius: radius,
+                direction: direction,
               ),
               const SizedBox(
                 height: 1,
@@ -88,6 +98,8 @@ class EmotionImage extends StatelessWidget {
     Key? key,
     required this.emotion,
     required this.height,
+    this.direction = AxisDirection.right,
+    this.radius = 15,
   }) : super(key: key);
 
   /// The emotion to display
@@ -96,16 +108,39 @@ class EmotionImage extends StatelessWidget {
   /// Height of the image of the emotion
   final double height;
 
+  /// radius of the corners
+  final double radius;
+
+  /// Which Direction have rounded corners
+  final AxisDirection direction;
+
+  BorderRadius _radiusFromDirection() {
+    switch (direction) {
+      case AxisDirection.right:
+        return BorderRadius.only(
+          topRight: Radius.circular(radius),
+          bottomRight: Radius.circular(radius),
+        );
+      case AxisDirection.up:
+        return BorderRadius.only(
+          topRight: Radius.circular(radius),
+          topLeft: Radius.circular(radius),
+        );
+      default:
+        return BorderRadius.only(
+          topRight: Radius.circular(radius),
+          bottomRight: Radius.circular(radius),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Container(
         width: height,
         height: height,
         decoration: BoxDecoration(
           color: emotion.color(),
-          borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          ),
+          borderRadius: _radiusFromDirection(),
         ),
         constraints: BoxConstraints.tight(Size(height, height)),
         child: Container(
