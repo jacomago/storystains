@@ -162,7 +162,7 @@ pub async fn delete_user_by_username(
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, ApiError> {
     let new_username = NewUsername::parse(username.to_string()).map_err(ApiError::Validation)?;
-    access_control_block(&new_username, &auth_user, ACLOption::OwnerAndAdmin).await?;
+    access_control_block(&new_username, &auth_user, ACLOption::OwnerOrAdmin).await?;
     let user_id = db::read_user_by_username(&new_username, pool.get_ref())
         .await?
         .user_id;

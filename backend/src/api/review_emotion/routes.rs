@@ -244,7 +244,7 @@ pub async fn delete_review_emotion(
 ) -> Result<HttpResponse, ApiError> {
     let username = NewUsername::parse(path.username.to_string()).map_err(ApiError::Validation)?;
 
-    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerAndAdmin).await?;
+    access_control_block(&username, &auth_user.into_inner(), ACLOption::OwnerOrAdmin).await?;
 
     let slug = ReviewSlug::parse(path.slug.to_string()).map_err(ApiError::Validation)?;
     let position = EmotionPosition::parse(path.position).map_err(ApiError::Validation)?;

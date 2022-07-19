@@ -8,7 +8,7 @@ use super::error_chain_fmt;
 
 pub enum ACLOption {
     OwnerOnly,
-    OwnerAndAdmin,
+    OwnerOrAdmin,
 }
 
 /// Block Error is to announce error when modifying another users data
@@ -55,7 +55,7 @@ pub async fn access_control_block(
 ) -> Result<(), BlockError> {
     match acl_option {
         ACLOption::OwnerOnly => owner_block(data_owner, auth_user),
-        ACLOption::OwnerAndAdmin => {
+        ACLOption::OwnerOrAdmin => {
             if auth_user.is_admin {
                 return Ok(());
             }
