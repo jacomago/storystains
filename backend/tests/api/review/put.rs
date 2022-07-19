@@ -2,10 +2,8 @@ use reqwest::{Method, StatusCode};
 use serde_json::{json, Value};
 
 use crate::{
-    auth::route_returns_unauth_when_not_logged_in,
-    helpers::{TestApp, TestUser},
-    review::test_review::TestReview,
-    story::TestStory,
+    auth::route_returns_unauth_when_not_logged_in, helpers::TestApp,
+    review::test_review::TestReview, story::TestStory, users::TestUser,
 };
 
 use super::review_relative_url;

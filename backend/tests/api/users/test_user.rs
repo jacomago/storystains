@@ -1,6 +1,7 @@
 use uuid::Uuid;
 
-use super::TestApp;
+use crate::helpers::TestApp;
+
 pub struct TestUser {
     pub user_id: Uuid,
     pub username: String,

@@ -6,8 +6,9 @@ use crate::{
         route_returns_unauth_when_logged_out, route_returns_unauth_when_not_logged_in,
         route_returns_unauth_when_using_valid_but_non_existant_user,
     },
-    helpers::{TestApp, TestUser},
+    helpers::TestApp,
     story::TestStory,
+    users::TestUser,
 };
 
 use super::review_relative_url_prefix;

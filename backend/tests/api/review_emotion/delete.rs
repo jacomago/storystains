@@ -1,10 +1,8 @@
 use reqwest::{Method, StatusCode};
 
 use crate::{
-    auth::route_returns_unauth_when_not_logged_in,
-    helpers::{TestApp, TestUser},
-    review::TestReview,
-    review_emotion::test_review_emotion::TestReviewEmotion,
+    auth::route_returns_unauth_when_not_logged_in, helpers::TestApp, review::TestReview,
+    review_emotion::test_review_emotion::TestReviewEmotion, users::TestUser,
 };
 
 use super::test_review_emotion::review_emotion_relative_url;

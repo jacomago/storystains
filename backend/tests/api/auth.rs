@@ -1,6 +1,6 @@
 use reqwest::{Method, Response, StatusCode};
 
-use crate::helpers::{TestApp, TestUser};
+use crate::{helpers::TestApp, users::TestUser};
 
 impl TestApp {
     pub async fn method_route(&self, route: String, method: Method, body: String) -> Response {
