@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -102,14 +103,20 @@ class ReviewEmotionsList extends StatelessWidget {
     List<ReviewEmotion> reviewEmotions,
     BuildContext context,
   ) =>
-      ListView.separated(
-        separatorBuilder: (_, __) => const SizedBox(height: 4),
-        itemCount: reviewEmotions.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) => ReviewEmotionWidget(
-          reviewEmotion: reviewEmotions[index],
-          emotionHandler: (value) =>
-              _updateEmotion(context, reviewEmotions[index], index, value),
-        ),
+      Column(
+        children: reviewEmotions
+            .mapIndexed<Widget>(
+              (index, reviewEmotion) => Column(
+                children: [
+                  const SizedBox(height: 4),
+                  ReviewEmotionWidget(
+                    reviewEmotion: reviewEmotion,
+                    emotionHandler: (value) =>
+                        _updateEmotion(context, reviewEmotion, index, value),
+                  ),
+                ],
+              ),
+            )
+            .toList(),
       );
 }
