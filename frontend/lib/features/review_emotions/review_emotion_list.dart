@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -94,58 +93,66 @@ class ReviewEmotionsList extends StatelessWidget {
                     ),
                   )
                 : Row(),
-            Timeline(
-              gutterSpacing: 10,
-              indicatorSize: 111,
-              indicators: reviewEmotions.items
-                  .mapIndexed((i, e) => _buildEmotionItem(context, e, i))
-                  .toList(),
-              children: reviewEmotions.items
-                  .map((e) => _buildReviewEmotionItem(context, e))
-                  .toList(),
-            ),
+            _itemList(reviewEmotions.items, context),
           ],
         ),
+      );
+
+  Widget _itemList(
+    List<ReviewEmotion> reviewEmotions,
+    BuildContext context,
+  ) =>
+      ListView.separated(
+        separatorBuilder: (_, __) => const SizedBox(height: 4),
+        itemCount: reviewEmotions.length,
+        shrinkWrap: true,
+        itemBuilder: (context, index) =>
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(
+            children: [
+              _buildEmotionItem(context, reviewEmotions[index], index),
+              Text(
+                AppLocalizations.of(context)!
+                    .positionPercentage(reviewEmotions[index].position),
+                style: context.labelMedium,
+              ),
+            ],
+          ),
+          _buildReviewEmotionItem(context, reviewEmotions[index]),
+        ]),
       );
 
   Widget _buildReviewEmotionItem(
     BuildContext context,
     ReviewEmotion reviewEmotion,
   ) =>
-      GestureDetector(
-        onTap: () => {
-          UnimplementedError('not done'),
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppLocalizations.of(context)!.notes,
-                    style: context.labelLarge,
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    AppLocalizations.of(context)!
-                        .positionPercentage(reviewEmotion.position),
-                    style: context.labelMedium,
-                  ),
-                ],
-              ),
-              const Divider(),
-              Text(
-                reviewEmotion.notes,
-                textAlign: TextAlign.left,
-                style: context.bodySmall,
-              ),
-            ],
-          ),
+      Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.notes,
+                  style: context.labelLarge,
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+              ],
+            ),
+            Divider(
+              height: 4,
+              color: context.colors.secondaryContainer,
+            ),
+            Text(
+              reviewEmotion.notes,
+              textAlign: TextAlign.left,
+              style: context.bodySmall,
+            ),
+          ],
         ),
       );
 
