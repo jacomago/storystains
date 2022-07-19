@@ -48,16 +48,11 @@ class _EmotionDialogState extends State<EmotionDialog> {
                             )
                           : const BoxDecoration(),
                       child: GridTile(
-                        footer: Text(
-                          e.name,
-                          textAlign: TextAlign.center,
-                          style: context.bodySmall,
-                        ),
                         child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: EmotionImage(
+                          padding: const EdgeInsets.all(5),
+                          child: EmotionImageText(
                             emotion: e,
-                            height: 50,
+                            height: 75,
                           ),
                         ),
                       ),
