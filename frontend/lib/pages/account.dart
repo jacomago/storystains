@@ -74,8 +74,8 @@ class AccountPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: Image.asset(
-                      'assets/logo/logo.png',
+                    child: SvgPicture.asset(
+                      'assets/logo/logo_circle_plain.svg',
                       height: 110,
                     ),
                   ),
