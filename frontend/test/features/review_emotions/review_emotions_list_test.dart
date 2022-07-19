@@ -11,8 +11,8 @@ import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/common/widget/emotion_edit.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
-import 'package:storystains/features/review_emotion/review_emotion_edit.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
+import 'package:storystains/features/review_emotion/widgets/review_emotion_edit.dart';
 import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 import '../../common/image_mock_http.dart';
@@ -132,7 +132,7 @@ void main() {
       for (var re in list) {
         expect(find.text(re.notes), findsOneWidget);
         expect(find.text(re.emotion.name), findsOneWidget);
-        expect(find.text('Position: ${re.position}%'), findsOneWidget);
+        expect(find.text('${re.position}%'), findsOneWidget);
       }
     });
     testWidgets('add', (tester) async {

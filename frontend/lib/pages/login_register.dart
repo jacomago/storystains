@@ -66,15 +66,19 @@ class LoginOrRegisterPage extends StatelessWidget {
           ),
         ),
         body: Center(
-          child: Container(
-            padding: const EdgeInsets.all(60),
-            child: Consumer<AuthState>(
-              builder: (_, auth, __) => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+          child: Consumer<AuthState>(
+            builder: (_, auth, __) => SafeArea(
+              child: ListView(
+                restorationId: 'login_list_view',
+                physics: const ClampingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 60,
+                  vertical: 20,
+                ),
                 children: [
                   Center(
                     child: SvgPicture.asset(
-                      'assets/logo/logo.svg',
+                      'assets/logo/logo_circle_plain.svg',
                       height: 110,
                     ),
                   ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
-import '../../../pages/story_filter_page.dart';
-import '../../../routes/routes.dart';
 import '../story.dart';
 import '../story_route.dart';
 
@@ -10,6 +8,27 @@ import '../story_route.dart';
 class StoryWidget extends StatelessWidget {
   /// Widget for displaying a [Story] without editing
   const StoryWidget({Key? key, required this.story}) : super(key: key);
+
+  void _onTapTitle(BuildContext context) {
+    if (story?.title == null) {
+      return;
+    }
+    StoryQuery(title: story!.title).navigate(context);
+  }
+
+  void _onTapCreator(BuildContext context) {
+    if (story?.creator == null) {
+      return;
+    }
+    StoryQuery(creator: story!.creator).navigate(context);
+  }
+
+  void _onTapMedium(BuildContext context) {
+    if (story?.medium == null) {
+      return;
+    }
+    StoryQuery(medium: story!.medium).navigate(context);
+  }
 
   ///The [Story] to display
   final Story? story;
@@ -19,25 +38,38 @@ class StoryWidget extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                '${story?.title}',
-                style: context.headlineSmall,
-                semanticsLabel: AppLocalizations.of(context)!.title,
-                maxLines: 2,
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => _onTapTitle(context),
+                  child: Text(
+                    '${story?.title}',
+                    style: context.headlineSmall,
+                    semanticsLabel: AppLocalizations.of(context)!.title,
+                    overflow: TextOverflow.visible,
+                    maxLines: 2,
+                  ),
+                ),
               ),
-              Text(
-                '(${story?.medium.name})',
-                style: context.titleMedium,
+              GestureDetector(
+                onTap: () => _onTapMedium(context),
+                child: Text(
+                  '(${story?.medium.name})',
+                  style: context.titleMedium,
+                ),
               ),
             ],
           ),
-          Text(
-            AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
-            style: context.titleMedium!.copyWith(
-              fontStyle: FontStyle.italic,
+          GestureDetector(
+            onTap: () => _onTapCreator(context),
+            child: Text(
+              AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
+              style: context.titleMedium!.copyWith(
+                fontStyle: FontStyle.italic,
+              ),
+              semanticsLabel: AppLocalizations.of(context)!.creator,
             ),
-            semanticsLabel: AppLocalizations.of(context)!.creator,
           ),
         ],
       );
@@ -48,27 +80,12 @@ class StoryItem extends StatelessWidget {
   /// Widget for displaying a [Story] in a list
   const StoryItem({Key? key, required this.story}) : super(key: key);
 
-  void _navigate(StoryQuery query, BuildContext context) {
-    Navigator.of(context).push(
-      query.route(
-        Routes.reviews,
-        (q) => StoryFilterPage(
-          query: q,
-        ),
-      ),
-    );
-  }
-
-  void _onTapTitle(BuildContext context) {
-    _navigate(StoryQuery(title: story.title), context);
-  }
-
   void _onTapCreator(BuildContext context) {
-    _navigate(StoryQuery(creator: story.creator), context);
+    StoryQuery(creator: story.creator).navigate(context);
   }
 
   void _onTapMedium(BuildContext context) {
-    _navigate(StoryQuery(medium: story.medium), context);
+    StoryQuery(medium: story.medium).navigate(context);
   }
 
   ///The [Story] to display
@@ -80,14 +97,14 @@ class StoryItem extends StatelessWidget {
           const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => _onTapTitle(context),
+              Expanded(
                 child: Text(
                   story.title,
                   style: context.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.fade,
+                  maxLines: 2,
                 ),
               ),
               GestureDetector(
