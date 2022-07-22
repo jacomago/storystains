@@ -95,6 +95,46 @@ class NewReview {
   Map<String, dynamic> toJson() => _$NewReviewToJson(this);
 }
 
+/// request for updating a review
+@JsonSerializable()
+class UpdateReview {
+  /// request for update review body
+  String? body;
+
+  /// request for update review story
+  Story? story;
+
+  /// request for new review
+  UpdateReview({
+    this.body,
+    this.story,
+  });
+
+  /// request for new review from json
+  factory UpdateReview.fromJson(Map<String, dynamic> json) =>
+      _$UpdateReviewFromJson(json);
+
+  /// request for new review wrapper to sjon
+  Map<String, dynamic> toJson() => _$UpdateReviewToJson(this);
+}
+
+/// request for new review wrapper
+@JsonSerializable()
+class UpdateReviewReq {
+  /// request for new review wrapper
+  UpdateReview review;
+
+  /// request for new review wrapper
+  UpdateReviewReq({required this.review});
+
+  /// request for new review wrapper from json
+  factory UpdateReviewReq.fromJson(Map<String, dynamic> json) =>
+      _$UpdateReviewReqFromJson(json);
+
+  /// request for new review wrapper to json
+  Map<String, dynamic> toJson() => _$UpdateReviewReqToJson(this);
+}
+
 /// response for [Review] response
 @JsonSerializable()
 class ReviewResp {

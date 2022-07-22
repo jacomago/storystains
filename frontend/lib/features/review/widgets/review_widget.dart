@@ -50,15 +50,15 @@ class ReviewWidget extends StatelessWidget {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewState>();
-    final body = state.bodyController.value.text;
+    final body = state.bodyController.value.text.isEmpty
+        ? null
+        : state.bodyController.value.text;
     final story = state.storyController.value;
 
-    if (story.title.isEmpty || story.creator.isEmpty) {
-      context.snackbar(context.locale.blankStringError(context.locale.title));
-
-      return;
-    } else if (body.isEmpty) {
-      context.snackbar(context.locale.blankStringError(context.locale.body));
+    if (story.title.isEmpty ||
+        story.creator.isEmpty ||
+        story.medium.name.isEmpty) {
+      context.snackbar(context.locale.blankStringError(context.locale.story));
 
       return;
     }

@@ -23,6 +23,10 @@
     "@emotion": {
         "description": "A feeling."
     },
+    "story": "Story",
+    "@story": {
+        "description": "A Story."
+    },
     "emotions": "Emotions",
     "@emotions": {
         "description": "A number of feelings."

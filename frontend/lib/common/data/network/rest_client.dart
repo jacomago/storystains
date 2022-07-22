@@ -42,7 +42,7 @@ abstract class RestClient {
   Future<ReviewResp> updateReview(
     @retrofit.Path() String username,
     @retrofit.Path() String slug,
-    @retrofit.Body() CreateReview updatedReview,
+    @retrofit.Body() UpdateReviewReq updatedReview,
   );
 
   /// Get the info of the [Review]

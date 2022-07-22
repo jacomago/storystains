@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/story/story.dart';
+import 'package:storystains/features/user/user.dart';
 
 import '../../common/errors.dart';
 import '../story/story.dart';
@@ -31,6 +32,35 @@ void main() {
           .thenAnswer((realInvocation) async => reviewResp);
 
       await reviewState.update(review.story, review.body!);
+
+      verify(mockService.create(review.story, review.body));
+      expect(reviewState.isUpdated, true);
+    });
+
+    test('Can create with null in isUpdated', () async {
+      SharedPreferences.setMockInitialValues({});
+      final review = Review(
+        body: null,
+        story: testStory(),
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        user: UserProfile(
+          username: 'username',
+        ),
+        emotions: [],
+        slug: 'title',
+      );
+      final reviewResp = ReviewResp(review: review);
+
+      final mockService = MockReviewService();
+      final reviewState = ReviewState(mockService);
+
+      expect(reviewState.isCreate, true);
+
+      when(mockService.create(review.story, review.body))
+          .thenAnswer((realInvocation) async => reviewResp);
+
+      await reviewState.update(review.story, review.body);
 
       verify(mockService.create(review.story, review.body));
       expect(reviewState.isUpdated, true);

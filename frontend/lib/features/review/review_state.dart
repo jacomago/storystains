@@ -172,7 +172,7 @@ class ReviewState extends ChangeNotifier {
   }
 
   /// update to api
-  Future<void> update(Story story, String body) async {
+  Future<void> update(Story? story, String? body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
 
@@ -180,7 +180,7 @@ class ReviewState extends ChangeNotifier {
 
     try {
       final data = isCreate
-          ? await _service.create(story, body)
+          ? await _service.create(story!, body)
           : await _service.update(
               _review!.user.username,
               _review!.slug,
