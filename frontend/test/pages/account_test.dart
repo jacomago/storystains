@@ -11,6 +11,7 @@ import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/account.dart';
 
+import '../common/errors.dart';
 import 'account_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, AuthState authState) =>
@@ -47,11 +48,14 @@ void main() {
         find.widgetWithText(OutlinedButton, 'Delete User'),
         findsOneWidget,
       );
+      await tester.pumpAndSettle();
     });
     testWidgets('Account delete', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authService = MockAuthService();
+      when(authService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(authService);
       ServiceLocator.sl.registerSingleton(authState);
       final widg = wrapWithMaterial(
@@ -86,6 +90,8 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final authService = MockAuthService();
+      when(authService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(authService);
       final widg = wrapWithMaterial(
         Builder(builder: (context) => const AccountPage()),
