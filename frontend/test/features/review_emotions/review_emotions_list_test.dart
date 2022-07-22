@@ -162,8 +162,11 @@ void main() {
       // in a scroll for the scolling list part
       await tester.pumpWidget(
         wrapWithMaterial(
-          const SingleChildScrollView(child: ReviewEmotionsList()),
-          reviewEmotionsState,
+          SingleChildScrollView(
+            child: ReviewEmotionsList(
+              state: reviewEmotionsState,
+            ),
+          ),
           emotionsState: emotionsState,
         ),
       );
