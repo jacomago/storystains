@@ -13,6 +13,7 @@ class ReviewEmotionsList extends StatelessWidget {
   /// List of review emotions widget
   const ReviewEmotionsList({Key? key, required this.state}) : super(key: key);
 
+  /// State of the list of emotions
   final ReviewEmotionsState state;
 
   void _updateEmotion(
