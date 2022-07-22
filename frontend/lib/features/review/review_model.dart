@@ -12,7 +12,7 @@ part 'review_model.g.dart';
 @JsonSerializable()
 class Review {
   /// Long form text body
-  String body;
+  String? body;
 
   /// time of creation
   @JsonKey(name: 'created_at')
@@ -76,7 +76,7 @@ class CreateReview {
 @JsonSerializable()
 class NewReview {
   /// request for new review body
-  String body;
+  String? body;
 
   /// request for new review story
   Story story;

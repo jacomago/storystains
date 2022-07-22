@@ -73,7 +73,7 @@ class ReviewEmotionWidget extends StatelessWidget {
               color: context.colors.secondaryContainer,
             ),
             Text(
-              reviewEmotion.notes,
+              reviewEmotion.notes ?? '',
               textAlign: TextAlign.left,
               style: context.bodySmall,
             ),

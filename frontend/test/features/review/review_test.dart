@@ -30,7 +30,7 @@ void main() {
       when(mockService.create(review.story, review.body))
           .thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.story, review.body);
+      await reviewState.update(review.story, review.body!);
 
       verify(mockService.create(review.story, review.body));
       expect(reviewState.isUpdated, true);
@@ -193,7 +193,7 @@ void main() {
         review.body,
       )).thenAnswer((realInvocation) async => reviewResp);
 
-      await reviewState.update(review.story, review.body);
+      await reviewState.update(review.story, review.body!);
 
       verify(mockService.update(
         review.user.username,
