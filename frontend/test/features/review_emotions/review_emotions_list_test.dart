@@ -22,15 +22,11 @@ import '../review_emotion/review_emotion.dart';
 import 'review_emotions_list_test.mocks.dart';
 
 Widget wrapWithMaterial(
-  Widget w,
-  ReviewEmotionsState reviewEmotionsState, {
+  Widget w, {
   EmotionsState? emotionsState,
 }) =>
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<ReviewEmotionsState>(
-          create: (_) => reviewEmotionsState,
-        ),
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => emotionsState ?? EmotionsState(EmotionsService()),
         ),
@@ -67,7 +63,11 @@ void main() {
 
       final reviewEmotionsState = ReviewEmotionsState([]);
       await tester.pumpWidget(
-        wrapWithMaterial(const ReviewEmotionsList(), reviewEmotionsState),
+        wrapWithMaterial(
+          ReviewEmotionsList(
+            state: reviewEmotionsState,
+          ),
+        ),
       );
       await tester.pumpAndSettle();
     });
@@ -123,8 +123,11 @@ void main() {
       // in a scroll for the scolling list part
       await tester.pumpWidget(
         wrapWithMaterial(
-          const SingleChildScrollView(child: ReviewEmotionsList()),
-          reviewEmotionsState,
+          SingleChildScrollView(
+            child: ReviewEmotionsList(
+              state: reviewEmotionsState,
+            ),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -149,8 +152,11 @@ void main() {
       // in a scroll for the scolling list part
       await tester.pumpWidget(
         wrapWithMaterial(
-          const SingleChildScrollView(child: ReviewEmotionsList()),
-          reviewEmotionsState,
+          SingleChildScrollView(
+            child: ReviewEmotionsList(
+              state: reviewEmotionsState,
+            ),
+          ),
           emotionsState: emotionsState,
         ),
       );
@@ -186,8 +192,11 @@ void main() {
       // in a scroll for the scolling list part
       await tester.pumpWidget(
         wrapWithMaterial(
-          const SingleChildScrollView(child: ReviewEmotionsList()),
-          reviewEmotionsState,
+          SingleChildScrollView(
+            child: ReviewEmotionsList(
+              state: reviewEmotionsState,
+            ),
+          ),
           emotionsState: emotionsState,
         ),
       );

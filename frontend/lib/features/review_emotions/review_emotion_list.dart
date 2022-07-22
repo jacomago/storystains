@@ -11,7 +11,9 @@ import 'review_emotions_state.dart';
 /// List of r[ReviewEmotion] widget
 class ReviewEmotionsList extends StatelessWidget {
   /// List of review emotions widget
-  const ReviewEmotionsList({Key? key}) : super(key: key);
+  const ReviewEmotionsList({Key? key, required this.state}) : super(key: key);
+
+  final ReviewEmotionsState state;
 
   void _updateEmotion(
     BuildContext context,
@@ -20,8 +22,6 @@ class ReviewEmotionsList extends StatelessWidget {
     Emotion? value,
   ) async {
     FocusScope.of(context).unfocus();
-
-    final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
       context.snackbar(context.locale.blankStringError(context.locale.emotion));
@@ -35,8 +35,6 @@ class ReviewEmotionsList extends StatelessWidget {
   void _addEmotion(BuildContext context, Emotion? value) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionsState>();
-
     if (value == null) {
       context.snackbar(context.locale.blankStringError(context.locale.emotion));
 
@@ -47,9 +45,8 @@ class ReviewEmotionsList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Consumer2<ReviewEmotionsState, EmotionsState>(
-        builder: (_, reviewEmotions, emotions, __) => Column(
+  Widget build(BuildContext context) => Consumer<EmotionsState>(
+        builder: (_, emotions, __) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -77,21 +74,21 @@ class ReviewEmotionsList extends StatelessWidget {
                 ),
               ],
             ),
-            (reviewEmotions.newItem || reviewEmotions.editItem)
+            (state.newItem || state.editItem)
                 ? ChangeNotifierProvider(
                     create: (_) => ReviewEmotionState(
                       ReviewEmotionService(),
-                      emotion: reviewEmotions.currentEmotion,
-                      reviewEmotion: reviewEmotions.currentReviewEmotion,
+                      emotion: state.currentEmotion,
+                      reviewEmotion: state.currentReviewEmotion,
                     ),
                     child: ReviewEmotionEdit(
-                      cancelHandler: reviewEmotions.cancelCreate,
-                      okHandler: reviewEmotions.confirmCreation,
-                      deleteHandler: reviewEmotions.confirmDelete,
+                      cancelHandler: state.cancelCreate,
+                      okHandler: state.confirmCreation,
+                      deleteHandler: state.confirmDelete,
                     ),
                   )
                 : Row(),
-            _itemList(reviewEmotions.items, context),
+            _itemList(state.items, context),
           ],
         ),
       );

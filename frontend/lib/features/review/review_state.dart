@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/utils/error.dart';
+import '../review_emotions/review_emotions_state.dart';
 import '../story/story.dart';
 import '../user/user_model.dart';
 import 'review.dart';
@@ -102,6 +103,9 @@ class ReviewState extends ChangeNotifier {
   /// controller for editing body
   late TextEditingController bodyController;
 
+  /// controller for editing Review Emotions
+  late ReviewEmotionsState reviewEmotionsController;
+
   /// State of editing or showing a [Review]
   ReviewState(this._service, {Review? review, ReviewRoutePath? path}) {
     _event = null;
@@ -115,6 +119,7 @@ class ReviewState extends ChangeNotifier {
     _review = review;
     storyController = StoryState(StoryService(), story: review?.story);
     bodyController = TextEditingController(text: review?.body);
+    reviewEmotionsController = ReviewEmotionsState(review?.emotions);
 
     if (path != null) {
       _init(path);
@@ -144,6 +149,7 @@ class ReviewState extends ChangeNotifier {
 
       storyController = StoryState(StoryService(), story: review?.story);
       bodyController = TextEditingController(text: _review?.body);
+      reviewEmotionsController = ReviewEmotionsState(_review?.emotions);
       _status = ReviewStatus.read;
       _stateType = ReviewStateType.read;
     } on DioError catch (e) {
@@ -212,6 +218,9 @@ class ReviewState extends ChangeNotifier {
       _error = '';
       _event = null;
       _review = null;
+      bodyController.clear();
+      storyController.clear();
+      reviewEmotionsController.clear();
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
@@ -245,6 +254,7 @@ class ReviewState extends ChangeNotifier {
     _review = review;
     storyController = StoryState(StoryService(), story: review.story);
     bodyController = TextEditingController(text: review.body);
+    reviewEmotionsController = ReviewEmotionsState([]);
 
     _isLoading = false;
     notifyListeners();
@@ -254,6 +264,7 @@ class ReviewState extends ChangeNotifier {
   void dispose() {
     bodyController.dispose();
     storyController.dispose();
+    reviewEmotionsController.dispose();
     _error = '';
     _event = null;
     _stateType = null;

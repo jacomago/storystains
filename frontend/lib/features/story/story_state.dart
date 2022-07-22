@@ -112,6 +112,13 @@ class StoryState extends ChangeNotifier {
         creator: creatorController.text.isEmpty ? null : creatorController.text,
       );
 
+  /// Clear the value from the controller
+  void clear() {
+    titleController.clear();
+    creatorController.clear();
+    mediumController.value = Medium.mediumDefault;
+  }
+
   void _setControllers(Story story) {
     titleController.text = story.title;
     creatorController.text = story.creator;
