@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
 import '../emotions/emotion.dart';
@@ -24,8 +23,7 @@ class ReviewEmotionsList extends StatelessWidget {
     final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.emotion));
+      context.snackbar(context.locale.blankStringError(context.locale.emotion));
 
       return;
     }
@@ -39,8 +37,7 @@ class ReviewEmotionsList extends StatelessWidget {
     final state = context.read<ReviewEmotionsState>();
 
     if (value == null) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.emotion));
+      context.snackbar(context.locale.blankStringError(context.locale.emotion));
 
       return;
     }
@@ -58,7 +55,7 @@ class ReviewEmotionsList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.emotions,
+                  context.locale.emotions,
                   style: context.titleMedium,
                 ),
                 OutlinedButton(
@@ -73,7 +70,7 @@ class ReviewEmotionsList extends StatelessWidget {
                     ),
                   },
                   child: Text(
-                    AppLocalizations.of(context)!.add,
+                    context.locale.add,
                     style: context.button,
                   ),
                 ),

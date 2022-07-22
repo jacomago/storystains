@@ -244,5 +244,19 @@
     "searchResults": "Search Results",
     "@searchResults": {
         "description": "Results from a search"
+    },
+    "withError": "{action} With error: {error}",
+    "@withError": {
+        "description": "An action failed with particular error.",
+        "placeholders": {
+            "action": {
+                "type": "String",
+                "example": "Log in"
+            },
+            "error": {
+                "type": "String",
+                "example": "empty string"
+            }
+        }
     }
 }

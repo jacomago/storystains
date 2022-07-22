@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/utils/utils.dart';
@@ -34,17 +33,15 @@ class ReviewWidget extends StatelessWidget {
   void _afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
       context.pop(state.review);
-      context.snackbar(AppLocalizations.of(context)!
-          .updatedObject(AppLocalizations.of(context)!.review));
+      context.snackbar(context.locale.updatedObject(context.locale.review));
     } else if (state.isDeleted) {
       context.pop();
-      context.snackbar(AppLocalizations.of(context)!
-          .deletedObject(AppLocalizations.of(context)!.review));
+      context.snackbar(context.locale.deletedObject(context.locale.review));
     } else {
       if (state.isFailed) {
         context.snackbar(state.error);
       } else {
-        context.snackbar(AppLocalizations.of(context)!.pleaseTryAgain);
+        context.snackbar(context.locale.pleaseTryAgain);
       }
     }
   }
@@ -57,13 +54,11 @@ class ReviewWidget extends StatelessWidget {
     final story = state.storyController.value;
 
     if (story.title.isEmpty || story.creator.isEmpty) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.title));
+      context.snackbar(context.locale.blankStringError(context.locale.title));
 
       return;
     } else if (body.isEmpty) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.body));
+      context.snackbar(context.locale.blankStringError(context.locale.body));
 
       return;
     }
@@ -109,7 +104,7 @@ class ReviewWidget extends StatelessWidget {
                 itemBuilder: (context) => <PopupMenuItem<Text>>[
                   PopupMenuItem(
                     child: Text(
-                      AppLocalizations.of(context)!.delete,
+                      context.locale.delete,
                       style: context.labelSmall!
                           .copyWith(color: context.colors.error),
                     ),
@@ -134,7 +129,7 @@ class ReviewWidget extends StatelessWidget {
         builder: (context, state, authState, _) => Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
-            title: AppBarTitle(AppLocalizations.of(context)!.review),
+            title: AppBarTitle(context.locale.review),
             moreActions: _buildDelete(context, state, authState),
           ),
           body: Padding(

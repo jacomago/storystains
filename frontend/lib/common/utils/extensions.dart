@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+/// Extensionn to provide the localizations
+extension Applocale on BuildContext {
+  /// the locale of the application
+  AppLocalizations get locale => AppLocalizations.of(this)!;
+}
 
 /// Extension to quick get font styles from context
 extension TypographyUtils on BuildContext {

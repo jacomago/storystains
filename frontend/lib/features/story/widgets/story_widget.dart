@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
 import '../story.dart';
 import '../story_route.dart';
@@ -46,7 +45,7 @@ class StoryWidget extends StatelessWidget {
                   child: Text(
                     '${story?.title}',
                     style: context.headlineSmall,
-                    semanticsLabel: AppLocalizations.of(context)!.title,
+                    semanticsLabel: context.locale.title,
                     overflow: TextOverflow.visible,
                     maxLines: 2,
                   ),
@@ -64,11 +63,11 @@ class StoryWidget extends StatelessWidget {
           GestureDetector(
             onTap: () => _onTapCreator(context),
             child: Text(
-              AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
+              context.locale.byCreator(story?.creator ?? ''),
               style: context.titleMedium!.copyWith(
                 fontStyle: FontStyle.italic,
               ),
-              semanticsLabel: AppLocalizations.of(context)!.creator,
+              semanticsLabel: context.locale.creator,
             ),
           ),
         ],
@@ -123,7 +122,7 @@ class StoryItem extends StatelessWidget {
           GestureDetector(
             onTap: () => _onTapCreator(context),
             child: Text(
-              AppLocalizations.of(context)!.byCreator(story.creator),
+              context.locale.byCreator(story.creator),
               style: context.titleSmall,
               overflow: TextOverflow.fade,
             ),

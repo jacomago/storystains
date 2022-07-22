@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../constant/app_theme.dart';
 import '../utils/utils.dart';
@@ -32,7 +31,7 @@ class LoadMessage extends StatelessWidget {
               onPressed: onRefresh,
               style: homeButtonStyle,
               child: Text(
-                AppLocalizations.of(context)!.refresh,
+                context.locale.refresh,
                 style: context.button,
               ),
             ),

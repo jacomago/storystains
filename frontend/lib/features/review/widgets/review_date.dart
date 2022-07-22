@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 import '../../../common/utils/utils.dart';
@@ -19,7 +18,7 @@ class ReviewDate extends StatelessWidget {
             DateFormat.yMMMMEEEEd().format(date),
             style: context.caption,
             overflow: TextOverflow.ellipsis,
-            semanticsLabel: AppLocalizations.of(context)!.modifiedDate,
+            semanticsLabel: context.locale.modifiedDate,
           ),
         ],
       );
