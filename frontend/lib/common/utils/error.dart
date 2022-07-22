@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import '../data/network/api_exception.dart';
 
@@ -27,7 +29,10 @@ String errorMessage(DioError error) {
           '${error.response?.statusCode}',
         ).toString();
     }
+  } else if (error.type == DioErrorType.other &&
+      error.error.runtimeType == SocketException) {
+    return (error.error as SocketException).message;
   } else {
-    return 'Unkown Error';
+    return 'Unknown Error';
   }
 }

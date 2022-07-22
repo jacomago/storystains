@@ -245,7 +245,7 @@
     "@searchResults": {
         "description": "Results from a search"
     },
-    "withError": "{action} With error: {error}",
+    "withError": "{action} With Error: {error}",
     "@withError": {
         "description": "An action failed with particular error.",
         "placeholders": {

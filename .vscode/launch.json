@@ -29,6 +29,13 @@
             ]
         },
         {
+            "name": "frontend macos",
+            "cwd": "frontend",
+            "request": "launch",
+            "deviceId": "macos",
+            "type": "dart"
+        },
+        {
             "name": "frontend",
             "cwd": "frontend",
             "request": "launch",

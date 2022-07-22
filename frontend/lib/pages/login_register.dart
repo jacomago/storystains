@@ -22,15 +22,15 @@ class LoginOrRegisterPage extends StatelessWidget {
       );
     } else {
       _passwordController.clear();
-
-      context.snackbar(context.locale.withError(
+      final message = context.locale.withError(
         context.locale.actionFailed(
           context.read<AuthState>().isLogin
               ? context.locale.login
               : context.locale.signUp,
         ),
         context.read<AuthState>().error,
-      ));
+      );
+      context.snackbar(message);
     }
   }
 
