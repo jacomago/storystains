@@ -2,7 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
+import '../auth/auth.dart';
 import '../emotions/emotion.dart';
+import '../review/review.dart';
 import '../review_emotion/review_emotion.dart';
 
 import '../review_emotion/widgets/review_emotion.dart';
@@ -59,22 +61,26 @@ class ReviewEmotionsList extends StatelessWidget {
                   context.locale.emotions,
                   style: context.titleMedium,
                 ),
-                OutlinedButton(
-                  onPressed: () async => {
-                    showDialog<Emotion>(
-                      context: context,
-                      builder: (context) => EmotionDialog(
-                        initialEmotion: emotions.emotionDefault,
-                      ),
-                    ).then(
-                      (value) => _addEmotion(context, value),
-                    ),
-                  },
-                  child: Text(
-                    context.locale.add,
-                    style: context.button,
-                  ),
-                ),
+                context
+                        .read<AuthState>()
+                        .sameUser(context.read<ReviewState>().review!.user)
+                    ? OutlinedButton(
+                        onPressed: () async => {
+                          showDialog<Emotion>(
+                            context: context,
+                            builder: (context) => EmotionDialog(
+                              initialEmotion: emotions.emotionDefault,
+                            ),
+                          ).then(
+                            (value) => _addEmotion(context, value),
+                          ),
+                        },
+                        child: Text(
+                          context.locale.add,
+                          style: context.button,
+                        ),
+                      )
+                    : Column(),
               ],
             ),
             (reviewEmotions.newItem || reviewEmotions.editItem)

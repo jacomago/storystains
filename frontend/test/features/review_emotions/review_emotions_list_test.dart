@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/common/widget/emotion_edit.dart';
+import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/review/review.dart';
 import 'package:storystains/features/review_emotion/review_emotion_model.dart';
@@ -16,6 +17,7 @@ import 'package:storystains/features/review_emotion/widgets/review_emotion_edit.
 import 'package:storystains/features/review_emotions/review_emotions.dart';
 
 import '../../common/image_mock_http.dart';
+import '../auth/user.dart';
 import '../emotions/emotion.dart';
 import '../review/review.dart';
 import '../review_emotion/review_emotion.dart';
@@ -25,6 +27,7 @@ Widget wrapWithMaterial(
   Widget w,
   ReviewEmotionsState reviewEmotionsState, {
   EmotionsState? emotionsState,
+  AuthState? authState,
 }) =>
     MultiProvider(
       providers: [
@@ -39,6 +42,13 @@ Widget wrapWithMaterial(
             ReviewService(),
             review: testReview(),
           ),
+        ),
+        ChangeNotifierProvider<AuthState>(
+          create: (_) =>
+              authState ??
+              AuthState(
+                AuthService(),
+              ),
         ),
       ],
       child: MaterialApp(
@@ -135,6 +145,28 @@ void main() {
         expect(find.text('${re.position}%'), findsOneWidget);
       }
     });
+    testWidgets('add no show', (tester) async {
+      final reviewEmotionsState = ReviewEmotionsState([]);
+      final initEmotion = testEmotion();
+      final list = [
+        initEmotion,
+        testEmotion(name: '2'),
+      ];
+      final emotionService = MockEmotionsService();
+      when(emotionService.fetch()).thenAnswer((realInvocation) async => list);
+
+      final emotionsState = EmotionsState(emotionService);
+      // in a scroll for the scolling list part
+      await tester.pumpWidget(
+        wrapWithMaterial(
+          const SingleChildScrollView(child: ReviewEmotionsList()),
+          reviewEmotionsState,
+          emotionsState: emotionsState,
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.widgetWithText(OutlinedButton, 'Add'), findsNothing);
+    });
     testWidgets('add', (tester) async {
       final reviewEmotionsState = ReviewEmotionsState([]);
       final initEmotion = testEmotion();
@@ -152,6 +184,7 @@ void main() {
           const SingleChildScrollView(child: ReviewEmotionsList()),
           reviewEmotionsState,
           emotionsState: emotionsState,
+          authState: await loggedInState(),
         ),
       );
       await tester.pumpAndSettle();
