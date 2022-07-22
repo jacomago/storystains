@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'common/constant/app_theme.dart';
 import 'common/url_strategy/url_strategy.dart';
 import 'common/utils/service_locator.dart';
+import 'common/utils/utils.dart';
 import 'features/auth/auth_state.dart';
 import 'features/emotions/emotion_service.dart';
 import 'features/emotions/emotion_state.dart';
@@ -42,7 +43,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        onGenerateTitle: (context) => AppLocalizations.of(context)!.appName,
+        onGenerateTitle: (context) => context.locale.appName,
         theme: ThemeData(
           colorScheme: lightColorScheme,
           textTheme: GoogleFonts.libreBaskervilleTextTheme(),

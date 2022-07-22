@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/utils/utils.dart';
@@ -95,9 +94,9 @@ class ReviewEmotionEdit extends StatelessWidget {
                     ),
                     Expanded(
                       child: MarkdownEdit(
-                        title: AppLocalizations.of(context)!.notes,
+                        title: context.locale.notes,
                         bodyController: state.notesController,
-                        hint: AppLocalizations.of(context)!.markdownNotes,
+                        hint: context.locale.markdownNotes,
                       ),
                     ),
                     const SizedBox(
@@ -121,7 +120,7 @@ class ReviewEmotionEdit extends StatelessWidget {
           _deleteReviewEmotion(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.delete,
+          context.locale.delete,
           style: context.button!.copyWith(
             color: context.colors.onErrorContainer,
           ),
@@ -136,7 +135,7 @@ class ReviewEmotionEdit extends StatelessWidget {
           _editReviewEmotion(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.ok,
+          context.locale.ok,
           style: context.button!.copyWith(
             color: context.colors.onPrimary,
           ),
@@ -147,7 +146,7 @@ class ReviewEmotionEdit extends StatelessWidget {
           _cancelCreation(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.cancel,
+          context.locale.cancel,
           style: context.button,
         ),
       );

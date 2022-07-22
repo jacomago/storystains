@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
 import '../../../common/widget/widget.dart';
 import '../../emotions/emotion.dart';
@@ -44,7 +43,7 @@ class ReviewEmotionWidget extends StatelessWidget {
     int position,
   ) =>
       Text(
-        AppLocalizations.of(context)!.positionPercentage(position),
+        context.locale.positionPercentage(position),
         style: context.labelMedium,
       );
 
@@ -61,7 +60,7 @@ class ReviewEmotionWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.notes,
+                  context.locale.notes,
                   style: context.labelLarge,
                 ),
                 const SizedBox(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
 import '../../../pages/user_profile.dart';
 import '../../../routes/routes.dart';
@@ -33,7 +32,7 @@ class ReviewUsername extends StatelessWidget {
               '@${user.username}',
               style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
               overflow: TextOverflow.fade,
-              semanticsLabel: AppLocalizations.of(context)!.username,
+              semanticsLabel: context.locale.username,
             ),
           ),
         ],

@@ -125,7 +125,10 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Login failed.'),
+        find.widgetWithText(
+          SnackBar,
+          'Login failed. With Error: Connection timed out',
+        ),
         findsOneWidget,
       );
     });
@@ -165,7 +168,10 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Login failed.'),
+        find.widgetWithText(
+          SnackBar,
+          'Sign up failed. With Error: Connection timed out',
+        ),
         findsOneWidget,
       );
     });

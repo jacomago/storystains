@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../common/utils/extensions.dart';
@@ -19,12 +18,19 @@ class LoginOrRegisterPage extends StatelessWidget {
     if (auth.isAuthenticated) {
       Navigator.of(context).pop();
       context.snackbar(
-        AppLocalizations.of(context)!.greeting(auth.user?.username ?? ''),
+        context.locale.greeting(auth.user?.username ?? ''),
       );
     } else {
       _passwordController.clear();
-      context.snackbar(AppLocalizations.of(context)!
-          .actionFailed(AppLocalizations.of(context)!.login));
+      final message = context.locale.withError(
+        context.locale.actionFailed(
+          context.read<AuthState>().isLogin
+              ? context.locale.login
+              : context.locale.signUp,
+        ),
+        context.read<AuthState>().error,
+      );
+      context.snackbar(message);
     }
   }
 
@@ -38,11 +44,9 @@ class LoginOrRegisterPage extends StatelessWidget {
 
     if (empty) {
       context.snackbar(
-        AppLocalizations.of(context)!.or(
-          AppLocalizations.of(context)!
-              .blankStringError(AppLocalizations.of(context)!.username),
-          AppLocalizations.of(context)!
-              .blankStringError(AppLocalizations.of(context)!.password),
+        context.locale.or(
+          context.locale.blankStringError(context.locale.username),
+          context.locale.blankStringError(context.locale.password),
         ),
       );
 
@@ -59,9 +63,9 @@ class LoginOrRegisterPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: StainsAppBar(
           title: AppBarTitle(
-            AppLocalizations.of(context)!.or(
-              AppLocalizations.of(context)!.login,
-              AppLocalizations.of(context)!.signUp,
+            context.locale.or(
+              context.locale.login,
+              context.locale.signUp,
             ),
           ),
         ),
@@ -86,8 +90,8 @@ class LoginOrRegisterPage extends StatelessWidget {
                   TextField(
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
-                      labelText: AppLocalizations.of(context)!.username,
-                      hintText: AppLocalizations.of(context)!.usernameHint,
+                      labelText: context.locale.username,
+                      hintText: context.locale.usernameHint,
                     ),
                     controller: _usernameController,
                     textInputAction: TextInputAction.next,
@@ -97,8 +101,8 @@ class LoginOrRegisterPage extends StatelessWidget {
                     obscureText: true,
                     decoration: InputDecoration(
                       border: const OutlineInputBorder(),
-                      labelText: AppLocalizations.of(context)!.password,
-                      hintText: AppLocalizations.of(context)!.passwordHint,
+                      labelText: context.locale.password,
+                      hintText: context.locale.passwordHint,
                     ),
                     controller: _passwordController,
                     textInputAction: TextInputAction.done,
@@ -114,8 +118,8 @@ class LoginOrRegisterPage extends StatelessWidget {
                     onPressed: () => _onLogin(context),
                     child: Text(
                       auth.isLogin
-                          ? AppLocalizations.of(context)!.login
-                          : AppLocalizations.of(context)!.signUp,
+                          ? context.locale.login
+                          : context.locale.signUp,
                       style: context.button!
                           .copyWith(color: context.colors.onPrimary),
                     ),
@@ -125,10 +129,8 @@ class LoginOrRegisterPage extends StatelessWidget {
                     onPressed: auth.switchLoginRegister,
                     child: Text(
                       auth.isLogin
-                          ? AppLocalizations.of(context)!
-                              .choice(AppLocalizations.of(context)!.signUp)
-                          : AppLocalizations.of(context)!
-                              .choice(AppLocalizations.of(context)!.login),
+                          ? context.locale.choice(context.locale.signUp)
+                          : context.locale.choice(context.locale.login),
                       style: context.button,
                     ),
                   ),
