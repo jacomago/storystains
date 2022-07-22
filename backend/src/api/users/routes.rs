@@ -169,3 +169,16 @@ pub async fn delete_user_by_username(
     delete_user_by_id(user_id.into(), pool).await?;
     Ok(HttpResponse::Ok().finish())
 }
+
+/// Gets the profile of the current logged in user
+#[tracing::instrument("Get user from login route", skip(pool, auth_user, session), fields())]
+pub async fn current_user(
+    auth_user: web::ReqData<AuthUser>,
+    pool: web::Data<PgPool>,
+    session: TypedSession,
+) -> Result<HttpResponse, ApiError> {
+    let user_id = auth_user.into_inner().user_id;
+    let user = read_user_by_id(&user_id, pool.get_ref()).await?;
+    session.renew();
+    Ok(HttpResponse::Ok().json(UserResponse::from(user)))
+}
