@@ -1,4 +1,5 @@
 mod delete;
+mod get;
 mod login;
 mod logout;
 mod signup;

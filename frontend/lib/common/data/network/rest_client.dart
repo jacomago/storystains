@@ -109,7 +109,7 @@ abstract class RestClient {
   Future<void> logout();
 
   /// get current [User] detials
-  @retrofit.GET('user')
+  @retrofit.GET('/user')
   Future<UserResp> getCurrentUser();
 
   /// Get list of latest [Review]

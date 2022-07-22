@@ -83,6 +83,8 @@ void main() {
       final userResp = UserResp(user: user);
 
       final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(mockService);
 
       expect(authState.isAuthenticated, false);
@@ -97,6 +99,9 @@ void main() {
     });
     test('error message on bad info', () async {
       final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
+
       final authState = AuthState(mockService);
 
       expect(authState.isAuthenticated, false);
@@ -111,6 +116,36 @@ void main() {
       expect(authState.error, 'Bad Request: Invalid info.');
     });
   });
+  group('init', () {
+    test('After init isAuthenticated', () async {
+      SharedPreferences.setMockInitialValues({});
+
+      final user = testUser();
+      final userResp = UserResp(user: user);
+
+      final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenAnswer((realInvocation) async => userResp);
+      final authState = AuthState(mockService);
+
+      await Future<void>.delayed(const Duration(seconds: 1));
+
+      expect(authState.isAuthenticated, true);
+
+      verify(mockService.getUser());
+    });
+    test('error on init means not authenticated', () async {
+      final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
+      final authState = AuthState(mockService);
+
+      await Future<void>.delayed(const Duration(seconds: 1));
+
+      expect(authState.isAuthenticated, false);
+      expect(authState.error, 'Unauthorised: Not logged in.');
+    });
+  });
   group('signup', () {
     test('After signup in isAuthenticated', () async {
       SharedPreferences.setMockInitialValues({});
@@ -119,6 +154,8 @@ void main() {
       final userResp = UserResp(user: user);
 
       final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(mockService);
 
       expect(authState.isAuthenticated, false);
@@ -134,6 +171,8 @@ void main() {
 
     test('error message on bad info', () async {
       final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(mockService);
 
       expect(authState.isAuthenticated, false);
@@ -157,6 +196,8 @@ void main() {
       final userResp = UserResp(user: user);
 
       final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(mockService);
 
       expect(authState.isAuthenticated, false);
@@ -182,6 +223,8 @@ void main() {
       final userResp = UserResp(user: user);
 
       final mockService = MockAuthService();
+      when(mockService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(mockService);
 
       expect(authState.isAuthenticated, false);

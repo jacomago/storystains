@@ -98,6 +98,7 @@ class AuthState extends ChangeNotifier {
     _isLoading = false;
     _loginRegister = LoginRegister.login;
     _error = '';
+    init();
   }
 
   /// Swtich between loggin in or registering
@@ -154,6 +155,7 @@ class AuthState extends ChangeNotifier {
         _user = data.user;
 
         _status = AuthStatus.authenticated;
+        _error = '';
       } else {
         _status = AuthStatus.notauthenticated;
       }
