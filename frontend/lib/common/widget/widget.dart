@@ -2,6 +2,7 @@ export 'app_bar.dart';
 export 'card_review_emotions.dart';
 export 'custom_floating_button.dart';
 export 'emotion_edit.dart';
+export 'link_button.dart';
 export 'load_message.dart';
 export 'loading_more.dart';
 export 'markdown_edit.dart';

@@ -112,7 +112,7 @@ class StoryTextEdit extends StatelessWidget {
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: label,
+          labelText: context.locale.field(label),
           hintText: hint,
         ),
         style: context.titleMedium,

@@ -47,7 +47,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.bySemanticsLabel('Title Field');
       await tester.enterText(titleField, '/');
 
       expect(state.value.title, '/');
@@ -64,7 +64,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final creatorField = find.bySemanticsLabel('Creator');
+      final creatorField = find.bySemanticsLabel('Creator Field');
       await tester.enterText(creatorField, '/');
 
       expect(state.value.creator, '/');
@@ -128,7 +128,7 @@ void main() {
       when(mockService.search(searchStory))
           .thenAnswer((realInvocation) async => storiesResp);
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.bySemanticsLabel('Title Field');
       await tester.enterText(titleField, 'Du');
 
       verify(mockService.search(searchStory));

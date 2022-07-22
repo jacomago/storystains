@@ -86,7 +86,7 @@ class ReviewList extends StatelessWidget {
 
   Widget _buildReviewItem(BuildContext context, Review review) => Column(
         children: [
-          GestureDetector(
+          InkWell(
             onTap: () => _tapItem(context, review),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
