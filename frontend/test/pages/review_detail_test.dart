@@ -59,8 +59,8 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      final titleField = find.bySemanticsLabel('Title');
-      expect(titleField, findsOneWidget);
+      final titleWidget = find.bySemanticsLabel('Title');
+      expect(titleWidget, findsOneWidget);
       expect(find.text(review.story.title), findsOneWidget);
 
       expect(find.text(review.body!), findsOneWidget);

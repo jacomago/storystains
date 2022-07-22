@@ -15,6 +15,10 @@
     "@creator": {
         "description": "Creator of story."
     },
+    "medium": "Medium",
+    "@medium": {
+        "description": "Type of publishing of story."
+    },
     "creatorHint": "Creator Name",
     "@creatorHint": {
         "description": "Hint on writing a new creator."
@@ -31,7 +35,7 @@
     "@emotions": {
         "description": "A number of feelings."
     },
-    "notes": "Notes:",
+    "notes": "Notes",
     "@notes": {
         "description": "Place to write notes."
     },
@@ -132,6 +136,16 @@
             "name": {
                 "type": "String",
                 "example": "Frank Herbert"
+            }
+        }
+    },
+    "field": "{object} Field",
+    "@field": {
+        "description": "Editing field for object.",
+        "placeholders": {
+            "object": {
+                "type": "String",
+                "example": "Creator"
             }
         }
     },

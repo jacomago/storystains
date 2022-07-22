@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../common/utils/utils.dart';
+import '../../../common/widget/link_button.dart';
 import '../story.dart';
 import '../story_route.dart';
 
@@ -40,35 +41,29 @@ class StoryWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: GestureDetector(
-                  onTap: () => _onTapTitle(context),
-                  child: Text(
-                    '${story?.title}',
-                    style: context.headlineSmall,
-                    semanticsLabel: context.locale.title,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                  ),
+                child: LinkButton(
+                  onPressed: () => _onTapTitle(context),
+                  text: '${story?.title}',
+                  defaultStyle: context.headlineSmall!,
+                  semanticsLabel: context.locale.title,
+                  maxLines: 2,
                 ),
               ),
-              GestureDetector(
-                onTap: () => _onTapMedium(context),
-                child: Text(
-                  '(${story?.medium.name})',
-                  style: context.titleMedium,
-                ),
+              LinkButton(
+                onPressed: () => _onTapMedium(context),
+                text: '(${story?.medium.name})',
+                defaultStyle: context.titleMedium!,
+                semanticsLabel: context.locale.medium,
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () => _onTapCreator(context),
-            child: Text(
-              context.locale.byCreator(story?.creator ?? ''),
-              style: context.titleMedium!.copyWith(
-                fontStyle: FontStyle.italic,
-              ),
-              semanticsLabel: context.locale.creator,
+          LinkButton(
+            onPressed: () => _onTapCreator(context),
+            text: context.locale.byCreator(story?.creator ?? ''),
+            defaultStyle: context.titleMedium!.copyWith(
+              fontStyle: FontStyle.italic,
             ),
+            semanticsLabel: context.locale.creator,
           ),
         ],
       );
@@ -104,28 +99,25 @@ class StoryItem extends StatelessWidget {
                   style: context.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                   maxLines: 2,
+                  semanticsLabel: context.locale.title,
                 ),
               ),
-              GestureDetector(
-                onTap: () => _onTapMedium(context),
-                child: Text(
-                  story.medium.name,
-                  style: context.titleSmall?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: context.colors.onSecondaryContainer,
-                  ),
-                  overflow: TextOverflow.fade,
+              LinkButton(
+                onPressed: () => _onTapMedium(context),
+                text: story.medium.name,
+                defaultStyle: context.titleSmall!.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: context.colors.onSecondaryContainer,
                 ),
+                semanticsLabel: context.locale.medium,
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () => _onTapCreator(context),
-            child: Text(
-              context.locale.byCreator(story.creator),
-              style: context.titleSmall,
-              overflow: TextOverflow.fade,
-            ),
+          LinkButton(
+            onPressed: () => _onTapCreator(context),
+            text: context.locale.byCreator(story.creator),
+            defaultStyle: context.titleSmall!,
+            semanticsLabel: context.locale.creator,
           ),
           const SizedBox(height: 4),
         ],
