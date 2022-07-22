@@ -63,7 +63,7 @@ void main() {
       expect(titleWidget, findsOneWidget);
       expect(find.text(review.story.title), findsOneWidget);
 
-      expect(find.text(review.body), findsOneWidget);
+      expect(find.text(review.body!), findsOneWidget);
 
       expect(find.text('@${review.user.username}'), findsOneWidget);
       expect(

@@ -74,7 +74,7 @@ async fn post_review_persists_the_new_review() {
             .await
             .expect("Failed to fetch saved data.");
 
-    assert_eq!(saved.body, "5stars");
+    assert_eq!(saved.body, Some("5stars".to_string()));
     assert_eq!(saved.title, Some(story.title.to_string()));
     app.teardown().await;
 }
@@ -85,12 +85,7 @@ async fn post_review_returns_a_400_when_data_is_missing() {
     let app = TestApp::spawn_app().await;
 
     app.test_user.login(&app).await;
-    let story = TestStory::generate();
     let test_cases = vec![
-        (
-            json!({"review": {"story": story.create_inner_json()} }),
-            "missing the review",
-        ),
         (json!({ "review":{"body":"5stars"} }), "missing the story"),
         (json!({"review":{}}), "missing both story and review"),
     ];
@@ -160,6 +155,27 @@ async fn post_review_returns_json() {
 
     let json: Value = response.json().await.expect("expected json response");
     assert_eq!(json["review"]["body"], "5stars");
+    assert_eq!(json["review"]["story"]["title"], story.title);
+    app.teardown().await;
+}
+
+#[tokio::test]
+async fn post_review_with_no_body_returns_json() {
+    // Arrange
+    let app = TestApp::spawn_app().await;
+    app.test_user.login(&app).await;
+
+    let story = TestStory::generate();
+    let body = json!({"review": {"story": story.create_inner_json()}});
+
+    // Act
+    let response = app.post_review(body.to_string()).await;
+
+    // Assert
+    assert_eq!(response.status(), StatusCode::OK);
+
+    let json: Value = response.json().await.expect("expected json response");
+    assert_eq!(json["review"].get("body"), Some(&serde_json::Value::Null));
     assert_eq!(json["review"]["story"]["title"], story.title);
     app.teardown().await;
 }

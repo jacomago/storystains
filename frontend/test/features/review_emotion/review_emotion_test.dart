@@ -14,7 +14,9 @@ import 'review_emotion_test.mocks.dart';
 void updateControllers(ReviewEmotionState state, ReviewEmotion reviewEmotion) {
   state.emotionController.value = reviewEmotion.emotion;
   state.positionController.value = reviewEmotion.position;
-  state.notesController.text = reviewEmotion.notes;
+  if (reviewEmotion.notes != null) {
+    state.notesController.text = reviewEmotion.notes!;
+  }
 }
 
 @GenerateMocks([ReviewEmotionService])

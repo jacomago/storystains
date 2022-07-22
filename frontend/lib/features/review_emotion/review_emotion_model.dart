@@ -11,7 +11,7 @@ part 'review_emotion_model.g.dart';
 @immutable
 class ReviewEmotion {
   /// Review emotion main model notes
-  final String notes;
+  final String? notes;
 
   /// Review emotion main model emotion
   final Emotion emotion;
@@ -75,7 +75,7 @@ class NewReviewEmotion {
   int position;
 
   /// request representation of [ReviewEmotion.notes]
-  String notes;
+  String? notes;
 
   /// request representation of [ReviewEmotion]
   NewReviewEmotion({

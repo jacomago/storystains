@@ -176,9 +176,9 @@ void main() {
       expect(titleField, findsOneWidget);
       expect(find.text(review.story.title), findsOneWidget);
 
-      final bodyField = find.widgetWithText(TextField, review.body);
+      final bodyField = find.widgetWithText(TextField, review.body!);
       expect(bodyField, findsOneWidget);
-      expect(find.text(review.body), findsOneWidget);
+      expect(find.text(review.body!), findsOneWidget);
 
       await tester.enterText(titleField, 'title1');
       await tester.pumpAndSettle();
@@ -316,7 +316,7 @@ void main() {
       await tester.enterText(creatorField, review.story.creator);
 
       final bodyField = find.bySemanticsLabel('Body Field');
-      await tester.enterText(bodyField, review.body);
+      await tester.enterText(bodyField, review.body!);
       await tester.pumpAndSettle();
 
       when(mockService.create(

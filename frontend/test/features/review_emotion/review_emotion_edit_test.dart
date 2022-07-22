@@ -172,7 +172,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final notes = find.bySemanticsLabel('Notes Field');
-      await tester.enterText(notes.first, reviewEmotion.notes);
+      await tester.enterText(notes.first, reviewEmotion.notes!);
 
       when(service.create(review, reviewEmotion)).thenAnswer(
         (realInvocation) async => ReviewEmotionResp(
@@ -254,7 +254,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final notes = find.bySemanticsLabel('Notes Field');
-      await tester.enterText(notes.first, newReviewEmotion.notes);
+      await tester.enterText(notes.first, newReviewEmotion.notes!);
 
       when(service.update(
         review,

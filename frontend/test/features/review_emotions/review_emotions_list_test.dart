@@ -143,7 +143,7 @@ void main() {
       await tester.pumpAndSettle();
 
       for (var re in list) {
-        expect(find.text(re.notes), findsOneWidget);
+        expect(find.text(re.notes!), findsOneWidget);
         expect(find.text(re.emotion.name), findsOneWidget);
         expect(find.text('${re.position}%'), findsOneWidget);
       }

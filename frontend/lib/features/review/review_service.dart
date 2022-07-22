@@ -7,7 +7,7 @@ import 'review_model.dart';
 /// Wrapper around [RestClient] methods on a [Review]
 class ReviewService {
   /// Wrapper around [RestClient.createReview]
-  Future<ReviewResp> create(Story story, String body) async =>
+  Future<ReviewResp> create(Story story, String? body) async =>
       await ServiceLocator.sl.get<RestClient>().createReview(
             CreateReview(
               review: NewReview(
@@ -21,14 +21,14 @@ class ReviewService {
   Future<ReviewResp> update(
     String username,
     String slug,
-    Story story,
-    String body,
+    Story? story,
+    String? body,
   ) async =>
       await ServiceLocator.sl.get<RestClient>().updateReview(
             username,
             slug,
-            CreateReview(
-              review: NewReview(
+            UpdateReviewReq(
+              review: UpdateReview(
                 story: story,
                 body: body,
               ),

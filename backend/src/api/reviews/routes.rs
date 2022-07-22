@@ -38,14 +38,14 @@ pub struct PostReview {
 #[derive(serde::Deserialize)]
 pub struct PostReviewData {
     story: StoryResponseData,
-    body: String,
+    body: Option<String>,
 }
 
 impl TryFrom<(PostReviewData, UserId)> for NewReview {
     type Error = String;
     fn try_from((value, user_id): (PostReviewData, UserId)) -> Result<Self, Self::Error> {
         let story: NewStory = value.story.try_into()?;
-        let body = LongFormText::parse(value.body)?;
+        let body = value.body.map(LongFormText::parse).transpose()?;
         let slug = ReviewSlug::parse(story.slugify())?;
         Ok(Self {
             story,
@@ -61,8 +61,8 @@ impl TryFrom<(PostReviewData, UserId)> for NewReview {
     name = "Adding a new review",
     skip(json, pool),
     fields(
-        reviews_story = %format!("{:?}",json.review.story),
-        reviews_review = %json.review.body
+        review_story = %format!("{:?}",json.review.story),
+        review_body = %format!("{:?}",json.review.body)
     )
 )]
 pub async fn post_review(
