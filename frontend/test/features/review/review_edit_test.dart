@@ -146,7 +146,7 @@ void main() {
       expect(titleField, findsOneWidget);
       expect(find.text(review.story.title), findsOneWidget);
 
-      final bodyField = find.bySemanticsLabel('Body');
+      final bodyField = find.bySemanticsLabel('Body Field');
       expect(bodyField, findsOneWidget);
       expect(find.text(''), findsOneWidget);
     });
@@ -269,11 +269,11 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.bySemanticsLabel('Title Field');
       await tester.enterText(titleField, '/');
-      await tester.enterText(find.bySemanticsLabel('Creator'), '/');
+      await tester.enterText(find.bySemanticsLabel('Creator Field'), '/');
 
-      final bodyField = find.bySemanticsLabel('Body');
+      final bodyField = find.bySemanticsLabel('Body Field');
       await tester.enterText(bodyField, 'body');
       await tester.pumpAndSettle();
 
@@ -306,13 +306,13 @@ void main() {
           .pumpWidget(wrapWithMaterial(const ReviewWidget(), reviewState));
       await tester.pumpAndSettle();
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.bySemanticsLabel('Title Field');
       await tester.enterText(titleField, review.story.title);
 
-      final creatorField = find.bySemanticsLabel('Creator');
+      final creatorField = find.bySemanticsLabel('Creator Field');
       await tester.enterText(creatorField, review.story.creator);
 
-      final bodyField = find.bySemanticsLabel('Body');
+      final bodyField = find.bySemanticsLabel('Body Field');
       await tester.enterText(bodyField, review.body);
       await tester.pumpAndSettle();
 
