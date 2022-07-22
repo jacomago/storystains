@@ -93,7 +93,7 @@ jobs:
 
       - name: build
         working-directory: ./frontend
-        run: flutter build apk --release --dart-define BASE_URL="https://storystains.fly.dev/api"
+        run: flutter build apk --release --dart-define BASE_URL="https://app.storystains.com/api"
 
       - uses: actions/upload-artifact@v3
         with:

@@ -25,7 +25,7 @@
             "deviceId": "a13f568f",
             "args": [
                 "--dart-define",
-                "BASE_URL=https://storystains.fly.dev/api"
+                "BASE_URL=https://app.storystains.com/api"
             ]
         },
         {
