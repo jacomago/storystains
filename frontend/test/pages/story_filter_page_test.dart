@@ -162,7 +162,7 @@ void main() {
         query: ReviewQuery(storyQuery: StoryQuery(title: storyQuery.title)),
       )).thenAnswer((realInvocation) async => []);
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.bySemanticsLabel('Title Field');
       await tester.enterText(titleField, storyQuery.title!);
 
       verify(mockService.fetch(
@@ -182,7 +182,7 @@ void main() {
         ],
       );
 
-      final creatorField = find.bySemanticsLabel('Creator');
+      final creatorField = find.bySemanticsLabel('Creator Field');
       await tester.enterText(creatorField, storyQuery.creator!);
 
       verify(mockService.fetch(

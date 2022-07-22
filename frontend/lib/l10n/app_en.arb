@@ -31,7 +31,7 @@
     "@emotions": {
         "description": "A number of feelings."
     },
-    "notes": "Notes:",
+    "notes": "Notes",
     "@notes": {
         "description": "Place to write notes."
     },

@@ -27,7 +27,7 @@ class MarkdownEdit extends StatelessWidget {
         textInputAction: TextInputAction.newline,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: title,
+          labelText: context.locale.field(title),
           alignLabelWithHint: true,
           hintText: hint,
         ),
