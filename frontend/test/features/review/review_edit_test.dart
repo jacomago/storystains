@@ -11,6 +11,7 @@ import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/mediums/medium.dart';
 import 'package:storystains/features/review/review.dart';
+import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
@@ -149,6 +150,8 @@ void main() {
       final bodyField = find.bySemanticsLabel('Body Field');
       expect(bodyField, findsOneWidget);
       expect(find.text(''), findsOneWidget);
+
+      expect(find.byType(ReviewEmotionsList), findsNothing);
     });
   });
   group('test edit', () {

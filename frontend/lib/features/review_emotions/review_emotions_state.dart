@@ -38,8 +38,13 @@ class ReviewEmotionsState extends ChangeNotifier {
   ReviewEmotion item(int index) => _items[index];
 
   /// load state
-  ReviewEmotionsState(List<ReviewEmotion> items) {
-    _items = items;
+  ReviewEmotionsState(List<ReviewEmotion>? items) {
+    _items = items ?? [];
+  }
+
+  /// Clear the current value
+  void clear() {
+    _items = [];
   }
 
   /// create an new [ReviewEmotion]

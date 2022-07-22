@@ -160,12 +160,10 @@ class ReviewWidget extends StatelessWidget {
                     ],
                   ),
                   const Divider(),
-                  state.review == null
+                  state.isCreate
                       ? Row()
-                      : ChangeNotifierProvider(
-                          create: (_) =>
-                              ReviewEmotionsState(state.review!.emotions),
-                          child: const ReviewEmotionsList(),
+                      : ReviewEmotionsList(
+                          state: state.reviewEmotionsController,
                         ),
                   const Padding(
                     padding: EdgeInsets.all(24),
