@@ -120,8 +120,8 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.bySemanticsLabel('Title'), findsOneWidget);
-      expect(find.bySemanticsLabel('Creator'), findsOneWidget);
+      expect(find.bySemanticsLabel('Title Field'), findsOneWidget);
+      expect(find.bySemanticsLabel('Creator Field'), findsOneWidget);
       verify(mockService.fetch(
         query: reviewQuery,
         offset: AppConfig.defaultLimit,

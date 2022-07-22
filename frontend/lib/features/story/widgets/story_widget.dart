@@ -99,6 +99,7 @@ class StoryItem extends StatelessWidget {
                   style: context.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                   maxLines: 2,
+                  semanticsLabel: context.locale.title,
                 ),
               ),
               LinkButton(
