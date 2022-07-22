@@ -47,6 +47,14 @@ class ReviewEmotionsList extends StatelessWidget {
     await state.create(value);
   }
 
+  bool _allowAdd(BuildContext context) {
+    final reviewState = context.read<ReviewState>();
+
+    return reviewState.review == null
+        ? false
+        : context.read<AuthState>().sameUser(reviewState.review!.user);
+  }
+
   @override
   Widget build(BuildContext context) => Consumer<EmotionsState>(
         builder: (_, emotions, __) => Column(
@@ -59,9 +67,7 @@ class ReviewEmotionsList extends StatelessWidget {
                   context.locale.emotions,
                   style: context.titleMedium,
                 ),
-                context
-                        .read<AuthState>()
-                        .sameUser(context.read<ReviewState>().review!.user)
+                _allowAdd(context)
                     ? OutlinedButton(
                         onPressed: () async => {
                           showDialog<Emotion>(
