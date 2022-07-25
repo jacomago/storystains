@@ -31,7 +31,7 @@ class StoryWidget extends StatelessWidget {
   }
 
   ///The [Story] to display
-  final Story? story;
+  final Story story;
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,14 +40,12 @@ class StoryWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: LinkButton(
-                  onPressed: () => _onTapTitle(context),
-                  text: '${story?.title}',
-                  defaultStyle: context.headlineSmall!,
-                  semanticsLabel: context.locale.title,
-                  maxLines: 2,
-                ),
+              LinkButton(
+                onPressed: () => _onTapTitle(context),
+                text: '${story?.title}',
+                defaultStyle: context.headlineSmall!,
+                semanticsLabel: context.locale.title,
+                maxLines: 2,
               ),
               LinkButton(
                 onPressed: () => _onTapMedium(context),
