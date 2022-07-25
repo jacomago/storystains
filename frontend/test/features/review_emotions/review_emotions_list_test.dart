@@ -2,6 +2,7 @@ import 'dart:io' as io;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -143,7 +144,8 @@ void main() {
       await tester.pumpAndSettle();
 
       for (var re in list) {
-        expect(find.text(re.notes!), findsOneWidget);
+        // MarkdownBody uses richtext
+        expect(find.text(re.notes!, findRichText: true), findsOneWidget);
         expect(find.text(re.emotion.name), findsOneWidget);
         expect(find.text('${re.position}%'), findsOneWidget);
       }

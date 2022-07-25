@@ -77,7 +77,6 @@ class ReviewEmotionWidget extends StatelessWidget {
           ),
           MarkdownBody(
             data: reviewEmotion.notes ?? '',
-            shrinkWrap: false,
           ),
         ],
       );
