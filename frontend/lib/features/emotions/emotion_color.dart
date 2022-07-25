@@ -25,6 +25,9 @@ extension EmotionColor on Emotion {
       }
     }
     var pair = properties.entries.where((element) => element.value > 0);
+    if (pair.isEmpty) {
+      return Colors.white;
+    }
 
     return HSLColor.lerp(
       pair.first.key,
