@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../common/utils/utils.dart';
 import '../../../common/widget/widget.dart';
 import '../../auth/auth.dart';
+import '../../mediums/medium.dart';
 import '../../review_emotions/review_emotions.dart';
 import '../../story/story.dart';
 import '../../user/user_model.dart';
@@ -141,7 +142,12 @@ class ReviewWidget extends StatelessWidget {
                   state.isEdit
                       ? StoryEditWidget(state: state.storyController)
                       : StoryWidget(
-                          story: state.review?.story,
+                          story: state.review?.story ??
+                              Story(
+                                title: '',
+                                medium: Medium.mediumDefault,
+                                creator: '',
+                              ),
                         ),
                   const SizedBox(
                     height: 10,

@@ -37,9 +37,8 @@ class LinkButtonState extends State<LinkButton> {
   TextStyle? _textStyle;
 
   @override
-  Widget build(BuildContext context) => InkWell(
-        onTap: widget.onPressed,
-        hoverColor: Colors.transparent,
+  Widget build(BuildContext context) => TextButton(
+        onPressed: widget.onPressed,
         onHover: (hovered) {
           setState(() {
             _textStyle = hovered
@@ -50,7 +49,7 @@ class LinkButtonState extends State<LinkButton> {
         },
         child: Text(
           widget.text,
-          style: _textStyle,
+          style: _textStyle ?? widget.defaultStyle,
           overflow: TextOverflow.fade,
           semanticsLabel: widget.semanticsLabel,
           maxLines: widget.maxLines,
