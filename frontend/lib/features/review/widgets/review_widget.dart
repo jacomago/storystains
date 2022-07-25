@@ -136,6 +136,7 @@ class ReviewWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   state.isEdit
                       ? StoryEditWidget(state: state.storyController)
@@ -165,9 +166,19 @@ class ReviewWidget extends StatelessWidget {
                       : ReviewEmotionsList(
                           state: state.reviewEmotionsController,
                         ),
-                  const Padding(
-                    padding: EdgeInsets.all(24),
-                    child: ReviewBody(),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.locale.body,
+                          style: context.labelLarge,
+                        ),
+                        const Divider(),
+                        const ReviewBody(),
+                      ],
+                    ),
                   ),
                 ],
               ),
