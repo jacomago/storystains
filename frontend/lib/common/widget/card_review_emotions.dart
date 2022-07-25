@@ -31,7 +31,6 @@ class CardReviewEmotionsList extends StatelessWidget {
       EmotionImageText(
         emotion: reviewEmotion.emotion,
         height: 60,
-        radius: 10,
         direction: AxisDirection.up,
       );
 }
