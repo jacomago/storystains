@@ -162,7 +162,7 @@ void main() {
       );
 
       // TODO find a way to measure the increment programatically
-      const sliderIncSize = 6;
+      const sliderIncSize = 5.8;
       final posChanger = find.byType(Slider);
       expect(posChanger, findsOneWidget);
       await tester.drag(
@@ -244,12 +244,12 @@ void main() {
       );
 
       // TODO find a way to measure the increment programatically
-      const sliderIncSize = 5.5;
+      const sliderIncSize = 5.8;
       final posChanger = find.byType(Slider);
       expect(posChanger, findsOneWidget);
       await tester.drag(
         posChanger.first,
-        Offset(sliderIncSize * (newReviewEmotion.position - 49), 0),
+        Offset(sliderIncSize * (newReviewEmotion.position - 50), 0),
       );
       await tester.pumpAndSettle();
 
