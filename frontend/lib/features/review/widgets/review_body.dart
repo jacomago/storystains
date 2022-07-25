@@ -19,13 +19,9 @@ class ReviewBody extends StatelessWidget {
                 title: context.locale.body,
                 hint: context.locale.markdownBody,
               )
-            : Markdown(
-                physics: const NeverScrollableScrollPhysics(),
+            : MarkdownBody(
                 data: state.review?.body ?? '',
                 selectable: true,
-                shrinkWrap: true,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
               ),
       );
 }

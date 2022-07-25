@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../../common/utils/utils.dart';
 import '../../../common/widget/widget.dart';
@@ -34,7 +35,12 @@ class ReviewEmotionWidget extends StatelessWidget {
               _buildPosition(context, reviewEmotion.position),
             ],
           ),
-          _buildReviewEmotionItem(context, reviewEmotion),
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: _buildReviewEmotionItem(context, reviewEmotion),
+            ),
+          ),
         ],
       );
 
@@ -51,33 +57,27 @@ class ReviewEmotionWidget extends StatelessWidget {
     BuildContext context,
     ReviewEmotion reviewEmotion,
   ) =>
-      Container(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  context.locale.notes,
-                  style: context.labelLarge,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            ),
-            Divider(
-              height: 4,
-              color: context.colors.secondaryContainer,
-            ),
-            Text(
-              reviewEmotion.notes ?? '',
-              textAlign: TextAlign.left,
-              style: context.bodySmall,
-            ),
-          ],
-        ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                context.locale.notes,
+                style: context.labelLarge,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+            ],
+          ),
+          const Divider(
+            height: 4,
+          ),
+          MarkdownBody(
+            data: reviewEmotion.notes ?? '',
+          ),
+        ],
       );
 }
