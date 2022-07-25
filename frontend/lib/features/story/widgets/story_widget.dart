@@ -10,28 +10,19 @@ class StoryWidget extends StatelessWidget {
   const StoryWidget({Key? key, required this.story}) : super(key: key);
 
   void _onTapTitle(BuildContext context) {
-    if (story?.title == null) {
-      return;
-    }
-    StoryQuery(title: story!.title).navigate(context);
+    StoryQuery(title: story.title).navigate(context);
   }
 
   void _onTapCreator(BuildContext context) {
-    if (story?.creator == null) {
-      return;
-    }
-    StoryQuery(creator: story!.creator).navigate(context);
+    StoryQuery(creator: story.creator).navigate(context);
   }
 
   void _onTapMedium(BuildContext context) {
-    if (story?.medium == null) {
-      return;
-    }
-    StoryQuery(medium: story!.medium).navigate(context);
+    StoryQuery(medium: story.medium).navigate(context);
   }
 
   ///The [Story] to display
-  final Story? story;
+  final Story story;
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,18 +31,16 @@ class StoryWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: LinkButton(
-                  onPressed: () => _onTapTitle(context),
-                  text: '${story?.title}',
-                  defaultStyle: context.headlineSmall!,
-                  semanticsLabel: context.locale.title,
-                  maxLines: 2,
-                ),
+              LinkButton(
+                onPressed: () => _onTapTitle(context),
+                text: story.title,
+                defaultStyle: context.headlineSmall!,
+                semanticsLabel: context.locale.title,
+                maxLines: 2,
               ),
               LinkButton(
                 onPressed: () => _onTapMedium(context),
-                text: '(${story?.medium.name})',
+                text: '(${story.medium.name})',
                 defaultStyle: context.titleMedium!,
                 semanticsLabel: context.locale.medium,
               ),
@@ -59,7 +48,7 @@ class StoryWidget extends StatelessWidget {
           ),
           LinkButton(
             onPressed: () => _onTapCreator(context),
-            text: context.locale.byCreator(story?.creator ?? ''),
+            text: context.locale.byCreator(story.creator),
             defaultStyle: context.titleMedium!.copyWith(
               fontStyle: FontStyle.italic,
             ),
