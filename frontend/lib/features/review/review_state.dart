@@ -264,7 +264,6 @@ class ReviewState extends ChangeNotifier {
   void dispose() {
     bodyController.dispose();
     storyController.dispose();
-    reviewEmotionsController.dispose();
     _error = '';
     _event = null;
     _stateType = null;

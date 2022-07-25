@@ -14,7 +14,11 @@ class ReviewEmotionEdit extends StatelessWidget {
     required this.cancelHandler,
     required this.okHandler,
     required this.deleteHandler,
+    required this.state,
   }) : super(key: key);
+
+  /// State of review emotion
+  final ReviewEmotionState state;
 
   /// Hadler for cancel button
   final Function cancelHandler;
@@ -53,7 +57,6 @@ class ReviewEmotionEdit extends StatelessWidget {
   void _editReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
     await state.update(review).then((value) => _afterSend(context, state));
   }
@@ -61,15 +64,13 @@ class ReviewEmotionEdit extends StatelessWidget {
   void _deleteReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
     await state.delete(review).then((value) => _afterSend(context, state));
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Consumer2<ReviewEmotionState, ReviewState>(
-        builder: (context, state, review, _) => SizedBox(
+  Widget build(BuildContext context) => Consumer<ReviewState>(
+        builder: (context, review, _) => SizedBox(
           height: 190,
           child: Row(
             children: [

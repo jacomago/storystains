@@ -21,21 +21,12 @@ import 'review_emotion_edit_test.mocks.dart';
 Widget wrapWithMaterial(
   Widget w, {
   EmotionsState? emotionsState,
-  ReviewEmotionState? reviewEmotionState,
   ReviewState? reviewState,
 }) =>
     MultiProvider(
       providers: [
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => emotionsState ?? EmotionsState(EmotionsService()),
-        ),
-        ChangeNotifierProvider<ReviewEmotionState>(
-          create: (_) =>
-              reviewEmotionState ??
-              ReviewEmotionState(
-                ReviewEmotionService(),
-                emotion: testEmotion(),
-              ),
         ),
         ChangeNotifierProvider<ReviewState>(
           create: (_) =>
@@ -77,6 +68,10 @@ void main() {
             okHandler: (_) {},
             // ignore: no-empty-block
             deleteHandler: () {},
+            state: ReviewEmotionState(
+              ReviewEmotionService(),
+              emotion: testEmotion(),
+            ),
           ),
         ),
       );
@@ -105,6 +100,10 @@ void main() {
             cancelHandler: cancelHandler,
             okHandler: okHandler,
             deleteHandler: deleteHandler,
+            state: ReviewEmotionState(
+              ReviewEmotionService(),
+              emotion: testEmotion(),
+            ),
           ),
         ),
       );
@@ -145,12 +144,12 @@ void main() {
             cancelHandler: cancelHandler,
             okHandler: okHandler,
             deleteHandler: deleteHandler,
+            state: ReviewEmotionState(
+              service,
+              emotion: emotion,
+            ),
           ),
           reviewState: reviewState,
-          reviewEmotionState: ReviewEmotionState(
-            service,
-            emotion: emotion,
-          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -226,13 +225,13 @@ void main() {
             cancelHandler: cancelHandler,
             okHandler: okHandler,
             deleteHandler: deleteHandler,
+            state: ReviewEmotionState(
+              service,
+              emotion: emotion,
+              reviewEmotion: reviewEmotion,
+            ),
           ),
           reviewState: reviewState,
-          reviewEmotionState: ReviewEmotionState(
-            service,
-            emotion: emotion,
-            reviewEmotion: reviewEmotion,
-          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -326,9 +325,9 @@ void main() {
             cancelHandler: cancelHandler,
             okHandler: okHandler,
             deleteHandler: deleteHandler,
+            state: reviewEmotionState,
           ),
           reviewState: reviewState,
-          reviewEmotionState: reviewEmotionState,
         ),
       );
       await tester.pumpAndSettle();
@@ -383,13 +382,13 @@ void main() {
             cancelHandler: cancelHandler,
             okHandler: okHandler,
             deleteHandler: deleteHandler,
+            state: ReviewEmotionState(
+              service,
+              emotion: emotion,
+              reviewEmotion: reviewEmotion,
+            ),
           ),
           reviewState: reviewState,
-          reviewEmotionState: ReviewEmotionState(
-            service,
-            emotion: emotion,
-            reviewEmotion: reviewEmotion,
-          ),
         ),
       );
       await tester.pumpAndSettle();

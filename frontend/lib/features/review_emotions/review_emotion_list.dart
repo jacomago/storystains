@@ -18,6 +18,18 @@ class ReviewEmotionsList extends StatelessWidget {
   /// State of the list of emotions
   final ReviewEmotionsState state;
 
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: ((context) => state),
+        child: const ReviewEmotionsListWidget(),
+      );
+}
+
+/// List of r[ReviewEmotion] widget
+class ReviewEmotionsListWidget extends StatelessWidget {
+  /// List of review emotions widget
+  const ReviewEmotionsListWidget({Key? key}) : super(key: key);
+
   void _updateEmotion(
     BuildContext context,
     ReviewEmotion reviewEmotion,
@@ -32,7 +44,7 @@ class ReviewEmotionsList extends StatelessWidget {
       return;
     }
 
-    await state.edit(index, value);
+    await context.read<ReviewEmotionsState>().edit(index, value);
   }
 
   void _addEmotion(BuildContext context, Emotion? value) async {
@@ -44,7 +56,7 @@ class ReviewEmotionsList extends StatelessWidget {
       return;
     }
 
-    await state.create(value);
+    await context.read<ReviewEmotionsState>().create(value);
   }
 
   bool _allowAdd(BuildContext context) {
@@ -56,8 +68,9 @@ class ReviewEmotionsList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => Consumer<EmotionsState>(
-        builder: (_, emotions, __) => Column(
+  Widget build(BuildContext context) =>
+      Consumer2<ReviewEmotionsState, EmotionsState>(
+        builder: (_, state, emotions, __) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -87,20 +100,22 @@ class ReviewEmotionsList extends StatelessWidget {
                     : Column(),
               ],
             ),
-            (state.newItem || state.editItem)
-                ? ChangeNotifierProvider(
-                    create: (_) => ReviewEmotionState(
-                      ReviewEmotionService(),
-                      emotion: state.currentEmotion,
-                      reviewEmotion: state.currentReviewEmotion,
-                    ),
-                    child: ReviewEmotionEdit(
-                      cancelHandler: state.cancelCreate,
-                      okHandler: state.confirmCreation,
-                      deleteHandler: state.confirmDelete,
-                    ),
-                  )
-                : Row(),
+            ValueListenableBuilder<ReviewEmotionsEvent>(
+              builder: (context, value, child) =>
+                  value != ReviewEmotionsEvent.none
+                      ? ReviewEmotionEdit(
+                          cancelHandler: state.cancelCreate,
+                          okHandler: state.confirmCreation,
+                          deleteHandler: state.confirmDelete,
+                          state: ReviewEmotionState(
+                            ReviewEmotionService(),
+                            emotion: state.currentEmotion,
+                            reviewEmotion: state.currentReviewEmotion,
+                          ),
+                        )
+                      : Row(),
+              valueListenable: state.editing,
+            ),
             _itemList(state.items, context),
           ],
         ),
