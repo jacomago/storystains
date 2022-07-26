@@ -39,24 +39,9 @@ class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         actions: [
           ...moreActions,
-          _buildAuthAction(context),
         ],
         iconTheme: IconThemeData(color: context.colors.surface),
       );
-
-  Widget _buildAuthAction(BuildContext context) {
-    var authState = Provider.of<AuthState>(context);
-
-    return authState.isAuthenticated
-        ? IconButton(
-            icon: const Icon(Icons.person_pin_sharp),
-            onPressed: () => context.push(Routes.account),
-          )
-        : IconButton(
-            onPressed: () => context.push(Routes.login),
-            icon: const Icon(Icons.login),
-          );
-  }
 
   @override
   Size get preferredSize => appBarHeight;

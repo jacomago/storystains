@@ -20,7 +20,7 @@ class UserWidget extends StatelessWidget {
     BuildContext context,
     ReviewsState reviewsState,
   ) async {
-    context.push(Routes.reviewNew).then((value) => context.pop());
+    context.pushNamed(Routes.reviewNew).then((value) => context.pop());
   }
 
   @override
@@ -29,6 +29,9 @@ class UserWidget extends StatelessWidget {
           appBar: StainsAppBar(
             title: AppBarTitle(user.username),
           ),
+        bottomNavigationBar: const NavBar(
+          currentNav: NavOption.profile,
+        ),
           body: const ReviewList(),
           floatingActionButton: auth.isAuthenticated
               ? CustomFloatingButton(

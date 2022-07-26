@@ -43,7 +43,7 @@ class StoryFilter extends StatelessWidget {
     BuildContext context,
     ReviewsState reviewsState,
   ) async {
-    context.push(Routes.reviewNew);
+    context.pushNamed(Routes.reviewNew);
   }
 
   void _onChanged(ReviewsState reviews, StoryState state) async {
@@ -56,6 +56,9 @@ class StoryFilter extends StatelessWidget {
         builder: (context, reviews, state, auth, _) => Scaffold(
           appBar: StainsAppBar(
             title: AppBarTitle(context.locale.reviewList),
+          ),
+          bottomNavigationBar: const NavBar(
+            currentNav: NavOption.reviews,
           ),
           body: Column(
             children: [
