@@ -94,7 +94,9 @@ class StoryState extends ChangeNotifier {
     titleController = TextEditingController(text: story?.title ?? query?.title);
     creatorController =
         TextEditingController(text: story?.creator ?? query?.creator);
-    mediumController = ValueNotifier(story?.medium ?? query?.medium);
+    mediumController = ValueNotifier(
+      story?.medium ?? (query == null ? Medium.mediumDefault : query.medium),
+    );
     searchResults = StreamController<List<Story>?>.broadcast();
   }
 
