@@ -35,11 +35,11 @@ class NavBar extends StatelessWidget {
 
     return authState.isAuthenticated
         ? BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.person_outline),
             label: context.locale.account,
           )
         : BottomNavigationBarItem(
-            icon: const Icon(Icons.login),
+            icon: const Icon(Icons.login_outlined),
             label: context.locale.login,
           );
   }
@@ -113,16 +113,16 @@ class NavBar extends StatelessWidget {
         currentIndex: _currentIndex(currentNav),
         items: [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
+            icon: const Icon(Icons.home_outlined),
             label: context.locale.home,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.search),
+            icon: const Icon(Icons.search_outlined),
             label: context.locale.search,
           ),
           _buildAuthItem(context),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.list),
+            icon: const Icon(Icons.list_alt_outlined),
             label: context.locale.myReviews,
           ),
         ],
