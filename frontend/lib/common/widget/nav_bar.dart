@@ -5,6 +5,7 @@ import '../../features/auth/auth.dart';
 import '../../features/user/user.dart';
 import '../../pages/user_profile.dart';
 import '../../routes/routes.dart';
+import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 
 /// Option for navbar of selected item
@@ -30,16 +31,22 @@ class NavBar extends StatelessWidget {
   /// Index of selected navigation item
   final NavOption? currentNav;
 
-  Icon _buildAuthIcon(BuildContext context) {
-    var authState = Provider.of<AuthState>(context);
+  BottomNavigationBarItem _buildAuthItem(BuildContext context) {
+    var authState = Provider.of<AuthState>(context, listen: false);
 
     return authState.isAuthenticated
-        ? const Icon(Icons.person_pin_sharp)
-        : const Icon(Icons.login);
+        ? BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            label: context.locale.account,
+          )
+        : BottomNavigationBarItem(
+            icon: const Icon(Icons.login),
+            label: context.locale.login,
+          );
   }
 
   void _authAction(BuildContext context) {
-    var authState = Provider.of<AuthState>(context);
+    var authState = Provider.of<AuthState>(context, listen: false);
 
     authState.isAuthenticated
         ? context.pushNamed(Routes.account)
@@ -47,7 +54,7 @@ class NavBar extends StatelessWidget {
   }
 
   void _myReviewsAction(BuildContext context) {
-    var authState = Provider.of<AuthState>(context);
+    var authState = Provider.of<AuthState>(context, listen: false);
 
     authState.isAuthenticated
         ? Navigator.of(context).push(
@@ -91,9 +98,18 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BottomNavigationBar(
-        unselectedLabelStyle:
-            context.button!.copyWith(decoration: TextDecoration.underline),
+        elevation: 0,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        unselectedLabelStyle: context.button!.copyWith(
+          decoration: TextDecoration.underline,
+          decorationStyle: TextDecorationStyle.solid,
+          decorationThickness: 8,
+        ),
         selectedLabelStyle: context.button,
+        backgroundColor: context.colors.background,
+        unselectedItemColor: context.colors.secondary,
+        selectedItemColor: context.colors.onTertiaryContainer,
         onTap: ((value) => _onTap(value, context)),
         currentIndex: _currentIndex(currentNav),
         items: [
@@ -105,10 +121,7 @@ class NavBar extends StatelessWidget {
             icon: const Icon(Icons.search),
             label: context.locale.search,
           ),
-          BottomNavigationBarItem(
-            icon: _buildAuthIcon(context),
-            label: context.locale.account,
-          ),
+          _buildAuthItem(context),
           BottomNavigationBarItem(
             icon: const Icon(Icons.list),
             label: context.locale.myReviews,

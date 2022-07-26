@@ -29,9 +29,9 @@ class UserWidget extends StatelessWidget {
           appBar: StainsAppBar(
             title: AppBarTitle(user.username),
           ),
-        bottomNavigationBar: const NavBar(
-          currentNav: NavOption.profile,
-        ),
+          bottomNavigationBar: const NavBar(
+            currentNav: NavOption.profile,
+          ),
           body: const ReviewList(),
           floatingActionButton: auth.isAuthenticated
               ? CustomFloatingButton(
