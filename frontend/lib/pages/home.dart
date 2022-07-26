@@ -46,6 +46,7 @@ class HomePage extends StatelessWidget {
             title: buildAppTitle(context),
           ),
           body: const ReviewList(),
+          bottomNavigationBar: const NavBar(),
           floatingActionButton: auth.isAuthenticated
               ? CustomFloatingButton(
                   onPressed: () => _goNewReview(context, reviews),
