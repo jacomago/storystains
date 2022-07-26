@@ -55,6 +55,11 @@ class ReviewEmotionsState extends ChangeNotifier {
     _items = [];
   }
 
+  set items(List<ReviewEmotion> items) {
+    _items = items;
+    notifyListeners();
+  }
+
   /// create an new [ReviewEmotion]
   Future<void> create(Emotion emotion) async {
     editing.value = ReviewEmotionsEvent.create;

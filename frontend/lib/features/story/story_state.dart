@@ -98,6 +98,12 @@ class StoryState extends ChangeNotifier {
     searchResults = StreamController<List<Story>?>.broadcast();
   }
 
+  set value(Story story) {
+    _story = story;
+    _setControllers(story);
+    notifyListeners();
+  }
+
   /// Value from controllers
   Story get value => Story(
         title: titleController.text,
