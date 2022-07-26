@@ -91,9 +91,13 @@ jobs:
         working-directory: ./frontend
         run: flutter pub run build_runner build
 
-      - name: build
+      - name: build apk
         working-directory: ./frontend
+
         run: flutter build apk --release --dart-define BASE_URL="https://app.storystains.com/api"
+      
+      - name: build appbundle
+        working-directory: ./frontend
         run: flutter build appbundle --release --dart-define BASE_URL="https://app.storystains.com/api"
 
       - uses: actions/upload-artifact@v3
