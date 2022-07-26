@@ -154,7 +154,7 @@ void main() {
       await tester.pumpWidget(wrapWithMaterial(
         const StoryFilter(),
         reviewsState,
-        StoryState(StoryService()),
+        StoryState(StoryService(), query: const StoryQuery()),
       ));
       await tester.pumpAndSettle();
 

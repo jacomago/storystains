@@ -108,7 +108,7 @@ void main() {
     testWidgets('search title', (tester) async {
       SharedPreferences.setMockInitialValues({});
       final mockService = MockStoryService();
-      final state = StoryState(mockService);
+      final state = StoryState(mockService, query: const StoryQuery());
       final storiesResp = StoriesResp(stories: [
         testStory(title: 'Dune'),
         testStory(title: 'Star Wars'),
