@@ -138,7 +138,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// load from apif
+  /// load from api
   Future<void> _init(ReviewRoutePath path) async {
     _startLoading();
 
@@ -147,9 +147,10 @@ class ReviewState extends ChangeNotifier {
 
       _review = data.review;
 
-      storyController = StoryState(StoryService(), story: review?.story);
-      bodyController = TextEditingController(text: _review?.body);
-      reviewEmotionsController = ReviewEmotionsState(_review?.emotions);
+      storyController.value = _review!.story;
+      bodyController.text = _review?.body ?? '';
+      reviewEmotionsController.items = _review?.emotions ?? [];
+
       _status = ReviewStatus.read;
       _stateType = ReviewStateType.read;
     } on DioError catch (e) {
@@ -252,9 +253,10 @@ class ReviewState extends ChangeNotifier {
     );
 
     _review = review;
-    storyController = StoryState(StoryService(), story: review.story);
-    bodyController = TextEditingController(text: review.body);
-    reviewEmotionsController = ReviewEmotionsState([]);
+
+    storyController.value = _review!.story;
+    bodyController.text = _review?.body ?? '';
+    reviewEmotionsController.items = [];
 
     _isLoading = false;
     notifyListeners();
