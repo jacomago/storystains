@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../features/auth/auth_state.dart';
-import '../../routes/routes.dart';
 import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 

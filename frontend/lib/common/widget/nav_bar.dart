@@ -5,7 +5,6 @@ import '../../features/auth/auth.dart';
 import '../../features/user/user.dart';
 import '../../pages/user_profile.dart';
 import '../../routes/routes.dart';
-import '../constant/app_theme.dart';
 import '../utils/utils.dart';
 
 /// Option for navbar of selected item
