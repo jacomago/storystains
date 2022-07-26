@@ -6,5 +6,6 @@ export 'link_button.dart';
 export 'load_message.dart';
 export 'loading_more.dart';
 export 'markdown_edit.dart';
+export 'nav_bar.dart';
 export 'position_slider.dart';
 export 'title.dart';

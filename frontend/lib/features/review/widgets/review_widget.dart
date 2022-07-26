@@ -133,6 +133,7 @@ class ReviewWidget extends StatelessWidget {
             title: AppBarTitle(context.locale.review),
             moreActions: _buildDelete(context, state, authState),
           ),
+          bottomNavigationBar: const NavBar(),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: SingleChildScrollView(

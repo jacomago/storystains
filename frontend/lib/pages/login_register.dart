@@ -69,6 +69,9 @@ class LoginOrRegisterPage extends StatelessWidget {
             ),
           ),
         ),
+        bottomNavigationBar: const NavBar(
+          currentNav: NavOption.account,
+        ),
         body: Center(
           child: Consumer<AuthState>(
             builder: (_, auth, __) => SafeArea(

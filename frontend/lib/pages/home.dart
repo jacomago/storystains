@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
     BuildContext context,
     ReviewsState reviewsState,
   ) async {
-    context.push(Routes.reviewNew).then((value) => reviewsState.refresh());
+    context.pushNamed(Routes.reviewNew).then((value) => reviewsState.refresh());
   }
 
   /// build a special widget for the title in the AppBar
@@ -46,6 +46,9 @@ class HomePage extends StatelessWidget {
             title: buildAppTitle(context),
           ),
           body: const ReviewList(),
+          bottomNavigationBar: const NavBar(
+            currentNav: NavOption.home,
+          ),
           floatingActionButton: auth.isAuthenticated
               ? CustomFloatingButton(
                   onPressed: () => _goNewReview(context, reviews),

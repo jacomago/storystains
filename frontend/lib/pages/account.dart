@@ -62,6 +62,9 @@ class AccountPage extends StatelessWidget {
             context.locale.account,
           ),
         ),
+        bottomNavigationBar: const NavBar(
+          currentNav: NavOption.account,
+        ),
         body: Center(
           child: Container(
             padding: const EdgeInsets.all(60),

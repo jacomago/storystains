@@ -115,6 +115,18 @@
     "@goBackHome": {
         "description": "Go back to home page."
     },
+    "home": "Home",
+    "@home": {
+        "description": "Home page"
+    },
+    "search": "Search",
+    "@search": {
+        "description": "Search"
+    },
+    "myReviews": "My Reviews",
+    "@myReviews": {
+        "description": "My Reviews"
+    },
     "reviewList": "Reviews",
     "@reviewList": {
         "description": "Title of list of reviews."
