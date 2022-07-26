@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +17,9 @@ import 'package:storystains/features/review_emotions/review_emotions.dart';
 import 'package:storystains/features/story/story.dart';
 
 import '../../common/errors.dart';
+import '../../common/image_mock_http.dart';
 import '../auth/user.dart';
+import '../review_emotion/review_emotion.dart';
 import '../story/story.dart';
 import 'review.dart';
 import 'review_edit_test.mocks.dart';
@@ -56,6 +60,7 @@ void main() {
     // in this set of tests. The full setup includes the dio
     // http client and so tries to do network requests which don't
     // timeout.
+    io.HttpOverrides.global = TestHttpOverrides();
     final dio = ServiceLocator.setupDio(PersistCookieJar());
     ServiceLocator.setupRest(dio);
     ServiceLocator.setupSecureStorage();
@@ -416,6 +421,41 @@ void main() {
         findsOneWidget,
       );
       await tester.pumpAndSettle();
+    });
+  });
+  group('test load', () {
+    testWidgets('loads data from api and displays', (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      final user = testUser();
+      final review =
+          testReview(username: user.username, emotions: [testReviewEmotion()]);
+      final mockService = MockReviewService();
+
+      when(mockService.read(review.user.username, review.slug))
+          .thenAnswer((realInvocation) async => ReviewResp(review: review));
+
+      final reviewState = ReviewState(
+        mockService,
+        path: ReviewRoutePath(
+          review.slug,
+          user.username,
+        ),
+      );
+
+      await tester.pumpWidget(wrapWithMaterial(
+        const ReviewWidget(),
+        reviewState,
+      ));
+      await tester.pumpAndSettle();
+
+      verify(mockService.read(review.user.username, review.slug));
+      // find menu button
+      expect(find.text(review.story.title), findsOneWidget);
+      final re = review.emotions.first;
+      expect(find.text(re.notes!, findRichText: true), findsOneWidget);
+      expect(find.text(re.emotion.name), findsOneWidget);
+      expect(find.text('${re.position}%'), findsOneWidget);
+      expect(find.text(review.body!), findsOneWidget);
     });
   });
 }
