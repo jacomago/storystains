@@ -5,8 +5,8 @@ kill_timeout = 5
 processes = []
 
 [env]
-APP__APPLICATION__BASE_URL = "https://storystains.fly.dev"
-APP__FRONTEND__ORIGIN = "https://storystains.fly.dev"
+APP__APPLICATION__BASE_URL = "https://app.storystains.com"
+APP__FRONTEND__ORIGIN = "https://app.storystains.com"
 APP__DATABASE__HOST = "top2.nearest.of.storystains-db.internal"
 APP__DATABASE__USERNAME = "storystains"
 APP__DATABASE__REQUIRE_SSL = "false"
@@ -21,7 +21,7 @@ allowed_public_ports = []
 auto_rollback = true
 
 [build.args]
-FRONT_BASE_URL = "https://storystains.fly.dev/api"
+FRONT_BASE_URL = "https://app.storystains.com/api"
 
 [[services]]
 internal_port = 8080

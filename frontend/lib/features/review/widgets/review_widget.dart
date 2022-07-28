@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/utils/utils.dart';
 import '../../../common/widget/widget.dart';
 import '../../auth/auth.dart';
+import '../../mediums/medium.dart';
 import '../../review_emotions/review_emotions.dart';
 import '../../story/story.dart';
 import '../../user/user_model.dart';
@@ -34,17 +34,15 @@ class ReviewWidget extends StatelessWidget {
   void _afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {
       context.pop(state.review);
-      context.snackbar(AppLocalizations.of(context)!
-          .updatedObject(AppLocalizations.of(context)!.review));
+      context.snackbar(context.locale.updatedObject(context.locale.review));
     } else if (state.isDeleted) {
       context.pop();
-      context.snackbar(AppLocalizations.of(context)!
-          .deletedObject(AppLocalizations.of(context)!.review));
+      context.snackbar(context.locale.deletedObject(context.locale.review));
     } else {
       if (state.isFailed) {
         context.snackbar(state.error);
       } else {
-        context.snackbar(AppLocalizations.of(context)!.pleaseTryAgain);
+        context.snackbar(context.locale.pleaseTryAgain);
       }
     }
   }
@@ -53,17 +51,15 @@ class ReviewWidget extends StatelessWidget {
     FocusScope.of(context).unfocus();
 
     final state = context.read<ReviewState>();
-    final body = state.bodyController.value.text;
+    final body = state.bodyController.value.text.isEmpty
+        ? null
+        : state.bodyController.value.text;
     final story = state.storyController.value;
 
-    if (story.title.isEmpty || story.creator.isEmpty) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.title));
-
-      return;
-    } else if (body.isEmpty) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.body));
+    if (story.title.isEmpty ||
+        story.creator.isEmpty ||
+        story.medium.name.isEmpty) {
+      context.snackbar(context.locale.blankStringError(context.locale.story));
 
       return;
     }
@@ -109,7 +105,7 @@ class ReviewWidget extends StatelessWidget {
                 itemBuilder: (context) => <PopupMenuItem<Text>>[
                   PopupMenuItem(
                     child: Text(
-                      AppLocalizations.of(context)!.delete,
+                      context.locale.delete,
                       style: context.labelSmall!
                           .copyWith(color: context.colors.error),
                     ),
@@ -134,18 +130,25 @@ class ReviewWidget extends StatelessWidget {
         builder: (context, state, authState, _) => Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: StainsAppBar(
-            title: AppBarTitle(AppLocalizations.of(context)!.review),
+            title: AppBarTitle(context.locale.review),
             moreActions: _buildDelete(context, state, authState),
           ),
+          bottomNavigationBar: const NavBar(),
           body: Padding(
             padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   state.isEdit
                       ? StoryEditWidget(state: state.storyController)
                       : StoryWidget(
-                          story: state.review?.story,
+                          story: state.review?.story ??
+                              Story(
+                                title: '',
+                                medium: Medium.mediumDefault,
+                                creator: '',
+                              ),
                         ),
                   const SizedBox(
                     height: 10,
@@ -165,16 +168,24 @@ class ReviewWidget extends StatelessWidget {
                     ],
                   ),
                   const Divider(),
-                  state.review == null
+                  state.isCreate
                       ? Row()
-                      : ChangeNotifierProvider(
-                          create: (_) =>
-                              ReviewEmotionsState(state.review!.emotions),
-                          child: const ReviewEmotionsList(),
+                      : ReviewEmotionsList(
+                          state: state.reviewEmotionsController,
                         ),
-                  const Padding(
-                    padding: EdgeInsets.all(24),
-                    child: ReviewBody(),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          context.locale.body,
+                          style: context.labelLarge,
+                        ),
+                        const Divider(),
+                        const ReviewBody(),
+                      ],
+                    ),
                   ),
                 ],
               ),

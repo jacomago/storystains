@@ -17,7 +17,7 @@ dependencies:
   dio: ^4.0.6
   shared_preferences: ^2.0.12
   retrofit: '>=3.0.0 <4.0.0'
-  flutter_markdown: ^0.6.9
+  flutter_markdown: ^0.6.10+3
   logger: ^1.1.0  #for logging purpose
   google_fonts: ^3.0.1
   cached_network_image: ^3.1.0+1

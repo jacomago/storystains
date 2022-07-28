@@ -4,8 +4,10 @@ use storystains::startup::get_connection_pool;
 use storystains::{configuration::get_configuration, startup::Application};
 use uuid::Uuid;
 
+use crate::users::TestUser;
+
 use super::db::{configure_database, remove_database};
-use super::{TestUser, TRACING};
+use super::TRACING;
 pub struct TestApp {
     pub address: String,
     pub db_name: String,

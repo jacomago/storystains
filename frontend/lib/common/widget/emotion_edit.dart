@@ -50,64 +50,63 @@ class EmotionImageText extends StatelessWidget {
     required this.emotion,
     required this.height,
     this.direction = AxisDirection.right,
-    this.radius = 15,
   }) : super(key: key);
 
   /// Height of the image of the emotion
   final double height;
 
-  /// radius of the corners
-  final double radius;
-
   /// Which Direction have rounded corners
   final AxisDirection direction;
 
-  BorderRadius _radiusFromDirection() {
+  String _backSVGFileFromDirection() {
     switch (direction) {
       case AxisDirection.right:
-        return BorderRadius.only(
-          topRight: Radius.circular(radius),
-          bottomRight: Radius.circular(radius),
-        );
+        return 'assets/images/rect_right_curve_svg.svg';
       case AxisDirection.up:
-        return BorderRadius.only(
-          topRight: Radius.circular(radius),
-          topLeft: Radius.circular(radius),
-        );
+        return 'assets/images/rect_top_curve_svg.svg';
       default:
-        return BorderRadius.only(
-          topRight: Radius.circular(radius),
-          bottomRight: Radius.circular(radius),
-        );
+        return 'assets/images/rect_right_curve_svg.svg';
     }
   }
 
+  /// Ratio of text height to image height
+  static const textRatio = 0.4;
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.all(5),
         child: Container(
-          decoration: BoxDecoration(
-            color: emotion.color(),
-            borderRadius: _radiusFromDirection(),
+          constraints: BoxConstraints.tightFor(
+            height: height + height * textRatio,
           ),
-          constraints: BoxConstraints.tightFor(height: height + 25),
-          child: Column(
+          child: Stack(
+            alignment: Alignment.topCenter,
             children: [
-              EmotionImage(
-                emotion: emotion,
-                height: height,
+              SvgPicture.asset(
+                _backSVGFileFromDirection(),
+                color: emotion.color(),
+                height: height + height * textRatio,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: FittedBox(
-                  child: Text(
-                    emotion.name,
-                    style: context.bodySmall,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
+              Column(
+                children: [
+                  EmotionImage(
+                    emotion: emotion,
+                    height: height,
                   ),
-                ),
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    width: height,
+                    height: height * textRatio,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        emotion.name,
+                        style: context.bodySmall,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -137,7 +136,6 @@ class EmotionImage extends StatelessWidget {
         child: SvgPicture.network(
           emotion.iconFullUrl(),
           width: height,
-          height: height,
           color: context.colors.onSurface,
         ),
       );

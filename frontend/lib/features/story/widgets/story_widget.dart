@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
+import '../../../common/widget/link_button.dart';
 import '../story.dart';
 import '../story_route.dart';
 
@@ -10,28 +10,19 @@ class StoryWidget extends StatelessWidget {
   const StoryWidget({Key? key, required this.story}) : super(key: key);
 
   void _onTapTitle(BuildContext context) {
-    if (story?.title == null) {
-      return;
-    }
-    StoryQuery(title: story!.title).navigate(context);
+    StoryQuery(title: story.title).navigate(context);
   }
 
   void _onTapCreator(BuildContext context) {
-    if (story?.creator == null) {
-      return;
-    }
-    StoryQuery(creator: story!.creator).navigate(context);
+    StoryQuery(creator: story.creator).navigate(context);
   }
 
   void _onTapMedium(BuildContext context) {
-    if (story?.medium == null) {
-      return;
-    }
-    StoryQuery(medium: story!.medium).navigate(context);
+    StoryQuery(medium: story.medium).navigate(context);
   }
 
   ///The [Story] to display
-  final Story? story;
+  final Story story;
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,36 +31,28 @@ class StoryWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () => _onTapTitle(context),
-                  child: Text(
-                    '${story?.title}',
-                    style: context.headlineSmall,
-                    semanticsLabel: AppLocalizations.of(context)!.title,
-                    overflow: TextOverflow.visible,
-                    maxLines: 2,
-                  ),
-                ),
+              LinkButton(
+                onPressed: () => _onTapTitle(context),
+                text: story.title,
+                defaultStyle: context.headlineSmall!,
+                semanticsLabel: context.locale.title,
+                maxLines: 2,
               ),
-              GestureDetector(
-                onTap: () => _onTapMedium(context),
-                child: Text(
-                  '(${story?.medium.name})',
-                  style: context.titleMedium,
-                ),
+              LinkButton(
+                onPressed: () => _onTapMedium(context),
+                text: '(${story.medium.name})',
+                defaultStyle: context.titleMedium!,
+                semanticsLabel: context.locale.medium,
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () => _onTapCreator(context),
-            child: Text(
-              AppLocalizations.of(context)!.byCreator(story?.creator ?? ''),
-              style: context.titleMedium!.copyWith(
-                fontStyle: FontStyle.italic,
-              ),
-              semanticsLabel: AppLocalizations.of(context)!.creator,
+          LinkButton(
+            onPressed: () => _onTapCreator(context),
+            text: context.locale.byCreator(story.creator),
+            defaultStyle: context.titleMedium!.copyWith(
+              fontStyle: FontStyle.italic,
             ),
+            semanticsLabel: context.locale.creator,
           ),
         ],
       );
@@ -105,28 +88,25 @@ class StoryItem extends StatelessWidget {
                   style: context.titleMedium
                       ?.copyWith(fontWeight: FontWeight.bold),
                   maxLines: 2,
+                  semanticsLabel: context.locale.title,
                 ),
               ),
-              GestureDetector(
-                onTap: () => _onTapMedium(context),
-                child: Text(
-                  story.medium.name,
-                  style: context.titleSmall?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: context.colors.onSecondaryContainer,
-                  ),
-                  overflow: TextOverflow.fade,
+              LinkButton(
+                onPressed: () => _onTapMedium(context),
+                text: story.medium.name,
+                defaultStyle: context.titleSmall!.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: context.colors.onSecondaryContainer,
                 ),
+                semanticsLabel: context.locale.medium,
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () => _onTapCreator(context),
-            child: Text(
-              AppLocalizations.of(context)!.byCreator(story.creator),
-              style: context.titleSmall,
-              overflow: TextOverflow.fade,
-            ),
+          LinkButton(
+            onPressed: () => _onTapCreator(context),
+            text: context.locale.byCreator(story.creator),
+            defaultStyle: context.titleSmall!,
+            semanticsLabel: context.locale.creator,
           ),
           const SizedBox(height: 4),
         ],

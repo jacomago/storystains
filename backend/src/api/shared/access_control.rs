@@ -1,10 +1,15 @@
 use actix_web::ResponseError;
 use reqwest::StatusCode;
 
-use crate::{
-    api::{shared::error_chain_fmt, users::NewUsername},
-    auth::AuthUser,
-};
+// TODO Aim to not do crate level imports
+use crate::{api::users::NewUsername, auth::AuthUser};
+
+use super::error_chain_fmt;
+
+pub enum ACLOption {
+    OwnerOnly,
+    OwnerOrAdmin,
+}
 
 /// Block Error is to announce error when modifying another users data
 #[derive(thiserror::Error)]
@@ -32,15 +37,29 @@ impl ResponseError for BlockError {
         }
     }
 }
-// TODO convert to middleware
-pub async fn block_non_creator(
-    username: &NewUsername,
-    auth_user: &AuthUser,
-) -> Result<(), BlockError> {
-    if username.as_ref() != auth_user.username {
+
+fn owner_block(data_owner: &NewUsername, auth_user: &AuthUser) -> Result<(), BlockError> {
+    if data_owner.as_ref() != auth_user.username {
         return Err(BlockError::NotAllowed(
             "Must be the creator of the data.".to_string(),
         ));
     }
     Ok(())
+}
+
+// TODO convert to middleware or guard
+pub async fn access_control_block(
+    data_owner: &NewUsername,
+    auth_user: &AuthUser,
+    acl_option: ACLOption,
+) -> Result<(), BlockError> {
+    match acl_option {
+        ACLOption::OwnerOnly => owner_block(data_owner, auth_user),
+        ACLOption::OwnerOrAdmin => {
+            if auth_user.is_admin {
+                return Ok(());
+            }
+            owner_block(data_owner, auth_user)
+        }
+    }
 }

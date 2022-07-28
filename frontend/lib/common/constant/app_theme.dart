@@ -78,22 +78,22 @@ class ExtraColors {
 /// Emotion Colors
 class EmotionColors {
   /// Joy color
-  static const joy = Color.fromARGB(255, 243, 243, 58);
+  static const joy = HSLColor.fromAHSL(1.0, 60, 1.0, 0.6);
 
   /// Anger color
-  static const anger = Color.fromARGB(255, 240, 74, 48);
+  static const anger = HSLColor.fromAHSL(1.0, 8, 1.0, 0.6);
 
   /// Sadness color
-  static const sadness = Color.fromARGB(255, 58, 98, 243);
+  static const sadness = HSLColor.fromAHSL(1.0, 230, 1.0, 0.6);
 
   /// Fear color
-  static const fear = Color.fromARGB(255, 184, 58, 243);
+  static const fear = HSLColor.fromAHSL(1.0, 260, 1.0, 0.6);
 
   /// Disgust color
-  static const disgust = Color.fromARGB(255, 120, 243, 58);
+  static const disgust = HSLColor.fromAHSL(1.0, 100, 1.0, 0.6);
 
   /// Surprise color
-  static const surprise = Color.fromARGB(255, 242, 42, 202);
+  static const surprise = HSLColor.fromAHSL(1.0, 315, 1.0, 0.6);
 }
 
 /// How to style the home button

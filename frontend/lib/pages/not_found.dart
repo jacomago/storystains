@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../common/utils/utils.dart';
@@ -17,6 +16,7 @@ class NotFoundPage extends StatelessWidget {
         appBar: const StainsAppBar(
           title: AppBarTitle('404'),
         ),
+        bottomNavigationBar: const NavBar(),
         body: Center(
           child: Container(
             padding: const EdgeInsets.all(60),
@@ -31,14 +31,14 @@ class NotFoundPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  AppLocalizations.of(context)!.pageNotFound,
+                  context.locale.pageNotFound,
                   style: context.titleLarge,
                 ),
                 const SizedBox(height: 20),
                 OutlinedButton(
-                  onPressed: () => context.push(Routes.home),
+                  onPressed: () => context.pushNamed(Routes.home),
                   child: Text(
-                    AppLocalizations.of(context)!.goBackHome,
+                    context.locale.goBackHome,
                     style: context.button,
                   ),
                 ),

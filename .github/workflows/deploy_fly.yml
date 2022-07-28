@@ -1,0 +1,57 @@
+name: Fly Deploy
+concurrency: 
+  group: main_deployment
+  cancel-in-progress: true
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  DATABASE_URL: ${{ secrets.FLY_DATABASE_URL }}
+  SQLX_VERSION: 0.6.0
+  SQLX_FEATURES: postgres,native-tls
+jobs:
+  deploy:
+      name: Deploy app
+      runs-on: ubuntu-latest
+      steps:
+        - name: checkout
+          uses: actions/checkout@v2
+        - name: Install stable toolchain
+          uses: actions-rs/toolchain@v1
+          with:
+            profile: minimal
+            toolchain: stable
+            override: true
+
+        - name: Cache sqlx-cli
+          uses: actions/cache@v2
+          id: cache-sqlx
+          with:
+            path: |
+              ~/.cargo/bin/sqlx
+            key: ${{ runner.os }}-sqlx-${{ hashFiles('~/.cargo/bin/sqlx') }}
+
+        - name: Install sqlx-cli 
+          uses: actions-rs/cargo@v1
+          if: steps.cache-sqlx.outputs.cache-hit == false
+          with:
+            command: install 
+            args: >
+              sqlx-cli
+              --force
+              --version=${{ env.SQLX_VERSION }}
+              --features=${{ env.SQLX_FEATURES }}
+              --no-default-features
+              --locked
+        
+        - name: setup fly
+          uses: superfly/flyctl-actions/setup-flyctl@master
+        - name: setup proxy to fly db
+          run: flyctl proxy 5432 -a storystains-db &
+        - name: run migrations
+          run: sleep 5 && cd backend && sqlx migrate run && cd ..
+        - name: run deploy
+          run: flyctl deploy --remote-only

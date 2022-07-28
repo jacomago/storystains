@@ -120,8 +120,8 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      expect(find.bySemanticsLabel('Title'), findsOneWidget);
-      expect(find.bySemanticsLabel('Creator'), findsOneWidget);
+      expect(find.bySemanticsLabel('Title Field'), findsOneWidget);
+      expect(find.bySemanticsLabel('Creator Field'), findsOneWidget);
       verify(mockService.fetch(
         query: reviewQuery,
         offset: AppConfig.defaultLimit,
@@ -154,7 +154,7 @@ void main() {
       await tester.pumpWidget(wrapWithMaterial(
         const StoryFilter(),
         reviewsState,
-        StoryState(StoryService()),
+        StoryState(StoryService(), query: const StoryQuery()),
       ));
       await tester.pumpAndSettle();
 
@@ -162,7 +162,7 @@ void main() {
         query: ReviewQuery(storyQuery: StoryQuery(title: storyQuery.title)),
       )).thenAnswer((realInvocation) async => []);
 
-      final titleField = find.bySemanticsLabel('Title');
+      final titleField = find.bySemanticsLabel('Title Field');
       await tester.enterText(titleField, storyQuery.title!);
 
       verify(mockService.fetch(
@@ -182,7 +182,7 @@ void main() {
         ],
       );
 
-      final creatorField = find.bySemanticsLabel('Creator');
+      final creatorField = find.bySemanticsLabel('Creator Field');
       await tester.enterText(creatorField, storyQuery.creator!);
 
       verify(mockService.fetch(

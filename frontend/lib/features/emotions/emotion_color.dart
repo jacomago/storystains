@@ -18,14 +18,23 @@ extension EmotionColor on Emotion {
     for (var k in properties.entries) {
       if (properties.entries
           .where(
-            (element) => k.key != element.key && element.value > k.value,
+            (element) => k.key != element.key && element.value >= k.value,
           )
           .isEmpty) {
-        return k.key.withAlpha(k.value * 33);
+        return k.key.withAlpha(k.value * 0.16).toColor();
       }
     }
     var pair = properties.entries.where((element) => element.value > 0);
+    if (pair.isEmpty) {
+      return Colors.white;
+    }
 
-    return Color.lerp(pair.first.key, pair.last.key, 0.5)!.withAlpha(100);
+    return HSLColor.lerp(
+      pair.first.key,
+      pair.last.key,
+      0.5,
+    )!
+        .withAlpha((pair.last.value + pair.first.value) * 0.08)
+        .toColor();
   }
 }

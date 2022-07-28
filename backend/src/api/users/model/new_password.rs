@@ -33,7 +33,7 @@ impl NewPassword {
         let is_too_long = s.expose_secret().graphemes(true).count() > 128;
 
         if is_empty_or_whitespace || is_too_short || is_too_long {
-            Err("Input is not a valid password.".to_string())
+            Err("Input is not a valid password. Must be between 12 to 128 characters.".to_string())
         } else {
             Ok(Self(s))
         }

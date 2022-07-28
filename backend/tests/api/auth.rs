@@ -1,6 +1,6 @@
 use reqwest::{Method, Response, StatusCode};
 
-use crate::helpers::{TestApp, TestUser};
+use crate::{helpers::TestApp, users::TestUser};
 
 impl TestApp {
     pub async fn method_route(&self, route: String, method: Method, body: String) -> Response {
@@ -69,7 +69,7 @@ pub async fn route_returns_unauth_when_using_valid_but_non_existant_user<T>(
     // store user
     user.store(&app).await;
     // delete user
-    app.delete_user().await;
+    app.delete_logged_in_user().await;
 
     // Act
     let response = app

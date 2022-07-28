@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
@@ -14,15 +13,14 @@ class AccountPage extends StatelessWidget {
 
   void _afterDelete(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {
-      context.snackbar(AppLocalizations.of(context)!
-          .actionFailed(AppLocalizations.of(context)!.deleteObject(
-        AppLocalizations.of(context)!.user,
+      context.snackbar(context.locale.actionFailed(context.locale.deleteObject(
+        context.locale.user,
       )));
     } else {
       Navigator.of(context).pop();
-      context.snackbar(AppLocalizations.of(context)!
-          .actionSucceeded(AppLocalizations.of(context)!.deleteObject(
-        AppLocalizations.of(context)!.user,
+      context
+          .snackbar(context.locale.actionSucceeded(context.locale.deleteObject(
+        context.locale.user,
       )));
     }
   }
@@ -39,12 +37,10 @@ class AccountPage extends StatelessWidget {
 
   void _afterLogout(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {
-      context.snackbar(AppLocalizations.of(context)!
-          .actionFailed(AppLocalizations.of(context)!.logout));
+      context.snackbar(context.locale.actionFailed(context.locale.logout));
     } else {
       Navigator.of(context).pop();
-      context.snackbar(AppLocalizations.of(context)!
-          .actionSucceeded(AppLocalizations.of(context)!.logout));
+      context.snackbar(context.locale.actionSucceeded(context.locale.logout));
     }
   }
 
@@ -63,8 +59,11 @@ class AccountPage extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: StainsAppBar(
           title: AppBarTitle(
-            AppLocalizations.of(context)!.account,
+            context.locale.account,
           ),
+        ),
+        bottomNavigationBar: const NavBar(
+          currentNav: NavOption.account,
         ),
         body: Center(
           child: Container(
@@ -81,8 +80,8 @@ class AccountPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    AppLocalizations.of(context)!.greeting(
-                      auth.user?.username ?? AppLocalizations.of(context)!.user,
+                    context.locale.greeting(
+                      auth.user?.username ?? context.locale.user,
                     ),
                     style: context.bodyMedium,
                   ),
@@ -93,7 +92,7 @@ class AccountPage extends StatelessWidget {
                     ),
                     onPressed: () => _onLogout(context),
                     child: Text(
-                      AppLocalizations.of(context)!.logout,
+                      context.locale.logout,
                       style: context.button!
                           .copyWith(color: context.colors.onPrimary),
                     ),
@@ -102,8 +101,7 @@ class AccountPage extends StatelessWidget {
                   OutlinedButton(
                     onPressed: () => _onDelete(context),
                     child: Text(
-                      AppLocalizations.of(context)!
-                          .deleteObject(AppLocalizations.of(context)!.user),
+                      context.locale.deleteObject(context.locale.user),
                       style: context.button!
                           .copyWith(color: context.colors.onErrorContainer),
                     ),

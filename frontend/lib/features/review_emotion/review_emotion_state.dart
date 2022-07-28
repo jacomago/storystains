@@ -116,7 +116,9 @@ class ReviewEmotionState extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final notes = notesController.value.text;
+      final notes = notesController.value.text.isEmpty
+          ? null
+          : notesController.value.text;
       final position = positionController.value;
       final emotion = emotionController.value;
 
