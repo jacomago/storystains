@@ -32,7 +32,19 @@ platform :android do
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    sh "flutter build appbundle --dart-define BASE_URL=https://app.storystains.com/api -v"
+    upload_to_play_store(
+      track: 'beta',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+    )
+  end
+  desc "Deploy a new version to the Google Play"
+  lane :deployinternal do
+    sh "flutter build appbundle --dart-define BASE_URL=https://app.storystains.com/api -v"
+    upload_to_play_store(
+      track: 'internal',
+      release_status: 'draft',
+      aab: '../build/app/outputs/bundle/release/app-release.aab',
+    )
   end
 end
