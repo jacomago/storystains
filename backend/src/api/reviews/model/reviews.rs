@@ -12,7 +12,7 @@ use crate::api::{
 use super::ReviewSlug;
 
 pub struct NewReview {
-    pub body: LongFormText,
+    pub body: Option<LongFormText>,
     pub story: NewStory,
     pub slug: ReviewSlug,
     pub user_id: UserId,
@@ -28,7 +28,7 @@ pub struct StoredReview {
     pub id: sqlx::types::Uuid,
     pub story_id: sqlx::types::Uuid,
     pub slug: String,
-    pub body: String,
+    pub body: Option<String>,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
     pub user_id: sqlx::types::Uuid,
@@ -53,7 +53,7 @@ pub struct ReviewResponse {
 pub struct ReviewResponseData {
     story: StoryResponseData,
     slug: String,
-    body: String,
+    body: Option<String>,
     created_at: ResponseTime,
     updated_at: ResponseTime,
     emotions: Vec<ReviewEmotionData>,

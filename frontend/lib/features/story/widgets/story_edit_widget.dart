@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
 import '../../mediums/medium.dart';
 import '../story.dart';
@@ -59,8 +58,8 @@ class StoryFormWidget extends StatelessWidget {
             onChanged: (_) {
               onChanged();
             },
-            label: AppLocalizations.of(context)!.title,
-            hint: AppLocalizations.of(context)!.title,
+            label: context.locale.title,
+            hint: context.locale.title,
           ),
           const SizedBox(
             height: 10,
@@ -70,8 +69,8 @@ class StoryFormWidget extends StatelessWidget {
             onChanged: (_) {
               onChanged();
             },
-            label: AppLocalizations.of(context)!.creator,
-            hint: AppLocalizations.of(context)!.creatorHint,
+            label: context.locale.creator,
+            hint: context.locale.creatorHint,
           ),
           const SizedBox(
             height: 10,
@@ -113,7 +112,7 @@ class StoryTextEdit extends StatelessWidget {
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
-          labelText: label,
+          labelText: context.locale.field(label),
           hintText: hint,
         ),
         style: context.titleMedium,

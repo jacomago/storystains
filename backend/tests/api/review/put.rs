@@ -58,7 +58,7 @@ async fn put_review_returns_a_200_for_valid_json_data() {
     .await
     .expect("Failed to fetch saved data.");
 
-    assert_eq!(saved.body, "3stars");
+    assert_eq!(saved.body, Some("3stars".to_string()));
     assert_eq!(saved.title, Some(story.title));
     app.teardown().await;
 }

@@ -42,7 +42,7 @@ abstract class RestClient {
   Future<ReviewResp> updateReview(
     @retrofit.Path() String username,
     @retrofit.Path() String slug,
-    @retrofit.Body() CreateReview updatedReview,
+    @retrofit.Body() UpdateReviewReq updatedReview,
   );
 
   /// Get the info of the [Review]
@@ -109,7 +109,7 @@ abstract class RestClient {
   Future<void> logout();
 
   /// get current [User] detials
-  @retrofit.GET('user')
+  @retrofit.GET('/user')
   Future<UserResp> getCurrentUser();
 
   /// Get list of latest [Review]

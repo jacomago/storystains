@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/utils/error.dart';
+import '../review_emotions/review_emotions_state.dart';
 import '../story/story.dart';
 import '../user/user_model.dart';
 import 'review.dart';
@@ -102,6 +103,9 @@ class ReviewState extends ChangeNotifier {
   /// controller for editing body
   late TextEditingController bodyController;
 
+  /// controller for editing Review Emotions
+  late ReviewEmotionsState reviewEmotionsController;
+
   /// State of editing or showing a [Review]
   ReviewState(this._service, {Review? review, ReviewRoutePath? path}) {
     _event = null;
@@ -115,6 +119,7 @@ class ReviewState extends ChangeNotifier {
     _review = review;
     storyController = StoryState(StoryService(), story: review?.story);
     bodyController = TextEditingController(text: review?.body);
+    reviewEmotionsController = ReviewEmotionsState(review?.emotions);
 
     if (path != null) {
       _init(path);
@@ -133,7 +138,7 @@ class ReviewState extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// load from apif
+  /// load from api
   Future<void> _init(ReviewRoutePath path) async {
     _startLoading();
 
@@ -142,8 +147,10 @@ class ReviewState extends ChangeNotifier {
 
       _review = data.review;
 
-      storyController = StoryState(StoryService(), story: review?.story);
-      bodyController = TextEditingController(text: _review?.body);
+      storyController.value = _review!.story;
+      bodyController.text = _review?.body ?? '';
+      reviewEmotionsController.items = _review?.emotions ?? [];
+
       _status = ReviewStatus.read;
       _stateType = ReviewStateType.read;
     } on DioError catch (e) {
@@ -166,7 +173,7 @@ class ReviewState extends ChangeNotifier {
   }
 
   /// update to api
-  Future<void> update(Story story, String body) async {
+  Future<void> update(Story? story, String? body) async {
     _event = ReviewEvent.update;
     _isLoading = true;
 
@@ -174,7 +181,7 @@ class ReviewState extends ChangeNotifier {
 
     try {
       final data = isCreate
-          ? await _service.create(story, body)
+          ? await _service.create(story!, body)
           : await _service.update(
               _review!.user.username,
               _review!.slug,
@@ -212,6 +219,9 @@ class ReviewState extends ChangeNotifier {
       _error = '';
       _event = null;
       _review = null;
+      bodyController.clear();
+      storyController.clear();
+      reviewEmotionsController.clear();
     } on DioError catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
@@ -243,8 +253,10 @@ class ReviewState extends ChangeNotifier {
     );
 
     _review = review;
-    storyController = StoryState(StoryService(), story: review.story);
-    bodyController = TextEditingController(text: review.body);
+
+    storyController.value = _review!.story;
+    bodyController.text = _review?.body ?? '';
+    reviewEmotionsController.items = [];
 
     _isLoading = false;
     notifyListeners();

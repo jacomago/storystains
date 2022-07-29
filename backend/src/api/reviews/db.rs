@@ -236,7 +236,7 @@ async fn db_create_review(
         id,
         story_id,
         review.slug.as_ref(),
-        review.body.as_ref(),
+        review.body.as_ref().map(|t| t.as_ref()),
         time,
         time,
         user_id,

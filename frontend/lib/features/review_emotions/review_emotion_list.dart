@@ -1,8 +1,10 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../common/utils/utils.dart';
+import '../auth/auth.dart';
 import '../emotions/emotion.dart';
+import '../review/review.dart';
 import '../review_emotion/review_emotion.dart';
 
 import '../review_emotion/widgets/review_emotion.dart';
@@ -11,7 +13,22 @@ import 'review_emotions_state.dart';
 /// List of r[ReviewEmotion] widget
 class ReviewEmotionsList extends StatelessWidget {
   /// List of review emotions widget
-  const ReviewEmotionsList({Key? key}) : super(key: key);
+  const ReviewEmotionsList({Key? key, required this.state}) : super(key: key);
+
+  /// State of the list of emotions
+  final ReviewEmotionsState state;
+
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: ((context) => state),
+        child: const ReviewEmotionsListWidget(),
+      );
+}
+
+/// List of r[ReviewEmotion] widget
+class ReviewEmotionsListWidget extends StatelessWidget {
+  /// List of review emotions widget
+  const ReviewEmotionsListWidget({Key? key}) : super(key: key);
 
   void _updateEmotion(
     BuildContext context,
@@ -21,79 +38,85 @@ class ReviewEmotionsList extends StatelessWidget {
   ) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionsState>();
-
     if (value == null) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.emotion));
+      context.snackbar(context.locale.blankStringError(context.locale.emotion));
 
       return;
     }
 
-    await state.edit(index, value);
+    await context.read<ReviewEmotionsState>().edit(index, value);
   }
 
   void _addEmotion(BuildContext context, Emotion? value) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionsState>();
-
     if (value == null) {
-      context.snackbar(AppLocalizations.of(context)!
-          .blankStringError(AppLocalizations.of(context)!.emotion));
+      context.snackbar(context.locale.blankStringError(context.locale.emotion));
 
       return;
     }
 
-    await state.create(value);
+    await context.read<ReviewEmotionsState>().create(value);
+  }
+
+  bool _allowAdd(BuildContext context) {
+    final reviewState = context.read<ReviewState>();
+
+    return reviewState.review == null
+        ? false
+        : context.read<AuthState>().sameUser(reviewState.review!.user);
   }
 
   @override
   Widget build(BuildContext context) =>
       Consumer2<ReviewEmotionsState, EmotionsState>(
-        builder: (_, reviewEmotions, emotions, __) => Column(
+        builder: (_, state, emotions, __) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  AppLocalizations.of(context)!.emotions,
+                  context.locale.emotions,
                   style: context.titleMedium,
                 ),
-                OutlinedButton(
-                  onPressed: () async => {
-                    showDialog<Emotion>(
-                      context: context,
-                      builder: (context) => EmotionDialog(
-                        initialEmotion: emotions.emotionDefault,
-                      ),
-                    ).then(
-                      (value) => _addEmotion(context, value),
-                    ),
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.add,
-                    style: context.button,
-                  ),
-                ),
+                _allowAdd(context)
+                    ? OutlinedButton(
+                        onPressed: () async => {
+                          showDialog<Emotion>(
+                            context: context,
+                            builder: (context) => EmotionDialog(
+                              initialEmotion: emotions.emotionDefault,
+                            ),
+                          ).then(
+                            (value) => _addEmotion(context, value),
+                          ),
+                        },
+                        child: Text(
+                          context.locale.add,
+                          style: context.button,
+                        ),
+                      )
+                    : Column(),
               ],
             ),
-            (reviewEmotions.newItem || reviewEmotions.editItem)
-                ? ChangeNotifierProvider(
-                    create: (_) => ReviewEmotionState(
-                      ReviewEmotionService(),
-                      emotion: reviewEmotions.currentEmotion,
-                      reviewEmotion: reviewEmotions.currentReviewEmotion,
-                    ),
-                    child: ReviewEmotionEdit(
-                      cancelHandler: reviewEmotions.cancelCreate,
-                      okHandler: reviewEmotions.confirmCreation,
-                      deleteHandler: reviewEmotions.confirmDelete,
-                    ),
-                  )
-                : Row(),
-            _itemList(reviewEmotions.items, context),
+            ValueListenableBuilder<ReviewEmotionsEvent>(
+              builder: (context, value, child) =>
+                  value != ReviewEmotionsEvent.none
+                      ? ReviewEmotionEdit(
+                          cancelHandler: state.cancelCreate,
+                          okHandler: state.confirmCreation,
+                          deleteHandler: state.confirmDelete,
+                          state: ReviewEmotionState(
+                            ReviewEmotionService(),
+                            emotion: state.currentEmotion,
+                            reviewEmotion: state.currentReviewEmotion,
+                          ),
+                        )
+                      : Row(),
+              valueListenable: state.editing,
+            ),
+            _itemList(state.items, context),
           ],
         ),
       );
@@ -102,14 +125,20 @@ class ReviewEmotionsList extends StatelessWidget {
     List<ReviewEmotion> reviewEmotions,
     BuildContext context,
   ) =>
-      ListView.separated(
-        separatorBuilder: (_, __) => const SizedBox(height: 4),
-        itemCount: reviewEmotions.length,
-        shrinkWrap: true,
-        itemBuilder: (context, index) => ReviewEmotionWidget(
-          reviewEmotion: reviewEmotions[index],
-          emotionHandler: (value) =>
-              _updateEmotion(context, reviewEmotions[index], index, value),
-        ),
+      Column(
+        children: reviewEmotions
+            .mapIndexed<Widget>(
+              (index, reviewEmotion) => Column(
+                children: [
+                  const SizedBox(height: 4),
+                  ReviewEmotionWidget(
+                    reviewEmotion: reviewEmotion,
+                    emotionHandler: (value) =>
+                        _updateEmotion(context, reviewEmotion, index, value),
+                  ),
+                ],
+              ),
+            )
+            .toList(),
       );
 }

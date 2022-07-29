@@ -94,8 +94,16 @@ class StoryState extends ChangeNotifier {
     titleController = TextEditingController(text: story?.title ?? query?.title);
     creatorController =
         TextEditingController(text: story?.creator ?? query?.creator);
-    mediumController = ValueNotifier(story?.medium ?? query?.medium);
+    mediumController = ValueNotifier(
+      story?.medium ?? (query == null ? Medium.mediumDefault : query.medium),
+    );
     searchResults = StreamController<List<Story>?>.broadcast();
+  }
+
+  set value(Story story) {
+    _story = story;
+    _setControllers(story);
+    notifyListeners();
   }
 
   /// Value from controllers
@@ -111,6 +119,13 @@ class StoryState extends ChangeNotifier {
         medium: mediumController.value,
         creator: creatorController.text.isEmpty ? null : creatorController.text,
       );
+
+  /// Clear the value from the controller
+  void clear() {
+    titleController.clear();
+    creatorController.clear();
+    mediumController.value = Medium.mediumDefault;
+  }
 
   void _setControllers(Story story) {
     titleController.text = story.title;

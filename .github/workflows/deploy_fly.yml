@@ -17,7 +17,7 @@ jobs:
       name: Deploy app
       runs-on: ubuntu-latest
       steps:
-        - name: chekcout
+        - name: checkout
           uses: actions/checkout@v2
         - name: Install stable toolchain
           uses: actions-rs/toolchain@v1
@@ -52,6 +52,6 @@ jobs:
         - name: setup proxy to fly db
           run: flyctl proxy 5432 -a storystains-db &
         - name: run migrations
-          run: cd backend && sqlx migrate run && cd ..
+          run: sleep 5 && cd backend && sqlx migrate run && cd ..
         - name: run deploy
           run: flyctl deploy --remote-only

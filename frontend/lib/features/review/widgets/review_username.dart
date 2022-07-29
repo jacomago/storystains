@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../common/utils/utils.dart';
+import '../../../common/widget/widget.dart';
 import '../../../pages/user_profile.dart';
 import '../../../routes/routes.dart';
 import '../../user/user.dart';
@@ -27,14 +27,12 @@ class ReviewUsername extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          GestureDetector(
-            onTap: () => _tapItem(context),
-            child: Text(
-              '@${user.username}',
-              style: context.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-              overflow: TextOverflow.fade,
-              semanticsLabel: AppLocalizations.of(context)!.username,
-            ),
+          LinkButton(
+            onPressed: () => _tapItem(context),
+            text: '@${user.username}',
+            defaultStyle:
+                context.bodySmall!.copyWith(fontStyle: FontStyle.italic),
+            semanticsLabel: context.locale.username,
           ),
         ],
       );

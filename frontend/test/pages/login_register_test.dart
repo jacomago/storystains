@@ -10,6 +10,7 @@ import 'package:storystains/common/utils/service_locator.dart';
 import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/pages/login_register.dart';
 
+import '../common/errors.dart';
 import 'login_register_test.mocks.dart';
 
 Widget wrapWithMaterial(Widget w, AuthState authState) =>
@@ -45,6 +46,7 @@ void main() {
 
       expect(find.widgetWithText(OutlinedButton, 'Sign up?'), findsOneWidget);
       expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
+      await tester.pumpAndSettle();
     });
 
     testWidgets('Swap Login Register ', (tester) async {
@@ -67,6 +69,7 @@ void main() {
 
       swapButton = find.widgetWithText(OutlinedButton, 'Login?');
       expect(swapButton, findsOneWidget);
+      await tester.pumpAndSettle();
     });
     testWidgets('Login Failure empty user pass', (tester) async {
       SharedPreferences.setMockInitialValues({});
@@ -95,11 +98,14 @@ void main() {
         ),
         findsOneWidget,
       );
+      await tester.pumpAndSettle();
     });
     testWidgets('Log in network fail', (tester) async {
       SharedPreferences.setMockInitialValues({});
 
       final authService = MockAuthService();
+      when(authService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(authService);
       final widg = wrapWithMaterial(
         Builder(builder: (context) => LoginOrRegisterPage()),
@@ -125,7 +131,10 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Login failed.'),
+        find.widgetWithText(
+          SnackBar,
+          'Login failed. With Error: Connection timed out',
+        ),
         findsOneWidget,
       );
     });
@@ -133,6 +142,8 @@ void main() {
       SharedPreferences.setMockInitialValues({});
 
       final authService = MockAuthService();
+      when(authService.getUser())
+          .thenThrow(testApiError(401, 'Not logged in.'));
       final authState = AuthState(authService);
       final page = wrapWithMaterial(
         Builder(builder: (context) => LoginOrRegisterPage()),
@@ -165,7 +176,10 @@ void main() {
       await tester.pump();
 
       expect(
-        find.widgetWithText(SnackBar, 'Login failed.'),
+        find.widgetWithText(
+          SnackBar,
+          'Sign up failed. With Error: Connection timed out',
+        ),
         findsOneWidget,
       );
     });

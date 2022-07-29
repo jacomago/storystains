@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
@@ -26,15 +25,14 @@ class ReviewList extends StatelessWidget {
         builder: (_, reviews, __) {
           if (reviews.isFailed) {
             return LoadMessage(
-              AppLocalizations.of(context)!
-                  .actionFailed(AppLocalizations.of(context)!.dataFetch),
+              context.locale.actionFailed(context.locale.dataFetch),
               onRefresh: reviews.refresh,
             );
           }
 
           if (reviews.isEmpty) {
             return LoadMessage(
-              AppLocalizations.of(context)!.noData,
+              context.locale.noData,
               onRefresh: reviews.refresh,
             );
           }
@@ -88,7 +86,7 @@ class ReviewList extends StatelessWidget {
 
   Widget _buildReviewItem(BuildContext context, Review review) => Column(
         children: [
-          GestureDetector(
+          InkWell(
             onTap: () => _tapItem(context, review),
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 15),

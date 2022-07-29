@@ -24,7 +24,7 @@ pub struct TestReviewResponse {
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct TestReviewData {
     story: TestStory,
-    body: String,
+    body: Option<String>,
     slug: String,
     created_at: DateTime<Utc>,
     updated_at: DateTime<Utc>,
@@ -36,7 +36,10 @@ impl From<TestReviewData> for TestReview {
     fn from(d: TestReviewData) -> Self {
         TestReview {
             story: d.story,
-            body: d.body,
+            body: match d.body {
+                Some(b) => b,
+                None => "".to_string(),
+            },
             slug: d.slug,
             created_at: d.created_at,
             updated_at: d.updated_at,

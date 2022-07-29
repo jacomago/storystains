@@ -2,13 +2,23 @@ import 'package:flutter/foundation.dart';
 import '../emotions/emotion_model.dart';
 import '../review_emotion/review_emotion_model.dart';
 
+/// Events on [ReviewEmotion] list
+enum ReviewEmotionsEvent {
+  /// editing an item
+  edit,
+
+  /// creating an item
+  create,
+
+  /// no event
+  none,
+}
+
 /// State of list of [ReviewEmotion] on a review
 class ReviewEmotionsState extends ChangeNotifier {
   List<ReviewEmotion> _items = [];
 
   bool _isEmpty = false;
-  bool _isNewItem = false;
-  bool _isEditItem = false;
   Emotion? _currentEmotion;
   int? _currentIndex;
 
@@ -18,15 +28,9 @@ class ReviewEmotionsState extends ChangeNotifier {
   /// all items loaded
   List<ReviewEmotion> get items => _items;
 
-  /// if a new item
-  bool get newItem => _isNewItem;
-
-  /// if editing an item
-  bool get editItem => _isEditItem;
-
   /// current edited item
   ReviewEmotion? get currentReviewEmotion =>
-      _isEditItem ? _items[_currentIndex!] : null;
+      editing.value == ReviewEmotionsEvent.edit ? _items[_currentIndex!] : null;
 
   /// if empty list
   bool get isEmpty => _isEmpty;
@@ -34,24 +38,40 @@ class ReviewEmotionsState extends ChangeNotifier {
   /// current [Emotion]
   Emotion? get currentEmotion => _currentEmotion;
 
+  /// If editing a review emotion
+  late ValueNotifier<ReviewEmotionsEvent> editing;
+
   /// item
   ReviewEmotion item(int index) => _items[index];
 
   /// load state
-  ReviewEmotionsState(List<ReviewEmotion> items) {
+  ReviewEmotionsState(List<ReviewEmotion>? items) {
+    _items = items ?? [];
+    editing = ValueNotifier<ReviewEmotionsEvent>(ReviewEmotionsEvent.none);
+  }
+
+  /// Clear the current value
+  void clear() {
+    _items = [];
+  }
+
+  set items(List<ReviewEmotion> items) {
     _items = items;
+    notifyListeners();
   }
 
   /// create an new [ReviewEmotion]
   Future<void> create(Emotion emotion) async {
-    _isNewItem = true;
+    editing.value = ReviewEmotionsEvent.create;
+    editing.notifyListeners();
     _currentEmotion = emotion;
     notifyListeners();
   }
 
   /// Edit a current [ReviewEmotion]
   Future<void> edit(int index, Emotion emotion) async {
-    _isEditItem = true;
+    editing.value = ReviewEmotionsEvent.edit;
+    editing.notifyListeners();
     _currentEmotion = emotion;
     _currentIndex = index;
     notifyListeners();
@@ -59,8 +79,8 @@ class ReviewEmotionsState extends ChangeNotifier {
 
   /// Cancel creating a new [ReviewEmotion]
   Future<void> cancelCreate() async {
-    _isNewItem = false;
-    _isEditItem = false;
+    editing.value = ReviewEmotionsEvent.none;
+    editing.notifyListeners();
     _currentIndex = null;
     _currentEmotion = null;
     notifyListeners();
@@ -68,7 +88,7 @@ class ReviewEmotionsState extends ChangeNotifier {
 
   /// confirm creation of [ReviewEmotion]
   Future<void> confirmCreation(ReviewEmotion reviewEmotion) async {
-    if (_isNewItem) {
+    if (editing.value == ReviewEmotionsEvent.create) {
       _items.add(reviewEmotion);
     } else {
       _items[_currentIndex!] = reviewEmotion;
@@ -85,7 +105,7 @@ class ReviewEmotionsState extends ChangeNotifier {
 
   /// Confirm deletion of a [ReviewEmotion] from list
   Future<void> confirmDelete() async {
-    if (!_isNewItem) {
+    if (!(editing.value == ReviewEmotionsEvent.create)) {
       _items.removeAt(_currentIndex!);
     }
     _items.sort(((a, b) => a.position.compareTo(b.position)));
@@ -96,8 +116,6 @@ class ReviewEmotionsState extends ChangeNotifier {
   void dispose() {
     _items = [];
     _isEmpty = false;
-    _isNewItem = false;
-    _isEditItem = false;
     _currentIndex = null;
     _currentEmotion = null;
     super.dispose();

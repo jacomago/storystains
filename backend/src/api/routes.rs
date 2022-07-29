@@ -60,6 +60,11 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                     .route("", web::delete().to(delete_user))
                     .route("/logout", web::post().to(log_out))
                     .route("/{username}", web::delete().to(delete_user_by_username)),
+            )
+            .service(
+                web::scope("/user")
+                    .wrap(from_fn(reject_anonymous_users))
+                    .route("", web::get().to(current_user)),
             ),
     );
 }

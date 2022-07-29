@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/utils/utils.dart';
@@ -15,7 +14,11 @@ class ReviewEmotionEdit extends StatelessWidget {
     required this.cancelHandler,
     required this.okHandler,
     required this.deleteHandler,
+    required this.state,
   }) : super(key: key);
+
+  /// State of review emotion
+  final ReviewEmotionState state;
 
   /// Hadler for cancel button
   final Function cancelHandler;
@@ -54,7 +57,6 @@ class ReviewEmotionEdit extends StatelessWidget {
   void _editReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
     await state.update(review).then((value) => _afterSend(context, state));
   }
@@ -62,15 +64,13 @@ class ReviewEmotionEdit extends StatelessWidget {
   void _deleteReviewEmotion(BuildContext context) async {
     FocusScope.of(context).unfocus();
 
-    final state = context.read<ReviewEmotionState>();
     final review = context.read<ReviewState>().review!;
     await state.delete(review).then((value) => _afterSend(context, state));
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Consumer2<ReviewEmotionState, ReviewState>(
-        builder: (context, state, review, _) => SizedBox(
+  Widget build(BuildContext context) => Consumer<ReviewState>(
+        builder: (context, review, _) => SizedBox(
           height: 190,
           child: Row(
             children: [
@@ -95,9 +95,9 @@ class ReviewEmotionEdit extends StatelessWidget {
                     ),
                     Expanded(
                       child: MarkdownEdit(
-                        title: AppLocalizations.of(context)!.notes,
+                        title: context.locale.notes,
                         bodyController: state.notesController,
-                        hint: AppLocalizations.of(context)!.markdownNotes,
+                        hint: context.locale.markdownNotes,
                       ),
                     ),
                     const SizedBox(
@@ -121,7 +121,7 @@ class ReviewEmotionEdit extends StatelessWidget {
           _deleteReviewEmotion(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.delete,
+          context.locale.delete,
           style: context.button!.copyWith(
             color: context.colors.onErrorContainer,
           ),
@@ -136,7 +136,7 @@ class ReviewEmotionEdit extends StatelessWidget {
           _editReviewEmotion(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.ok,
+          context.locale.ok,
           style: context.button!.copyWith(
             color: context.colors.onPrimary,
           ),
@@ -147,7 +147,7 @@ class ReviewEmotionEdit extends StatelessWidget {
           _cancelCreation(context);
         },
         child: Text(
-          AppLocalizations.of(context)!.cancel,
+          context.locale.cancel,
           style: context.button,
         ),
       );
