@@ -26,7 +26,7 @@
 	];
 </script>
 
-<footer class="py-12 bg-gray-100 min-w-full mt-16">
+<footer class="py-12 bg-paper min-w-full mt-16">
 	<div class="flex flex-wrap mt-8 px-4 md:flex-no-wrap md:justify-center">
 		{#each footer_data as data}
 			<FooterList name={data.name} list={data.list} />
