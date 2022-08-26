@@ -26,14 +26,14 @@
 	];
 </script>
 
-<footer class="py-12 bg-paper min-w-full mt-16">
-	<div class="flex flex-wrap mt-8 px-4 md:flex-no-wrap md:justify-center">
+<footer class="py-5 bg-paper min-w-full mt-5">
+	<div class="flex flex-wrap mt-1 px-4 md:flex-no-wrap md:justify-center">
 		{#each footer_data as data}
 			<FooterList name={data.name} list={data.list} />
 		{/each}
 	</div>
 
-	<div class="mt-12">
+	<div class="mt-2">
 		<div class="text-center my-2">
 			<a
 				class="hover:text-green-500"
