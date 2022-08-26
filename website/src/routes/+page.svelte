@@ -1,6 +1,6 @@
 <div class="flex flex-row flex-wrap md:flex-no-wrap items-center justify-center">
 	<div class="md:w-1/2 flex flex-col">
-		<h1 class="text-5xl text-center font-display pb-2 leading-tight">StoryStains</h1>
+		<img src="/images/titletext.svg" alt="StoryStains" />
 		<p class="text-xl text-center font-normal">An emotion driven story analysis app.</p>
 	</div>
 </div>
