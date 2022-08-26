@@ -1,4 +1,5 @@
 <script>
+	import NavItem from './NavItem.svelte';
 </script>
 
 <header class="container mx-auto sm:flex sm:justify-between sm:max-w-3xl xl:max-w-5xl">
@@ -10,13 +11,7 @@
 		</div>
 	</div>
 	<div class="px-1 py-3 pb-3 shadow-lg font-normal rounded sm:flex sm:shadow-none">
-		<a
-			class="block mt-1 text-center py-2 text-gray-900 hover:bg-blue-400 rounded text-l sm:mx-3 sm:hover:bg-transparent sm:hover:text-red-500 xl:text-xl"
-			href="/">Home</a
-		>
-		<a
-			class="block mt-1 text-center py-2 text-gray-900 hover:bg-blue-400 rounded text-l sm:mx-3 sm:hover:bg-transparent sm:hover:text-red-500 xl:text-xl"
-			href="/about">About</a
-		>
+		<NavItem name="Home" href="/" />
+		<NavItem name="About" href="/about" />
 	</div>
 </header>
