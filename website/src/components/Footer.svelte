@@ -19,7 +19,7 @@
 				},
 				{
 					name: 'Github',
-					href: 'https://github.com/jacomago/'
+					href: 'https://github.com/jacomago/storystains'
 				}
 			]
 		}
