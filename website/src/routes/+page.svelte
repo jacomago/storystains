@@ -21,7 +21,7 @@
 		</div>
 	</div>
 
-	<img src="/images/newicontest1.png" alt="" class="pt-12 px-4 md:w-1/2 md:pt-16 md:px-16" />
+	<img src="/images/newicontest2.svg" alt="" class="pt-12 px-4 md:w-1/2 md:pt-16 md:px-16" />
 </div>
 
 <section>
