@@ -88,7 +88,7 @@ class AccountPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: context.colors.secondary,
+                      backgroundColor: context.colors.secondary,
                     ),
                     onPressed: () => _onLogout(context),
                     child: Text(
