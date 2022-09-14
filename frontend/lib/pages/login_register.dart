@@ -114,7 +114,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                   const SizedBox(height: 24),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: context.colors.secondary,
+                      backgroundColor: context.colors.secondary,
                       minimumSize: const Size(120, 40),
                       elevation: 0,
                     ),

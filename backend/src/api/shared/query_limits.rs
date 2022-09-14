@@ -2,7 +2,7 @@
 const DEFAULT_LIMIT: u64 = 20;
 
 /// Basic query limits
-#[derive(Debug, serde::Deserialize, serde::Serialize, PartialEq)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, PartialEq, Eq)]
 pub struct QueryLimits {
     pub limit: Option<u64>,
     pub offset: Option<u64>,

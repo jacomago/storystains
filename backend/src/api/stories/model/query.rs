@@ -1,7 +1,7 @@
 use crate::api::shared::QueryLimits;
 
 /// Story query options
-#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Eq, Clone)]
 pub struct StoryQueryOptions {
     /// Story title matching string
     pub title: Option<String>,
@@ -12,7 +12,7 @@ pub struct StoryQueryOptions {
 }
 
 /// Story query
-#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, PartialEq, Eq)]
 pub struct StoryQuery {
     #[serde(flatten)]
     pub options: StoryQueryOptions,

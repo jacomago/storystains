@@ -34,7 +34,7 @@ pub struct StoredReview {
     pub user_id: sqlx::types::Uuid,
 }
 
-#[derive(Debug, PartialEq, serde::Deserialize)]
+#[derive(Debug, PartialEq, Eq, serde::Deserialize)]
 pub struct ResponseTime(DateTime<Utc>);
 
 impl Serialize for ResponseTime {
