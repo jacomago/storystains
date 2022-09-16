@@ -7,6 +7,10 @@
 				{
 					name: 'About',
 					href: '/about'
+				},
+				{
+					name: 'Privacy Policy',
+					href: '/privacy'
 				}
 			]
 		},
