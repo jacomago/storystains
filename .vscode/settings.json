@@ -26,4 +26,5 @@
   "git.branchProtection": [
     "main"
   ],
+  "svelte.plugin.css.diagnostics.enable": false,
 }
