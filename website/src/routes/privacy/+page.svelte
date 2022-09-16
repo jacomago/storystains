@@ -1,3 +1,8 @@
+<svelte:head>
+	<title>Privacy Policy - StoryStains</title>
+	<meta name="description" content="Privacy Policy page for Story Stains" />
+</svelte:head>
+
 <article class="prose xl:prose-xl px-4 self-center">
 	<h1 id="privacy" class="text-4xl mt-1 m-0">Privacy</h1>
 

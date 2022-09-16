@@ -1,9 +1,14 @@
+<svelte:head>
+	<title>Home - StoryStains</title>
+	<meta name="description" content="Story Stains landing page" />
+</svelte:head>
+
 <article class="prose ">
 	<div class="flex flex-row flex-wrap  items-center justify-center">
 		<div class="md:w-1/2 flex flex-col">
 			<img src="/images/titletext.svg" alt="StoryStains" />
 			<p class="logline text-xl text-center font-normal">An emotion driven story analysis app.</p>
-			<p class="text-center">Coming soon to an app store near you.</p>
+			<p class="text-center">See a <a href="http://app.storystains.com">demo</a>.</p>
 			<!-- 
 			<div class="flex flex-col items-center justify-center">
 				<a class="" href="/android">

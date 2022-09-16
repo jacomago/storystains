@@ -1,3 +1,8 @@
+<svelte:head>
+	<title>About Me - StoryStains</title>
+	<meta name="description" content="About page for Story Stains" />
+</svelte:head>
+
 <article class="prose xl:prose-xl px-4 self-center">
 	<div class="flex flex-row flex-wrap md:flex-no-wrap items-center justify-center">
 		<div class="md:w-1/2 flex flex-col">
