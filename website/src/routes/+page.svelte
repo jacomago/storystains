@@ -1,19 +1,19 @@
 <article class="prose ">
-	<div class="flex flex-row flex-wrap md:flex-no-wrap items-center justify-center">
+	<div class="flex flex-row flex-wrap  items-center justify-center">
 		<div class="md:w-1/2 flex flex-col">
 			<img src="/images/titletext.svg" alt="StoryStains" />
 			<p class="logline text-xl text-center font-normal">An emotion driven story analysis app.</p>
-			<p>Coming soon to an app store near you.</p>
-<!-- 
-			<div class="flex flex-col items-center justify-center mt-16 mb-8">
-				<a class="mx-1 my-2" href="/android">
+			<p class="text-center">Coming soon to an app store near you.</p>
+			<!-- 
+			<div class="flex flex-col items-center justify-center">
+				<a class="" href="/android">
 					<img
 						alt="Get it on Google Play"
 						src="/images/android-store-badge.png"
 						style="height: 60px;"
 					/>
 				</a>
-				<a class="mx-1 my-2" href="/apple">
+				<a class="" href="/apple">
 					<img
 						alt="Download on the App Store"
 						src="/images/ios-store-badge.svg"
@@ -23,7 +23,7 @@
 			</div> -->
 		</div>
 
-		<img src="/images/newicontest2.svg" alt="" class="pt-12 px-4 md:w-1/2 md:pt-16 md:px-16" />
+		<img src="/images/newicontest2.svg" alt="" class="pt-12 px-4 md:w-1/2 " />
 	</div>
 
 	<section>
