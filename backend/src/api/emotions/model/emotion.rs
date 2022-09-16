@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, serde::Serialize, PartialEq)]
+#[derive(Clone, Debug, serde::Serialize, PartialEq, Eq)]
 pub struct StoredEmotion {
     pub id: i32,
     pub name: String,
@@ -13,7 +13,7 @@ pub struct StoredEmotion {
 }
 
 /// Representation of structure of an emotion in the api
-#[derive(Debug, serde::Serialize, serde::Deserialize, PartialEq)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
 pub struct EmotionData {
     /// Name of the emotion
     pub name: String,

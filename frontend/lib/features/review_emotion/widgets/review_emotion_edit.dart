@@ -115,7 +115,7 @@ class ReviewEmotionEdit extends StatelessWidget {
   Widget _deleteButton(BuildContext context) => ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          primary: context.colors.errorContainer,
+          backgroundColor: context.colors.errorContainer,
         ),
         onPressed: () {
           _deleteReviewEmotion(context);
@@ -130,7 +130,7 @@ class ReviewEmotionEdit extends StatelessWidget {
   Widget _editButton(BuildContext context) => ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 0,
-          primary: context.colors.secondary,
+          backgroundColor: context.colors.secondary,
         ),
         onPressed: () {
           _editReviewEmotion(context);
