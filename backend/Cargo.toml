@@ -33,7 +33,7 @@ opentelemetry-prometheus = { version = "0.10" }
 prometheus = { version = "0.13", default-features = false }
 actix-web-opentelemetry = { version = "0.12.0", features = ["metrics"] }
 unicode-segmentation = "1"
-validator = "0.15"
+validator = "0.16.0"
 slug = "0.1.4"
 thiserror = "1"
 anyhow = "1"
