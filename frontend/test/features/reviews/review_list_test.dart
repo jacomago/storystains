@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storystains/common/constant/app_config.dart';
 import 'package:storystains/common/utils/service_locator.dart';
+import 'package:storystains/features/auth/auth.dart';
 import 'package:storystains/features/emotions/emotion.dart';
 import 'package:storystains/features/reviews/review_list.dart';
 import 'package:storystains/features/reviews/reviews_service.dart';
@@ -20,6 +21,9 @@ Widget wrapWithMaterial(Widget w, ReviewsState reviewsState) => MultiProvider(
       providers: [
         ChangeNotifierProvider<ReviewsState>(
           create: (_) => reviewsState,
+        ),
+        ChangeNotifierProvider<AuthState>(
+          create: (_) => AuthState(AuthService()),
         ),
         ChangeNotifierProvider<EmotionsState>(
           create: (_) => EmotionsState(EmotionsService()),
