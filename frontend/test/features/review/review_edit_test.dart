@@ -105,7 +105,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.widgetWithIcon(FloatingActionButton, Icons.send_rounded),
+        find.widgetWithIcon(FloatingActionButton, Icons.save_rounded),
         findsOneWidget,
       );
     });
@@ -291,7 +291,7 @@ void main() {
       )).thenThrow(testApiError(400, 'Cannot be /.'));
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
-      expect(find.byIcon(Icons.send_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.save_rounded), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pump();
       await tester.pump();
