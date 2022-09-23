@@ -44,7 +44,7 @@ class ReviewEmotionsListWidget extends StatelessWidget {
       return;
     }
 
-    await context.read<ReviewEmotionsState>().edit(index, value);
+    await context.read<ReviewEmotionsState>().edit(index, value, reviewEmotion);
   }
 
   void _addEmotion(BuildContext context, Emotion? value) async {
@@ -100,22 +100,14 @@ class ReviewEmotionsListWidget extends StatelessWidget {
                     : Column(),
               ],
             ),
-            ValueListenableBuilder<ReviewEmotionsEvent>(
-              builder: (context, value, child) =>
-                  value != ReviewEmotionsEvent.none
-                      ? ReviewEmotionEdit(
-                          cancelHandler: state.cancelCreate,
-                          okHandler: state.confirmCreation,
-                          deleteHandler: state.confirmDelete,
-                          state: ReviewEmotionState(
-                            ReviewEmotionService(),
-                            emotion: state.currentEmotion,
-                            reviewEmotion: state.currentReviewEmotion,
-                          ),
-                        )
-                      : Row(),
-              valueListenable: state.editing,
-            ),
+            state.currentReviewEmotionState == null
+                ? Row()
+                : ReviewEmotionEdit(
+                    cancelHandler: state.cancelCreate,
+                    okHandler: state.confirmCreation,
+                    deleteHandler: state.confirmDelete,
+                    state: state.currentReviewEmotionState!,
+                  ),
             _itemList(state.items, context),
           ],
         ),
