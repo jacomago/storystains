@@ -1,7 +1,7 @@
 use sqlx::{PgPool, Postgres, Transaction};
 
 use super::{
-    db::{db_create_story, db_read_story, db_read_story_by_id},
+    db::{db_create_story, db_read_story_by_id},
     model::{NewStory, StoredStory},
 };
 
@@ -11,12 +11,6 @@ pub async fn create_or_return_story(
     transaction: &mut Transaction<'_, Postgres>,
 ) -> Result<StoredStory, sqlx::Error> {
     let stored = db_create_story(story, transaction).await?;
-    Ok(stored)
-}
-
-#[tracing::instrument(name = "Read story details", skip(story, pool))]
-pub async fn read_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
-    let stored = db_read_story(story, pool).await?;
     Ok(stored)
 }
 

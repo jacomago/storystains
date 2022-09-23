@@ -95,36 +95,3 @@ pub async fn read_emotion_by_id_pool(id: i32, pool: &PgPool) -> Result<StoredEmo
     })?;
     Ok(stored)
 }
-
-#[tracing::instrument(name = "Get emotion details from name in the db by pool", skip(pool))]
-pub async fn read_emotion_by_name_pool(
-    name: &str,
-    pool: &PgPool,
-) -> Result<StoredEmotion, sqlx::Error> {
-    let stored = sqlx::query_as!(
-        StoredEmotion,
-        r#"
-        SELECT 
-            id, 
-            name,
-            description,
-            icon_url,
-            joy,
-            fear,
-            anger,
-            surprise,
-            disgust,
-            sadness
-        FROM emotions
-        WHERE name = $1
-        "#,
-        name
-    )
-    .fetch_one(pool)
-    .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })?;
-    Ok(stored)
-}
