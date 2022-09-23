@@ -204,7 +204,7 @@ class ReviewWidget extends StatelessWidget {
       case EditAction.send:
         return CustomFloatingButton(
           onPressed: () => _editReview(context),
-          icon: Icons.send_rounded,
+          icon: Icons.save_rounded,
         );
       case EditAction.edit:
         return CustomFloatingButton(
