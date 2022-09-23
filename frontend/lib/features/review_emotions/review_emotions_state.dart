@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../emotions/emotion_model.dart';
 import '../review_emotion/review_emotion.dart';
-import '../review_emotion/review_emotion_model.dart';
-import '../review_emotion/review_emotion_state.dart';
 
 /// Events on [ReviewEmotion] list
 enum ReviewEmotionsEvent {
