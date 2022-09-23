@@ -110,7 +110,7 @@ async fn run(
             .service(
                 spa()
                     .index_file(format!("{}index.html", &frontend.static_files))
-                    .static_resources_location((&frontend.static_files).to_string())
+                    .static_resources_location(frontend.static_files.to_string())
                     .finish(),
             )
             .app_data(db_pool.clone())

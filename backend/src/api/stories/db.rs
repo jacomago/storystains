@@ -137,44 +137,6 @@ pub async fn db_create_story(
 }
 
 #[tracing::instrument(
-    name = "Retreive a single story details from the database",
-    skip(story, pool),
-    fields()
-)]
-pub async fn db_read_story(story: &NewStory, pool: &PgPool) -> Result<StoredStory, sqlx::Error> {
-    let stored_story = sqlx::query_as!(
-        StoredStory,
-        r#"
-        SELECT 
-            stories.id,
-            stories.title as "title!",
-            mediums.name as "medium!",
-            creators.name as "creator!"
-        FROM 
-            stories,
-            creators,
-            mediums
-        WHERE 
-                stories.title = $1
-            AND stories.creator_id = creators.id
-            AND creators.name = $2
-            AND stories.medium_id = mediums.id
-            AND mediums.name = $3
-        "#,
-        story.title.as_ref(),
-        story.creator.as_ref(),
-        story.medium.as_ref(),
-    )
-    .fetch_one(pool)
-    .await
-    .map_err(|e| {
-        tracing::error!("Failed to execute query: {:?}", e);
-        e
-    })?;
-    Ok(stored_story)
-}
-
-#[tracing::instrument(
     name = "Retreive a single story details from the database by id",
     skip(story_id, pool),
     fields()

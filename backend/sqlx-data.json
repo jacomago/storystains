@@ -177,80 +177,6 @@
     },
     "query": "\n            INSERT INTO users (user_id, username, password_hash)\n            VALUES ($1, $2, $3)\n            RETURNING user_id, username, is_admin\n        "
   },
-  "557d8e39dc26591c2aaaef34e9281ef5c48670a8881c8d23f578a68d017a4a1a": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Int4"
-        },
-        {
-          "name": "name",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "description",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "icon_url",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "joy",
-          "ordinal": 4,
-          "type_info": "Int4"
-        },
-        {
-          "name": "fear",
-          "ordinal": 5,
-          "type_info": "Int4"
-        },
-        {
-          "name": "anger",
-          "ordinal": 6,
-          "type_info": "Int4"
-        },
-        {
-          "name": "surprise",
-          "ordinal": 7,
-          "type_info": "Int4"
-        },
-        {
-          "name": "disgust",
-          "ordinal": 8,
-          "type_info": "Int4"
-        },
-        {
-          "name": "sadness",
-          "ordinal": 9,
-          "type_info": "Int4"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        SELECT \n            id, \n            name,\n            description,\n            icon_url,\n            joy,\n            fear,\n            anger,\n            surprise,\n            disgust,\n            sadness\n        FROM emotions\n        WHERE name = $1\n        "
-  },
   "55a2a58fcbe135ccec901ab34886a344947135a5824b23c1203a01ef2cc05a57": {
     "describe": {
       "columns": [],
@@ -962,46 +888,6 @@
       }
     },
     "query": "\n            SELECT emotion_id,\n                   position,\n                   notes\n              FROM review_emotions\n            WHERE  review_id = $1\n          ORDER BY position ASC\n        "
-  },
-  "eea8ecd2d681971a1457fa08fad296e429b5ba93ba982049c853a3dde3622beb": {
-    "describe": {
-      "columns": [
-        {
-          "name": "id",
-          "ordinal": 0,
-          "type_info": "Uuid"
-        },
-        {
-          "name": "title!",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "medium!",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "creator!",
-          "ordinal": 3,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Left": [
-          "Text",
-          "Text",
-          "Text"
-        ]
-      }
-    },
-    "query": "\n        SELECT \n            stories.id,\n            stories.title as \"title!\",\n            mediums.name as \"medium!\",\n            creators.name as \"creator!\"\n        FROM \n            stories,\n            creators,\n            mediums\n        WHERE \n                stories.title = $1\n            AND stories.creator_id = creators.id\n            AND creators.name = $2\n            AND stories.medium_id = mediums.id\n            AND mediums.name = $3\n        "
   },
   "f5160d3e4d88beada06fb4d7232746effcf398325c36ccd10533b1e2e7e0724b": {
     "describe": {
