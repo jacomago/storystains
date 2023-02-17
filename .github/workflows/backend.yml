@@ -87,7 +87,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: Install sqlx-cli
-      - run: cargo install sqlx-cli --locked
+        run: cargo install sqlx-cli --locked
       - name: Cache 
         uses: Swatinem/rust-cache@v1
       - name: Migrate database
@@ -128,7 +128,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
       - name: Install sqlx-cli
-      - run: cargo install sqlx-cli --locked
+        run: cargo install sqlx-cli --locked
 
       - name: Migrate database
         working-directory: ./backend
