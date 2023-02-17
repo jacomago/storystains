@@ -169,9 +169,10 @@ jobs:
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
 
-      - name: Run cargo-tarpaulin
+      - name: Install cargo-tarpaulin
         uses: dtolnay/install@cargo-tarpaulin
-        run: cargo tarpaulin --ignore-tests --avoid-cfg-tarpaulin'
+      - name: run coverage
+        run: cargo tarpaulin --ignore-tests --avoid-cfg-tarpaulin
 
       - name: Upload to codecov.io
         uses: codecov/codecov-action@v2
