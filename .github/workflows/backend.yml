@@ -86,7 +86,9 @@ jobs:
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@sqlx-cli
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: sqlx-cli
       - uses: taiki-e/install-action@nextest
       - name: Migrate database
         working-directory: ./backend
@@ -130,7 +132,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - uses: Swatinem/rust-cache@v2
-      - uses: taiki-e/install-action@sqlx-cli
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: sqlx-cli
 
       - name: Migrate database
         working-directory: ./backend
