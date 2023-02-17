@@ -100,12 +100,12 @@ class NavBar extends StatelessWidget {
         elevation: 0,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
-        unselectedLabelStyle: context.button!.copyWith(
+        unselectedLabelStyle: context.labelLarge!.copyWith(
           decoration: TextDecoration.underline,
           decorationStyle: TextDecorationStyle.solid,
           decorationThickness: 8,
         ),
-        selectedLabelStyle: context.button,
+        selectedLabelStyle: context.labelLarge,
         backgroundColor: context.colors.background,
         unselectedItemColor: context.colors.secondary,
         selectedItemColor: context.colors.onTertiaryContainer,

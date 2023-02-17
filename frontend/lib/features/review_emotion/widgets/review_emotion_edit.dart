@@ -122,7 +122,7 @@ class ReviewEmotionEdit extends StatelessWidget {
         },
         child: Text(
           context.locale.delete,
-          style: context.button!.copyWith(
+          style: context.labelLarge!.copyWith(
             color: context.colors.onErrorContainer,
           ),
         ),
@@ -137,7 +137,7 @@ class ReviewEmotionEdit extends StatelessWidget {
         },
         child: Text(
           context.locale.ok,
-          style: context.button!.copyWith(
+          style: context.labelLarge!.copyWith(
             color: context.colors.onPrimary,
           ),
         ),
@@ -148,7 +148,7 @@ class ReviewEmotionEdit extends StatelessWidget {
         },
         child: Text(
           context.locale.cancel,
-          style: context.button,
+          style: context.labelLarge,
         ),
       );
   Widget _buildButtons(BuildContext context) => SizedBox(
