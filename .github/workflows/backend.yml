@@ -24,6 +24,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
+      - uses: Swatinem/rust-cache@v2
       - run: cargo fmt --all -- --check
 
   doc:
@@ -36,6 +37,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: rust-docs
+      - uses: Swatinem/rust-cache@v2
       - env:
           RUSTDOCFLAGS: "-D missing_docs -D rustdoc::missing_doc_code_examples"
         run: cargo doc --workspace --all-features --no-deps --document-private-items
@@ -54,6 +56,7 @@ jobs:
         with:
           components: clippy
 
+      - uses: Swatinem/rust-cache@v2
       - run: cargo clippy -- -D warnings
 
   cargo-test:
@@ -82,11 +85,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - name: Install sqlx-cli
-        uses: dtolnay/install@master
-        with:
-          crate: sqlx-cli
-
+      - run: cargo install sqlx-cli --locked
       - name: Cache 
         uses: Swatinem/rust-cache@v1
       - name: Migrate database
@@ -125,21 +126,16 @@ jobs:
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
 
+      - uses: Swatinem/rust-cache@v2
       - name: Install sqlx-cli
-        uses: dtolnay/install@master
-        with:
-          crate: sqlx-cli
+      - run: cargo install sqlx-cli --locked
 
       - name: Migrate database
         working-directory: ./backend
         run: |
           sudo apt-get install libpq-dev -y
           SKIP_DOCKER=true ./scripts/init_db.sh
-
-      - name: Install cargo-tarpaulin
-        uses: dtolnay/install@master
-        with:
-          crate: cargo-tarpaulin
+      - uses: taiki-e/install-action@cargo-tarpaulin
       - name: run coverage
         run: cargo tarpaulin --ignore-tests --avoid-cfg-tarpaulin
 
