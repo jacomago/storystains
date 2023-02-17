@@ -83,7 +83,7 @@ jobs:
       - name: Install stable toolchain
         uses: dtolnay/rust-toolchain@stable
       - name: Install sqlx-cli
-        uses: dtolnay/install
+        uses: dtolnay/install@master
         with:
           crate: sqlx-cli
 
@@ -126,7 +126,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install sqlx-cli
-        uses: dtolnay/install
+        uses: dtolnay/install@master
         with:
           crate: sqlx-cli
 
@@ -137,7 +137,7 @@ jobs:
           SKIP_DOCKER=true ./scripts/init_db.sh
 
       - name: Install cargo-tarpaulin
-        uses: dtolnay/install
+        uses: dtolnay/install@master
         with:
           crate: cargo-tarpaulin
       - name: run coverage
