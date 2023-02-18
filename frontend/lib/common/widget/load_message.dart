@@ -23,7 +23,7 @@ class LoadMessage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(message, style: Theme.of(context).textTheme.subtitle1),
+            Text(message, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(
               height: 20,
             ),
@@ -32,7 +32,7 @@ class LoadMessage extends StatelessWidget {
               style: homeButtonStyle,
               child: Text(
                 context.locale.refresh,
-                style: context.button,
+                style: context.labelLarge,
               ),
             ),
           ],

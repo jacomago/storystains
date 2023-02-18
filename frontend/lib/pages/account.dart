@@ -93,7 +93,7 @@ class AccountPage extends StatelessWidget {
                     onPressed: () => _onLogout(context),
                     child: Text(
                       context.locale.logout,
-                      style: context.button!
+                      style: context.labelLarge!
                           .copyWith(color: context.colors.onPrimary),
                     ),
                   ),
@@ -102,7 +102,7 @@ class AccountPage extends StatelessWidget {
                     onPressed: () => _onDelete(context),
                     child: Text(
                       context.locale.deleteObject(context.locale.user),
-                      style: context.button!
+                      style: context.labelLarge!
                           .copyWith(color: context.colors.onErrorContainer),
                     ),
                   ),

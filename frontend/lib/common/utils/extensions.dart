@@ -97,25 +97,10 @@ extension TypographyUtils on BuildContext {
   /// Text them for stylised text
   TextTheme get displayTextTheme => GoogleFonts.specialEliteTextTheme();
 
-  /// button font style
-  TextStyle? get button => displayTextTheme.button?.copyWith(
-        color: colors.onSurface,
-      );
-
   /// titleBar font style
   TextStyle? get titleBar => displayTextTheme.titleLarge?.copyWith(
         color: colors.onSurface,
         fontSize: 32,
-      );
-
-  /// caption font style
-  TextStyle? get caption => textTheme.caption?.copyWith(
-        color: colors.onSurface,
-      );
-
-  /// overline font style
-  TextStyle? get overline => textTheme.overline?.copyWith(
-        color: colors.onSurface,
       );
 }
 

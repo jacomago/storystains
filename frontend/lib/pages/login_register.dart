@@ -123,7 +123,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                       auth.isLogin
                           ? context.locale.login
                           : context.locale.signUp,
-                      style: context.button!
+                      style: context.labelLarge!
                           .copyWith(color: context.colors.onPrimary),
                     ),
                   ),
@@ -134,7 +134,7 @@ class LoginOrRegisterPage extends StatelessWidget {
                       auth.isLogin
                           ? context.locale.choice(context.locale.signUp)
                           : context.locale.choice(context.locale.login),
-                      style: context.button,
+                      style: context.labelLarge,
                     ),
                   ),
                 ],

@@ -16,7 +16,7 @@ class ReviewDate extends StatelessWidget {
         children: [
           Text(
             DateFormat.yMMMMEEEEd().format(date),
-            style: context.caption,
+            style: context.labelSmall,
             overflow: TextOverflow.ellipsis,
             semanticsLabel: context.locale.modifiedDate,
           ),

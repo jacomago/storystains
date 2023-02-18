@@ -37,7 +37,7 @@ impl Application {
     /// Build the application from configuration
     pub async fn build(configuration: Settings) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&configuration.database);
-        let listener = TcpListener::bind(&configuration.application.address())?;
+        let listener = TcpListener::bind(configuration.application.address())?;
         let port = listener.local_addr().unwrap().port();
         let server = run(
             listener,

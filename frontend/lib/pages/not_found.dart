@@ -39,7 +39,7 @@ class NotFoundPage extends StatelessWidget {
                   onPressed: () => context.pushNamed(Routes.home),
                   child: Text(
                     context.locale.goBackHome,
-                    style: context.button,
+                    style: context.labelLarge,
                   ),
                 ),
               ],

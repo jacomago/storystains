@@ -94,7 +94,7 @@ class ReviewEmotionsListWidget extends StatelessWidget {
                         },
                         child: Text(
                           context.locale.add,
-                          style: context.button,
+                          style: context.labelLarge,
                         ),
                       )
                     : Column(),
