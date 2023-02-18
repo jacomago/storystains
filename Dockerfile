@@ -33,7 +33,7 @@ RUN mkdir /app/
 COPY ./frontend /app/
 WORKDIR /app/
 RUN flutter pub get
-RUN flutter pub run build_runner build
+RUN flutter pub run build_runner build --delete-conflicting-outputs
 
 FROM frontpubactions as frontbuild
 # build app
@@ -41,7 +41,7 @@ WORKDIR /app/
 ARG FRONT_BASE_URL
 RUN flutter build web --web-renderer canvaskit --release --dart-define BASE_URL=${FRONT_BASE_URL}
 
-FROM lukemathwalker/cargo-chef:latest-rust-1.61 as chef
+FROM lukemathwalker/cargo-chef:latest as chef
 WORKDIR /app
 RUN apt update && apt install lld clang -y
 
