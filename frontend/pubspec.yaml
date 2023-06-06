@@ -14,9 +14,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter      
   json_annotation: ^4.6.0
-  dio: ^4.0.6
+  dio: ^5.2.0
   shared_preferences: ^2.0.12
-  retrofit: '>=3.0.0 <4.0.0'
+  retrofit: ^4.0.1
   flutter_markdown: ^0.6.10+3
   logger: ^1.1.0  #for logging purpose
   google_fonts: ^3.0.1
@@ -29,14 +29,14 @@ dependencies:
   intl: ^0.17.0
   flutter_svg: ^1.1.0
   collection: ^1.16.0
-  dio_cookie_manager: ^2.0.0 
+  dio_cookie_manager: ^2.1.4 
   cookie_jar: ^3.0.1
   flutter_secure_storage: ^6.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  retrofit_generator: ^4.0.1
+  retrofit_generator: ^5.0.0+1
   build_runner: ^2.1.11
   json_serializable: '>4.4.0'
   flutter_lints: ^2.0.1
