@@ -12,7 +12,7 @@ class EmotionsService {
       final res = await ServiceLocator.sl.get<RestClient>().getEmotions();
 
       return res.emotions;
-    } on DioError catch (_) {
+    } on DioException catch (_) {
       return null;
     }
   }

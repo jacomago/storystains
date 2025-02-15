@@ -13,7 +13,7 @@ import 'reviews_state.dart';
 /// Widget for displaying a list of [Review]
 class ReviewList extends StatelessWidget {
   /// Widget for displaying a list of [Review]
-  const ReviewList({Key? key}) : super(key: key);
+  const ReviewList({super.key});
 
   void _afterPush(BuildContext context) {
     final state = context.read<ReviewsState>();

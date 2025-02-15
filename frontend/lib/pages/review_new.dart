@@ -5,7 +5,7 @@ import '../features/review/review.dart';
 /// Wrapper around [ReviewWidget] for creating new reviews
 class ReviewNew extends StatelessWidget {
   /// Wrapper around [ReviewWidget] for creating new reviews
-  const ReviewNew({Key? key}) : super(key: key);
+  const ReviewNew({super.key});
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(

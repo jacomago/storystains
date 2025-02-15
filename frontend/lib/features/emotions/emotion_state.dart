@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'emotion_model.dart';
 
 import 'emotion_service.dart';
@@ -65,22 +64,8 @@ class EmotionsState extends ChangeNotifier {
       _items = [...items];
     }
 
-    await _precache();
-
     notifyListeners();
     _stopLoading();
-  }
-
-  Future<void> _precache() async {
-    for (var e in _items) {
-      await precachePicture(
-        NetworkPicture(
-          SvgPicture.svgByteDecoderBuilder,
-          e.iconFullUrl(),
-        ),
-        null,
-      );
-    }
   }
 
   void _startLoading() {

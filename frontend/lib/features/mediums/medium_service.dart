@@ -12,7 +12,7 @@ class MediumsService {
       final res = await ServiceLocator.sl.get<RestClient>().getMediums();
 
       return res.mediums;
-    } on DioError catch (_) {
+    } on DioException catch (_) {
       return null;
     }
   }

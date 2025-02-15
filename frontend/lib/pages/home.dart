@@ -11,7 +11,7 @@ import '../routes/routes.dart';
 /// The home page of the app
 class Home extends StatelessWidget {
   /// The home page of the app
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
@@ -23,7 +23,7 @@ class Home extends StatelessWidget {
 /// The home page of the app
 class HomePage extends StatelessWidget {
   /// The home page of the app
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   Future<void> _goNewReview(
     BuildContext context,

@@ -13,7 +13,7 @@ import 'review_emotions_state.dart';
 /// List of r[ReviewEmotion] widget
 class ReviewEmotionsList extends StatelessWidget {
   /// List of review emotions widget
-  const ReviewEmotionsList({Key? key, required this.state}) : super(key: key);
+  const ReviewEmotionsList({super.key, required this.state});
 
   /// State of the list of emotions
   final ReviewEmotionsState state;
@@ -28,7 +28,7 @@ class ReviewEmotionsList extends StatelessWidget {
 /// List of r[ReviewEmotion] widget
 class ReviewEmotionsListWidget extends StatelessWidget {
   /// List of review emotions widget
-  const ReviewEmotionsListWidget({Key? key}) : super(key: key);
+  const ReviewEmotionsListWidget({super.key});
 
   void _updateEmotion(
     BuildContext context,

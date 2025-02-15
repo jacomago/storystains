@@ -5,7 +5,7 @@ import '../features/review/review.dart';
 /// Wrapper around [ReviewWidget] for showing a [Review]
 class ReviewDetail extends StatelessWidget {
   /// Wrapper around [ReviewWidget] for showing a [Review]
-  const ReviewDetail({Key? key, this.path, this.review}) : super(key: key);
+  const ReviewDetail({super.key, this.path, this.review});
 
   /// Review to show in widget
   final Review? review;

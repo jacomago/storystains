@@ -16,11 +16,11 @@ class MarkdownEdit extends StatelessWidget {
   /// Wrapper around Text field when editing a long text with
   /// markdown
   const MarkdownEdit({
-    Key? key,
+    super.key,
     required this.bodyController,
     required this.title,
     required this.hint,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => TextField(

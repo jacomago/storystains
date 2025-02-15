@@ -7,7 +7,7 @@ import '../story.dart';
 /// Widget for editing a [Story]
 class SearchStoryResults extends StatelessWidget {
   /// Widget for editing a [Story]
-  const SearchStoryResults({Key? key, required this.state}) : super(key: key);
+  const SearchStoryResults({super.key, required this.state});
 
   /// State of the [Story]
   final StoryState state;

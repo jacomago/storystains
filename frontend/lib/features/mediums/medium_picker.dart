@@ -7,10 +7,10 @@ import 'medium.dart';
 class MediumPicker extends StatelessWidget {
   /// Widget for picking a [Medium]
   const MediumPicker({
-    Key? key,
+    super.key,
     required this.mediumController,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   /// controller of  [Medium]
   final ValueNotifier<Medium?> mediumController;

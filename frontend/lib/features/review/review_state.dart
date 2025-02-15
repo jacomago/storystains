@@ -153,7 +153,7 @@ class ReviewState extends ChangeNotifier {
 
       _status = ReviewStatus.read;
       _stateType = ReviewStateType.read;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
     }
@@ -193,7 +193,7 @@ class ReviewState extends ChangeNotifier {
 
       _status = ReviewStatus.updated;
       _stateType = ReviewStateType.read;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
     }
@@ -222,7 +222,7 @@ class ReviewState extends ChangeNotifier {
       bodyController.clear();
       storyController.clear();
       reviewEmotionsController.clear();
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = ReviewStatus.failed;
       _error = errorMessage(e);
     }

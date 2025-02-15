@@ -69,9 +69,9 @@ void main() {
       expect(button, findsOneWidget);
 
       when(authService.delete()).thenThrow(
-        DioError(
-          requestOptions: RequestOptions(path: ''),
-          type: DioErrorType.connectTimeout,
+        DioException(
+          requestOptions: RequestOptions(),
+          type: DioExceptionType.connectionTimeout,
         ),
       );
 

@@ -11,8 +11,7 @@ import '../routes/routes.dart';
 /// A page of reviews filtered by story options
 class StoryFilterPage extends StatelessWidget {
   /// constructor of the [StoryFilterPage]
-  const StoryFilterPage({Key? key, this.query = const StoryQuery()})
-      : super(key: key);
+  const StoryFilterPage({super.key, this.query = const StoryQuery()});
 
   /// Initial query to filter by
   final StoryQuery query;
@@ -37,7 +36,7 @@ class StoryFilterPage extends StatelessWidget {
 /// Widget for filtering a ReviewList by Story details
 class StoryFilter extends StatelessWidget {
   /// Constructor for [StoryFilter]
-  const StoryFilter({Key? key}) : super(key: key);
+  const StoryFilter({super.key});
 
   Future<void> _goNewReview(
     BuildContext context,

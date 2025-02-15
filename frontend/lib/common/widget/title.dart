@@ -6,8 +6,8 @@ class AppBarTitle extends StatelessWidget {
   /// Widget to display in the title bar of the App bar
   const AppBarTitle(
     this.title, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// Text to display
   final String title;

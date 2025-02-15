@@ -10,7 +10,7 @@ import '../../user/user.dart';
 /// Formatting of display of a username on a review
 class ReviewUsername extends StatelessWidget {
   /// Formatting of display of a username on a review
-  const ReviewUsername({Key? key, required this.user}) : super(key: key);
+  const ReviewUsername({super.key, required this.user});
 
   void _tapItem(BuildContext context) {
     Navigator.of(context).push(

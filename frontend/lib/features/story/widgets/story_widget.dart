@@ -7,7 +7,7 @@ import '../story_route.dart';
 /// Widget for displaying a [Story] without editing
 class StoryWidget extends StatelessWidget {
   /// Widget for displaying a [Story] without editing
-  const StoryWidget({Key? key, required this.story}) : super(key: key);
+  const StoryWidget({super.key, required this.story});
 
   void _onTapTitle(BuildContext context) {
     StoryQuery(title: story.title).navigate(context);
@@ -61,7 +61,7 @@ class StoryWidget extends StatelessWidget {
 /// Widget for displaying a [Story] in a list
 class StoryItem extends StatelessWidget {
   /// Widget for displaying a [Story] in a list
-  const StoryItem({Key? key, required this.story}) : super(key: key);
+  const StoryItem({super.key, required this.story});
 
   void _onTapCreator(BuildContext context) {
     StoryQuery(creator: story.creator).navigate(context);

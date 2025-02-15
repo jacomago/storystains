@@ -17,34 +17,34 @@ dependencies:
   dio: ^5.2.0
   shared_preferences: ^2.0.12
   retrofit: ^4.0.1
-  flutter_markdown: ^0.6.10+3
-  logger: ^1.1.0  #for logging purpose
-  google_fonts: ^3.0.1
+  flutter_markdown: ^0.7.6+2
+  logger: ^2.5.0  #for logging purpose
+  google_fonts: ^4.0.4
   cached_network_image: ^3.1.0+1
   scrollable_positioned_list: ^0.3.2
   equatable: ^2.0.3
   provider: ^6.0.1
-  injectable: ^1.5.0
-  get_it: ^7.2.0
-  intl: ^0.17.0
-  flutter_svg: ^1.1.0
+  injectable: ^2.5.0
+  get_it: ^8.0.3
+  intl: ^0.19.0
+  flutter_svg: ^2.0.9
   collection: ^1.16.0
-  dio_cookie_manager: ^2.1.4 
-  cookie_jar: ^3.0.1
-  flutter_secure_storage: ^6.0.0
+  dio_cookie_manager: ^3.2.0 
+  cookie_jar: ^4.0.8
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  retrofit_generator: ^5.0.0+1
+  retrofit_generator: ^8.2.1
   build_runner: ^2.1.11
   json_serializable: '>4.4.0'
-  flutter_lints: ^2.0.1
-  dependency_validator: ^3.0.0
+  flutter_lints: ^5.0.0
+  dependency_validator: ^4.1.2
   mockito: ^5.2.0
-  dart_code_metrics: ^4.15.2
+  dart_code_metrics: ^5.7.6
   http: ^0.13.4
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter_icons:
   android: "ic_launcher"

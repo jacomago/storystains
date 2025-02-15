@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import '../data/network/api_exception.dart';
 
-/// Method to convert an [DioError] message to an nicer message from the
+/// Method to convert an [DioException] message to an nicer message from the
 /// [ApiException] creator
-String errorMessage(DioError error) {
-  if (error.type == DioErrorType.connectTimeout) {
+String errorMessage(DioException error) {
+  if (error.type == DioExceptionType.connectionTimeout) {
     return 'Connection timed out';
-  } else if (error.type == DioErrorType.response) {
+  } else if (error.type == DioExceptionType.badResponse) {
     switch (error.response?.statusCode) {
       case 400:
         return BadRequestException(error.response!.data.toString().toString())
@@ -29,7 +29,7 @@ String errorMessage(DioError error) {
           '${error.response?.statusCode}',
         ).toString();
     }
-  } else if (error.type == DioErrorType.other &&
+  } else if (error.type == DioExceptionType.unknown &&
       error.error.runtimeType == SocketException) {
     return (error.error as SocketException).message;
   } else {

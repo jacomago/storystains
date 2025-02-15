@@ -7,8 +7,7 @@ class PositionEdit extends StatelessWidget {
   final ValueNotifier<int> positionController;
 
   /// Widget to change a percentage
-  const PositionEdit({Key? key, required this.positionController})
-      : super(key: key);
+  const PositionEdit({super.key, required this.positionController});
 
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<int>(

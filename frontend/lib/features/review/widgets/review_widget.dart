@@ -29,7 +29,7 @@ enum EditAction {
 /// Widget to display or edit a [Review]
 class ReviewWidget extends StatelessWidget {
   /// Widget to display or edit a [Review]
-  const ReviewWidget({Key? key}) : super(key: key);
+  const ReviewWidget({super.key});
 
   void _afterSend(BuildContext context, ReviewState state) {
     if (state.isUpdated) {

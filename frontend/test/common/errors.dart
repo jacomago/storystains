@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 
-DioError testApiError(int code, String msg) => DioError(
+DioException testApiError(int code, String msg) => DioException(
     requestOptions: RequestOptions(path: ""),
-    type: DioErrorType.response,
+    type: DioExceptionType.response,
     response: Response(
       statusCode: code,
       data: msg,

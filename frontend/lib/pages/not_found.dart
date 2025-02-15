@@ -8,7 +8,7 @@ import '../routes/routes.dart';
 /// page if not found by url
 class NotFoundPage extends StatelessWidget {
   /// page if not found by url
-  const NotFoundPage({Key? key}) : super(key: key);
+  const NotFoundPage({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(

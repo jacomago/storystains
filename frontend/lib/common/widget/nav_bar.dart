@@ -25,7 +25,7 @@ enum NavOption {
 /// navigation bar for scaffold
 class NavBar extends StatelessWidget {
   /// constructor for navbar
-  const NavBar({Key? key, this.currentNav}) : super(key: key);
+  const NavBar({super.key, this.currentNav});
 
   /// Index of selected navigation item
   final NavOption? currentNav;
@@ -106,7 +106,7 @@ class NavBar extends StatelessWidget {
           decorationThickness: 8,
         ),
         selectedLabelStyle: context.labelLarge,
-        backgroundColor: context.colors.background,
+        backgroundColor: context.colors.surface,
         unselectedItemColor: context.colors.secondary,
         selectedItemColor: context.colors.onTertiaryContainer,
         onTap: ((value) => _onTap(value, context)),
