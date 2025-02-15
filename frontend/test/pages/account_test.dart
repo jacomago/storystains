@@ -70,7 +70,7 @@ void main() {
 
       when(authService.delete()).thenThrow(
         DioException(
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
           type: DioExceptionType.connectionTimeout,
         ),
       );

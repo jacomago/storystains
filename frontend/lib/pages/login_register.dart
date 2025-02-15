@@ -9,7 +9,7 @@ import '../features/auth/auth.dart';
 /// Page for logging in or registering user
 class LoginOrRegisterPage extends StatelessWidget {
   /// Page for logging in or registering user
-  LoginOrRegisterPage({Key? key}) : super(key: key);
+  LoginOrRegisterPage({super.key});
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

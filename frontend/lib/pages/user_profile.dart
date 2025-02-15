@@ -7,7 +7,7 @@ import '../features/user/user.dart';
 /// The home page of the app
 class UserProfilePage extends StatelessWidget {
   /// The home page of the app
-  const UserProfilePage({Key? key, required this.user}) : super(key: key);
+  const UserProfilePage({super.key, required this.user});
 
   /// Username to filter review list by
   final UserProfile user;

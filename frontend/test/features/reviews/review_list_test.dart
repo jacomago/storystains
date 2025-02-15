@@ -52,7 +52,7 @@ void main() {
       final mockService = MockReviewsService();
       when(mockService.fetch()).thenThrow(
         DioException(
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
           type: DioExceptionType.connectionTimeout,
         ),
       );

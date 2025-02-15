@@ -10,12 +10,12 @@ import '../review_emotion.dart';
 class ReviewEmotionEdit extends StatelessWidget {
   /// Widget for editing [ReviewEmotion] on a review
   const ReviewEmotionEdit({
-    Key? key,
+    super.key,
     required this.cancelHandler,
     required this.okHandler,
     required this.deleteHandler,
     required this.state,
-  }) : super(key: key);
+  });
 
   /// State of review emotion
   final ReviewEmotionState state;

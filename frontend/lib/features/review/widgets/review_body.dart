@@ -9,7 +9,7 @@ import '../review.dart';
 /// Display edit review body or disply review body
 class ReviewBody extends StatelessWidget {
   /// Display edit review body or disply review body
-  const ReviewBody({Key? key}) : super(key: key);
+  const ReviewBody({super.key});
 
   @override
   Widget build(BuildContext context) => Consumer<ReviewState>(

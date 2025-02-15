@@ -6,10 +6,10 @@ import '../utils/utils.dart';
 class StainsAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Custom App bar for the Application
   const StainsAppBar({
-    Key? key,
+    super.key,
     required this.title,
     this.moreActions = const [],
-  }) : super(key: key);
+  });
 
   /// Extra actions beyond the defaults
   final List<Widget> moreActions;

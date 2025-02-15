@@ -11,7 +11,7 @@ import 'user.dart';
 /// The page of a user
 class UserWidget extends StatelessWidget {
   /// The page of a user
-  const UserWidget({Key? key, required this.user}) : super(key: key);
+  const UserWidget({super.key, required this.user});
 
   /// User whose profile it is
   final UserProfile user;

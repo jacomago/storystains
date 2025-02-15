@@ -14,9 +14,9 @@ class LoadMessage extends StatelessWidget {
   /// Message to display when still loading data
   const LoadMessage(
     this.message, {
-    Key? key,
+    super.key,
     required this.onRefresh,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => Center(

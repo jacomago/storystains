@@ -11,10 +11,10 @@ class CustomFloatingButton extends StatelessWidget {
 
   /// Custom floating button for keeping theming consistent
   const CustomFloatingButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => FloatingActionButton(

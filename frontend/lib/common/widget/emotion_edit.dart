@@ -15,11 +15,11 @@ class EmotionEdit extends StatelessWidget {
 
   /// A widget for showing and selecting an emotion on click
   const EmotionEdit({
-    Key? key,
+    super.key,
     required this.emotion,
     required this.handler,
     required this.height,
-  }) : super(key: key);
+  });
 
   /// Height of the image of the emotion
   final double height;
@@ -46,11 +46,11 @@ class EmotionImageText extends StatelessWidget {
 
   /// Display an Emotion including Image and Text
   const EmotionImageText({
-    Key? key,
+    super.key,
     required this.emotion,
     required this.height,
     this.direction = AxisDirection.right,
-  }) : super(key: key);
+  });
 
   /// Height of the image of the emotion
   final double height;
@@ -118,10 +118,10 @@ class EmotionImageText extends StatelessWidget {
 class EmotionImage extends StatelessWidget {
   /// How to display just the emotions image
   const EmotionImage({
-    Key? key,
+    super.key,
     required this.emotion,
     required this.height,
-  }) : super(key: key);
+  });
 
   /// The emotion to display
   final Emotion emotion;

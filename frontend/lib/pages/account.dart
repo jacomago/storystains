@@ -9,7 +9,7 @@ import '../features/auth/auth_state.dart';
 /// Display a users account Profile with personal actions
 class AccountPage extends StatelessWidget {
   /// Display a users account Profile with personal actions
-  const AccountPage({Key? key}) : super(key: key);
+  const AccountPage({super.key});
 
   void _afterDelete(BuildContext context, AuthState auth) {
     if (auth.isAuthenticated || auth.isFailed) {

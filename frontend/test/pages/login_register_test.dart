@@ -122,7 +122,7 @@ void main() {
 
       when(authService.login('username', 'password')).thenThrow(
         DioException(
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
           type: DioExceptionType.connectionTimeout,
         ),
       );
@@ -166,7 +166,7 @@ void main() {
 
       when(authService.register('username', 'password')).thenThrow(
         DioException(
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
           type: DioExceptionType.connectionTimeout,
         ),
       );

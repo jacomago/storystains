@@ -7,9 +7,9 @@ import '../story.dart';
 class StoryEditWidget extends StatelessWidget {
   /// Widget for editing a [Story]
   const StoryEditWidget({
-    Key? key,
+    super.key,
     required this.state,
-  }) : super(key: key);
+  });
 
   void _onChanged() async {
     await state.search();
@@ -35,10 +35,10 @@ class StoryEditWidget extends StatelessWidget {
 class StoryFormWidget extends StatelessWidget {
   /// Widget for editing a [Story]
   const StoryFormWidget({
-    Key? key,
+    super.key,
     required this.state,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   /// State of the [Story]
   final StoryState state;
@@ -89,12 +89,12 @@ class StoryFormWidget extends StatelessWidget {
 class StoryTextEdit extends StatelessWidget {
   /// Widget for editing a [Story] title
   const StoryTextEdit({
-    Key? key,
+    super.key,
     required this.textController,
     required this.onChanged,
     required this.label,
     required this.hint,
-  }) : super(key: key);
+  });
 
   /// Label Text
   final String label;

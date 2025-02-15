@@ -142,7 +142,7 @@ void main() {
 
       when(mockService.delete(review.user.username, review.slug)).thenAnswer(
         (realInvocation) async => Response<dynamic>(
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
           statusCode: 200,
         ),
       );
@@ -187,12 +187,12 @@ void main() {
 
       when(mockService.delete(review.user.username, review.slug))
           .thenThrow(DioException(
-        requestOptions: RequestOptions(path: ''),
+        requestOptions: RequestOptions(),
         type: DioExceptionType.badResponse,
         response: Response(
           statusCode: 401,
           data: 'User not logged in.',
-          requestOptions: RequestOptions(path: ''),
+          requestOptions: RequestOptions(),
         ),
       ));
 

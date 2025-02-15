@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class LinkButton extends StatefulWidget {
   /// Constructor for LinkButton
   const LinkButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.text,
     required this.defaultStyle,
     required this.semanticsLabel,
     this.maxLines,
-  }) : super(key: key);
+  });
 
   /// Method called on tap
   final void Function() onPressed;
