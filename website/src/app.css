@@ -1,6 +1,3 @@
 @import '@fontsource/special-elite';
 @import '@fontsource/libre-baskerville';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
