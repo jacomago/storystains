@@ -12,7 +12,7 @@
 			</a>
 		</div>
 	</div>
-	<div class="px-1 py-3 pb-3 shadow-lg font-normal rounded sm:flex sm:shadow-none items-center">
+	<div class="px-1 py-3 pb-3 shadow-lg font-normal rounded-sm sm:flex sm:shadow-none items-center">
 		<NavItem name="App" href="https://app.storystains.com" />
 		<NavItem name="About" href="/about" />
 	</div>

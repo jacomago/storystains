@@ -7,7 +7,7 @@
 
 <Navbar />
 
-<div class="flex-grow self-center mt-16 mb-16 px-4">
+<div class="grow self-center mt-16 mb-16 px-4">
 	<slot />
 </div>
 
