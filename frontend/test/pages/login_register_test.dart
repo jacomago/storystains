@@ -121,9 +121,9 @@ void main() {
       expect(loginButton, findsOneWidget);
 
       when(authService.login('username', 'password')).thenThrow(
-        DioError(
+        DioException(
           requestOptions: RequestOptions(path: ''),
-          type: DioErrorType.connectTimeout,
+          type: DioExceptionType.connectionTimeout,
         ),
       );
       await tester.ensureVisible(loginButton);
@@ -165,9 +165,9 @@ void main() {
       expect(loginButton, findsOneWidget);
 
       when(authService.register('username', 'password')).thenThrow(
-        DioError(
+        DioException(
           requestOptions: RequestOptions(path: ''),
-          type: DioErrorType.connectTimeout,
+          type: DioExceptionType.connectionTimeout,
         ),
       );
 

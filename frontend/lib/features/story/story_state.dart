@@ -147,7 +147,7 @@ class StoryState extends ChangeNotifier {
 
       _status = StoryStatus.updated;
       _setControllers(data.story);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
     }
@@ -175,7 +175,7 @@ class StoryState extends ChangeNotifier {
       final data = await _service.search(query);
 
       searchResults.sink.add(data.stories);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = StoryStatus.failed;
       _error = errorMessage(e);
     }

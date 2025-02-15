@@ -84,7 +84,7 @@ class ReviewsState extends ChangeNotifier {
         _offset = AppConfig.defaultLimit;
         _items = [...items];
       }
-    } on DioError catch (_) {
+    } on DioException catch (_) {
       _isFailed = true;
     }
 
@@ -108,7 +108,7 @@ class ReviewsState extends ChangeNotifier {
         _isFailed = false;
         _isEmpty = false;
       }
-    } on DioError catch (_) {
+    } on DioException catch (_) {
       _isFailed = true;
     }
 
@@ -138,7 +138,7 @@ class ReviewsState extends ChangeNotifier {
             _hasReachedMax = false;
           }
         }
-      } on DioError catch (_) {
+      } on DioException catch (_) {
         _isFailed = true;
       }
 

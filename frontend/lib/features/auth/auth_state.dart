@@ -128,7 +128,7 @@ class AuthState extends ChangeNotifier {
       } else {
         _status = AuthStatus.notauthenticated;
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
     }
@@ -159,7 +159,7 @@ class AuthState extends ChangeNotifier {
       } else {
         _status = AuthStatus.notauthenticated;
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
     }
@@ -183,7 +183,7 @@ class AuthState extends ChangeNotifier {
       _event = null;
       _user = null;
       _isLoading = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
     }
@@ -206,7 +206,7 @@ class AuthState extends ChangeNotifier {
       _event = null;
       _user = null;
       _isLoading = false;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = AuthStatus.failed;
       _error = errorMessage(e);
     }

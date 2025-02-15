@@ -186,9 +186,9 @@ void main() {
       expect(reviewState.isUpdated, false);
 
       when(mockService.delete(review.user.username, review.slug))
-          .thenThrow(DioError(
+          .thenThrow(DioException(
         requestOptions: RequestOptions(path: ''),
-        type: DioErrorType.response,
+        type: DioExceptionType.badResponse,
         response: Response(
           statusCode: 401,
           data: 'User not logged in.',

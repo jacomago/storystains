@@ -141,7 +141,7 @@ class ReviewEmotionState extends ChangeNotifier {
       _reviewEmotion = data.reviewEmotion;
 
       _status = ReviewEmotionStatus.updated;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
     }
@@ -168,7 +168,7 @@ class ReviewEmotionState extends ChangeNotifier {
       _error = '';
       _event = null;
       _reviewEmotion = null;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       _status = ReviewEmotionStatus.failed;
       _error = errorMessage(e);
     }
